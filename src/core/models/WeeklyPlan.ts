@@ -40,6 +40,7 @@ export interface WeeklyPlan {
   planInput: PlanInput;
   days: DayPlan[];
   shoppingList: FoodItem[];
-  totalCost: number;
+  totalCost: number; // Original cost from weekly plan generation
+  budgetAdjustedCost: number; // Final cost after budget adjustments
   proteinPerDay: number;  // Protein target in grams per person per day
 }

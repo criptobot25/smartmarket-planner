@@ -84,7 +84,8 @@ export function ShoppingListPage() {
     others: "📦 Outros"
   };
 
-  const totalCost = weeklyPlan.totalCost;
+  // Use budget-adjusted cost (changes based on budget/people/goal)
+  const totalCost = weeklyPlan.budgetAdjustedCost ?? weeklyPlan.totalCost;
   const proteinPerDay = weeklyPlan.proteinPerDay;
   const purchasedCount = shoppingList.filter(item => (item as ShoppingItem).purchased).length;
   const totalCount = shoppingList.length;

@@ -237,6 +237,7 @@ export function generateWeeklyPlan(input: PlanInput): WeeklyPlan {
     days,
     shoppingList: [],
     totalCost: 0,
+    budgetAdjustedCost: 0, // Will be set by generateShoppingList
     proteinPerDay: proteinTarget
   };
 

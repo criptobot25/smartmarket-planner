@@ -102,11 +102,11 @@ export function ShoppingPlanProvider({ children }: ShoppingPlanProviderProps) {
         console.log("🔄 Adjustments made:", adjustmentsMade);
       }
 
-      // Atualiza o plano com a lista e custo
+      // Atualiza o plano com a lista e custo (ajustado pelo budget)
       const completePlan: WeeklyPlan = {
         ...plan,
         shoppingList: items,
-        totalCost: totalEstimatedCost
+        budgetAdjustedCost: totalEstimatedCost // ✅ Cost after budget adjustments
       };
 
       // Gera sugestões de receitas baseadas na lista
