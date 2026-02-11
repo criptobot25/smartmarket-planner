@@ -1,23 +1,20 @@
 .app-layout {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  background: linear-gradient(to bottom, #f9fafb 0%, #eef2ff 100%);
 }
 
 .app-main {
-  flex: 1;
-  padding-bottom: 70px; /* Espaço para navbar mobile */
+  padding-top: 4.5rem; /* Space for fixed navbar */
+  padding-bottom: 2rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 /* Desktop */
 @media (min-width: 768px) {
-  .app-layout {
-    flex-direction: row;
-  }
-
   .app-main {
-    flex: 1;
-    margin-left: 80px; /* Espaço para navbar lateral */
-    padding-bottom: 0;
+    padding-top: 5rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 }
