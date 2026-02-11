@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useShoppingPlan } from "../../hooks/useShoppingPlan";
+import { useShoppingPlan } from "../../contexts/ShoppingPlanContext";
 import { WeeklyPlan } from "../../core/models/WeeklyPlan";
 import "./HistoryPage.css";
 

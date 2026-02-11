@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useShoppingPlan } from "../../hooks/useShoppingPlan";
+import { useShoppingPlan } from "../../contexts/ShoppingPlanContext";
 import { Recipe } from "../../core/models/Recipe";
 import "./RecipesPage.css";
 

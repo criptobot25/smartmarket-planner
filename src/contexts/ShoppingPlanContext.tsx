@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { createContext, useContext, useState, useCallback, ReactNode } from "react";
 import { PlanInput } from "../core/models/PlanInput";
 import { WeeklyPlan } from "../core/models/WeeklyPlan";
 import { FoodItem } from "../core/models/FoodItem";
@@ -7,10 +7,10 @@ import { generateWeeklyPlan } from "../core/logic/generateWeeklyPlan";
 import { generateShoppingList, calculateTotalCost } from "../core/logic/generateShoppingList";
 import { suggestRecipes } from "../core/logic/suggestRecipes";
 import { savePlan } from "../core/storage/savePlan";
-import { loadHistory as loadHistoryFromStorage } from "../core/storage/loadHistory";
+import { loadHistory as loadHistoryFromStorage, loadLatestPlan } from "../core/storage/loadHistory";
 import { clearHistory as clearHistoryFromStorage } from "../core/storage/clearHistory";
 
-interface UseShoppingPlanReturn {
+interface ShoppingPlanContextData {
   // Estado
   currentInput: PlanInput | null;
   weeklyPlan: WeeklyPlan | null;
@@ -26,13 +26,13 @@ interface UseShoppingPlanReturn {
   resetPlan: () => void;
 }
 
-/**
- * Hook customizado para gerenciar o planejamento de compras
- * Controla input, plano semanal, lista de compras, sugestões e histórico
- * 
- * @returns Objeto com estado e funções para gerenciar o planejamento
- */
-export function useShoppingPlan(): UseShoppingPlanReturn {
+const ShoppingPlanContext = createContext<ShoppingPlanContextData | undefined>(undefined);
+
+interface ShoppingPlanProviderProps {
+  children: ReactNode;
+}
+
+export function ShoppingPlanProvider({ children }: ShoppingPlanProviderProps) {
   const [currentInput, setCurrentInput] = useState<PlanInput | null>(null);
   const [weeklyPlan, setWeeklyPlan] = useState<WeeklyPlan | null>(null);
   const [shoppingList, setShoppingList] = useState<FoodItem[]>([]);
@@ -45,17 +45,22 @@ export function useShoppingPlan(): UseShoppingPlanReturn {
    */
   const generatePlan = useCallback((input: PlanInput) => {
     try {
+      console.log("🚀 Gerando plano com input:", input);
+
       // Salva o input atual
       setCurrentInput(input);
 
       // Gera o plano semanal
       const plan = generateWeeklyPlan(input);
+      console.log("📋 Plano semanal gerado:", plan);
 
       // Gera a lista de compras baseada no plano
       const list = generateShoppingList(plan);
+      console.log("🛒 Lista de compras gerada:", list.length, "itens");
 
       // Calcula o custo total
       const totalCost = calculateTotalCost(list);
+      console.log("💰 Custo total:", totalCost);
 
       // Atualiza o plano com a lista e custo
       const completePlan: WeeklyPlan = {
@@ -66,34 +71,35 @@ export function useShoppingPlan(): UseShoppingPlanReturn {
 
       // Gera sugestões de receitas baseadas na lista
       const suggestions = suggestRecipes(list);
+      console.log("🍳 Sugestões geradas:", suggestions.length, "receitas");
 
-      // Atualiza o estado
+      // Atualiza o estado ANTES de salvar
       setWeeklyPlan(completePlan);
       setShoppingList(list);
       setRecipeSuggestions(suggestions);
 
       // Salva no histórico (LocalStorage)
-      savePlan(completePlan);
+      const saved = savePlan(completePlan);
+      console.log("💾 Plano salvo no LocalStorage:", saved);
 
       // Recarrega o histórico
       const updatedHistory = loadHistoryFromStorage();
       setHistory(updatedHistory);
+      console.log("📚 Histórico atualizado:", updatedHistory.length, "planos");
+
     } catch (error) {
-      console.error("Erro ao gerar plano:", error);
+      console.error("❌ Erro ao gerar plano:", error);
       throw error;
     }
   }, []);
 
   /**
    * Marca/desmarca um item da lista como comprado
-   * Adiciona propriedade 'purchased' ao item
    */
   const toggleItemPurchased = useCallback((id: string) => {
     setShoppingList(prevList => {
       return prevList.map(item => {
         if (item.id === id) {
-          // Adiciona propriedade purchased ao item
-          // TypeScript pode reclamar, mas funcionará em runtime
           return {
             ...item,
             purchased: !(item as FoodItem & { purchased?: boolean }).purchased
@@ -111,11 +117,24 @@ export function useShoppingPlan(): UseShoppingPlanReturn {
     try {
       const loadedHistory = loadHistoryFromStorage();
       setHistory(loadedHistory);
+
+      // Se não houver plano atual, carrega o mais recente
+      if (!weeklyPlan && loadedHistory.length > 0) {
+        const latestPlan = loadedHistory[0];
+        setWeeklyPlan(latestPlan);
+        setCurrentInput(latestPlan.planInput);
+        setShoppingList(latestPlan.shoppingList);
+        
+        const suggestions = suggestRecipes(latestPlan.shoppingList);
+        setRecipeSuggestions(suggestions);
+        
+        console.log("📥 Plano mais recente carregado do histórico");
+      }
     } catch (error) {
-      console.error("Erro ao carregar histórico:", error);
+      console.error("❌ Erro ao carregar histórico:", error);
       setHistory([]);
     }
-  }, []);
+  }, [weeklyPlan]);
 
   /**
    * Limpa todo o histórico de planos
@@ -126,11 +145,12 @@ export function useShoppingPlan(): UseShoppingPlanReturn {
       
       if (success) {
         setHistory([]);
+        console.log("🗑️ Histórico limpo");
       }
       
       return success;
     } catch (error) {
-      console.error("Erro ao limpar histórico:", error);
+      console.error("❌ Erro ao limpar histórico:", error);
       return false;
     }
   }, []);
@@ -143,21 +163,38 @@ export function useShoppingPlan(): UseShoppingPlanReturn {
     setWeeklyPlan(null);
     setShoppingList([]);
     setRecipeSuggestions([]);
+    console.log("🔄 Plano resetado");
   }, []);
 
-  return {
-    // Estado
-    currentInput,
-    weeklyPlan,
-    shoppingList,
-    recipeSuggestions,
-    history,
-    
-    // Funções
-    generatePlan,
-    toggleItemPurchased,
-    loadHistory,
-    clearHistory,
-    resetPlan
-  };
+  return (
+    <ShoppingPlanContext.Provider
+      value={{
+        currentInput,
+        weeklyPlan,
+        shoppingList,
+        recipeSuggestions,
+        history,
+        generatePlan,
+        toggleItemPurchased,
+        loadHistory,
+        clearHistory,
+        resetPlan
+      }}
+    >
+      {children}
+    </ShoppingPlanContext.Provider>
+  );
+}
+
+/**
+ * Hook para usar o contexto de planejamento
+ */
+export function useShoppingPlan(): ShoppingPlanContextData {
+  const context = useContext(ShoppingPlanContext);
+  
+  if (!context) {
+    throw new Error("useShoppingPlan must be used within ShoppingPlanProvider");
+  }
+  
+  return context;
 }

@@ -1,6 +1,6 @@
 import { useState, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { useShoppingPlan } from "../../hooks/useShoppingPlan";
+import { useShoppingPlan } from "../../contexts/ShoppingPlanContext";
 import { DietStyle } from "../../core/models/PlanInput";
 import "./PlannerPage.css";
 
