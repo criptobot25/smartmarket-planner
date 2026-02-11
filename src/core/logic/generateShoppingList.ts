@@ -2,6 +2,7 @@ import { PlanInput } from "../models/PlanInput";
 import { WeeklyPlan, Meal } from "../models/WeeklyPlan";
 import { FoodItem, FoodCategory } from "../models/FoodItem";
 import { mockFoods } from "../../data/mockFoods";
+import { applyBudgetAdjustments, BudgetStatus } from "./applyBudgetAdjustments";
 
 /**
  * SHOPPING LIST DERIVADA DO WEEKLY PLAN
@@ -28,6 +29,8 @@ interface IngredientOccurrence {
 interface ShoppingListResult {
   items: FoodItem[];
   totalEstimatedCost: number;
+  budgetStatus: BudgetStatus;
+  adjustmentsMade: string[];
 }
 
 /**
@@ -48,13 +51,25 @@ export function generateShoppingList(
   // 3. Ordenar por categoria
   const sortedItems = sortByCategory(items);
 
-  // 4. Calcular custo total
-  const totalEstimatedCost = sortedItems.reduce(
+  // 4. Calcular custo total inicial
+  const initialCost = sortedItems.reduce(
     (sum, item) => sum + (item.estimatedPrice || 0),
     0
   );
 
-  return { items: sortedItems, totalEstimatedCost };
+  // 5. Aplicar ajustes de budget (se necessário)
+  const budgetResult = applyBudgetAdjustments(
+    sortedItems,
+    initialCost,
+    input.budget
+  );
+
+  return {
+    items: budgetResult.items,
+    totalEstimatedCost: budgetResult.totalEstimatedCost,
+    budgetStatus: budgetResult.budgetStatus,
+    adjustmentsMade: budgetResult.adjustmentsMade,
+  };
 }
 
 /**

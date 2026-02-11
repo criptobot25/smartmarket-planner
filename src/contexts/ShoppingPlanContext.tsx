@@ -94,9 +94,13 @@ export function ShoppingPlanProvider({ children }: ShoppingPlanProviderProps) {
       console.log("📋 Plano semanal gerado:", plan);
 
       // Gera a lista de compras baseada no plano (NOVA ASSINATURA)
-      const { items, totalEstimatedCost } = generateShoppingList(input, plan);
+      const { items, totalEstimatedCost, budgetStatus, adjustmentsMade } = generateShoppingList(input, plan);
       console.log("🛒 Lista de compras gerada:", items.length, "itens");
       console.log("💰 Custo total estimado:", totalEstimatedCost);
+      console.log("💵 Budget status:", budgetStatus);
+      if (adjustmentsMade.length > 0) {
+        console.log("🔄 Adjustments made:", adjustmentsMade);
+      }
 
       // Atualiza o plano com a lista e custo
       const completePlan: WeeklyPlan = {
