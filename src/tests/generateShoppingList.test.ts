@@ -13,17 +13,19 @@ describe('generateShoppingList', () => {
     };
 
     const weeklyPlan = generateWeeklyPlan(input);
-    const { items, totalEstimatedCost, budgetStatus, adjustmentsMade } = generateShoppingList(input, weeklyPlan);
+    const result = generateShoppingList(input, weeklyPlan);
 
     // Validações básicas
-    expect(items).toBeDefined();
-    expect(items.length).toBeGreaterThan(0);
-    expect(totalEstimatedCost).toBeGreaterThan(0);
-    expect(budgetStatus).toBeDefined();
-    expect(adjustmentsMade).toBeDefined();
+    expect(result.items).toBeDefined();
+    expect(result.items.length).toBeGreaterThan(0);
+    expect(result.totalEstimatedCost).toBeGreaterThan(0);
+    expect(result.totalProtein).toBeGreaterThan(0);
+    expect(result.efficiencyScore).toBeGreaterThan(0);
+    expect(result.budgetStatus).toBeDefined();
+    expect(result.substitutionsApplied).toBeDefined();
     
     // Todos os itens devem ter categoria, reason e estimatedPrice
-    items.forEach(item => {
+    result.items.forEach(item => {
       expect(item.category).toBeDefined();
       expect(item.name).toBeDefined();
       expect(item.quantity).toBeGreaterThan(0);
@@ -106,9 +108,9 @@ describe('generateShoppingList', () => {
     };
 
     const weeklyPlan = generateWeeklyPlan(input);
-    const { budgetStatus, adjustmentsMade } = generateShoppingList(input, weeklyPlan);
+    const result = generateShoppingList(input, weeklyPlan);
 
-    expect(budgetStatus).toBe('within_budget');
-    expect(adjustmentsMade).toHaveLength(0);
+    expect(result.budgetStatus).toBe('within_budget');
+    expect(result.substitutionsApplied).toHaveLength(0);
   });
 });

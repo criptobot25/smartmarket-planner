@@ -2,7 +2,7 @@ import { PlanInput } from "../models/PlanInput";
 import { WeeklyPlan, Meal } from "../models/WeeklyPlan";
 import { FoodItem, FoodCategory } from "../models/FoodItem";
 import { mockFoods } from "../../data/mockFoods";
-import { applyBudgetAdjustments, BudgetStatus } from "./applyBudgetAdjustments";
+import { optimizeBudget, BudgetStatus, SubstitutionRecord } from "./SmartBudgetOptimizer";
 
 /**
  * SHOPPING LIST DERIVADA DO WEEKLY PLAN
@@ -14,6 +14,11 @@ import { applyBudgetAdjustments, BudgetStatus } from "./applyBudgetAdjustments";
  * - quantity realista (heurísticas de meal prep)
  * - estimatedPrice (quantity * pricePerUnit)
  * - reason ("Lunch protein for 10 meals")
+ * 
+ * Budget optimization:
+ * - SmartBudgetOptimizer maximiza proteína por euro
+ * - Substitui itens caros por alternativas eficientes
+ * - Mantém macros semelhantes
  * 
  * Objetivo: Usuário deve sentir "Claro que frango está aqui, eu vou comer 6x"
  * 
@@ -29,8 +34,10 @@ interface IngredientOccurrence {
 interface ShoppingListResult {
   items: FoodItem[];
   totalEstimatedCost: number;
+  totalProtein: number; // NEW: Track total protein
+  efficiencyScore: number; // NEW: Protein per euro
   budgetStatus: BudgetStatus;
-  adjustmentsMade: string[];
+  substitutionsApplied: SubstitutionRecord[]; // NEW: Detailed substitutions
 }
 
 /**
@@ -57,18 +64,20 @@ export function generateShoppingList(
     0
   );
 
-  // 5. Aplicar ajustes de budget (se necessário)
-  const budgetResult = applyBudgetAdjustments(
+  // 5. Aplicar Smart Budget Optimization (protein-per-euro strategy)
+  const optimizationResult = optimizeBudget(
     sortedItems,
     initialCost,
     input.budget
   );
 
   return {
-    items: budgetResult.items,
-    totalEstimatedCost: budgetResult.totalEstimatedCost,
-    budgetStatus: budgetResult.budgetStatus,
-    adjustmentsMade: budgetResult.adjustmentsMade,
+    items: optimizationResult.items,
+    totalEstimatedCost: optimizationResult.totalEstimatedCost,
+    totalProtein: optimizationResult.totalProtein,
+    efficiencyScore: optimizationResult.efficiencyScore,
+    budgetStatus: optimizationResult.budgetStatus,
+    substitutionsApplied: optimizationResult.substitutionsApplied,
   };
 }
 

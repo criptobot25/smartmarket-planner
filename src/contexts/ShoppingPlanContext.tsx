@@ -93,13 +93,27 @@ export function ShoppingPlanProvider({ children }: ShoppingPlanProviderProps) {
       const plan = generateWeeklyPlan(input);
       console.log("📋 Plano semanal gerado:", plan);
 
-      // Gera a lista de compras baseada no plano (NOVA ASSINATURA)
-      const { items, totalEstimatedCost, budgetStatus, adjustmentsMade } = generateShoppingList(input, plan);
+      // Gera a lista de compras baseada no plano (SmartBudgetOptimizer)
+      const { 
+        items, 
+        totalEstimatedCost, 
+        totalProtein,
+        efficiencyScore,
+        budgetStatus, 
+        substitutionsApplied 
+      } = generateShoppingList(input, plan);
+      
       console.log("🛒 Lista de compras gerada:", items.length, "itens");
       console.log("💰 Custo total estimado:", totalEstimatedCost);
+      console.log("💪 Proteína total:", totalProtein.toFixed(0), "g");
+      console.log("📊 Eficiência:", efficiencyScore.toFixed(2), "g protein/€");
       console.log("💵 Budget status:", budgetStatus);
-      if (adjustmentsMade.length > 0) {
-        console.log("🔄 Adjustments made:", adjustmentsMade);
+      
+      if (substitutionsApplied.length > 0) {
+        console.log("🔄 Substituições aplicadas:", substitutionsApplied.length);
+        substitutionsApplied.forEach(sub => {
+          console.log(`  • ${sub.from} → ${sub.to}: ${sub.reason}`);
+        });
       }
 
       // Atualiza o plano com a lista e custo (ajustado pelo budget)
