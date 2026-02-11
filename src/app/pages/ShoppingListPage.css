@@ -27,20 +27,52 @@
 }
 
 .shopping-header h1 {
-  margin: 0 0 1rem 0;
+  margin: 0 0 1.5rem 0;
   font-size: 1.8rem;
+}
+
+/* FITNESS TARGET + ESTIMATED COST */
+.plan-summary {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  backdrop-filter: blur(10px);
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.summary-label {
+  font-size: 0.85rem;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+.summary-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.summary-divider {
+  width: 1px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .shopping-stats {
   display: flex;
-  justify-content: space-between;
-  font-size: 1rem;
-  opacity: 0.95;
-}
-
-.total-cost {
-  font-weight: 700;
-  font-size: 1.2rem;
+  justify-content: center;
+  font-size: 0.95rem;
+  opacity: 0.9;
 }
 
 .shopping-main {
@@ -155,6 +187,14 @@
 .item-quantity {
   font-size: 0.85rem;
   color: #666;
+}
+
+.item-reason {
+  font-size: 0.75rem;
+  color: #888;
+  opacity: 0.9;
+  margin-top: 0.25rem;
+  font-style: italic;
 }
 
 .item-price {

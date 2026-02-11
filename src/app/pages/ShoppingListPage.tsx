@@ -54,6 +54,7 @@ export function ShoppingListPage() {
   };
 
   const totalCost = weeklyPlan.totalCost;
+  const proteinPerDay = weeklyPlan.proteinPerDay;
   const purchasedCount = shoppingList.filter(item => (item as ShoppingItem).purchased).length;
   const totalCount = shoppingList.length;
 
@@ -65,9 +66,22 @@ export function ShoppingListPage() {
             ← Voltar
           </button>
           <h1>📝 Lista de Compras</h1>
+          
+          {/* FITNESS TARGET + COST */}
+          <div className="plan-summary">
+            <div className="summary-item">
+              <span className="summary-label">🎯 Proteína/dia</span>
+              <span className="summary-value">{proteinPerDay}g</span>
+            </div>
+            <div className="summary-divider"></div>
+            <div className="summary-item">
+              <span className="summary-label">💰 Custo Estimado</span>
+              <span className="summary-value">€{totalCost.toFixed(2)}</span>
+            </div>
+          </div>
+
           <div className="shopping-stats">
             <span>{purchasedCount} / {totalCount} itens</span>
-            <span className="total-cost">R$ {totalCost.toFixed(2)}</span>
           </div>
         </header>
       )}
@@ -117,10 +131,13 @@ export function ShoppingListPage() {
                       <span className="item-quantity">
                         {item.quantity.toFixed(2)} {item.unit}
                       </span>
+                      {item.reason && (
+                        <span className="item-reason">{item.reason}</span>
+                      )}
                     </div>
-                    {!marketMode && (
+                    {!marketMode && item.estimatedPrice && (
                       <div className="item-price">
-                        R$ {(item.pricePerUnit * item.quantity).toFixed(2)}
+                        €{item.estimatedPrice.toFixed(2)}
                       </div>
                     )}
                   </li>

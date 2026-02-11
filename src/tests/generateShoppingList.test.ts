@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateShoppingList, calculateTotalCost } from '../core/logic/generateShoppingList';
+import { generateShoppingList } from '../core/logic/generateShoppingList';
 import { generateWeeklyPlan } from '../core/logic/generateWeeklyPlan';
 import { PlanInput } from '../core/models/PlanInput';
 
@@ -13,18 +13,21 @@ describe('generateShoppingList', () => {
     };
 
     const weeklyPlan = generateWeeklyPlan(input);
-    const shoppingList = generateShoppingList(weeklyPlan);
+    const { items, totalEstimatedCost } = generateShoppingList(input, weeklyPlan);
 
     // Validações básicas
-    expect(shoppingList).toBeDefined();
-    expect(shoppingList.length).toBeGreaterThan(0);
+    expect(items).toBeDefined();
+    expect(items.length).toBeGreaterThan(0);
+    expect(totalEstimatedCost).toBeGreaterThan(0);
     
-    // Todos os itens devem ter categoria
-    shoppingList.forEach(item => {
+    // Todos os itens devem ter categoria, reason e estimatedPrice
+    items.forEach(item => {
       expect(item.category).toBeDefined();
       expect(item.name).toBeDefined();
       expect(item.quantity).toBeGreaterThan(0);
       expect(item.pricePerUnit).toBeGreaterThan(0);
+      expect(item.reason).toBeDefined();
+      expect(item.estimatedPrice).toBeGreaterThan(0);
     });
   });
 
@@ -37,10 +40,10 @@ describe('generateShoppingList', () => {
     };
 
     const weeklyPlan = generateWeeklyPlan(input);
-    const shoppingList = generateShoppingList(weeklyPlan);
+    const { items } = generateShoppingList(input, weeklyPlan);
 
     // Extrai categorias únicas
-    const categories = new Set(shoppingList.map(item => item.category));
+    const categories = new Set(items.map(item => item.category));
     
     // Deve ter múltiplas categorias
     expect(categories.size).toBeGreaterThan(1);
@@ -51,17 +54,18 @@ describe('generateShoppingList', () => {
       numberOfPeople: 2,
       dietStyle: 'balanced',
       budget: 300,
-      restrictions: []
+      restrictions: [],
+      fitnessGoal: 'bulking'
     };
 
     const weeklyPlan = generateWeeklyPlan(input);
-    const shoppingList = generateShoppingList(weeklyPlan);
-    const totalCost = calculateTotalCost(shoppingList);
+    const { items, totalEstimatedCost } = generateShoppingList(input, weeklyPlan);
 
     // Custo deve ser positivo
-    expect(totalCost).toBeGreaterThan(0);
+    expect(totalEstimatedCost).toBeGreaterThan(0);
     
-    // Custo deve ser número com 2 casas decimais
-    expect(totalCost).toBe(Math.round(totalCost * 100) / 100);
+    // Total deve ser soma dos estimatedPrice
+    const manualTotal = items.reduce((sum, item) => sum + (item.estimatedPrice || 0), 0);
+    expect(totalEstimatedCost).toBeCloseTo(manualTotal, 2);
   });
 });

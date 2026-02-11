@@ -4,7 +4,7 @@ import { WeeklyPlan } from "../core/models/WeeklyPlan";
 import { FoodItem } from "../core/models/FoodItem";
 import { Recipe } from "../core/models/Recipe";
 import { generateWeeklyPlan } from "../core/logic/generateWeeklyPlan";
-import { generateShoppingList, calculateTotalCost } from "../core/logic/generateShoppingList";
+import { generateShoppingList } from "../core/logic/generateShoppingList";
 import { suggestRecipes } from "../core/logic/suggestRecipes";
 import { savePlan } from "../core/storage/savePlan";
 import { loadHistory as loadHistoryFromStorage, loadLatestPlan } from "../core/storage/loadHistory";
@@ -93,28 +93,25 @@ export function ShoppingPlanProvider({ children }: ShoppingPlanProviderProps) {
       const plan = generateWeeklyPlan(input);
       console.log("📋 Plano semanal gerado:", plan);
 
-      // Gera a lista de compras baseada no plano
-      const list = generateShoppingList(plan);
-      console.log("🛒 Lista de compras gerada:", list.length, "itens");
-
-      // Calcula o custo total
-      const totalCost = calculateTotalCost(list);
-      console.log("💰 Custo total:", totalCost);
+      // Gera a lista de compras baseada no plano (NOVA ASSINATURA)
+      const { items, totalEstimatedCost } = generateShoppingList(input, plan);
+      console.log("🛒 Lista de compras gerada:", items.length, "itens");
+      console.log("💰 Custo total estimado:", totalEstimatedCost);
 
       // Atualiza o plano com a lista e custo
       const completePlan: WeeklyPlan = {
         ...plan,
-        shoppingList: list,
-        totalCost
+        shoppingList: items,
+        totalCost: totalEstimatedCost
       };
 
       // Gera sugestões de receitas baseadas na lista
-      const suggestions = suggestRecipes(list);
+      const suggestions = suggestRecipes(items);
       console.log("🍳 Sugestões geradas:", suggestions.length, "receitas");
 
       // Atualiza o estado ANTES de salvar
       setWeeklyPlan(completePlan);
-      setShoppingList(list);
+      setShoppingList(items);
       setRecipeSuggestions(suggestions);
 
       // Salva no histórico (LocalStorage)

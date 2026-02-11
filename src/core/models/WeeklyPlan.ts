@@ -1,4 +1,3 @@
-import { Recipe } from "./Recipe";
 import { FoodItem } from "./FoodItem";
 import { PlanInput } from "./PlanInput";
 
@@ -11,11 +10,23 @@ export type DayOfWeek =
   | "saturday"
   | "sunday";
 
+export type MealType = "breakfast" | "lunch" | "dinner" | "snack";
+
+/**
+ * Refeição simples (não depende de Recipe)
+ */
+export interface Meal {
+  id: string;
+  name: string;
+  foodIds: string[];  // IDs do mockFoods
+  protein: number;    // grams
+}
+
 export interface DayMeals {
-  breakfast: Recipe | null;
-  lunch: Recipe | null;
-  dinner: Recipe | null;
-  snack: Recipe | null;
+  breakfast: Meal;
+  lunch: Meal;
+  dinner: Meal;
+  snack: Meal | null;
 }
 
 export interface DayPlan {
@@ -30,4 +41,5 @@ export interface WeeklyPlan {
   days: DayPlan[];
   shoppingList: FoodItem[];
   totalCost: number;
+  proteinPerDay: number;  // Protein target in grams per person per day
 }
