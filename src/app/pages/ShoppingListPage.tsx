@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useShoppingPlan } from "../../contexts/ShoppingPlanContext";
 import { FoodItem, FoodCategory } from "../../core/models/FoodItem";
+import { formatQuantity } from "../../core/utils/formatQuantity";
 import "./ShoppingListPage.css";
 
 // Extensão do FoodItem para incluir purchased
@@ -129,7 +130,7 @@ export function ShoppingListPage() {
                     <div className="item-info">
                       <span className="item-name">{item.name}</span>
                       <span className="item-quantity">
-                        {item.quantity.toFixed(2)} {item.unit}
+                        {formatQuantity(item.name, item.quantity, item.unit as "kg" | "unit" | "pack" | "can")}
                       </span>
                       {item.reason && (
                         <span className="item-reason">{item.reason}</span>
