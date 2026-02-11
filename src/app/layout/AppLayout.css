@@ -1,0 +1,23 @@
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-main {
+  flex: 1;
+  padding-bottom: 70px; /* Espaço para navbar mobile */
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+  .app-layout {
+    flex-direction: row;
+  }
+
+  .app-main {
+    flex: 1;
+    margin-left: 80px; /* Espaço para navbar lateral */
+    padding-bottom: 0;
+  }
+}
