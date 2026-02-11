@@ -20,7 +20,6 @@ const FEATURES = {
 export function ShoppingListPage() {
   const navigate = useNavigate();
   const { shoppingList, toggleItemPurchased, weeklyPlan } = useShoppingPlan();
-  const [marketMode, setMarketMode] = useState(false);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [premiumFeatureName, setPremiumFeatureName] = useState("");
 
@@ -91,60 +90,38 @@ export function ShoppingListPage() {
   const totalCount = shoppingList.length;
 
   return (
-    <div className={`shopping-list-page ${marketMode ? "market-mode" : ""}`}>
-      {!marketMode && (
-        <header className="shopping-header">
-          <button className="btn-back" onClick={() => navigate("/")}>
-            ← Voltar
-          </button>
-          <h1>📝 Lista de Compras</h1>
-          
-          {/* FITNESS TARGET + COST */}
-          <div className="plan-summary">
-            <div className="summary-item">
-              <span className="summary-label">🎯 Proteína/dia</span>
-              <span className="summary-value">{proteinPerDay}g</span>
-            </div>
-            <div className="summary-divider"></div>
-            <div className="summary-item">
-              <span className="summary-label">💰 Custo Estimado</span>
-              <span className="summary-value">€{totalCost.toFixed(2)}</span>
-            </div>
+    <div className="shopping-list-page">
+      {/* Sticky Header */}
+      <header className="shopping-header">
+        <div className="header-top">
+          <h1 className="page-title">Shopping List</h1>
+          <div className="header-actions">
+            <span className="items-count">{purchasedCount} / {totalCount} items</span>
           </div>
-
-          <div className="shopping-stats">
-            <span>{purchasedCount} / {totalCount} itens</span>
+        </div>
+        
+        {/* Metrics Bar */}
+        <div className="metrics-bar">
+          <div className="metric">
+            <span className="metric-label">Protein Target</span>
+            <span className="metric-value">{proteinPerDay}g/day</span>
           </div>
-        </header>
-      )}
+          <div className="metric">
+            <span className="metric-label">Total Cost</span>
+            <span className="metric-value">€{totalCost.toFixed(2)}</span>
+          </div>
+          <div className="metric">
+            <span className="metric-label">Progress</span>
+            <span className="metric-value">{Math.round((purchasedCount / totalCount) * 100)}%</span>
+          </div>
+        </div>
+      </header>
 
+      {/* Categories Grid */}
       <main className="shopping-main">
-        {!marketMode && (
-          <div className="market-mode-toggle">
-            <button
-              className="btn-market-mode"
-              onClick={() => setMarketMode(true)}
-            >
-              🛒 Entrar no Modo Mercado
-            </button>
-          </div>
-        )}
-
-        {marketMode && (
-          <div className="market-mode-header">
-            <h2>🛒 Modo Mercado</h2>
-            <button
-              className="btn-exit-market"
-              onClick={() => setMarketMode(false)}
-            >
-              ✕ Sair
-            </button>
-          </div>
-        )}
-
-        <div className="items-container">
+        <div className="categories-grid">
           {sortedCategories.map(([category, items]) => (
-            <div key={category} className="category-section">
+            <div key={category} className="category-card">
               <h3 className="category-title">
                 {categoryLabels[category as FoodCategory]}
               </h3>
@@ -167,7 +144,7 @@ export function ShoppingListPage() {
                         <span className="item-reason">{item.reason}</span>
                       )}
                     </div>
-                    {!marketMode && item.estimatedPrice && (
+                    {item.estimatedPrice && (
                       <div className="item-price">
                         €{item.estimatedPrice.toFixed(2)}
                       </div>
@@ -179,21 +156,15 @@ export function ShoppingListPage() {
           ))}
         </div>
 
-        {!marketMode && (
-          <div className="shopping-actions">
-            <button className="btn-secondary" onClick={() => navigate("/plan")}>
-              Ver Plano Semanal
-            </button>
-            <div className="premium-features">
-              <button className="btn-premium" onClick={handlePdfExport}>
-                📄 Exportar PDF (Premium)
-              </button>
-              <button className="btn-premium" onClick={handleBudgetMode}>
-                💰 Modo Orçamento (Premium)
-              </button>
-            </div>
-          </div>
-        )}
+        {/* Action Buttons */}
+        <div className="shopping-actions">
+          <button className="btn-premium" onClick={handlePdfExport}>
+            📄 Export PDF
+          </button>
+          <button className="btn-premium" onClick={handleBudgetMode}>
+            💰 Budget Breakdown
+          </button>
+        </div>
       </main>
 
       {/* Premium Modal */}

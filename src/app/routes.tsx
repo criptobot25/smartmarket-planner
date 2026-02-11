@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import { AppLayout } from "./layout/AppLayout";
 import { PlannerPage } from "./pages/PlannerPage";
 import { ShoppingListPage } from "./pages/ShoppingListPage";
@@ -18,6 +18,10 @@ export const router = createBrowserRouter([
       {
         path: "list",
         element: <ShoppingListPage />
+      },
+      {
+        path: "plan",
+        element: <Navigate to="/" replace />
       },
       {
         path: "recipes",

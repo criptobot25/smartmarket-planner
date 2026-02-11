@@ -1,20 +1,17 @@
 .app-layout {
   min-height: 100vh;
-  background: linear-gradient(to bottom, #f9fafb 0%, #eef2ff 100%);
+  background: #f9fafb;
 }
 
 .app-main {
-  padding-top: 4.5rem; /* Space for fixed navbar */
-  padding-bottom: 2rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 5rem 1.5rem 2rem;
 }
 
 /* Desktop */
 @media (min-width: 768px) {
   .app-main {
-    padding-top: 5rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
+    padding: 5rem 2rem 2rem;
   }
 }
