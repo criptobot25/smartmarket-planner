@@ -65,6 +65,34 @@ const SUBSTITUTION_GRAPH: Record<string, string[]> = {
 };
 
 /**
+ * DIVERSITY CONSTRAINTS
+ * Prevent monotonous diet (e.g., "tuna only")
+ * Source: Variety increases adherence
+ * https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7071223/
+ */
+const MAX_PROTEIN_SUBSTITUTIONS = 2;
+const MIN_UNIQUE_PROTEINS = 2;
+
+/**
+ * Count unique protein sources in shopping list
+ * Used to prevent diet monotony
+ */
+function countUniqueProteins(items: FoodItem[]): number {
+  const proteinNames = items
+    .filter(item => item.category === "proteins")
+    .map(item => item.name);
+  
+  return new Set(proteinNames).size;
+}
+
+/**
+ * Check if a food item is a protein
+ */
+function isProteinItem(item: FoodItem): boolean {
+  return item.category === "proteins";
+}
+
+/**
  * Calculate protein-per-euro efficiency score for a food item
  * Higher score = better value for money in terms of protein
  */
@@ -137,6 +165,12 @@ export function optimizeBudget(
   let currentProtein = initialProtein;
   const substitutionsApplied: SubstitutionRecord[] = [];
   
+  // Diversity tracking
+  let proteinSubstitutionCount = 0;
+  const initialUniqueProteins = countUniqueProteins(items);
+  
+  console.log(`🍗 Initial protein variety: ${initialUniqueProteins} different sources`);
+  
   // Calculate protein-per-euro scores for all items
   const itemScores = optimizedItems.map(item => ({
     item,
@@ -151,6 +185,15 @@ export function optimizeBudget(
     // Stop if we're within budget
     if (currentCost <= weeklyBudget) {
       break;
+    }
+    
+    // Check if this is a protein substitution
+    const isProteinSubstitution = isProteinItem(item);
+    
+    // DIVERSITY CONSTRAINT 1: Limit protein substitutions
+    if (isProteinSubstitution && proteinSubstitutionCount >= MAX_PROTEIN_SUBSTITUTIONS) {
+      console.log(`⚠️ Skipping ${item.name}: Max protein substitutions (${MAX_PROTEIN_SUBSTITUTIONS}) reached`);
+      continue;
     }
     
     // Check if this item has substitutes
@@ -170,15 +213,20 @@ export function optimizeBudget(
       continue;
     }
     
+    // Find item index
+    const itemIndex = optimizedItems.findIndex(i => i.id === item.id);
+    
+    if (itemIndex === -1) continue;
+    
+    // DIVERSITY CONSTRAINT 2: Snapshot before protein substitution
+    const snapshotBeforeSubstitution = isProteinSubstitution 
+      ? structuredClone(optimizedItems) 
+      : null;
+    
     // Calculate protein impact
     const originalProtein = item.quantity * (item.macros?.protein || 0) * 10;
     const newProtein = item.quantity * (substitute.macros?.protein || 0) * 10;
     const proteinImpact = newProtein - originalProtein;
-    
-    // Find item index and replace it
-    const itemIndex = optimizedItems.findIndex(i => i.id === item.id);
-    
-    if (itemIndex === -1) continue;
     
     // Create substituted item
     const substitutedItem: FoodItem = {
@@ -191,6 +239,22 @@ export function optimizeBudget(
     
     // Apply substitution
     optimizedItems[itemIndex] = substitutedItem;
+    
+    // DIVERSITY CONSTRAINT 3: Validate protein variety
+    if (isProteinSubstitution) {
+      const uniqueProteinsAfter = countUniqueProteins(optimizedItems);
+      
+      if (uniqueProteinsAfter < MIN_UNIQUE_PROTEINS) {
+        // ROLLBACK: This would reduce variety below minimum
+        console.log(`⚠️ Rollback ${item.name} → ${substitute.name}: Would reduce variety to ${uniqueProteinsAfter} proteins`);
+        optimizedItems = snapshotBeforeSubstitution!;
+        break; // Stop optimization, can't meet budget without killing variety
+      }
+      
+      proteinSubstitutionCount++;
+    }
+    
+    // Update cost and protein
     currentCost -= savings;
     currentProtein += proteinImpact;
     
@@ -209,6 +273,7 @@ export function optimizeBudget(
   // Determine final budget status
   let budgetStatus: BudgetStatus;
   const proteinChange = currentProtein - initialProtein;
+  const finalUniqueProteins = countUniqueProteins(optimizedItems);
   
   if (currentCost <= weeklyBudget) {
     budgetStatus = "adjusted_to_fit";
@@ -216,10 +281,16 @@ export function optimizeBudget(
   } else {
     budgetStatus = "over_budget_minimum";
     console.log(`⚠️ Still over budget: €${currentCost.toFixed(2)} > €${weeklyBudget.toFixed(2)}`);
-    console.log(`This is the minimum cost with available substitutions.`);
+    
+    if (finalUniqueProteins >= MIN_UNIQUE_PROTEINS) {
+      console.log(`This is the minimum cost with available substitutions.`);
+    } else {
+      console.log(`Cannot fit budget without reducing variety below ${MIN_UNIQUE_PROTEINS} proteins.`);
+    }
   }
   
   console.log(`💪 Protein: ${currentProtein.toFixed(0)}g (${proteinChange >= 0 ? '+' : ''}${proteinChange.toFixed(0)}g)`);
+  console.log(`🍗 Protein variety: ${finalUniqueProteins} different sources`);
   console.log(`📊 Efficiency: ${(currentProtein / currentCost).toFixed(2)}g protein per euro`);
   
   return {

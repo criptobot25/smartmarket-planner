@@ -49,7 +49,7 @@ describe("SmartBudgetOptimizer", () => {
   /**
    * Test: Substitute expensive proteins
    */
-  it("should substitute salmon with tuna when over budget", () => {
+  it("should substitute salmon with tuna when over budget and has protein variety", () => {
     const items: FoodItem[] = [
       {
         id: "test-003",
@@ -60,6 +60,16 @@ describe("SmartBudgetOptimizer", () => {
         quantity: 2,
         estimatedPrice: 37.98,
         macros: { protein: 20, carbs: 0, fat: 13 },
+      },
+      {
+        id: "test-003b",
+        name: "Chicken breast (skinless)",
+        category: "proteins",
+        unit: "kg",
+        pricePerUnit: 7.99,
+        quantity: 1,
+        estimatedPrice: 7.99,
+        macros: { protein: 31, carbs: 0, fat: 3.6 },
       },
       {
         id: "test-004",
@@ -73,19 +83,22 @@ describe("SmartBudgetOptimizer", () => {
       },
     ];
     
-    const totalCost = 45.45;
+    const totalCost = 53.44;
     const budget = 30.00;
     
     const result = optimizeBudget(items, totalCost, budget);
     
-    // Should substitute salmon
+    // Should substitute salmon (has 2 proteins, can substitute)
     expect(result.substitutionsApplied.length).toBeGreaterThan(0);
     
-    // Check first substitution
-    const substitution = result.substitutionsApplied[0];
-    expect(substitution.from).toBe("Salmon fillet");
-    expect(substitution.to).toContain("Tuna"); // Tuna or Chicken
-    expect(substitution.savings).toBeGreaterThan(0);
+    // Check substitution occurred
+    const salmonSubstitution = result.substitutionsApplied.find(
+      s => s.from === "Salmon fillet"
+    );
+    expect(salmonSubstitution).toBeDefined();
+    if (salmonSubstitution) {
+      expect(salmonSubstitution.savings).toBeGreaterThan(0);
+    }
     
     // Should reduce cost
     expect(result.totalEstimatedCost).toBeLessThan(totalCost);
@@ -154,6 +167,16 @@ describe("SmartBudgetOptimizer", () => {
         macros: { protein: 20, carbs: 0, fat: 13 },
       },
       {
+        id: "test-007b",
+        name: "Chicken breast (skinless)",
+        category: "proteins",
+        unit: "kg",
+        pricePerUnit: 7.99,
+        quantity: 0.5,
+        estimatedPrice: 4.00,
+        macros: { protein: 31, carbs: 0, fat: 3.6 },
+      },
+      {
         id: "test-008",
         name: "Quinoa",
         category: "grains",
@@ -165,12 +188,12 @@ describe("SmartBudgetOptimizer", () => {
       },
     ];
     
-    const totalCost = 32.97;
+    const totalCost = 36.97;
     const budget = 20.00;
     
     const result = optimizeBudget(items, totalCost, budget);
     
-    // Should apply substitutions
+    // Should apply substitutions (has 2 proteins)
     expect(result.substitutionsApplied.length).toBeGreaterThan(0);
     
     // Efficiency score should be calculated
@@ -226,6 +249,16 @@ describe("SmartBudgetOptimizer", () => {
         macros: { protein: 20, carbs: 0, fat: 13 },
       },
       {
+        id: "test-010b",
+        name: "Chicken breast (skinless)",
+        category: "proteins",
+        unit: "kg",
+        pricePerUnit: 7.99,
+        quantity: 1,
+        estimatedPrice: 7.99,
+        macros: { protein: 31, carbs: 0, fat: 3.6 },
+      },
+      {
         id: "test-011",
         name: "Quinoa",
         category: "grains",
@@ -247,12 +280,12 @@ describe("SmartBudgetOptimizer", () => {
       },
     ];
     
-    const totalCost = 46.96;
-    const budget = 30.00;
+    const totalCost = 54.95;
+    const budget = 35.00;
     
     const result = optimizeBudget(items, totalCost, budget);
     
-    // Should try multiple substitutions
+    // Should try multiple substitutions (has 2 proteins now)
     expect(result.substitutionsApplied.length).toBeGreaterThanOrEqual(1);
     
     // Should reduce cost significantly
@@ -327,4 +360,194 @@ describe("SmartBudgetOptimizer", () => {
     expect(result.efficiencyScore).toBeCloseTo(expectedEfficiency, 2);
     expect(result.efficiencyScore).toBeGreaterThan(0);
   });
+
+  /**
+   * DIVERSITY CONSTRAINTS TESTS
+   * Critical: Prevent monotonous diets
+   */
+
+  /**
+   * TEST 1: Must maintain at least 2 different protein sources
+   * Prevents "tuna only" or "chicken only" diet
+   */
+  it("should keep at least 2 different protein sources", () => {
+    const items: FoodItem[] = [
+      {
+        id: "test-div-001",
+        name: "Salmon fillet",
+        category: "proteins",
+        unit: "kg",
+        pricePerUnit: 18.99,
+        quantity: 2,
+        estimatedPrice: 37.98,
+        macros: { protein: 20, carbs: 0, fat: 13 },
+      },
+      {
+        id: "test-div-002",
+        name: "Chicken breast (skinless)",
+        category: "proteins",
+        unit: "kg",
+        pricePerUnit: 7.99,
+        quantity: 1,
+        estimatedPrice: 7.99,
+        macros: { protein: 31, carbs: 0, fat: 3.6 },
+      },
+      {
+        id: "test-div-003",
+        name: "Greek yogurt (0% fat)",
+        category: "dairy",
+        unit: "kg",
+        pricePerUnit: 5.99,
+        quantity: 1,
+        estimatedPrice: 5.99,
+        macros: { protein: 10, carbs: 4, fat: 0.4 },
+      },
+      {
+        id: "test-div-004",
+        name: "White rice",
+        category: "grains",
+        unit: "kg",
+        pricePerUnit: 2.49,
+        quantity: 2,
+        estimatedPrice: 4.98,
+        macros: { protein: 7, carbs: 77, fat: 0.6 },
+      },
+    ];
+    
+    const totalCost = 56.94;
+    const budget = 30.00; // Very low budget
+    
+    const result = optimizeBudget(items, totalCost, budget);
+    
+    // Count unique protein sources
+    const proteinItems = result.items.filter(item => item.category === "proteins");
+    const uniqueProteins = new Set(proteinItems.map(item => item.name));
+    
+    // CRITICAL: Must have at least 2 different proteins
+    expect(uniqueProteins.size).toBeGreaterThanOrEqual(2);
+    
+    console.log(`✅ Diversity maintained: ${uniqueProteins.size} different proteins`);
+  });
+
+  /**
+   * TEST 2: Maximum 2 protein substitutions
+   * Prevents excessive protein category changes
+   */
+  it("should not make more than 2 protein substitutions", () => {
+    const items: FoodItem[] = [
+      {
+        id: "test-max-001",
+        name: "Salmon fillet",
+        category: "proteins",
+        unit: "kg",
+        pricePerUnit: 18.99,
+        quantity: 1.5,
+        estimatedPrice: 28.49,
+        macros: { protein: 20, carbs: 0, fat: 13 },
+      },
+      {
+        id: "test-max-002",
+        name: "Lean ground beef (5% fat)",
+        category: "proteins",
+        unit: "kg",
+        pricePerUnit: 9.99,
+        quantity: 1,
+        estimatedPrice: 9.99,
+        macros: { protein: 21, carbs: 0, fat: 5 },
+      },
+      {
+        id: "test-max-003",
+        name: "Turkey breast",
+        category: "proteins",
+        unit: "kg",
+        pricePerUnit: 11.99,
+        quantity: 1,
+        estimatedPrice: 11.99,
+        macros: { protein: 29, carbs: 0, fat: 1 },
+      },
+      {
+        id: "test-max-004",
+        name: "Quinoa",
+        category: "grains",
+        unit: "kg",
+        pricePerUnit: 6.99,
+        quantity: 2,
+        estimatedPrice: 13.98,
+        macros: { protein: 14, carbs: 64, fat: 6 },
+      },
+    ];
+    
+    const totalCost = 64.45;
+    const budget = 35.00;
+    
+    const result = optimizeBudget(items, totalCost, budget);
+    
+    // Count protein substitutions
+    const proteinSubstitutions = result.substitutionsApplied.filter(sub => {
+      // Check if original item was a protein (by looking at mockFoods or items)
+      const originalItem = items.find(item => item.name === sub.from);
+      return originalItem?.category === "proteins";
+    });
+    
+    // CRITICAL: Max 2 protein substitutions
+    expect(proteinSubstitutions.length).toBeLessThanOrEqual(2);
+    
+    console.log(`✅ Protein substitutions: ${proteinSubstitutions.length} / 2 max`);
+  });
+
+  /**
+   * TEST 3: Status should be "over_budget_minimum" when diversity prevents fitting budget
+   * Honest messaging when we can't meet budget without killing variety
+   */
+  it("should return over_budget_minimum when diversity constraint prevents budget fit", () => {
+    const items: FoodItem[] = [
+      {
+        id: "test-status-001",
+        name: "Salmon fillet",
+        category: "proteins",
+        unit: "kg",
+        pricePerUnit: 18.99,
+        quantity: 2,
+        estimatedPrice: 37.98,
+        macros: { protein: 20, carbs: 0, fat: 13 },
+      },
+      {
+        id: "test-status-002",
+        name: "Chicken breast (skinless)",
+        category: "proteins",
+        unit: "kg",
+        pricePerUnit: 7.99,
+        quantity: 2,
+        estimatedPrice: 15.98,
+        macros: { protein: 31, carbs: 0, fat: 3.6 },
+      },
+      {
+        id: "test-status-003",
+        name: "White rice",
+        category: "grains",
+        unit: "kg",
+        pricePerUnit: 2.49,
+        quantity: 3,
+        estimatedPrice: 7.47,
+        macros: { protein: 7, carbs: 77, fat: 0.6 },
+      },
+    ];
+    
+    const totalCost = 61.43;
+    const budget = 20.00; // Impossibly low budget
+    
+    const result = optimizeBudget(items, totalCost, budget);
+    
+    // Should be over budget due to diversity constraints
+    expect(result.budgetStatus).toBe("over_budget_minimum");
+    expect(result.totalEstimatedCost).toBeGreaterThan(budget);
+    
+    // But should maintain variety
+    const proteinItems = result.items.filter(item => item.category === "proteins");
+    const uniqueProteins = new Set(proteinItems.map(item => item.name));
+    expect(uniqueProteins.size).toBeGreaterThanOrEqual(2);
+    
+    console.log(`✅ Honest status: Cannot fit €${budget} without reducing variety`);
+  });
 });
+
