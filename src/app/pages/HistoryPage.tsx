@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useShoppingPlan } from "../../contexts/ShoppingPlanContext";
-import { WeeklyPlan } from "../../core/models/WeeklyPlan";
 import "./HistoryPage.css";
 
 export function HistoryPage() {
@@ -23,7 +22,7 @@ export function HistoryPage() {
     }
   };
 
-  const handleLoadPlan = (plan: WeeklyPlan) => {
+  const handleLoadPlan = () => {
     // Navega para a lista de compras do plano selecionado
     // O plano já está salvo, então podemos navegar diretamente
     navigate("/list");
@@ -121,7 +120,7 @@ export function HistoryPage() {
                   <div className="plan-actions">
                     <button
                       className="btn-load-plan"
-                      onClick={() => handleLoadPlan(plan)}
+                      onClick={handleLoadPlan}
                     >
                       Carregar Plano
                     </button>

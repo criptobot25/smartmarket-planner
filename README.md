@@ -1,11 +1,14 @@
 # 🛒 SmartMarket Planner
 
-> Planeje suas refeições semanais, economize dinheiro e elimine desperdício de alimentos.
+**SmartMarket Planner helps busy people eat healthier and spend less by generating weekly grocery plans automatically.**
 
+[![Live Demo](https://img.shields.io/badge/🚀-Live%20Demo-success)](https://smartmarket-planner.vercel.app)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
 ![React](https://img.shields.io/badge/React-18.0-61dafb)
 ![Vite](https://img.shields.io/badge/Vite-5.0-646cff)
+
+> **📸 [View Screenshots](#-screenshots) | 💰 [Pricing](#-pricing) | 🚀 [Try it Now](https://smartmarket-planner.vercel.app)**
 
 ---
 
@@ -26,6 +29,18 @@ O **SmartMarket Planner** automatiza completamente o planejamento semanal de ref
 3. **Lista inteligente**: Ingredientes consolidados por categoria
 4. **Modo Mercado**: Interface otimizada para usar durante as compras
 5. **Histórico**: Últimos 3 planos salvos para reutilização
+
+---
+
+## 📸 Screenshots
+
+> 🚧 **Coming soon** - Screenshots will be added after first production deployment.
+
+<!-- 
+![Home Screen](docs/screenshots/home.png)
+![Shopping List](docs/screenshots/shopping-list.png)
+![Market Mode](docs/screenshots/market-mode.png)
+-->
 
 ---
 
@@ -140,9 +155,26 @@ src/
 
 ---
 
-## 💰 Monetização (Premium Features)
+## 💰 Pricing
 
-### Plano Premium - R$ 9,90/mês
+### Free Plan
+- ✅ Weekly meal planning (7 days)
+- ✅ Smart shopping list
+- ✅ Recipe suggestions
+- ✅ History (last 3 plans)
+- ✅ Market mode
+
+### Premium - €4.99/month
+- ✅ Everything in Free
+- ✅ Export to PDF
+- ✅ Budget optimizer
+- ✅ Macro calculator (fitness)
+- ✅ Unlimited history
+- ✅ Priority support
+
+**🔥 Coming Soon** - Join the waitlist at [/premium](https://smartmarket-planner.vercel.app/premium)
+
+### Premium Features (Technical Details)
 
 Feature flags já preparadas em `src/core/config/features.ts`:
 

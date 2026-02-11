@@ -4,6 +4,7 @@ import { PlannerPage } from "./pages/PlannerPage";
 import { ShoppingListPage } from "./pages/ShoppingListPage";
 import { RecipesPage } from "./pages/RecipesPage";
 import { HistoryPage } from "./pages/HistoryPage";
+import { PremiumPage } from "./pages/PremiumPage";
 
 export const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ export const router = createBrowserRouter([
       {
         path: "history",
         element: <HistoryPage />
+      },
+      {
+        path: "premium",
+        element: <PremiumPage />
       }
     ]
   }

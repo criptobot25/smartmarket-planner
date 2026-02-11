@@ -49,6 +49,16 @@
   font-size: 0.75rem;
 }
 
+.premium-nav.active {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 237, 78, 0.2) 100%);
+  color: #ffd700;
+}
+
+.premium-nav:hover {
+  color: #ffd700;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 237, 78, 0.1) 100%);
+}
+
 /* Desktop: navbar lateral */
 @media (min-width: 768px) {
   .navbar {

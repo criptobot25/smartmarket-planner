@@ -23,6 +23,11 @@ export function Navbar() {
         <span className="nav-icon">📚</span>
         <span className="nav-label">Histórico</span>
       </NavLink>
+
+      <NavLink to="/premium" className="nav-link premium-nav">
+        <span className="nav-icon">✨</span>
+        <span className="nav-label">Premium</span>
+      </NavLink>
     </nav>
   );
 }

@@ -1,6 +1,6 @@
 import { PlanInput } from "../models/PlanInput";
 import { WeeklyPlan, DayOfWeek, DayPlan, DayMeals } from "../models/WeeklyPlan";
-import { Recipe, MealType } from "../models/Recipe";
+import { Recipe } from "../models/Recipe";
 import { mockRecipes } from "../../data/mockRecipes";
 
 /**

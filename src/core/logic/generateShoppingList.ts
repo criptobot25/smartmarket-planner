@@ -1,6 +1,6 @@
 import { WeeklyPlan } from "../models/WeeklyPlan";
 import { FoodItem, FoodCategory } from "../models/FoodItem";
-import { Recipe, RecipeIngredient } from "../models/Recipe";
+import { Recipe } from "../models/Recipe";
 import { mockFoods } from "../../data/mockFoods";
 import { adjustIngredientQuantity } from "./calculateQuantities";
 

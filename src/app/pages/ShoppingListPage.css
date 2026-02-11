@@ -165,8 +165,14 @@
 
 .shopping-actions {
   display: flex;
+  flex-direction: column;
   gap: 1rem;
   margin-top: 2rem;
+}
+
+.premium-features {
+  display: flex;
+  gap: 0.75rem;
 }
 
 .btn-secondary {
@@ -185,6 +191,25 @@
 .btn-secondary:hover {
   background: #667eea;
   color: white;
+}
+
+.btn-premium {
+  flex: 1;
+  padding: 1rem;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  color: #333;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+}
+
+.btn-premium:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.5);
 }
 
 .empty-state {

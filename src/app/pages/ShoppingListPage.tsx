@@ -135,6 +135,14 @@ export function ShoppingListPage() {
             <button className="btn-secondary" onClick={() => navigate("/plan")}>
               Ver Plano Semanal
             </button>
+            <div className="premium-features">
+              <button className="btn-premium" onClick={() => alert("🔒 Premium - Em breve! Cadastre-se na lista de espera.")}>
+                📄 Exportar PDF (Premium)
+              </button>
+              <button className="btn-premium" onClick={() => alert("🔒 Premium - Em breve! Cadastre-se na lista de espera.")}>
+                💰 Modo Orçamento (Premium)
+              </button>
+            </div>
           </div>
         )}
       </main>
