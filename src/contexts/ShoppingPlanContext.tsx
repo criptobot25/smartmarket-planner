@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useEffect, ReactNode } from "react";
 import { PlanInput } from "../core/models/PlanInput";
 import { WeeklyPlan } from "../core/models/WeeklyPlan";
 import { FoodItem } from "../core/models/FoodItem";
@@ -38,6 +38,45 @@ export function ShoppingPlanProvider({ children }: ShoppingPlanProviderProps) {
   const [shoppingList, setShoppingList] = useState<FoodItem[]>([]);
   const [recipeSuggestions, setRecipeSuggestions] = useState<Recipe[]>([]);
   const [history, setHistory] = useState<WeeklyPlan[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  /**
+   * Carrega o último plano salvo ao iniciar o app (executa apenas uma vez)
+   */
+  useEffect(() => {
+    if (!isInitialized) {
+      console.log("🔄 Inicializando app - carregando dados do LocalStorage...");
+      
+      try {
+        // Carrega histórico
+        const loadedHistory = loadHistoryFromStorage();
+        setHistory(loadedHistory);
+        console.log("📚 Histórico carregado:", loadedHistory.length, "planos");
+
+        // Carrega o último plano salvo
+        const latestPlan = loadLatestPlan();
+        
+        if (latestPlan) {
+          console.log("📥 Último plano encontrado:", latestPlan.id);
+          setWeeklyPlan(latestPlan);
+          setCurrentInput(latestPlan.planInput);
+          setShoppingList(latestPlan.shoppingList);
+          
+          // Gera sugestões baseadas na lista salva
+          const suggestions = suggestRecipes(latestPlan.shoppingList);
+          setRecipeSuggestions(suggestions);
+          
+          console.log("✅ Estado restaurado do LocalStorage");
+        } else {
+          console.log("ℹ️ Nenhum plano salvo encontrado - novo usuário");
+        }
+      } catch (error) {
+        console.error("❌ Erro ao carregar dados iniciais:", error);
+      } finally {
+        setIsInitialized(true);
+      }
+    }
+  }, [isInitialized]);
 
   /**
    * Gera um plano completo baseado no input do usuário
@@ -117,24 +156,12 @@ export function ShoppingPlanProvider({ children }: ShoppingPlanProviderProps) {
     try {
       const loadedHistory = loadHistoryFromStorage();
       setHistory(loadedHistory);
-
-      // Se não houver plano atual, carrega o mais recente
-      if (!weeklyPlan && loadedHistory.length > 0) {
-        const latestPlan = loadedHistory[0];
-        setWeeklyPlan(latestPlan);
-        setCurrentInput(latestPlan.planInput);
-        setShoppingList(latestPlan.shoppingList);
-        
-        const suggestions = suggestRecipes(latestPlan.shoppingList);
-        setRecipeSuggestions(suggestions);
-        
-        console.log("📥 Plano mais recente carregado do histórico");
-      }
+      console.log("📚 Histórico recarregado:", loadedHistory.length, "planos");
     } catch (error) {
       console.error("❌ Erro ao carregar histórico:", error);
       setHistory([]);
     }
-  }, [weeklyPlan]);
+  }, []);
 
   /**
    * Limpa todo o histórico de planos

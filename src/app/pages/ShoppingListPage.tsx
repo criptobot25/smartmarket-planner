@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useShoppingPlan } from "../../contexts/ShoppingPlanContext";
 import { FoodItem, FoodCategory } from "../../core/models/FoodItem";
@@ -11,16 +11,8 @@ interface ShoppingItem extends FoodItem {
 
 export function ShoppingListPage() {
   const navigate = useNavigate();
-  const { shoppingList, toggleItemPurchased, weeklyPlan, loadHistory } = useShoppingPlan();
+  const { shoppingList, toggleItemPurchased, weeklyPlan } = useShoppingPlan();
   const [marketMode, setMarketMode] = useState(false);
-
-  // Tenta carregar do histórico se não houver plano atual
-  useEffect(() => {
-    if (!weeklyPlan || shoppingList.length === 0) {
-      console.log("📥 Tentando carregar plano do histórico...");
-      loadHistory();
-    }
-  }, [weeklyPlan, shoppingList, loadHistory]);
 
   // Se não houver lista, redireciona para home
   if (!weeklyPlan || shoppingList.length === 0) {
