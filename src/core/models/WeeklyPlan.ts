@@ -43,4 +43,15 @@ export interface WeeklyPlan {
   totalCost: number; // Original cost from weekly plan generation
   budgetAdjustedCost: number; // Final cost after budget adjustments
   proteinPerDay: number;  // Protein target in grams per person per day
+  // Budget optimization data
+  totalProtein?: number; // Total protein in shopping list (grams)
+  efficiencyScore?: number; // Protein per euro
+  budgetStatus?: 'within_budget' | 'adjusted_to_fit' | 'over_budget_minimum';
+  substitutionsApplied?: Array<{
+    from: string;
+    to: string;
+    reason: string;
+    savings: number;
+    proteinImpact: number;
+  }>;
 }

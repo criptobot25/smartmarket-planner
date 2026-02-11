@@ -90,6 +90,14 @@ export function ShoppingListPage() {
   const purchasedCount = shoppingList.filter(item => (item as ShoppingItem).purchased).length;
   const totalCount = shoppingList.length;
 
+  // Budget optimization data
+  const budgetStatus = weeklyPlan.budgetStatus;
+  const substitutionsApplied = weeklyPlan.substitutionsApplied || [];
+  const efficiencyScore = weeklyPlan.efficiencyScore || 0;
+  const originalBudget = weeklyPlan.planInput.budget;
+  const totalSavings = substitutionsApplied.reduce((sum, sub) => sum + sub.savings, 0);
+  const hasOptimizations = substitutionsApplied.length > 0;
+
   return (
     <div className="shopping-list-page">
       {/* Sticky Header */}
@@ -117,6 +125,72 @@ export function ShoppingListPage() {
           </div>
         </div>
       </header>
+
+      {/* Budget Transparency Box */}
+      {hasOptimizations && (
+        <div className="budget-transparency">
+          <div className="budget-transparency-header">
+            <div className="budget-status">
+              {budgetStatus === 'adjusted_to_fit' && (
+                <>
+                  <span className="status-icon">✅</span>
+                  <span className="status-text">Adjusted to fit €{originalBudget.toFixed(2)} budget</span>
+                </>
+              )}
+              {budgetStatus === 'over_budget_minimum' && (
+                <>
+                  <span className="status-icon">⚠️</span>
+                  <span className="status-text">Optimized to minimum cost (budget: €{originalBudget.toFixed(2)})</span>
+                </>
+              )}
+              {budgetStatus === 'within_budget' && (
+                <>
+                  <span className="status-icon">💚</span>
+                  <span className="status-text">Within budget</span>
+                </>
+              )}
+            </div>
+          </div>
+
+          <div className="budget-metrics">
+            <div className="budget-metric">
+              <span className="metric-icon">💰</span>
+              <div className="metric-content">
+                <span className="metric-label">Saved</span>
+                <span className="metric-value">€{totalSavings.toFixed(2)}/week</span>
+              </div>
+            </div>
+            <div className="budget-metric">
+              <span className="metric-icon">📊</span>
+              <div className="metric-content">
+                <span className="metric-label">Protein efficiency</span>
+                <span className="metric-value">{efficiencyScore.toFixed(1)}g/€</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="substitutions-list">
+            <h4 className="substitutions-title">Smart substitutions:</h4>
+            <ul className="substitutions-items">
+              {substitutionsApplied.map((sub, index) => (
+                <li key={index} className="substitution-item">
+                  <span className="substitution-foods">
+                    {sub.from} → {sub.to}
+                  </span>
+                  <span className="substitution-impact">
+                    {sub.savings > 0 && `€${sub.savings.toFixed(2)}`}
+                    {sub.proteinImpact !== 0 && (
+                      <span className={sub.proteinImpact > 0 ? "protein-gain" : "protein-loss"}>
+                        {sub.proteinImpact > 0 ? '+' : ''}{sub.proteinImpact.toFixed(0)}g
+                      </span>
+                    )}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
 
       {/* Categories Grid */}
       <main className="shopping-main">

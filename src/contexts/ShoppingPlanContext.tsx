@@ -120,7 +120,11 @@ export function ShoppingPlanProvider({ children }: ShoppingPlanProviderProps) {
       const completePlan: WeeklyPlan = {
         ...plan,
         shoppingList: items,
-        budgetAdjustedCost: totalEstimatedCost // ✅ Cost after budget adjustments
+        budgetAdjustedCost: totalEstimatedCost, // ✅ Cost after budget adjustments
+        totalProtein,
+        efficiencyScore,
+        budgetStatus,
+        substitutionsApplied
       };
 
       // Gera sugestões de receitas baseadas na lista

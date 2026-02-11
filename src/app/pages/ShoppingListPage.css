@@ -65,6 +65,137 @@
   color: #4f46e5;
 }
 
+/* Budget Transparency Box */
+.budget-transparency {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border: 2px solid #059669;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 16px rgba(5, 150, 105, 0.1);
+}
+
+.budget-transparency-header {
+  margin-bottom: 1rem;
+}
+
+.budget-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-icon {
+  font-size: 1.5rem;
+}
+
+.status-text {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #065f46;
+}
+
+.budget-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 0.75rem;
+}
+
+.budget-metric {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.metric-icon {
+  font-size: 1.5rem;
+}
+
+.metric-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.budget-metric .metric-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.budget-metric .metric-value {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #059669;
+}
+
+.substitutions-list {
+  margin-top: 1rem;
+}
+
+.substitutions-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #065f46;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.substitutions-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.substitution-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: white;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.substitution-foods {
+  font-weight: 500;
+  color: #111827;
+}
+
+.substitution-impact {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: #059669;
+}
+
+.protein-gain {
+  color: #059669;
+  background: #d1fae5;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+}
+
+.protein-loss {
+  color: #dc2626;
+  background: #fee2e2;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+}
+
 /* Categories Grid */
 .shopping-main {
   margin-bottom: 2rem;
@@ -269,5 +400,15 @@
 
   .shopping-actions {
     flex-direction: column;
+  }
+
+  .budget-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .substitution-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
 }
