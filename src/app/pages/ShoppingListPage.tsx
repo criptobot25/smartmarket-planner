@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useShoppingPlan } from "../../contexts/ShoppingPlanContext";
 import { FoodItem, FoodCategory } from "../../core/models/FoodItem";
 import { formatQuantity } from "../../core/utils/formatQuantity";
+import { exportShoppingListPdf } from "../../core/export/exportShoppingListPdf";
+import { PremiumModal } from "../components/PremiumModal";
 import "./ShoppingListPage.css";
 
 // Extensão do FoodItem para incluir purchased
@@ -10,10 +12,39 @@ interface ShoppingItem extends FoodItem {
   purchased?: boolean;
 }
 
+// Feature flags
+const FEATURES = {
+  premiumPdfExport: false, // Set to true to enable PDF export
+};
+
 export function ShoppingListPage() {
   const navigate = useNavigate();
   const { shoppingList, toggleItemPurchased, weeklyPlan } = useShoppingPlan();
   const [marketMode, setMarketMode] = useState(false);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const [premiumFeatureName, setPremiumFeatureName] = useState("");
+
+  // Handler for PDF export
+  const handlePdfExport = () => {
+    if (!FEATURES.premiumPdfExport) {
+      setPremiumFeatureName("PDF Export");
+      setShowPremiumModal(true);
+      return;
+    }
+
+    if (weeklyPlan) {
+      exportShoppingListPdf(shoppingList, {
+        proteinTarget: weeklyPlan.proteinPerDay,
+        totalCost: weeklyPlan.totalCost,
+      });
+    }
+  };
+
+  // Handler for Budget Mode (Premium)
+  const handleBudgetMode = () => {
+    setPremiumFeatureName("Budget Breakdown");
+    setShowPremiumModal(true);
+  };
 
   // Se não houver lista, redireciona para home
   if (!weeklyPlan || shoppingList.length === 0) {
@@ -154,16 +185,23 @@ export function ShoppingListPage() {
               Ver Plano Semanal
             </button>
             <div className="premium-features">
-              <button className="btn-premium" onClick={() => alert("🔒 Premium - Em breve! Cadastre-se na lista de espera.")}>
+              <button className="btn-premium" onClick={handlePdfExport}>
                 📄 Exportar PDF (Premium)
               </button>
-              <button className="btn-premium" onClick={() => alert("🔒 Premium - Em breve! Cadastre-se na lista de espera.")}>
+              <button className="btn-premium" onClick={handleBudgetMode}>
                 💰 Modo Orçamento (Premium)
               </button>
             </div>
           </div>
         )}
       </main>
+
+      {/* Premium Modal */}
+      <PremiumModal
+        isOpen={showPremiumModal}
+        onClose={() => setShowPremiumModal(false)}
+        featureName={premiumFeatureName}
+      />
     </div>
   );
 }
