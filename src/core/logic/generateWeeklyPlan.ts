@@ -1,5 +1,6 @@
 import { PlanInput } from "../models/PlanInput";
 import { WeeklyPlan, DayOfWeek, DayPlan, DayMeals, Meal } from "../models/WeeklyPlan";
+import { mockFoods } from "../../data/mockFoods";
 
 /**
  * FITNESS-FIRST WEEKLY PLAN GENERATOR
@@ -50,8 +51,14 @@ function calculateProteinTarget(input: PlanInput): number {
 /**
  * Define os meal templates fixos baseados no fitness goal
  * CORREÇÃO 4: Snack obrigatório em bulking
+ * 
+ * @param goal Fitness goal
+ * @param excludedFoods List of food names to exclude (e.g., ["tuna", "salmon"])
  */
-function getMealTemplates(goal: "cutting" | "maintenance" | "bulking"): {
+function getMealTemplates(
+  goal: "cutting" | "maintenance" | "bulking",
+  excludedFoods: string[] = []
+): {
   breakfasts: MealTemplate[];
   lunches: MealTemplate[];
   dinners: MealTemplate[];
@@ -171,7 +178,34 @@ function getMealTemplates(goal: "cutting" | "maintenance" | "bulking"): {
       ]
     : [];
 
-  return { breakfasts, lunches, dinners, snacks };
+  // Filter out meals containing excluded foods
+  const filterMealsByExclusions = (meals: MealTemplate[]): MealTemplate[] => {
+    if (excludedFoods.length === 0) return meals;
+    
+    return meals.filter(meal => {
+      // Get food names from foodIds
+      const foodNames = meal.foodIds
+        .map(id => mockFoods.find(f => f.id === id)?.name)
+        .filter((name): name is string => name !== undefined);
+      
+      // Check if any excluded food is in this meal
+      const hasExcludedFood = foodNames.some(name => excludedFoods.includes(name));
+      
+      return !hasExcludedFood;
+    });
+  };
+
+  const filteredBreakfasts = filterMealsByExclusions(breakfasts);
+  const filteredLunches = filterMealsByExclusions(lunches);
+  const filteredDinners = filterMealsByExclusions(dinners);
+  const filteredSnacks = filterMealsByExclusions(snacks);
+
+  return { 
+    breakfasts: filteredBreakfasts.length > 0 ? filteredBreakfasts : breakfasts,
+    lunches: filteredLunches.length > 0 ? filteredLunches : lunches,
+    dinners: filteredDinners.length > 0 ? filteredDinners : dinners,
+    snacks: filteredSnacks.length > 0 ? filteredSnacks : snacks
+  };
 }
 
 /**
@@ -190,7 +224,7 @@ export function generateWeeklyPlan(input: PlanInput): WeeklyPlan {
 
   const goal = input.fitnessGoal || "maintenance";
   const proteinTarget = calculateProteinTarget(input);
-  const templates = getMealTemplates(goal);
+  const templates = getMealTemplates(goal, input.excludedFoods || []);
 
   // Padrão de repetição semanal (meal prep real)
   // Segunda: Breakfast A, Lunch A, Dinner A

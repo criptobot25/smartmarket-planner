@@ -8,4 +8,5 @@ export interface PlanInput {
   restrictions: string[];
   fitnessGoal?: FitnessGoal;
   proteinTargetPerDay?: number;  // grams per person per day
+  excludedFoods?: string[];      // Food names to exclude (e.g., ["tuna", "salmon"] for no fish)
 }

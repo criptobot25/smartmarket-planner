@@ -135,7 +135,8 @@ function findBestSubstitute(
 export function optimizeBudget(
   items: FoodItem[],
   totalCost: number,
-  weeklyBudget: number
+  weeklyBudget: number,
+  excludedFoods: string[] = []
 ): OptimizationResult {
   // Calculate initial metrics
   const initialProtein = items.reduce((sum, item) => {
@@ -201,6 +202,12 @@ export function optimizeBudget(
     
     if (!substitute) {
       continue; // No substitute available
+    }
+    
+    // EXCLUSION CONSTRAINT: Never substitute TO an excluded food
+    if (excludedFoods.includes(substitute.name)) {
+      console.log(`🚫 Skipping ${substitute.name}: User excluded this food`);
+      continue;
     }
     
     // Calculate substitute cost for the same quantity

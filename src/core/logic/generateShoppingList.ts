@@ -68,7 +68,8 @@ export function generateShoppingList(
   const optimizationResult = optimizeBudget(
     sortedItems,
     initialCost,
-    input.budget
+    input.budget,
+    input.excludedFoods || []
   );
 
   return {

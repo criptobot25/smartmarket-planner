@@ -549,5 +549,163 @@ describe("SmartBudgetOptimizer", () => {
     
     console.log(`✅ Honest status: Cannot fit €${budget} without reducing variety`);
   });
-});
 
+  /**
+   * PASSO 11.2 EXCLUSION TESTS
+   */
+  it("should never substitute TO an excluded food", () => {
+    const items: FoodItem[] = [
+      {
+        id: "test-salmon",
+        name: "Salmon fillet",
+        category: "proteins",
+        unit: "kg",
+        pricePerUnit: 18.99,
+        quantity: 1.5,
+        estimatedPrice: 28.485,
+        macros: { protein: 20, carbs: 0, fat: 13 },
+      },
+      {
+        id: "test-chicken",
+        name: "Chicken breast (skinless)",
+        category: "proteins",
+        unit: "kg",
+        pricePerUnit: 7.99,
+        quantity: 1,
+        estimatedPrice: 7.99,
+        macros: { protein: 31, carbs: 0, fat: 3.6 },
+      },
+      {
+        id: "test-rice",
+        name: "White rice",
+        category: "grains",
+        unit: "kg",
+        pricePerUnit: 2.49,
+        quantity: 2,
+        estimatedPrice: 4.98,
+        macros: { protein: 7, carbs: 77, fat: 0.6 },
+      },
+    ];
+
+    const totalCost = 41.455;
+    const budget = 35.00;
+    const excludedFoods = ["Tuna (canned)", "Canned tuna"];
+
+    const result = optimizeBudget(items, totalCost, budget, excludedFoods);
+
+    // Should NOT have tuna in result
+    const hasTuna = result.items.some(item => 
+      item.name === "Tuna (canned)" || item.name === "Canned tuna"
+    );
+    expect(hasTuna).toBe(false);
+
+    // Should still try to optimize (may substitute chicken or do nothing)
+    console.log(`✅ No tuna substitution: User excluded tuna`);
+  });
+
+  it("should skip all fish when multiple fish excluded", () => {
+    const items: FoodItem[] = [
+      {
+        id: "test-beef",
+        name: "Ground beef (lean)",
+        category: "proteins",
+        unit: "kg",
+        pricePerUnit: 9.99,
+        quantity: 2,
+        estimatedPrice: 19.98,
+        macros: { protein: 26, carbs: 0, fat: 15 },
+      },
+      {
+        id: "test-chicken",
+        name: "Chicken breast (skinless)",
+        category: "proteins",
+        unit: "kg",
+        pricePerUnit: 7.99,
+        quantity: 1.5,
+        estimatedPrice: 11.985,
+        macros: { protein: 31, carbs: 0, fat: 3.6 },
+      },
+      {
+        id: "test-rice",
+        name: "White rice",
+        category: "grains",
+        unit: "kg",
+        pricePerUnit: 2.49,
+        quantity: 2,
+        estimatedPrice: 4.98,
+        macros: { protein: 7, carbs: 77, fat: 0.6 },
+      },
+    ];
+
+    const totalCost = 36.945;
+    const budget = 30.00;
+    const excludedFoods = ["Tuna (canned)", "Salmon fillet", "Canned tuna"];
+
+    const result = optimizeBudget(items, totalCost, budget, excludedFoods);
+
+    // Should NOT have added any fish (all fish are excluded)
+    const hasTuna = result.items.some(item => 
+      item.name === "Tuna (canned)" || item.name === "Canned tuna"
+    );
+    const hasSalmon = result.items.some(item => item.name === "Salmon fillet");
+    
+    expect(hasTuna).toBe(false);
+    expect(hasSalmon).toBe(false);
+
+    console.log(`✅ No fish: All fish excluded by user`);
+  });
+
+  it("should return over_budget_minimum when exclusions prevent budget fit", () => {
+    const items: FoodItem[] = [
+      {
+        id: "test-beef",
+        name: "Ground beef (lean)",
+        category: "proteins",
+        unit: "kg",
+        pricePerUnit: 9.99,
+        quantity: 2,
+        estimatedPrice: 19.98,
+        macros: { protein: 26, carbs: 0, fat: 15 },
+      },
+      {
+        id: "test-chicken",
+        name: "Chicken breast (skinless)",
+        category: "proteins",
+        unit: "kg",
+        pricePerUnit: 7.99,
+        quantity: 1.5,
+        estimatedPrice: 11.985,
+        macros: { protein: 31, carbs: 0, fat: 3.6 },
+      },
+      {
+        id: "test-rice",
+        name: "White rice",
+        category: "grains",
+        unit: "kg",
+        pricePerUnit: 2.49,
+        quantity: 2,
+        estimatedPrice: 4.98,
+        macros: { protein: 7, carbs: 77, fat: 0.6 },
+      },
+    ];
+
+    const totalCost = 36.945;
+    const budget = 25.00; // Low budget
+    const excludedFoods = ["Tuna (canned)", "Canned tuna"]; // Exclude cheap protein
+
+    const result = optimizeBudget(items, totalCost, budget, excludedFoods);
+
+    // Without tuna substitution available, may not fit budget
+    // Should be honest about it
+    if (result.totalEstimatedCost > budget) {
+      expect(result.budgetStatus).toBe("over_budget_minimum");
+      console.log(`✅ Honest status: Cannot fit €${budget} without excluded foods`);
+    }
+
+    // Should NOT have tuna
+    const hasTuna = result.items.some(item => 
+      item.name === "Tuna (canned)" || item.name === "Canned tuna"
+    );
+    expect(hasTuna).toBe(false);
+  });
+});
