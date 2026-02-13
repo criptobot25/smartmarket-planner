@@ -3,7 +3,12 @@
  * Modal for premium feature upsell
  * 
  * Purpose: Convert free users to premium when they discover value
- * Trigger: Clicking on premium-only features
+ * Trigger: Clicking on premium-only features or exceeding free tier limits
+ * 
+ * Headline: "Save €20/week automatically while hitting your protein target"
+ * 
+ * Source: Willingness to pay for cost savings
+ * https://www.mckinsey.com/industries/retail/our-insights
  */
 
 import "./PremiumModal.css";
@@ -11,11 +16,47 @@ import "./PremiumModal.css";
 interface PremiumModalProps {
   isOpen: boolean;
   onClose: () => void;
-  featureName: string;
+  feature: 'budget' | 'pdf';
+  remainingOptimizations?: number;
 }
 
-export function PremiumModal({ isOpen, onClose, featureName }: PremiumModalProps) {
+export function PremiumModal({ 
+  isOpen, 
+  onClose, 
+  feature,
+  remainingOptimizations = 0
+}: PremiumModalProps) {
   if (!isOpen) return null;
+
+  const content = feature === 'budget' ? {
+    icon: '💰',
+    title: 'Unlock Unlimited Budget Optimizations',
+    headline: 'Save €20+ per week automatically',
+    description: 'Free users get 1 optimization per week. Upgrade to Premium for unlimited budget optimizations while maintaining protein targets and diet variety.',
+    benefits: [
+      '🔄 Unlimited budget optimizations',
+      '💪 Always hit your protein target',
+      '🍽️ Maintain diet variety (no "tuna only" diets)',
+      '🚫 Respect your food preferences',
+      '📊 Protein-per-euro efficiency tracking',
+    ],
+    cta: 'You have ' + remainingOptimizations + ' free optimization(s) this week',
+    price: '€9.99/month'
+  } : {
+    icon: '📄',
+    title: 'Export Your Shopping List to PDF',
+    headline: 'Take your list to the supermarket',
+    description: 'Premium users can export professionally formatted shopping lists to PDF. Perfect for printing or sharing on WhatsApp.',
+    benefits: [
+      '📄 Professional PDF export',
+      '🛒 Organized by category',
+      '💰 Shows total cost and savings',
+      '💪 Includes protein totals',
+      '📱 Easy to share (WhatsApp, email)',
+    ],
+    cta: 'Premium feature',
+    price: '€9.99/month'
+  };
 
   return (
     <div className="premium-modal-overlay" onClick={onClose}>
@@ -23,38 +64,42 @@ export function PremiumModal({ isOpen, onClose, featureName }: PremiumModalProps
         <button className="modal-close" onClick={onClose}>
           ✕
         </button>
-        
-        <div className="modal-icon">🔒</div>
-        
-        <h2 className="modal-title">Premium Feature</h2>
-        
-        <p className="modal-description">
-          <strong>{featureName}</strong> is available in SmartMarket Premium.
-        </p>
+
+        <div className="premium-header">
+          <div className="premium-icon">{content.icon}</div>
+          <h2 className="premium-title">{content.title}</h2>
+          <p className="premium-headline">{content.headline}</p>
+        </div>
+
+        <p className="premium-description">{content.description}</p>
 
         <div className="premium-benefits">
-          <h3>Premium includes:</h3>
-          <ul>
-            <li>📄 Export to PDF</li>
-            <li>💰 Budget breakdown by category</li>
-            <li>📊 Unlimited plan history</li>
-            <li>🎯 Custom macro targets</li>
-            <li>🚀 Early access to new features</li>
-          </ul>
+          {content.benefits.map((benefit, index) => (
+            <div key={index} className="benefit-item">
+              {benefit}
+            </div>
+          ))}
         </div>
 
-        <div className="premium-price">
-          <span className="price-amount">€4.99</span>
-          <span className="price-period">/month</span>
+        <div className="premium-pricing">
+          <div className="price-tag">{content.price}</div>
+          <div className="price-subtitle">{content.cta}</div>
         </div>
 
-        <button className="btn-premium-upgrade">
-          Join Waitlist
-        </button>
+        <div className="premium-actions">
+          <button className="btn-premium-upgrade" disabled>
+            🚀 Upgrade to Premium
+          </button>
+          <p className="premium-note">
+            Payment integration coming soon. This is a demo of premium features.
+          </p>
+        </div>
 
-        <p className="modal-footer">
-          Premium launching soon. Be the first to know!
-        </p>
+        {feature === 'budget' && remainingOptimizations > 0 && (
+          <button className="btn-continue-free" onClick={onClose}>
+            Continue with free tier ({remainingOptimizations} remaining this week)
+          </button>
+        )}
       </div>
     </div>
   );

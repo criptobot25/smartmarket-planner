@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useShoppingPlan } from "../../contexts/ShoppingPlanContext";
 import { FoodItem, FoodCategory } from "../../core/models/FoodItem";
 import { formatQuantity } from "../../core/utils/formatQuantity";
-import { exportShoppingListPdf } from "../../core/export/exportShoppingListPdf";
+import { exportShoppingListToPdf } from "../../utils/exportPdf";
+import { canExportPdf, getRemainingOptimizations } from "../../core/premium/features";
 import { PremiumModal } from "../components/PremiumModal";
 import "./ShoppingListPage.css";
 
@@ -12,37 +13,34 @@ interface ShoppingItem extends FoodItem {
   purchased?: boolean;
 }
 
-// Feature flags
-const FEATURES = {
-  premiumPdfExport: false, // Set to true to enable PDF export
-};
-
 export function ShoppingListPage() {
   const navigate = useNavigate();
   const { shoppingList, toggleItemPurchased, weeklyPlan } = useShoppingPlan();
   const [showPremiumModal, setShowPremiumModal] = useState(false);
-  const [premiumFeatureName, setPremiumFeatureName] = useState("");
+  const [premiumFeature, setPremiumFeature] = useState<'budget' | 'pdf'>('pdf');
 
   // Handler for PDF export
   const handlePdfExport = () => {
-    if (!FEATURES.premiumPdfExport) {
-      setPremiumFeatureName("PDF Export");
+    if (!canExportPdf()) {
+      setPremiumFeature('pdf');
       setShowPremiumModal(true);
       return;
     }
 
     if (weeklyPlan) {
-      exportShoppingListPdf(shoppingList, {
-        proteinTarget: weeklyPlan.proteinPerDay,
+      exportShoppingListToPdf({
+        items: shoppingList,
         totalCost: weeklyPlan.totalCost,
+        totalProtein: weeklyPlan.totalProtein,
+        budgetStatus: weeklyPlan.budgetStatus,
+        substitutionsApplied: weeklyPlan.substitutionsApplied?.map(sub => ({
+          from: sub.from,
+          to: sub.to,
+          savings: sub.savings,
+        })),
+        fitnessGoal: weeklyPlan.planInput.fitnessGoal || 'maintenance',
       });
     }
-  };
-
-  // Handler for Budget Mode (Premium)
-  const handleBudgetMode = () => {
-    setPremiumFeatureName("Budget Breakdown");
-    setShowPremiumModal(true);
   };
 
   // Se não houver lista, redireciona para home
@@ -233,11 +231,13 @@ export function ShoppingListPage() {
 
         {/* Action Buttons */}
         <div className="shopping-actions">
-          <button className="btn-premium" onClick={handlePdfExport}>
+          <button 
+            className={`btn-premium ${!canExportPdf() ? 'btn-locked' : ''}`}
+            onClick={handlePdfExport}
+            title={!canExportPdf() ? 'Premium feature - Upgrade to export PDF' : 'Export shopping list to PDF'}
+          >
+            {!canExportPdf() && '🔒 '}
             📄 Export PDF
-          </button>
-          <button className="btn-premium" onClick={handleBudgetMode}>
-            💰 Budget Breakdown
           </button>
         </div>
       </main>
@@ -246,7 +246,8 @@ export function ShoppingListPage() {
       <PremiumModal
         isOpen={showPremiumModal}
         onClose={() => setShowPremiumModal(false)}
-        featureName={premiumFeatureName}
+        feature={premiumFeature}
+        remainingOptimizations={getRemainingOptimizations()}
       />
     </div>
   );
