@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import { Card } from "../components/ui/Card";
+import { Button } from "../components/ui/Button";
 import "./LandingPage.css";
 
 /**
@@ -33,8 +35,10 @@ export function LandingPage() {
           </p>
           
           <div className="hero-cta">
-            <Link to="/app" className="btn-primary-large">
-              🚀 Start Planning Free
+            <Link to="/app" style={{ textDecoration: 'none' }}>
+              <Button variant="primary">
+                🚀 Start Planning Free
+              </Button>
             </Link>
             <p className="hero-note">
               No credit card required • 1 free optimization per week
@@ -63,29 +67,29 @@ export function LandingPage() {
         <h2 className="section-title">How SmartMarket Works</h2>
         
         <div className="features-grid">
-          <div className="feature-card">
+          <Card>
             <div className="feature-icon">🎯</div>
             <h3 className="feature-title">Set Your Goals</h3>
             <p className="feature-description">
               Choose your fitness goal (cutting, maintenance, bulking), set your budget, and customize preferences.
             </p>
-          </div>
+          </Card>
           
-          <div className="feature-card">
+          <Card>
             <div className="feature-icon">🤖</div>
             <h3 className="feature-title">AI Optimizes Your Plan</h3>
             <p className="feature-description">
               Our budget optimizer maximizes protein-per-euro while maintaining diet variety. No "tuna only" diets.
             </p>
-          </div>
+          </Card>
           
-          <div className="feature-card">
+          <Card>
             <div className="feature-icon">🛒</div>
             <h3 className="feature-title">Get Your Shopping List</h3>
             <p className="feature-description">
               Organized by category, shows total cost, savings, and protein. Export to PDF for supermarket trips.
             </p>
-          </div>
+          </Card>
         </div>
       </section>
 
@@ -95,37 +99,37 @@ export function LandingPage() {
           <h2 className="section-title">Why SmartMarket?</h2>
           
           <div className="benefits-list">
-            <div className="benefit-item">
+            <Card className="benefit-card">
               <div className="benefit-check">✓</div>
               <div>
                 <h4>Budget-Aware Optimization</h4>
                 <p>Automatically substitutes expensive items with cheaper alternatives while maintaining macros</p>
               </div>
-            </div>
+            </Card>
             
-            <div className="benefit-item">
+            <Card className="benefit-card">
               <div className="benefit-check">✓</div>
               <div>
                 <h4>Diversity Guardrails</h4>
                 <p>Maintains minimum 2 different protein sources. No monotonous diets that kill adherence</p>
               </div>
-            </div>
+            </Card>
             
-            <div className="benefit-item">
+            <Card className="benefit-card">
               <div className="benefit-check">✓</div>
               <div>
                 <h4>Personalization</h4>
                 <p>Exclude foods you don't like or can't eat. The optimizer respects your preferences</p>
               </div>
-            </div>
+            </Card>
             
-            <div className="benefit-item">
+            <Card className="benefit-card">
               <div className="benefit-check">✓</div>
               <div>
                 <h4>Transparent & Honest</h4>
                 <p>Shows exactly what was substituted and why. Honest messaging when budget is impossible</p>
               </div>
-            </div>
+            </Card>
           </div>
         </div>
       </section>
@@ -136,8 +140,10 @@ export function LandingPage() {
           <h2 className="cta-title">Ready to Save Money & Hit Your Protein Target?</h2>
           <p className="cta-subtitle">Start planning your first week for free</p>
           
-          <Link to="/app" className="btn-primary-large">
-            🚀 Get Started Free
+          <Link to="/app" style={{ textDecoration: 'none' }}>
+            <Button variant="primary">
+              🚀 Get Started Free
+            </Button>
           </Link>
           
           <p className="cta-note">
