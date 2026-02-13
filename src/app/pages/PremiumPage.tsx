@@ -7,7 +7,7 @@ export function PremiumPage() {
   return (
     <div className="premium-page">
       <header className="premium-header">
-        <button className="btn-back" onClick={() => navigate("/")}>
+        <button className="btn-back" onClick={() => navigate("/app")}>
           ← Voltar
         </button>
         <h1>✨ SmartMarket Premium</h1>
@@ -83,7 +83,7 @@ export function PremiumPage() {
         <section className="cta-section">
           <h2>Comece agora gratuitamente</h2>
           <p>Experimente todas as funcionalidades básicas sem custo. Upgrade quando precisar.</p>
-          <button className="btn-start" onClick={() => navigate("/")}>
+          <button className="btn-start" onClick={() => navigate("/app")}>
             🚀 Criar Meu Primeiro Plano
           </button>
         </section>

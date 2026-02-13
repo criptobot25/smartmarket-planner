@@ -43,7 +43,7 @@ export function PlannerPage() {
       });
 
       // Navega para a página da lista
-      navigate("/list");
+      navigate("/app/list");
     } catch (error) {
       console.error("Erro ao gerar plano:", error);
       alert("Erro ao gerar o plano. Tente novamente.");

@@ -50,7 +50,7 @@ export function ShoppingListPage() {
         <div className="empty-state">
           <h2>📋 Nenhuma lista encontrada</h2>
           <p>Gere um plano primeiro!</p>
-          <button className="btn-primary" onClick={() => navigate("/")}>
+          <button className="btn-primary" onClick={() => navigate("/app")}>
             Voltar ao Início
           </button>
         </div>

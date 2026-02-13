@@ -1,38 +1,51 @@
 import { NavLink } from "react-router-dom";
 import "./Navbar.css";
 
+/**
+ * Clean Navbar - Only 3 core links
+ * 
+ * Structure:
+ * - Logo → /app (Planner)
+ * - Planner → /app
+ * - Shopping List → /app/list
+ * - Upgrade (CTA) → /app/premium
+ * 
+ * Removed: Weekly Plan, History, Recipes (redundant/not core)
+ * 
+ * Source: Navigation consistency
+ * https://www.nngroup.com/articles/consistency-and-standards/
+ */
 export function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-container">
         {/* Logo */}
-        <NavLink to="/" className="navbar-logo">
+        <NavLink to="/app" className="navbar-logo">
           <span className="logo-icon">🎯</span>
           <span className="logo-text">SmartMarket</span>
         </NavLink>
 
-        {/* Navigation Links */}
+        {/* Navigation Links - Only 2 core pages */}
         <div className="navbar-links">
-          <NavLink to="/" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+          <NavLink 
+            to="/app" 
+            className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+            end
+          >
             Planner
           </NavLink>
           
-          <NavLink to="/list" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+          <NavLink 
+            to="/app/list" 
+            className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+          >
             Shopping List
-          </NavLink>
-          
-          <NavLink to="/plan" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
-            Weekly Plan
-          </NavLink>
-          
-          <NavLink to="/history" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
-            History
           </NavLink>
         </div>
 
         {/* CTA */}
         <div className="navbar-cta">
-          <NavLink to="/premium" className="btn-premium-nav">
+          <NavLink to="/app/premium" className="btn-premium-nav">
             Upgrade
           </NavLink>
         </div>
