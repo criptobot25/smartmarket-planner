@@ -16,6 +16,21 @@
   margin-bottom: 2rem;
 }
 
+/* PASSO 33.4: Header with streak */
+.planner-header .header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+@media (max-width: 480px) {
+  .planner-header .header-top {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
 .planner-title {
   font-size: 1.75rem;
   font-weight: 700;
@@ -28,6 +43,97 @@
   font-size: 0.875rem;
   color: #6b7280;
   margin: 0;
+}
+
+/* PASSO 33.4: Streak Indicator */
+.streak-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 100%);
+  padding: 0.75rem 1.25rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+  animation: streakPulse 2s ease-in-out infinite;
+}
+
+.streak-flame {
+  font-size: 1.5rem;
+  animation: flameFlicker 1.5s ease-in-out infinite;
+}
+
+@keyframes flameFlicker {
+  0%, 100% {
+    transform: scale(1) rotate(-5deg);
+  }
+  50% {
+    transform: scale(1.1) rotate(5deg);
+  }
+}
+
+@keyframes streakPulse {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+  }
+  50% {
+    box-shadow: 0 6px 16px rgba(251, 191, 36, 0.5);
+  }
+}
+
+.streak-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+
+.streak-number {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #b45309;
+  letter-spacing: -0.05em;
+}
+
+.streak-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #92400e;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* PASSO 33.1: Repeat Last Week Button */
+.repeat-week-container {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.btn-repeat-week {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #4f46e5;
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  border: 2px solid #e5e7eb;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.1);
+}
+
+.btn-repeat-week:hover {
+  background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+  border-color: #4f46e5;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+  transform: translateY(-1px);
+}
+
+.btn-repeat-week:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.15);
 }
 
 .planner-card {
@@ -122,6 +228,53 @@
   color: #4f46e5;
   font-weight: 500;
   margin: 0;
+}
+
+/* PASSO 34: Validation Errors Display */
+.validation-errors {
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  border: 2px solid #fca5a5;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.error-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #991b1b;
+  margin-bottom: 0.75rem;
+  font-size: 0.9375rem;
+}
+
+.error-icon {
+  font-size: 1.25rem;
+}
+
+.error-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.error-list li {
+  color: #7f1d1d;
+  font-size: 0.875rem;
+  padding-left: 1.5rem;
+  position: relative;
+  line-height: 1.5;
+}
+
+.error-list li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: #dc2626;
+  font-weight: 700;
 }
 
 /* Desktop */

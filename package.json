@@ -13,12 +13,14 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "html-to-image": "^1.11.13",
     "i18next": "^25.8.7",
     "jspdf": "^4.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^16.5.4",
-    "react-router-dom": "^6.21.0"
+    "react-router-dom": "^6.21.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",

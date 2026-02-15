@@ -11,10 +11,16 @@ interface State {
 }
 
 /**
- * ErrorBoundary Component
+ * PASSO 34: Enhanced ErrorBoundary Component
  * 
- * Catches React errors and displays fallback UI
- * Prevents entire app from crashing due to component errors
+ * Catches React errors and displays friendly fallback UI with recovery options.
+ * Prevents entire app from crashing due to component errors.
+ * 
+ * Features:
+ * - Friendly error messaging (no technical jargon)
+ * - Clear recovery actions (Return to Planner, Reload)
+ * - Collapsible error details for debugging
+ * - Data safety reassurance
  * 
  * Source: React Error Boundaries
  * https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary
@@ -30,8 +36,16 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+    // Log to console for debugging
     console.error('ErrorBoundary caught error:', error, errorInfo);
+    
+    // In production, you could send to error tracking service
+    // Example: Sentry.captureException(error, { extra: errorInfo });
   }
+
+  handleReset = () => {
+    this.setState({ hasError: false, error: undefined });
+  };
 
   render() {
     if (this.state.hasError) {
@@ -59,17 +73,25 @@ export class ErrorBoundary extends Component<Props, State> {
             color: '#111827',
             margin: '0 0 1rem 0'
           }}>
-            Something went wrong
+            Oops! Something went wrong
           </h1>
           
           <p style={{
             fontSize: '1.125rem',
             color: '#6b7280',
+            marginBottom: '0.5rem',
+            maxWidth: '500px'
+          }}>
+            We encountered an unexpected error while loading this page.
+          </p>
+          
+          <p style={{
+            fontSize: '1rem',
+            color: '#9ca3af',
             marginBottom: '2rem',
             maxWidth: '500px'
           }}>
-            We encountered an error while rendering this page.
-            Don't worry, your data is safe.
+            Don't worry - your meal plans and data are safe. Try returning to the planner or reloading the page.
           </p>
           
           {this.state.error && (
@@ -100,9 +122,10 @@ export class ErrorBoundary extends Component<Props, State> {
             </details>
           )}
           
-          <div style={{ display: 'flex', gap: '1rem' }}>
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
             <Link 
               to="/app"
+              onClick={this.handleReset}
               style={{
                 padding: '0.875rem 1.5rem',
                 background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
@@ -110,10 +133,14 @@ export class ErrorBoundary extends Component<Props, State> {
                 textDecoration: 'none',
                 borderRadius: '0.75rem',
                 fontWeight: '600',
-                boxShadow: '0 4px 12px rgba(79, 70, 229, 0.25)'
+                boxShadow: '0 4px 12px rgba(79, 70, 229, 0.25)',
+                transition: 'transform 0.2s ease',
+                display: 'inline-block'
               }}
+              onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+              onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
             >
-              🏠 Go to Planner
+              🏠 Return to Planner
             </Link>
             
             <button
@@ -125,8 +152,11 @@ export class ErrorBoundary extends Component<Props, State> {
                 border: '2px solid #e5e7eb',
                 borderRadius: '0.75rem',
                 fontWeight: '600',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                transition: 'border-color 0.2s ease'
               }}
+              onMouseOver={(e) => e.currentTarget.style.borderColor = '#4f46e5'}
+              onMouseOut={(e) => e.currentTarget.style.borderColor = '#e5e7eb'}
             >
               🔄 Reload Page
             </button>

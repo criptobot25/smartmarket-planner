@@ -3,11 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useShoppingPlan } from "../../contexts/ShoppingPlanContext";
 import { DietStyle, Sex, CostTier } from "../../core/models/PlanInput";
+import { validatePlanInput } from "../../core/validation/PlanInputSchema"; // PASSO 34
 import "./PlannerPage.css";
 
 export function PlannerPage() {
   const navigate = useNavigate();
-  const { generatePlan } = useShoppingPlan();
+  const { generatePlan, repeatLastWeek, streak } = useShoppingPlan(); // PASSO 33.1 & 33.4
   const { t } = useTranslation();
 
   const [sex, setSex] = useState<Sex>("male");
@@ -19,35 +20,28 @@ export function PlannerPage() {
   const [dietStyle, setDietStyle] = useState<DietStyle>("balanced");
   const [costTier, setCostTier] = useState<CostTier>("medium");
   const [restrictions, setRestrictions] = useState<string>("");
+  
+  // PASSO 34: Validation errors state
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+
+  // PASSO 33.1: Handler for Repeat Last Week button
+  const handleRepeatLastWeek = () => {
+    const success = repeatLastWeek();
+    
+    if (success) {
+      // Navigate to shopping list if successful
+      navigate("/app/list");
+    } else {
+      // Show message if no previous plan exists
+      alert(t("planner.noRepeatPlan", "No previous plan found. Please generate a new plan first."));
+    }
+  };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-
-    // Valida inputs
-    if (!sex) {
-      alert(t("planner.alertSexRequired"));
-      return;
-    }
-
-    if (weightKg <= 0) {
-      alert(t("planner.alertWeightPositive"));
-      return;
-    }
-
-    if (age <= 0) {
-      alert(t("planner.alertAgePositive"));
-      return;
-    }
-
-    if (heightCm <= 0) {
-      alert(t("planner.alertHeightPositive"));
-      return;
-    }
-
-    if (mealsPerDay < 3 || mealsPerDay > 6) {
-      alert(t("planner.alertMealsRange"));
-      return;
-    }
+    
+    // Clear previous validation errors
+    setValidationErrors([]);
 
     // Converte restrições de string para array
     const restrictionsArray = restrictions
@@ -55,25 +49,36 @@ export function PlannerPage() {
       .map(r => r.trim())
       .filter(r => r.length > 0);
 
-    // Gera o plano
+    // PASSO 34: Validate input with Zod schema
+    const planInput = {
+      sex,
+      age,
+      weightKg,
+      heightCm,
+      trains,
+      mealsPerDay,
+      dietStyle,
+      costTier,
+      restrictions: restrictionsArray
+    };
+    
+    const validation = validatePlanInput(planInput);
+    
+    if (!validation.success) {
+      // Show validation errors inline (not alert)
+      setValidationErrors(validation.errors || []);
+      return;
+    }
+
+    // Gera o plano com validated data
     try {
-      generatePlan({
-        sex,
-        age,
-        weightKg,
-        heightCm,
-        trains,
-        mealsPerDay,
-        dietStyle,
-        costTier,
-        restrictions: restrictionsArray
-      });
+      generatePlan(validation.data!);
 
       // Navega para a página da lista
       navigate("/app/list");
     } catch (error) {
       console.error("Erro ao gerar plano:", error);
-      alert(t("planner.alertError"));
+      setValidationErrors([t("planner.alertError", "An unexpected error occurred. Please try again.")]);
     }
   };
 
@@ -81,11 +86,52 @@ export function PlannerPage() {
     <div className="planner-page">
       <div className="planner-container">
         <header className="planner-header">
-          <h1 className="planner-title">{t("planner.title")}</h1>
-          <p className="planner-subtitle">{t("planner.subtitle")}</p>
+          <div className="header-top">
+            <div>
+              <h1 className="planner-title">{t("planner.title")}</h1>
+              <p className="planner-subtitle">{t("planner.subtitle")}</p>
+            </div>
+            {/* PASSO 33.4: Streak indicator */}
+            {streak > 0 && (
+              <div className="streak-indicator">
+                <span className="streak-flame">🔥</span>
+                <div className="streak-content">
+                  <span className="streak-number">{streak}</span>
+                  <span className="streak-label">week{streak > 1 ? 's' : ''}</span>
+                </div>
+              </div>
+            )}
+          </div>
         </header>
 
+        {/* PASSO 33.1: Repeat Last Week Button */}
+        <div className="repeat-week-container">
+          <button 
+            type="button" 
+            className="btn-repeat-week"
+            onClick={handleRepeatLastWeek}
+            title={t("planner.repeatLastWeekTooltip", "Load your last weekly plan instantly")}
+          >
+            🔁 {t("planner.repeatLastWeek", "Repeat Last Week")}
+          </button>
+        </div>
+
         <div className="planner-card">
+          {/* PASSO 34: Validation Errors Display */}
+          {validationErrors.length > 0 && (
+            <div className="validation-errors">
+              <div className="error-header">
+                <span className="error-icon">⚠️</span>
+                <strong>Please fix the following errors:</strong>
+              </div>
+              <ul className="error-list">
+                {validationErrors.map((error, index) => (
+                  <li key={index}>{error}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          
           <form className="planner-form" onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="sex" className="form-label">
