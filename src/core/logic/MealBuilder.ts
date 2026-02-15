@@ -9,9 +9,15 @@
  * 4. Use PortionCalculator to compute exact grams
  * 5. Generate descriptive meal name
  * 
+ * PASSO 23: Variety Engine v2
+ * - Enforces diet variety constraints (min proteins, vegetables, max repetition)
+ * - Prevents fish/red meat overconsumption
+ * - Uses VarietyTracker to ensure adherence
+ * 
  * References:
  * - Meal composition: ISSN Position Stand on Nutrient Timing
  * - Food selection: Protein-per-cost optimization (PASSO 3)
+ * - Variety constraints: Diet adherence studies (JAMA 2018)
  */
 
 import { FoodItem } from "../models/FoodItem";
@@ -21,6 +27,7 @@ import {
   MacroTargetPerMeal,
   calculateTotalMacros
 } from "./PortionCalculator";
+import { VarietyTracker } from "./VarietyConstraints";
 
 export interface MealIngredient {
   foodId: string;
@@ -43,6 +50,7 @@ export interface MealBuilderInput {
   availableFoods: FoodItem[];
   excludedFoods?: string[];
   costTier: CostTier;
+  varietyTracker?: VarietyTracker; // PASSO 23: Track variety constraints
 }
 
 /**
@@ -73,6 +81,8 @@ function filterExcludedFoods(foods: FoodItem[], excludedFoods: string[] = []): F
 /**
  * Select best protein source based on cost tier
  * 
+ * PASSO 23: Respects variety constraints (fish limit, red meat limit)
+ * 
  * Low tier: Highest protein per euro (tuna, eggs, chicken)
  * Medium tier: Balance of protein content and quality
  * High tier: Highest protein content (salmon, premium meats)
@@ -80,14 +90,20 @@ function filterExcludedFoods(foods: FoodItem[], excludedFoods: string[] = []): F
 function selectProteinSource(
   availableFoods: FoodItem[],
   costTier: CostTier,
-  excludedFoods: string[] = []
+  excludedFoods: string[] = [],
+  varietyTracker?: VarietyTracker
 ): FoodItem | null {
-  const proteinFoods = filterExcludedFoods(availableFoods, excludedFoods)
+  let proteinFoods = filterExcludedFoods(availableFoods, excludedFoods)
     .filter(f => 
       f.category === "proteins" && 
       f.macros && 
       f.macros.protein > 15 // At least 15g protein per 100g
     );
+  
+  // PASSO 23: Filter by variety constraints
+  if (varietyTracker) {
+    proteinFoods = proteinFoods.filter(f => varietyTracker.canUseProteinSource(f));
+  }
   
   if (proteinFoods.length === 0) return null;
   
@@ -162,10 +178,13 @@ function selectCarbSource(
 
 /**
  * Select vegetable (fixed 150g for fiber/micronutrients)
+ * 
+ * PASSO 23: Prioritizes variety - tries to use vegetables not yet used
  */
 function selectVegetable(
   availableFoods: FoodItem[],
-  excludedFoods: string[] = []
+  excludedFoods: string[] = [],
+  varietyTracker?: VarietyTracker
 ): FoodItem | null {
   const vegetables = filterExcludedFoods(availableFoods, excludedFoods)
     .filter(f => 
@@ -175,6 +194,12 @@ function selectVegetable(
     );
   
   if (vegetables.length === 0) return null;
+  
+  // PASSO 23: Try to use a new vegetable first (for variety)
+  if (varietyTracker) {
+    const unusedVegetable = varietyTracker.suggestAlternativeVegetable(vegetables, excludedFoods);
+    if (unusedVegetable) return unusedVegetable;
+  }
   
   // Prefer broccoli, spinach (nutrient-dense)
   const preferred = vegetables.find(f => 
@@ -237,6 +262,8 @@ function generateMealName(
 /**
  * Build meal dynamically from macro targets
  * 
+ * PASSO 23: Records variety usage and enforces constraints
+ * 
  * @param input - Meal builder configuration
  * @returns Built meal with ingredients and macros
  * 
@@ -245,12 +272,12 @@ function generateMealName(
  * Output: Chicken + Rice + Broccoli (130g chicken, 179g rice, 150g broccoli)
  */
 export function buildMeal(input: MealBuilderInput): BuiltMeal {
-  const { macroTargetsPerMeal, availableFoods, excludedFoods = [], costTier } = input;
+  const { macroTargetsPerMeal, availableFoods, excludedFoods = [], costTier, varietyTracker } = input;
   
-  // 1. Select food sources
-  const proteinSource = selectProteinSource(availableFoods, costTier, excludedFoods);
+  // 1. Select food sources (with variety constraints)
+  const proteinSource = selectProteinSource(availableFoods, costTier, excludedFoods, varietyTracker);
   const carbSource = selectCarbSource(availableFoods, costTier, excludedFoods);
-  const vegetable = selectVegetable(availableFoods, excludedFoods);
+  const vegetable = selectVegetable(availableFoods, excludedFoods, varietyTracker);
   const fatSource = selectFatSource(availableFoods, excludedFoods);
   
   // 2. Validate we have at least protein and carbs
@@ -260,7 +287,15 @@ export function buildMeal(input: MealBuilderInput): BuiltMeal {
     );
   }
   
-  // 3. Calculate portions using PortionCalculator
+  // 3. Record variety usage (PASSO 23)
+  if (varietyTracker) {
+    varietyTracker.recordProteinSource(proteinSource);
+    if (vegetable) {
+      varietyTracker.recordVegetable(vegetable);
+    }
+  }
+  
+  // 4. Calculate portions using PortionCalculator
   const portions = calculateMealPortions(
     macroTargetsPerMeal,
     proteinSource,
@@ -269,18 +304,23 @@ export function buildMeal(input: MealBuilderInput): BuiltMeal {
     vegetable
   );
   
-  // 4. Convert to MealIngredient format
+  // 5. Convert to MealIngredient format
   const ingredients: MealIngredient[] = portions.map(portion => ({
     foodId: portion.foodId,
     foodName: portion.foodName,
     grams: portion.gramsNeeded
   }));
   
-  // 5. Calculate total macros
+  // 6. Calculate total macros
   const totalMacros = calculateTotalMacros(portions);
   
-  // 6. Generate meal name
+  // 7. Generate meal name
   const name = generateMealName(proteinSource, carbSource, vegetable);
+  
+  // 8. Record meal name usage (PASSO 23)
+  if (varietyTracker) {
+    varietyTracker.recordMealName(name);
+  }
   
   return {
     name,

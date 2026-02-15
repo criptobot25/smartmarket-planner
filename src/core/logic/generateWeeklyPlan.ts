@@ -3,30 +3,32 @@ import { WeeklyPlan, DayOfWeek, DayPlan, DayMeals, Meal, FoodPortion } from "../
 import { calculateMacroTargets } from "./MacroCalculator";
 import { MacroTargetPerMeal } from "./PortionCalculator";
 import { buildMeal, buildBreakfast } from "./MealBuilder";
+import { VarietyTracker, DEFAULT_VARIETY_CONSTRAINTS } from "./VarietyConstraints";
 import { mockFoods } from "../../data/mockFoods";
 
 /**
- * FITNESS-FIRST WEEKLY PLAN GENERATOR (PASSO 22 - Meal Builder)
+ * FITNESS-FIRST WEEKLY PLAN GENERATOR (PASSO 23 - Variety Engine v2)
  * 
  * Gera plano semanal DINÂMICO baseado em macro targets:
  * - Meals built from macro targets (não templates fixos)
  * - MealBuilder seleciona melhores fontes (protein/carb/vegetable)
  * - Portions calculadas via PortionCalculator
  * - Cost tier influencia seleção de alimentos
+ * - Variety constraints prevent diet monotony (PASSO 23)
  * 
  * Evolution:
  * - PASSO 20: MacroCalculator (BMR, TDEE, macro targets)
  * - PASSO 21: PortionCalculator (grams from macros)
  * - PASSO 22: MealBuilder (dynamic meal composition)
+ * - PASSO 23: VarietyConstraints (diet adherence, prevent monotony)
  * 
  * Fonte: Meal prep behavior patterns (NCBI PMC7071223)
  */
 
 /**
- * Gera um plano semanal FITNESS-AWARE (PASSO 22 - MealBuilder)
+ * Gera um plano semanal FITNESS-AWARE (PASSO 23 - Variety Engine v2)
  * 
- * Now uses MealBuilder to dynamically create meals from macro targets
- * instead of hardcoded templates
+ * Now uses MealBuilder with VarietyTracker to ensure diet diversity
  */
 export function generateWeeklyPlan(input: PlanInput): WeeklyPlan {
   const daysOfWeek: DayOfWeek[] = [
@@ -49,39 +51,77 @@ export function generateWeeklyPlan(input: PlanInput): WeeklyPlan {
     fats: macroTargets.fatsPerMeal
   };
   
-  // Build 2 different lunches and 2 different dinners for variety (meal prep pattern)
+  // PASSO 23: Create variety tracker
+  const varietyTracker = new VarietyTracker(DEFAULT_VARIETY_CONSTRAINTS);
+  
+  // Build different meals for variety (not same meal all week)
+  // Strategy: Build 2-3 different lunches, 2-3 different dinners
   // Breakfast uses buildBreakfast (oats-based)
   const breakfastMeal = buildBreakfast({
     macroTargetsPerMeal: mealMacroTarget,
     availableFoods: mockFoods,
     excludedFoods: input.excludedFoods || [],
-    costTier
+    costTier,
+    varietyTracker
   });
   
   const lunchMeal1 = buildMeal({
     macroTargetsPerMeal: mealMacroTarget,
     availableFoods: mockFoods,
     excludedFoods: input.excludedFoods || [],
-    costTier
+    costTier,
+    varietyTracker
+  });
+  
+  const lunchMeal2 = buildMeal({
+    macroTargetsPerMeal: mealMacroTarget,
+    availableFoods: mockFoods,
+    excludedFoods: input.excludedFoods || [],
+    costTier,
+    varietyTracker
   });
   
   const dinnerMeal1 = buildMeal({
     macroTargetsPerMeal: mealMacroTarget,
     availableFoods: mockFoods,
     excludedFoods: input.excludedFoods || [],
-    costTier
+    costTier,
+    varietyTracker
+  });
+  
+  const dinnerMeal2 = buildMeal({
+    macroTargetsPerMeal: mealMacroTarget,
+    availableFoods: mockFoods,
+    excludedFoods: input.excludedFoods || [],
+    costTier,
+    varietyTracker
   });
   
   // Snack for 5+ meals per day (simple: yogurt + fruit)
   const includeSnack = input.mealsPerDay >= 5;
   const snackMeal = includeSnack ? buildSnack(mockFoods, input.excludedFoods || []) : null;
   
-  // Padrão de repetição semanal (meal prep real)
-  // All days get same meals (true meal prep - cook once, eat all week)
-  const days: DayPlan[] = daysOfWeek.map((day) => {
+  // PASSO 23: Variety pattern - rotate meals throughout week
+  // Mon/Thu: Lunch1 + Dinner1
+  // Tue/Fri: Lunch2 + Dinner2  
+  // Wed: Lunch1 + Dinner2
+  // Sat/Sun: Lunch2 + Dinner1
+  // Max 4 repetitions per meal (meets constraint)
+  const mealPattern = [
+    { lunch: lunchMeal1, dinner: dinnerMeal1 },  // Mon
+    { lunch: lunchMeal2, dinner: dinnerMeal2 },  // Tue
+    { lunch: lunchMeal1, dinner: dinnerMeal2 },  // Wed
+    { lunch: lunchMeal1, dinner: dinnerMeal1 },  // Thu
+    { lunch: lunchMeal2, dinner: dinnerMeal2 },  // Fri
+    { lunch: lunchMeal2, dinner: dinnerMeal1 },  // Sat
+    { lunch: lunchMeal2, dinner: dinnerMeal1 }   // Sun
+  ];
+  
+  // Generate daily meals with variety pattern
+  const days: DayPlan[] = daysOfWeek.map((day, index) => {
     const breakfast = convertBuiltMealToMeal(breakfastMeal);
-    const lunch = convertBuiltMealToMeal(lunchMeal1);
-    const dinner = convertBuiltMealToMeal(dinnerMeal1);
+    const lunch = convertBuiltMealToMeal(mealPattern[index].lunch);
+    const dinner = convertBuiltMealToMeal(mealPattern[index].dinner);
     const snack = snackMeal ? convertBuiltMealToMeal(snackMeal) : null;
 
     const meals: DayMeals = {
