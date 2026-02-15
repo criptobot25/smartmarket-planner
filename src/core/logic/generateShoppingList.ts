@@ -54,7 +54,7 @@ export function generateShoppingList(
 
   // 2. Converter em FoodItems com quantidades realistas
   const items = ingredientOccurrences.map(occurrence =>
-    convertToFoodItem(occurrence, input.numberOfPeople)
+    convertToFoodItem(occurrence, input.numberOfPeople, input.mealsPerDay)
   );
 
   // 3. Ordenar por categoria
@@ -148,7 +148,8 @@ function countMealIngredients(
  */
 function convertToFoodItem(
   occurrence: IngredientOccurrence,
-  numberOfPeople: number
+  numberOfPeople: number,
+  mealsPerDay: number
 ): FoodItem {
   const food = mockFoods.find(f => f.id === occurrence.foodId);
 
@@ -161,7 +162,8 @@ function convertToFoodItem(
     food,
     occurrence.mealType,
     occurrence.occurrences,
-    numberOfPeople
+    numberOfPeople,
+    mealsPerDay
   );
 
   const estimatedPrice = quantity * food.pricePerUnit;
@@ -203,7 +205,8 @@ function calculateRealisticQuantity(
   food: FoodItem,
   mealType: "breakfast" | "lunch" | "dinner" | "snack",
   occurrences: number,
-  numberOfPeople: number
+  numberOfPeople: number,
+  mealsPerDay: number
 ): number {
   const category = food.category;
   const unit = food.unit;
@@ -220,10 +223,11 @@ function calculateRealisticQuantity(
     }
   } else if (category === "grains") {
     // 150g cooked de carbs por refeição
+    const carbMultiplier = mealsPerDay >= 5 ? 1.2 : 1;
     if (unit === "kg") {
-      portionPerMeal = 0.08; // ~80g dry = ~150g cooked
+      portionPerMeal = 0.08 * carbMultiplier; // ~80g dry = ~150g cooked
     } else if (unit === "loaf") {
-      portionPerMeal = 0.15; // ~15% de um pão (2-3 fatias)
+      portionPerMeal = 0.15 * carbMultiplier; // ~15% de um pão (2-3 fatias)
     }
   } else if (category === "vegetables") {
     // 150g de vegetais por refeição

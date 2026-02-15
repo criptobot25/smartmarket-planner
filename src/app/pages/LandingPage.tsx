@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Card } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
 import "./LandingPage.css";
@@ -15,48 +16,80 @@ import "./LandingPage.css";
  * https://conversionxl.com/blog/landing-page-best-practices/
  */
 export function LandingPage() {
+  const { t } = useTranslation();
+
   return (
     <div className="landing-page">
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-content">
+          <div className="hero-logo">
+            <span className="logo-icon">🎯</span>
+            <span className="logo-text">{t("app.name")}</span>
+          </div>
           <div className="hero-badge">
-            💰 Save €20+ per week automatically
+            {t("landing.heroBadge")}
           </div>
           
           <h1 className="hero-title">
-            Smart Meal Planning for
-            <span className="hero-gradient"> Fitness Goals</span>
+            {t("landing.heroTitlePrimary")}
+            <span className="hero-gradient"> {t("landing.heroTitleAccent")}</span>
           </h1>
           
           <p className="hero-subtitle">
-            Generate weekly meal plans optimized for your budget and protein targets.
-            No more expensive grocery bills or monotonous diets.
+            {t("landing.heroSubtitle")}
           </p>
           
           <div className="hero-cta">
             <Link to="/app" style={{ textDecoration: 'none' }}>
               <Button variant="primary">
-                🚀 Start Planning Free
+                {t("landing.startPlanning")}
               </Button>
             </Link>
             <p className="hero-note">
-              No credit card required • 1 free optimization per week
+              {t("landing.heroNote")}
             </p>
+          </div>
+          <div className="hero-trust">
+            <span>⭐️ {t("landing.heroTrustRating")}</span>
+            <span>•</span>
+            <span>{t("landing.heroTrustUsers")}</span>
           </div>
           
           <div className="hero-stats">
             <div className="stat">
               <div className="stat-value">€80+</div>
-              <div className="stat-label">Avg. monthly savings</div>
+              <div className="stat-label">{t("landing.statSavingsLabel")}</div>
             </div>
             <div className="stat">
               <div className="stat-value">150g</div>
-              <div className="stat-label">Protein per day</div>
+              <div className="stat-label">{t("landing.statProteinLabel")}</div>
             </div>
             <div className="stat">
               <div className="stat-value">2+</div>
-              <div className="stat-label">Protein sources minimum</div>
+              <div className="stat-label">{t("landing.statProteinSourcesLabel")}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Screenshot Section */}
+      <section className="screenshots">
+        <div className="screenshots-content">
+          <h2 className="section-title">{t("landing.sectionScreenshots")}</h2>
+          <p className="section-subtitle">{t("landing.sectionScreenshotsSubtitle")}</p>
+          <div className="screenshots-grid">
+            <div className="screenshot-card">
+              <div className="screenshot-frame" />
+              <p>{t("landing.screenshotPlanner")}</p>
+            </div>
+            <div className="screenshot-card">
+              <div className="screenshot-frame" />
+              <p>{t("landing.screenshotSavings")}</p>
+            </div>
+            <div className="screenshot-card">
+              <div className="screenshot-frame" />
+              <p>{t("landing.screenshotList")}</p>
             </div>
           </div>
         </div>
@@ -64,30 +97,30 @@ export function LandingPage() {
 
       {/* Features Section */}
       <section className="features">
-        <h2 className="section-title">How SmartMarket Works</h2>
+        <h2 className="section-title">{t("landing.sectionHowWorks")}</h2>
         
         <div className="features-grid">
           <Card>
             <div className="feature-icon">🎯</div>
-            <h3 className="feature-title">Set Your Goals</h3>
+            <h3 className="feature-title">{t("landing.featureGoalsTitle")}</h3>
             <p className="feature-description">
-              Choose your fitness goal (cutting, maintenance, bulking), set your budget, and customize preferences.
+              {t("landing.featureGoalsDesc")}
             </p>
           </Card>
           
           <Card>
             <div className="feature-icon">🤖</div>
-            <h3 className="feature-title">AI Optimizes Your Plan</h3>
+            <h3 className="feature-title">{t("landing.featureOptimizeTitle")}</h3>
             <p className="feature-description">
-              Our Smart Savings Mode maximizes protein-per-cost while maintaining diet variety. No "tuna only" diets.
+              {t("landing.featureOptimizeDesc")}
             </p>
           </Card>
           
           <Card>
             <div className="feature-icon">🛒</div>
-            <h3 className="feature-title">Get Your Shopping List</h3>
+            <h3 className="feature-title">{t("landing.featureListTitle")}</h3>
             <p className="feature-description">
-              Organized by category, shows total cost, savings, and protein. Export to PDF for supermarket trips.
+              {t("landing.featureListDesc")}
             </p>
           </Card>
         </div>
@@ -96,38 +129,108 @@ export function LandingPage() {
       {/* Benefits Section */}
       <section className="benefits">
         <div className="benefits-content">
-          <h2 className="section-title">Why SmartMarket?</h2>
+          <h2 className="section-title">{t("landing.sectionWhy")}</h2>
           
           <div className="benefits-list">
             <Card className="benefit-card">
               <div className="benefit-check">✓</div>
               <div>
-                <h4>Budget-Aware Optimization</h4>
-                <p>Automatically substitutes expensive items with cheaper alternatives while maintaining macros</p>
+                <h4>{t("landing.benefitBudgetTitle")}</h4>
+                <p>{t("landing.benefitBudgetDesc")}</p>
               </div>
             </Card>
             
             <Card className="benefit-card">
               <div className="benefit-check">✓</div>
               <div>
-                <h4>Diversity Guardrails</h4>
-                <p>Maintains minimum 2 different protein sources. No monotonous diets that kill adherence</p>
+                <h4>{t("landing.benefitDiversityTitle")}</h4>
+                <p>{t("landing.benefitDiversityDesc")}</p>
               </div>
             </Card>
             
             <Card className="benefit-card">
               <div className="benefit-check">✓</div>
               <div>
-                <h4>Personalization</h4>
-                <p>Exclude foods you don't like or can't eat. The optimizer respects your preferences</p>
+                <h4>{t("landing.benefitPersonalTitle")}</h4>
+                <p>{t("landing.benefitPersonalDesc")}</p>
               </div>
             </Card>
             
             <Card className="benefit-card">
               <div className="benefit-check">✓</div>
               <div>
-                <h4>Transparent & Honest</h4>
-                <p>Shows exactly what was substituted and why. Honest messaging when budget is impossible</p>
+                <h4>{t("landing.benefitTransparentTitle")}</h4>
+                <p>{t("landing.benefitTransparentDesc")}</p>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className="pricing">
+        <div className="pricing-content">
+          <h2 className="section-title">{t("landing.sectionPricing")}</h2>
+          <p className="section-subtitle">{t("landing.sectionPricingSubtitle")}</p>
+          <div className="pricing-grid">
+            <Card className="pricing-card">
+              <div className="pricing-header">
+                <h3>{t("landing.pricingFreeTitle")}</h3>
+                <p className="pricing-price">{t("landing.pricingFreePrice")}</p>
+              </div>
+              <ul className="pricing-features">
+                <li>{t("landing.pricingFreeFeature1")}</li>
+                <li>{t("landing.pricingFreeFeature2")}</li>
+                <li>{t("landing.pricingFreeFeature3")}</li>
+              </ul>
+              <Link to="/app" style={{ textDecoration: 'none' }}>
+                <Button variant="secondary">{t("landing.pricingFreeCta")}</Button>
+              </Link>
+            </Card>
+            <Card className="pricing-card featured">
+              <div className="pricing-badge">{t("landing.pricingPopular")}</div>
+              <div className="pricing-header">
+                <h3>{t("landing.pricingPremiumTitle")}</h3>
+                <p className="pricing-price">{t("landing.pricingPremiumPrice")}</p>
+              </div>
+              <ul className="pricing-features">
+                <li>{t("landing.pricingPremiumFeature1")}</li>
+                <li>{t("landing.pricingPremiumFeature2")}</li>
+                <li>{t("landing.pricingPremiumFeature3")}</li>
+                <li>{t("landing.pricingPremiumFeature4")}</li>
+              </ul>
+              <Link to="/app/premium" style={{ textDecoration: 'none' }}>
+                <Button variant="primary">{t("landing.pricingPremiumCta")}</Button>
+              </Link>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="testimonials">
+        <div className="testimonials-content">
+          <h2 className="section-title">{t("landing.sectionTestimonials")}</h2>
+          <div className="testimonials-grid">
+            <Card className="testimonial-card">
+              <p>“{t("landing.testimonial1.quote") }”</p>
+              <div className="testimonial-author">
+                <span className="testimonial-name">{t("landing.testimonial1.name")}</span>
+                <span className="testimonial-role">{t("landing.testimonial1.role")}</span>
+              </div>
+            </Card>
+            <Card className="testimonial-card">
+              <p>“{t("landing.testimonial2.quote") }”</p>
+              <div className="testimonial-author">
+                <span className="testimonial-name">{t("landing.testimonial2.name")}</span>
+                <span className="testimonial-role">{t("landing.testimonial2.role")}</span>
+              </div>
+            </Card>
+            <Card className="testimonial-card">
+              <p>“{t("landing.testimonial3.quote") }”</p>
+              <div className="testimonial-author">
+                <span className="testimonial-name">{t("landing.testimonial3.name")}</span>
+                <span className="testimonial-role">{t("landing.testimonial3.role")}</span>
               </div>
             </Card>
           </div>
@@ -137,17 +240,17 @@ export function LandingPage() {
       {/* CTA Section */}
       <section className="cta-section">
         <div className="cta-content">
-          <h2 className="cta-title">Ready to Save Money & Hit Your Protein Target?</h2>
-          <p className="cta-subtitle">Start planning your first week for free</p>
+          <h2 className="cta-title">{t("landing.ctaTitle")}</h2>
+          <p className="cta-subtitle">{t("landing.ctaSubtitle")}</p>
           
           <Link to="/app" style={{ textDecoration: 'none' }}>
             <Button variant="primary">
-              🚀 Get Started Free
+              {t("landing.ctaButton")}
             </Button>
           </Link>
           
           <p className="cta-note">
-            Free tier: 1 optimization/week • Premium: Unlimited + PDF export (€9.99/month)
+            {t("landing.ctaNote")}
           </p>
         </div>
       </section>
@@ -161,12 +264,12 @@ export function LandingPage() {
           </div>
           
           <div className="footer-links">
-            <Link to="/app">Planner</Link>
-            <Link to="/app/premium">Premium</Link>
+            <Link to="/app">{t("landing.footerPlanner")}</Link>
+            <Link to="/app/premium">{t("landing.footerPremium")}</Link>
           </div>
           
           <p className="footer-copy">
-            © 2026 SmartMarket Planner. Built for fitness enthusiasts who value their money.
+            {t("landing.footerCopy")}
           </p>
         </div>
       </footer>

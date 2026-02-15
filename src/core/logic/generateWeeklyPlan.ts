@@ -28,8 +28,7 @@ interface MealTemplate {
 }
 
 /**
- * Calcula proteína alvo baseado no fitness goal
- * Defaults simples sem assumir peso corporal
+ * Calcula proteína alvo baseado no fitness goal e peso (g/kg)
  */
 function calculateProteinTarget(input: PlanInput): number {
   // Se já foi especificado, usa o valor
@@ -37,15 +36,15 @@ function calculateProteinTarget(input: PlanInput): number {
     return input.proteinTargetPerDay;
   }
 
-  // Defaults baseados em metas fitness típicas
-  const defaultProteinTargets = {
-    cutting: 150,      // Alta proteína para preservar massa magra
-    maintenance: 120,  // Proteína moderada
-    bulking: 140       // Proteína moderada-alta + surplus calórico
-  };
-  
   const goal = input.fitnessGoal || "maintenance";
-  return defaultProteinTargets[goal];
+  const multipliers = {
+    cutting: 2.2,
+    maintenance: 1.8,
+    bulking: 2.0
+  } as const;
+
+  const target = input.weightKg * multipliers[goal];
+  return Math.round(target);
 }
 
 /**
@@ -57,7 +56,8 @@ function calculateProteinTarget(input: PlanInput): number {
  */
 function getMealTemplates(
   goal: "cutting" | "maintenance" | "bulking",
-  excludedFoods: string[] = []
+  excludedFoods: string[] = [],
+  mealsPerDay: number
 ): {
   breakfasts: MealTemplate[];
   lunches: MealTemplate[];
@@ -167,8 +167,8 @@ function getMealTemplates(
     ];
   }
 
-  // SNACKS (obrigatório em bulking para surplus calórico)
-  const snacks: MealTemplate[] = goal === "bulking" 
+  // SNACKS (add when meals per day >= 5)
+  const snacks: MealTemplate[] = mealsPerDay >= 5
     ? [
         {
           name: "Greek Yogurt + Oats + Banana",
@@ -224,7 +224,8 @@ export function generateWeeklyPlan(input: PlanInput): WeeklyPlan {
 
   const goal = input.fitnessGoal || "maintenance";
   const proteinTarget = calculateProteinTarget(input);
-  const templates = getMealTemplates(goal, input.excludedFoods || []);
+  const templates = getMealTemplates(goal, input.excludedFoods || [], input.mealsPerDay);
+  const includeSnack = input.mealsPerDay >= 5 && templates.snacks.length > 0;
 
   // Padrão de repetição semanal (meal prep real)
   // Segunda: Breakfast A, Lunch A, Dinner A
@@ -252,7 +253,7 @@ export function generateWeeklyPlan(input: PlanInput): WeeklyPlan {
     const breakfast = convertToMeal(templates.breakfasts[pattern.breakfast]);
     const lunch = convertToMeal(templates.lunches[pattern.lunch]);
     const dinner = convertToMeal(templates.dinners[pattern.dinner]);
-    const snack = goal === "bulking" ? convertToMeal(templates.snacks[0]) : null;
+    const snack = includeSnack ? convertToMeal(templates.snacks[0]) : null;
 
     const meals: DayMeals = {
       breakfast,

@@ -11,6 +11,7 @@
  * https://www.mckinsey.com/industries/retail/our-insights
  */
 
+import { useTranslation } from "react-i18next";
 import "./PremiumModal.css";
 
 interface PremiumModalProps {
@@ -26,36 +27,37 @@ export function PremiumModal({
   feature,
   remainingOptimizations = 0
 }: PremiumModalProps) {
+  const { t } = useTranslation();
   if (!isOpen) return null;
 
   const content = feature === 'savings' ? {
     icon: '⚡',
-    title: 'Cheapest High-Protein Swap Mode',
-    headline: 'Smart Savings Mode for protein-first swaps',
-    description: 'Free users get 1 Smart Savings optimization per week. Upgrade to Premium for unlimited swap rounds while preserving protein targets and diet variety.',
+    title: t("premium.savings.title"),
+    headline: t("premium.savings.headline"),
+    description: t("premium.savings.description"),
     benefits: [
-      '🔄 Unlimited Smart Savings optimizations',
-      '💪 Always hit your protein target',
-      '🍽️ Maintain diet variety (no "tuna only" diets)',
-      '🚫 Respect your food preferences',
-      '📊 Protein-per-cost efficiency tracking',
+      t("premium.savings.benefit1"),
+      t("premium.savings.benefit2"),
+      t("premium.savings.benefit3"),
+      t("premium.savings.benefit4"),
+      t("premium.savings.benefit5"),
     ],
-    cta: 'You have ' + remainingOptimizations + ' free optimization(s) this week',
-    price: '€9.99/month'
+    cta: t("premium.savings.cta", { count: remainingOptimizations }),
+    price: t("premium.price")
   } : {
     icon: '📄',
-    title: 'Export Your Shopping List to PDF',
-    headline: 'Take your list to the supermarket',
-    description: 'Premium users can export professionally formatted shopping lists to PDF. Perfect for printing or sharing on WhatsApp.',
+    title: t("premium.pdf.title"),
+    headline: t("premium.pdf.headline"),
+    description: t("premium.pdf.description"),
     benefits: [
-      '📄 Professional PDF export',
-      '🛒 Organized by category',
-      '💰 Shows total cost and savings',
-      '💪 Includes protein totals',
-      '📱 Easy to share (WhatsApp, email)',
+      t("premium.pdf.benefit1"),
+      t("premium.pdf.benefit2"),
+      t("premium.pdf.benefit3"),
+      t("premium.pdf.benefit4"),
+      t("premium.pdf.benefit5"),
     ],
-    cta: 'Premium feature',
-    price: '€9.99/month'
+    cta: t("premium.pdf.cta"),
+    price: t("premium.price")
   };
 
   return (
@@ -88,16 +90,16 @@ export function PremiumModal({
 
         <div className="premium-actions">
           <button className="btn-premium-upgrade" disabled>
-            🚀 Upgrade to Premium
+            {t("premium.upgradeButton")}
           </button>
           <p className="premium-note">
-            Payment integration coming soon. This is a demo of premium features.
+            {t("premium.note")}
           </p>
         </div>
 
         {feature === 'savings' && remainingOptimizations > 0 && (
           <button className="btn-continue-free" onClick={onClose}>
-            Continue with free tier ({remainingOptimizations} remaining this week)
+            {t("premium.continueFree", { count: remainingOptimizations })}
           </button>
         )}
       </div>

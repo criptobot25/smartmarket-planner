@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useShoppingPlan } from "../../contexts/ShoppingPlanContext";
 import { FoodItem, FoodCategory } from "../../core/models/FoodItem";
 import { formatQuantity } from "../../core/utils/formatQuantity";
@@ -15,6 +16,7 @@ interface ShoppingItem extends FoodItem {
 
 export function ShoppingListPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { shoppingList, toggleItemPurchased, weeklyPlan } = useShoppingPlan();
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [premiumFeature, setPremiumFeature] = useState<'savings' | 'pdf'>('pdf');
@@ -48,10 +50,10 @@ export function ShoppingListPage() {
     return (
       <div className="shopping-list-page">
         <div className="empty-state">
-          <h2>📋 Nenhuma lista encontrada</h2>
-          <p>Gere um plano primeiro!</p>
+          <h2>{t("shoppingList.emptyTitle")}</h2>
+          <p>{t("shoppingList.emptySubtitle")}</p>
           <button className="btn-primary" onClick={() => navigate("/app")}>
-            Voltar ao Início
+            {t("shoppingList.emptyButton")}
           </button>
         </div>
       </div>
@@ -71,21 +73,21 @@ export function ShoppingListPage() {
   });
 
   const categoryLabels: Record<FoodCategory, string> = {
-    vegetables: "🥬 Vegetais",
-    fruits: "🍎 Frutas",
-    proteins: "🍗 Proteínas",
-    grains: "🌾 Grãos",
-    dairy: "🥛 Laticínios",
-    oils: "🫒 Óleos",
-    spices: "🌶️ Temperos",
-    beverages: "🥤 Bebidas",
-    others: "📦 Outros"
+    vegetables: t("shoppingList.categories.vegetables"),
+    fruits: t("shoppingList.categories.fruits"),
+    proteins: t("shoppingList.categories.proteins"),
+    grains: t("shoppingList.categories.grains"),
+    dairy: t("shoppingList.categories.dairy"),
+    oils: t("shoppingList.categories.oils"),
+    spices: t("shoppingList.categories.spices"),
+    beverages: t("shoppingList.categories.beverages"),
+    others: t("shoppingList.categories.others")
   };
 
   const costTierMeta = {
-    low: { label: "Low Cost", emoji: "🟢" },
-    medium: { label: "Medium Cost", emoji: "🟡" },
-    high: { label: "High Cost", emoji: "🔴" }
+    low: { label: t("shoppingList.costLevel.low"), emoji: "🟢" },
+    medium: { label: t("shoppingList.costLevel.medium"), emoji: "🟡" },
+    high: { label: t("shoppingList.costLevel.high"), emoji: "🔴" }
   } as const;
   const costTierDisplay = costTierMeta[weeklyPlan.costTier];
   const proteinPerDay = weeklyPlan.proteinPerDay;
@@ -104,32 +106,34 @@ export function ShoppingListPage() {
       {/* Sticky Header */}
       <header className="shopping-header">
         <div className="header-top">
-          <h1 className="page-title">Shopping List</h1>
+          <h1 className="page-title">{t("shoppingList.pageTitle")}</h1>
           <div className="header-actions">
-            <span className="items-count">{purchasedCount} / {totalCount} items</span>
+            <span className="items-count">
+              {t("shoppingList.itemsCount", { purchased: purchasedCount, total: totalCount })}
+            </span>
           </div>
         </div>
         
         {/* Metrics Bar */}
         <div className="metrics-bar">
           <div className="metric">
-            <span className="metric-label">Protein Target</span>
+            <span className="metric-label">{t("shoppingList.metricProtein")}</span>
             <span className="metric-value">{proteinPerDay}g/day</span>
           </div>
           <div className="metric">
-            <span className="metric-label">Cost Level</span>
+            <span className="metric-label">{t("shoppingList.metricCostLevel")}</span>
             <span className={`cost-tier-badge cost-tier-${weeklyPlan.costTier}`}>
               {costTierDisplay.emoji} {costTierDisplay.label}
             </span>
           </div>
           <div className="metric">
-            <span className="metric-label">Progress</span>
+            <span className="metric-label">{t("shoppingList.metricProgress")}</span>
             <span className="metric-value">{Math.round((purchasedCount / totalCount) * 100)}%</span>
           </div>
         </div>
 
         <p className="cost-disclaimer">
-          Cost level is an estimate and may vary by location.
+          {t("shoppingList.costDisclaimer")}
         </p>
       </header>
 
@@ -137,24 +141,24 @@ export function ShoppingListPage() {
       {hasOptimizations && (
         <div className="budget-transparency">
           <div className="budget-transparency-header">
-            <h3 className="savings-title">Smart Savings Adjustments Applied</h3>
+            <h3 className="savings-title">{t("shoppingList.savingsTitle")}</h3>
             <div className="budget-status">
               {savingsStatus === 'adjusted_to_savings' && (
                 <>
                   <span className="status-icon">✅</span>
-                  <span className="status-text">Optimized for Smart Savings Mode</span>
+                  <span className="status-text">{t("shoppingList.savingsAdjusted")}</span>
                 </>
               )}
               {savingsStatus === 'over_savings_minimum' && (
                 <>
                   <span className="status-icon">⚠️</span>
-                  <span className="status-text">Optimized to minimum cost (savings limit)</span>
+                  <span className="status-text">{t("shoppingList.savingsOver")}</span>
                 </>
               )}
               {savingsStatus === 'within_savings' && (
                 <>
                   <span className="status-icon">💚</span>
-                  <span className="status-text">Savings target met</span>
+                  <span className="status-text">{t("shoppingList.savingsWithin")}</span>
                 </>
               )}
             </div>
@@ -164,21 +168,23 @@ export function ShoppingListPage() {
             <div className="budget-metric">
               <span className="metric-icon">💰</span>
               <div className="metric-content">
-                <span className="metric-label">Saved</span>
+                <span className="metric-label">{t("shoppingList.metricSaved")}</span>
                 <span className="metric-value">{totalSavings.toFixed(2)}/week</span>
               </div>
             </div>
             <div className="budget-metric">
               <span className="metric-icon">📊</span>
               <div className="metric-content">
-                <span className="metric-label">Protein efficiency</span>
-                <span className="metric-value">{efficiencyScore.toFixed(1)}g per cost</span>
+                <span className="metric-label">{t("shoppingList.metricProteinEfficiency")}</span>
+                <span className="metric-value">
+                  {t("shoppingList.metricProteinEfficiencyValue", { value: efficiencyScore.toFixed(1) })}
+                </span>
               </div>
             </div>
           </div>
 
           <div className="substitutions-list">
-            <h4 className="substitutions-title">Smart substitutions:</h4>
+            <h4 className="substitutions-title">{t("shoppingList.substitutionsTitle")}</h4>
             <ul className="substitutions-items">
               {substitutionsApplied.map((sub, index) => (
                 <li key={index} className="substitution-item">
@@ -186,7 +192,7 @@ export function ShoppingListPage() {
                     {sub.from} → {sub.to}
                   </span>
                   <span className="substitution-impact">
-                    {sub.savings > 0 && `${sub.savings.toFixed(2)} saved`}
+                    {sub.savings > 0 && t("shoppingList.savedAmount", { amount: sub.savings.toFixed(2) })}
                     {sub.proteinImpact !== 0 && (
                       <span className={sub.proteinImpact > 0 ? "protein-gain" : "protein-loss"}>
                         {sub.proteinImpact > 0 ? '+' : ''}{sub.proteinImpact.toFixed(0)}g
@@ -244,10 +250,10 @@ export function ShoppingListPage() {
           <button 
             className={`btn-premium ${!canExportPdf() ? 'btn-locked' : ''}`}
             onClick={handlePdfExport}
-            title={!canExportPdf() ? 'Premium feature - Upgrade to export PDF' : 'Export shopping list to PDF'}
+            title={!canExportPdf() ? t("shoppingList.exportPdfLockedTitle") : t("shoppingList.exportPdfTitle")}
           >
             {!canExportPdf() && '🔒 '}
-            📄 Export PDF
+            {t("shoppingList.exportPdf")}
           </button>
         </div>
       </main>

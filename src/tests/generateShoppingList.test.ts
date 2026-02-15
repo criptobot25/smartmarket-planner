@@ -8,6 +8,9 @@ describe('generateShoppingList', () => {
   it('should generate shopping list with categorized items', () => {
     const input: PlanInput = {
       numberOfPeople: 2,
+      sex: "male",
+      weightKg: 80,
+      mealsPerDay: 4,
       dietStyle: 'balanced',
       budget: 300,
       restrictions: []
@@ -39,6 +42,9 @@ describe('generateShoppingList', () => {
   it('should group items by category', () => {
     const input: PlanInput = {
       numberOfPeople: 2,
+      sex: "female",
+      weightKg: 65,
+      mealsPerDay: 3,
       dietStyle: 'healthy',
       budget: 300,
       restrictions: []
@@ -57,6 +63,9 @@ describe('generateShoppingList', () => {
   it('should calculate correct cost tier', () => {
     const input: PlanInput = {
       numberOfPeople: 2,
+      sex: "male",
+      weightKg: 85,
+      mealsPerDay: 5,
       dietStyle: 'balanced',
       budget: 300,
       restrictions: [],
@@ -73,6 +82,9 @@ describe('generateShoppingList', () => {
   it('should apply Smart Savings adjustments when cost exceeds target', () => {
     const input: PlanInput = {
       numberOfPeople: 2,
+      sex: "female",
+      weightKg: 62,
+      mealsPerDay: 4,
       dietStyle: 'balanced',
       budget: 40, // Very low budget to force adjustments
       restrictions: [],
@@ -90,6 +102,9 @@ describe('generateShoppingList', () => {
   it('should return within_savings status when cost is under target', () => {
     const input: PlanInput = {
       numberOfPeople: 1,
+      sex: "male",
+      weightKg: 75,
+      mealsPerDay: 3,
       dietStyle: 'balanced',
       budget: 500, // High budget
       restrictions: [],

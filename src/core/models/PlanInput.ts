@@ -1,8 +1,12 @@
 export type DietStyle = "healthy" | "balanced" | "comfort";
 export type FitnessGoal = "cutting" | "maintenance" | "bulking";
+export type Sex = "male" | "female";
 
 export interface PlanInput {
   numberOfPeople: number;
+  sex: Sex;
+  weightKg: number;
+  mealsPerDay: number;
   dietStyle: DietStyle;
   budget: number;
   restrictions: string[];
