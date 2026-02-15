@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useShoppingPlan } from "../../contexts/ShoppingPlanContext";
 import { FoodItem, FoodCategory } from "../../core/models/FoodItem";
 import { formatQuantity } from "../../core/utils/formatQuantity";
+import { normalizeQuantity } from "../../core/utils/QuantityNormalizer"; // PASSO 35
 import { exportShoppingListToPdf } from "../../utils/exportPdf";
 import { canExportPdf, getRemainingOptimizations } from "../../core/premium/features";
 import { PremiumModal } from "../components/PremiumModal";
@@ -233,7 +234,11 @@ export function ShoppingListPage() {
                 {meta.emoji} {meta.label}
               </h3>
               <ul className="items-list">
-                {items.map((item) => (
+                {items.map((item) => {
+                  // PASSO 35: Normalize quantity to real-world units
+                  const normalized = normalizeQuantity(item.name, item.quantity, item.unit);
+                  
+                  return (
                   <li
                     key={item.id}
                     className={`item ${item.purchased ? "purchased" : ""}`}
@@ -245,7 +250,7 @@ export function ShoppingListPage() {
                     <div className="item-info">
                       <span className="item-name">{item.name}</span>
                       <span className="item-quantity">
-                        {formatQuantity(item.name, item.quantity, item.unit as "kg" | "unit" | "pack" | "can")}
+                        {normalized.displayText}
                       </span>
                       {item.reason && (
                         <span className="item-reason">{item.reason}</span>
@@ -257,7 +262,8 @@ export function ShoppingListPage() {
                       </div>
                     )}
                   </li>
-                ))}
+                  );
+                })}
               </ul>
             </div>
             );
