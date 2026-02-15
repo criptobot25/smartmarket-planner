@@ -35,28 +35,45 @@ export function calculateMacroTargets(input: PlanInput): {
   proteinTargetPerDay: number;
   carbsTargetPerDay: number;
   fatTargetPerDay: number;
+  proteinPerMeal: number;
+  carbsPerMeal: number;
+  fatsPerMeal: number;
 } {
   const goal: FitnessGoal = input.fitnessGoal || "maintenance";
   const tdee = calculateTdee(input);
 
   let calories = tdee;
   if (goal === "cutting") {
-    calories = tdee * 0.85;
+    calories = tdee * 0.85; // -15%
   } else if (goal === "bulking") {
-    calories = tdee * 1.1;
+    calories = tdee * 1.1; // +10%
   }
 
+  // Protein: goal-based g/kg
   const proteinTargetPerDay = Math.round(input.weightKg * PROTEIN_MULTIPLIERS[goal]);
-  const fatTargetPerDay = Math.round(input.weightKg * 0.8);
+  
+  // Fats: 25% of calories
+  const caloriesFromFat = Math.round(calories * 0.25);
+  const fatTargetPerDay = Math.round(caloriesFromFat / 9);
+  
+  // Carbs: remaining calories
   const caloriesFromProtein = proteinTargetPerDay * 4;
-  const caloriesFromFat = fatTargetPerDay * 9;
   const remainingCalories = Math.max(0, calories - caloriesFromProtein - caloriesFromFat);
   const carbsTargetPerDay = Math.round(remainingCalories / 4);
+
+  // Per-meal breakdown
+  const mealsPerDay = input.mealsPerDay || 3;
+  const proteinPerMeal = Math.round(proteinTargetPerDay / mealsPerDay);
+  const carbsPerMeal = Math.round(carbsTargetPerDay / mealsPerDay);
+  const fatsPerMeal = Math.round(fatTargetPerDay / mealsPerDay);
 
   return {
     caloriesTargetPerDay: Math.round(calories),
     proteinTargetPerDay,
     carbsTargetPerDay,
     fatTargetPerDay,
+    proteinPerMeal,
+    carbsPerMeal,
+    fatsPerMeal,
   };
 }

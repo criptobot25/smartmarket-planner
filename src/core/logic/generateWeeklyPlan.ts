@@ -256,7 +256,10 @@ export function generateWeeklyPlan(input: PlanInput): WeeklyPlan {
     caloriesTargetPerDay: macroTargets.caloriesTargetPerDay,
     proteinTargetPerDay: macroTargets.proteinTargetPerDay,
     carbsTargetPerDay: macroTargets.carbsTargetPerDay,
-    fatTargetPerDay: macroTargets.fatTargetPerDay
+    fatTargetPerDay: macroTargets.fatTargetPerDay,
+    proteinPerMeal: macroTargets.proteinPerMeal,
+    carbsPerMeal: macroTargets.carbsPerMeal,
+    fatsPerMeal: macroTargets.fatsPerMeal
   };
 
   return weeklyPlan;

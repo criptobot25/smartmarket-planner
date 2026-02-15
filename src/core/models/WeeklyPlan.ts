@@ -46,6 +46,9 @@ export interface WeeklyPlan {
   proteinTargetPerDay: number;
   carbsTargetPerDay: number;
   fatTargetPerDay: number;
+  proteinPerMeal: number;
+  carbsPerMeal: number;
+  fatsPerMeal: number;
   // Smart Savings optimization data
   totalProtein?: number; // Total protein in shopping list (grams)
   efficiencyScore?: number; // Protein per euro
