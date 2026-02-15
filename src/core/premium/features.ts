@@ -4,12 +4,12 @@
  * Controls what features are available to free vs premium users.
  * 
  * Free tier:
- * - 1 budget optimization per week
+ * - 1 Smart Savings optimization per week
  * - No PDF export
  * - Basic meal planning
  * 
  * Premium tier ($9.99/month):
- * - Unlimited budget optimizations
+ * - Unlimited Smart Savings optimizations
  * - PDF export for shopping lists
  * - Priority support
  * 
@@ -21,8 +21,8 @@
  */
 
 export interface PremiumFeatures {
-  freeBudgetOptimizationsPerWeek: number;
-  premiumUnlimitedBudget: boolean;
+  freeSavingsOptimizationsPerWeek: number;
+  premiumUnlimitedSavings: boolean;
   premiumPdfExport: boolean;
   isPremium: boolean;
 }
@@ -32,14 +32,14 @@ export interface PremiumFeatures {
  * In production, isPremium would come from user subscription status
  */
 export const FEATURES: PremiumFeatures = {
-  freeBudgetOptimizationsPerWeek: 1,
-  premiumUnlimitedBudget: false,
+  freeSavingsOptimizationsPerWeek: 1,
+  premiumUnlimitedSavings: false,
   premiumPdfExport: false,
   isPremium: false,  // TODO: Connect to actual subscription status
 };
 
 /**
- * Track budget optimizations for free users
+ * Track Smart Savings optimizations for free users
  * In production, this would be stored in backend with user ID + timestamp
  */
 interface OptimizationUsage {
@@ -47,7 +47,7 @@ interface OptimizationUsage {
   lastResetDate: string; // ISO date string
 }
 
-const STORAGE_KEY = 'smartmarket_optimization_usage';
+const STORAGE_KEY = 'smartmarket_savings_usage';
 
 /**
  * Get current optimization usage for the week
@@ -84,15 +84,15 @@ export function incrementOptimizationUsage(): void {
 }
 
 /**
- * Check if user can use budget optimizer
+ * Check if user can use Smart Savings optimizer
  */
-export function canUseBudgetOptimizer(): boolean {
-  if (FEATURES.isPremium || FEATURES.premiumUnlimitedBudget) {
+export function canUseSavingsOptimizer(): boolean {
+  if (FEATURES.isPremium || FEATURES.premiumUnlimitedSavings) {
     return true;
   }
   
   const usage = getOptimizationUsage();
-  return usage.count < FEATURES.freeBudgetOptimizationsPerWeek;
+  return usage.count < FEATURES.freeSavingsOptimizationsPerWeek;
 }
 
 /**
@@ -106,10 +106,10 @@ export function canExportPdf(): boolean {
  * Get remaining free optimizations this week
  */
 export function getRemainingOptimizations(): number {
-  if (FEATURES.isPremium || FEATURES.premiumUnlimitedBudget) {
+  if (FEATURES.isPremium || FEATURES.premiumUnlimitedSavings) {
     return Infinity;
   }
   
   const usage = getOptimizationUsage();
-  return Math.max(0, FEATURES.freeBudgetOptimizationsPerWeek - usage.count);
+  return Math.max(0, FEATURES.freeSavingsOptimizationsPerWeek - usage.count);
 }

@@ -1,8 +1,10 @@
 import { PlanInput } from "../models/PlanInput";
 import { WeeklyPlan, Meal } from "../models/WeeklyPlan";
 import { FoodItem, FoodCategory } from "../models/FoodItem";
+import { CostTier } from "../models/CostTier";
 import { mockFoods } from "../../data/mockFoods";
-import { optimizeBudget, BudgetStatus, SubstitutionRecord } from "./SmartBudgetOptimizer";
+import { optimizeSavings, SavingsStatus, SubstitutionRecord } from "./SmartSavingsOptimizer";
+import { getCostTier } from "../utils/getCostTier";
 
 /**
  * SHOPPING LIST DERIVADA DO WEEKLY PLAN
@@ -15,8 +17,8 @@ import { optimizeBudget, BudgetStatus, SubstitutionRecord } from "./SmartBudgetO
  * - estimatedPrice (quantity * pricePerUnit)
  * - reason ("Lunch protein for 10 meals")
  * 
- * Budget optimization:
- * - SmartBudgetOptimizer maximiza proteína por euro
+ * Smart Savings optimization:
+ * - SmartSavingsOptimizer maximiza proteína por custo
  * - Substitui itens caros por alternativas eficientes
  * - Mantém macros semelhantes
  * 
@@ -33,10 +35,10 @@ interface IngredientOccurrence {
 
 interface ShoppingListResult {
   items: FoodItem[];
-  totalEstimatedCost: number;
+  costTier: CostTier;
   totalProtein: number; // NEW: Track total protein
   efficiencyScore: number; // NEW: Protein per euro
-  budgetStatus: BudgetStatus;
+  savingsStatus: SavingsStatus;
   substitutionsApplied: SubstitutionRecord[]; // NEW: Detailed substitutions
 }
 
@@ -64,20 +66,22 @@ export function generateShoppingList(
     0
   );
 
-  // 5. Aplicar Smart Budget Optimization (protein-per-euro strategy)
-  const optimizationResult = optimizeBudget(
+  // 5. Aplicar Smart Savings Optimization (protein-per-cost strategy)
+  const optimizationResult = optimizeSavings(
     sortedItems,
     initialCost,
     input.budget,
     input.excludedFoods || []
   );
 
+  const costTier = getCostTier(optimizationResult.items);
+
   return {
     items: optimizationResult.items,
-    totalEstimatedCost: optimizationResult.totalEstimatedCost,
+    costTier,
     totalProtein: optimizationResult.totalProtein,
     efficiencyScore: optimizationResult.efficiencyScore,
-    budgetStatus: optimizationResult.budgetStatus,
+    savingsStatus: optimizationResult.savingsStatus,
     substitutionsApplied: optimizationResult.substitutionsApplied,
   };
 }

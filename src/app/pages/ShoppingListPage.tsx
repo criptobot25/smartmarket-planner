@@ -17,7 +17,7 @@ export function ShoppingListPage() {
   const navigate = useNavigate();
   const { shoppingList, toggleItemPurchased, weeklyPlan } = useShoppingPlan();
   const [showPremiumModal, setShowPremiumModal] = useState(false);
-  const [premiumFeature, setPremiumFeature] = useState<'budget' | 'pdf'>('pdf');
+  const [premiumFeature, setPremiumFeature] = useState<'savings' | 'pdf'>('pdf');
 
   // Handler for PDF export
   const handlePdfExport = () => {
@@ -30,9 +30,9 @@ export function ShoppingListPage() {
     if (weeklyPlan) {
       exportShoppingListToPdf({
         items: shoppingList,
-        totalCost: weeklyPlan.totalCost,
+        costTier: weeklyPlan.costTier,
         totalProtein: weeklyPlan.totalProtein,
-        budgetStatus: weeklyPlan.budgetStatus,
+        savingsStatus: weeklyPlan.savingsStatus,
         substitutionsApplied: weeklyPlan.substitutionsApplied?.map(sub => ({
           from: sub.from,
           to: sub.to,
@@ -82,17 +82,20 @@ export function ShoppingListPage() {
     others: "📦 Outros"
   };
 
-  // Use budget-adjusted cost (changes based on budget/people/goal)
-  const totalCost = weeklyPlan.budgetAdjustedCost ?? weeklyPlan.totalCost;
+  const costTierMeta = {
+    low: { label: "Low Cost", emoji: "🟢" },
+    medium: { label: "Medium Cost", emoji: "🟡" },
+    high: { label: "High Cost", emoji: "🔴" }
+  } as const;
+  const costTierDisplay = costTierMeta[weeklyPlan.costTier];
   const proteinPerDay = weeklyPlan.proteinPerDay;
   const purchasedCount = shoppingList.filter(item => (item as ShoppingItem).purchased).length;
   const totalCount = shoppingList.length;
 
-  // Budget optimization data
-  const budgetStatus = weeklyPlan.budgetStatus;
+  // Smart Savings optimization data
+  const savingsStatus = weeklyPlan.savingsStatus;
   const substitutionsApplied = weeklyPlan.substitutionsApplied || [];
   const efficiencyScore = weeklyPlan.efficiencyScore || 0;
-  const originalBudget = weeklyPlan.planInput.budget;
   const totalSavings = substitutionsApplied.reduce((sum, sub) => sum + sub.savings, 0);
   const hasOptimizations = substitutionsApplied.length > 0;
 
@@ -114,37 +117,44 @@ export function ShoppingListPage() {
             <span className="metric-value">{proteinPerDay}g/day</span>
           </div>
           <div className="metric">
-            <span className="metric-label">Total Cost</span>
-            <span className="metric-value">€{totalCost.toFixed(2)}</span>
+            <span className="metric-label">Cost Level</span>
+            <span className={`cost-tier-badge cost-tier-${weeklyPlan.costTier}`}>
+              {costTierDisplay.emoji} {costTierDisplay.label}
+            </span>
           </div>
           <div className="metric">
             <span className="metric-label">Progress</span>
             <span className="metric-value">{Math.round((purchasedCount / totalCount) * 100)}%</span>
           </div>
         </div>
+
+        <p className="cost-disclaimer">
+          Cost level is an estimate and may vary by location.
+        </p>
       </header>
 
-      {/* Budget Transparency Box */}
+      {/* Smart Savings Box */}
       {hasOptimizations && (
         <div className="budget-transparency">
           <div className="budget-transparency-header">
+            <h3 className="savings-title">Smart Savings Adjustments Applied</h3>
             <div className="budget-status">
-              {budgetStatus === 'adjusted_to_fit' && (
+              {savingsStatus === 'adjusted_to_savings' && (
                 <>
                   <span className="status-icon">✅</span>
-                  <span className="status-text">Adjusted to fit €{originalBudget.toFixed(2)} budget</span>
+                  <span className="status-text">Optimized for Smart Savings Mode</span>
                 </>
               )}
-              {budgetStatus === 'over_budget_minimum' && (
+              {savingsStatus === 'over_savings_minimum' && (
                 <>
                   <span className="status-icon">⚠️</span>
-                  <span className="status-text">Optimized to minimum cost (budget: €{originalBudget.toFixed(2)})</span>
+                  <span className="status-text">Optimized to minimum cost (savings limit)</span>
                 </>
               )}
-              {budgetStatus === 'within_budget' && (
+              {savingsStatus === 'within_savings' && (
                 <>
                   <span className="status-icon">💚</span>
-                  <span className="status-text">Within budget</span>
+                  <span className="status-text">Savings target met</span>
                 </>
               )}
             </div>
@@ -155,14 +165,14 @@ export function ShoppingListPage() {
               <span className="metric-icon">💰</span>
               <div className="metric-content">
                 <span className="metric-label">Saved</span>
-                <span className="metric-value">€{totalSavings.toFixed(2)}/week</span>
+                <span className="metric-value">{totalSavings.toFixed(2)}/week</span>
               </div>
             </div>
             <div className="budget-metric">
               <span className="metric-icon">📊</span>
               <div className="metric-content">
                 <span className="metric-label">Protein efficiency</span>
-                <span className="metric-value">{efficiencyScore.toFixed(1)}g/€</span>
+                <span className="metric-value">{efficiencyScore.toFixed(1)}g per cost</span>
               </div>
             </div>
           </div>
@@ -176,7 +186,7 @@ export function ShoppingListPage() {
                     {sub.from} → {sub.to}
                   </span>
                   <span className="substitution-impact">
-                    {sub.savings > 0 && `€${sub.savings.toFixed(2)}`}
+                    {sub.savings > 0 && `${sub.savings.toFixed(2)} saved`}
                     {sub.proteinImpact !== 0 && (
                       <span className={sub.proteinImpact > 0 ? "protein-gain" : "protein-loss"}>
                         {sub.proteinImpact > 0 ? '+' : ''}{sub.proteinImpact.toFixed(0)}g
@@ -219,7 +229,7 @@ export function ShoppingListPage() {
                     </div>
                     {item.estimatedPrice && (
                       <div className="item-price">
-                        €{item.estimatedPrice.toFixed(2)}
+                        {item.estimatedPrice.toFixed(2)}
                       </div>
                     )}
                   </li>

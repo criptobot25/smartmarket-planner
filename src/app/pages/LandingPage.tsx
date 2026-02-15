@@ -79,7 +79,7 @@ export function LandingPage() {
             <div className="feature-icon">🤖</div>
             <h3 className="feature-title">AI Optimizes Your Plan</h3>
             <p className="feature-description">
-              Our budget optimizer maximizes protein-per-euro while maintaining diet variety. No "tuna only" diets.
+              Our Smart Savings Mode maximizes protein-per-cost while maintaining diet variety. No "tuna only" diets.
             </p>
           </Card>
           

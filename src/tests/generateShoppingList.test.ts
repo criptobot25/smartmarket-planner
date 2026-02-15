@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { generateShoppingList } from '../core/logic/generateShoppingList';
 import { generateWeeklyPlan } from '../core/logic/generateWeeklyPlan';
 import { PlanInput } from '../core/models/PlanInput';
+import { getCostTier } from '../core/utils/getCostTier';
 
 describe('generateShoppingList', () => {
   it('should generate shopping list with categorized items', () => {
@@ -18,10 +19,10 @@ describe('generateShoppingList', () => {
     // Validações básicas
     expect(result.items).toBeDefined();
     expect(result.items.length).toBeGreaterThan(0);
-    expect(result.totalEstimatedCost).toBeGreaterThan(0);
+    expect(result.costTier).toMatch(/low|medium|high/);
     expect(result.totalProtein).toBeGreaterThan(0);
     expect(result.efficiencyScore).toBeGreaterThan(0);
-    expect(result.budgetStatus).toBeDefined();
+    expect(result.savingsStatus).toBeDefined();
     expect(result.substitutionsApplied).toBeDefined();
     
     // Todos os itens devem ter categoria, reason e estimatedPrice
@@ -53,7 +54,7 @@ describe('generateShoppingList', () => {
     expect(categories.size).toBeGreaterThan(1);
   });
 
-  it('should calculate correct total cost', () => {
+  it('should calculate correct cost tier', () => {
     const input: PlanInput = {
       numberOfPeople: 2,
       dietStyle: 'balanced',
@@ -63,17 +64,13 @@ describe('generateShoppingList', () => {
     };
 
     const weeklyPlan = generateWeeklyPlan(input);
-    const { items, totalEstimatedCost } = generateShoppingList(input, weeklyPlan);
+    const { items, costTier } = generateShoppingList(input, weeklyPlan);
 
-    // Custo deve ser positivo
-    expect(totalEstimatedCost).toBeGreaterThan(0);
-    
-    // Total deve ser soma dos estimatedPrice
-    const manualTotal = items.reduce((sum, item) => sum + (item.estimatedPrice || 0), 0);
-    expect(totalEstimatedCost).toBeCloseTo(manualTotal, 2);
+    const expectedTier = getCostTier(items);
+    expect(costTier).toBe(expectedTier);
   });
 
-  it('should apply budget adjustments when cost exceeds budget', () => {
+  it('should apply Smart Savings adjustments when cost exceeds target', () => {
     const input: PlanInput = {
       numberOfPeople: 2,
       dietStyle: 'balanced',
@@ -83,22 +80,14 @@ describe('generateShoppingList', () => {
     };
 
     const weeklyPlan = generateWeeklyPlan(input);
-    const { totalEstimatedCost, budgetStatus } = generateShoppingList(input, weeklyPlan);
+    const { savingsStatus, costTier } = generateShoppingList(input, weeklyPlan);
 
     // Should attempt to fit budget or mark as over_budget_minimum
-    expect(budgetStatus).toMatch(/adjusted_to_fit|over_budget_minimum/);
-    
-    // If budget is too low, status should be over_budget_minimum
-    if (budgetStatus === 'over_budget_minimum') {
-      expect(totalEstimatedCost).toBeGreaterThan(input.budget);
-      console.log(`Note: Minimum cost €${totalEstimatedCost} exceeds budget €${input.budget}`);
-    }
-    
-    // Cost should not increase (substitutions should reduce or maintain cost)
-    expect(totalEstimatedCost).toBeLessThanOrEqual(200); // Sanity check
+    expect(savingsStatus).toMatch(/adjusted_to_savings|over_savings_minimum/);
+    expect(costTier).toMatch(/low|medium|high/);
   });
 
-  it('should return within_budget status when cost is under budget', () => {
+  it('should return within_savings status when cost is under target', () => {
     const input: PlanInput = {
       numberOfPeople: 1,
       dietStyle: 'balanced',
@@ -110,7 +99,7 @@ describe('generateShoppingList', () => {
     const weeklyPlan = generateWeeklyPlan(input);
     const result = generateShoppingList(input, weeklyPlan);
 
-    expect(result.budgetStatus).toBe('within_budget');
+    expect(result.savingsStatus).toBe('within_savings');
     expect(result.substitutionsApplied).toHaveLength(0);
   });
 });

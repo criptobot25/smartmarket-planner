@@ -16,7 +16,7 @@ import "./PremiumModal.css";
 interface PremiumModalProps {
   isOpen: boolean;
   onClose: () => void;
-  feature: 'budget' | 'pdf';
+  feature: 'savings' | 'pdf';
   remainingOptimizations?: number;
 }
 
@@ -28,17 +28,17 @@ export function PremiumModal({
 }: PremiumModalProps) {
   if (!isOpen) return null;
 
-  const content = feature === 'budget' ? {
-    icon: '💰',
-    title: 'Unlock Unlimited Budget Optimizations',
-    headline: 'Save €20+ per week automatically',
-    description: 'Free users get 1 optimization per week. Upgrade to Premium for unlimited budget optimizations while maintaining protein targets and diet variety.',
+  const content = feature === 'savings' ? {
+    icon: '⚡',
+    title: 'Cheapest High-Protein Swap Mode',
+    headline: 'Smart Savings Mode for protein-first swaps',
+    description: 'Free users get 1 Smart Savings optimization per week. Upgrade to Premium for unlimited swap rounds while preserving protein targets and diet variety.',
     benefits: [
-      '🔄 Unlimited budget optimizations',
+      '🔄 Unlimited Smart Savings optimizations',
       '💪 Always hit your protein target',
       '🍽️ Maintain diet variety (no "tuna only" diets)',
       '🚫 Respect your food preferences',
-      '📊 Protein-per-euro efficiency tracking',
+      '📊 Protein-per-cost efficiency tracking',
     ],
     cta: 'You have ' + remainingOptimizations + ' free optimization(s) this week',
     price: '€9.99/month'
@@ -95,7 +95,7 @@ export function PremiumModal({
           </p>
         </div>
 
-        {feature === 'budget' && remainingOptimizations > 0 && (
+        {feature === 'savings' && remainingOptimizations > 0 && (
           <button className="btn-continue-free" onClick={onClose}>
             Continue with free tier ({remainingOptimizations} remaining this week)
           </button>

@@ -1,5 +1,6 @@
 import { FoodItem } from "./FoodItem";
 import { PlanInput } from "./PlanInput";
+import { CostTier } from "./CostTier";
 
 export type DayOfWeek = 
   | "monday"
@@ -40,13 +41,12 @@ export interface WeeklyPlan {
   planInput: PlanInput;
   days: DayPlan[];
   shoppingList: FoodItem[];
-  totalCost: number; // Original cost from weekly plan generation
-  budgetAdjustedCost: number; // Final cost after budget adjustments
+  costTier: CostTier; // Low / Medium / High cost tier
   proteinPerDay: number;  // Protein target in grams per person per day
-  // Budget optimization data
+  // Smart Savings optimization data
   totalProtein?: number; // Total protein in shopping list (grams)
   efficiencyScore?: number; // Protein per euro
-  budgetStatus?: 'within_budget' | 'adjusted_to_fit' | 'over_budget_minimum';
+  savingsStatus?: 'within_savings' | 'adjusted_to_savings' | 'over_savings_minimum';
   substitutionsApplied?: Array<{
     from: string;
     to: string;

@@ -1,5 +1,6 @@
 import jsPDF from 'jspdf';
 import { FoodItem } from '../core/models/FoodItem';
+import { CostTier } from '../core/models/CostTier';
 
 /**
  * Export Shopping List to PDF
@@ -23,9 +24,9 @@ import { FoodItem } from '../core/models/FoodItem';
 
 interface ExportPdfOptions {
   items: FoodItem[];
-  totalCost: number;
+  costTier: CostTier;
   totalProtein?: number;
-  budgetStatus?: string;
+  savingsStatus?: string;
   substitutionsApplied?: Array<{
     from: string;
     to: string;
@@ -74,12 +75,18 @@ function formatCategoryName(category: string): string {
 export function exportShoppingListToPdf(options: ExportPdfOptions): void {
   const {
     items,
-    totalCost,
+    costTier,
     totalProtein = 0,
-    budgetStatus = 'unknown',
+    savingsStatus = 'unknown',
     substitutionsApplied = [],
     fitnessGoal = 'maintenance'
   } = options;
+
+  const costTierLabelMap = {
+    low: "Low cost",
+    medium: "Medium cost",
+    high: "High cost"
+  } as const;
 
   const doc = new jsPDF();
   
@@ -109,16 +116,16 @@ export function exportShoppingListToPdf(options: ExportPdfOptions): void {
   doc.setFontSize(12);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(0, 0, 0);
-  doc.text(`Total Cost: €${totalCost.toFixed(2)}`, leftMargin + 5, yPosition + 5);
+  doc.text(`Cost Tier: ${costTierLabelMap[costTier]}`, leftMargin + 5, yPosition + 5);
   
   if (totalProtein > 0) {
     doc.text(`Total Protein: ${Math.round(totalProtein)}g`, leftMargin + 5, yPosition + 12);
   }
   
-  if (budgetStatus === 'adjusted_to_fit') {
+  if (savingsStatus === 'adjusted_to_savings') {
     doc.setFontSize(10);
     doc.setTextColor(5, 150, 105); // Green
-    doc.text(`✓ Optimized to fit budget`, leftMargin + 5, yPosition + 18);
+    doc.text(`✓ Smart Savings applied`, leftMargin + 5, yPosition + 18);
   }
   
   yPosition += 35;

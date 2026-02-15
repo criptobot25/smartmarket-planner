@@ -12,10 +12,11 @@
 import { jsPDF } from "jspdf";
 import { FoodItem, FoodCategory } from "../models/FoodItem";
 import { formatQuantity } from "../utils/formatQuantity";
+import { CostTier } from "../models/CostTier";
 
 interface ExportOptions {
   proteinTarget: number;
-  totalCost: number;
+  costTier: CostTier;
   personName?: string;
 }
 
@@ -58,7 +59,13 @@ export function exportShoppingListPdf(
   shoppingList: FoodItem[],
   options: ExportOptions
 ): void {
-  const { proteinTarget, totalCost, personName } = options;
+  const { proteinTarget, costTier, personName } = options;
+
+  const costTierLabelMap = {
+    low: "Low cost",
+    medium: "Medium cost",
+    high: "High cost"
+  } as const;
 
   // Create PDF document (A4, portrait)
   const doc = new jsPDF({
@@ -99,7 +106,7 @@ export function exportShoppingListPdf(
   doc.setFontSize(12);
   doc.setFont("helvetica", "bold");
   doc.text(`🎯 Protein Target: ${proteinTarget}g/day`, margin + 5, yPosition + 5);
-  doc.text(`💰 Total Cost: €${totalCost.toFixed(2)}`, pageWidth - margin - 60, yPosition + 5);
+  doc.text(`💰 Cost Tier: ${costTierLabelMap[costTier]}`, pageWidth - margin - 60, yPosition + 5);
   
   doc.setTextColor(0, 0, 0);
   yPosition += 25;

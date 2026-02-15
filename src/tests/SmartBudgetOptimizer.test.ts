@@ -1,13 +1,13 @@
 /**
- * SmartBudgetOptimizer.test.ts
- * Unit tests for protein-per-euro budget optimization
+ * SmartSavingsOptimizer.test.ts
+ * Unit tests for protein-per-cost Smart Savings optimization
  */
 
 import { describe, it, expect } from "vitest";
-import { optimizeBudget } from "../core/logic/SmartBudgetOptimizer";
+import { optimizeSavings as optimizeBudget } from "../core/logic/SmartSavingsOptimizer";
 import { FoodItem } from "../core/models/FoodItem";
 
-describe("SmartBudgetOptimizer", () => {
+describe("SmartSavingsOptimizer", () => {
   /**
    * Test: Already within budget
    */
@@ -40,7 +40,7 @@ describe("SmartBudgetOptimizer", () => {
     
     const result = optimizeBudget(items, totalCost, budget);
     
-    expect(result.budgetStatus).toBe("within_budget");
+    expect(result.savingsStatus).toBe("within_savings");
     expect(result.substitutionsApplied).toHaveLength(0);
     expect(result.totalEstimatedCost).toBe(totalCost);
     expect(result.items).toHaveLength(2);
@@ -203,13 +203,13 @@ describe("SmartBudgetOptimizer", () => {
     expect(result.totalProtein).toBeGreaterThan(0);
     
     // Budget status should be adjusted or over minimum
-    expect(["adjusted_to_fit", "over_budget_minimum"]).toContain(result.budgetStatus);
+    expect(["adjusted_to_savings", "over_savings_minimum"]).toContain(result.savingsStatus);
   });
   
   /**
    * Test: No substitutions available
    */
-  it("should return over_budget_minimum when no substitutions help", () => {
+  it("should return over_savings_minimum when no substitutions help", () => {
     const items: FoodItem[] = [
       {
         id: "test-009",
@@ -229,7 +229,7 @@ describe("SmartBudgetOptimizer", () => {
     const result = optimizeBudget(items, totalCost, budget);
     
     // Chicken has no cheaper substitute, should fail
-    expect(result.budgetStatus).toBe("over_budget_minimum");
+    expect(result.savingsStatus).toBe("over_savings_minimum");
     expect(result.totalEstimatedCost).toBeGreaterThan(budget);
   });
   
@@ -496,10 +496,10 @@ describe("SmartBudgetOptimizer", () => {
   });
 
   /**
-   * TEST 3: Status should be "over_budget_minimum" when diversity prevents fitting budget
+  * TEST 3: Status should be "over_savings_minimum" when diversity prevents fitting savings target
    * Honest messaging when we can't meet budget without killing variety
    */
-  it("should return over_budget_minimum when diversity constraint prevents budget fit", () => {
+  it("should return over_savings_minimum when diversity constraint prevents savings fit", () => {
     const items: FoodItem[] = [
       {
         id: "test-status-001",
@@ -539,7 +539,7 @@ describe("SmartBudgetOptimizer", () => {
     const result = optimizeBudget(items, totalCost, budget);
     
     // Should be over budget due to diversity constraints
-    expect(result.budgetStatus).toBe("over_budget_minimum");
+    expect(result.savingsStatus).toBe("over_savings_minimum");
     expect(result.totalEstimatedCost).toBeGreaterThan(budget);
     
     // But should maintain variety
@@ -655,7 +655,7 @@ describe("SmartBudgetOptimizer", () => {
     console.log(`✅ No fish: All fish excluded by user`);
   });
 
-  it("should return over_budget_minimum when exclusions prevent budget fit", () => {
+  it("should return over_savings_minimum when exclusions prevent savings fit", () => {
     const items: FoodItem[] = [
       {
         id: "test-beef",
@@ -698,7 +698,7 @@ describe("SmartBudgetOptimizer", () => {
     // Without tuna substitution available, may not fit budget
     // Should be honest about it
     if (result.totalEstimatedCost > budget) {
-      expect(result.budgetStatus).toBe("over_budget_minimum");
+      expect(result.savingsStatus).toBe("over_savings_minimum");
       console.log(`✅ Honest status: Cannot fit €${budget} without excluded foods`);
     }
 

@@ -270,8 +270,7 @@ export function generateWeeklyPlan(input: PlanInput): WeeklyPlan {
     planInput: input,
     days,
     shoppingList: [],
-    totalCost: 0,
-    budgetAdjustedCost: 0, // Will be set by generateShoppingList
+    costTier: "low", // Will be set by generateShoppingList
     proteinPerDay: proteinTarget
   };
 

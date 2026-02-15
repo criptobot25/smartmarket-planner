@@ -44,6 +44,12 @@ export function HistoryPage() {
     comfort: "Conforto"
   };
 
+  const costTierLabels = {
+    low: "Low cost",
+    medium: "Medium cost",
+    high: "High cost"
+  } as const;
+
   return (
     <div className="history-page">
       <header className="history-header">
@@ -98,7 +104,7 @@ export function HistoryPage() {
                     </div>
                     <div className="plan-detail-item">
                       <span className="detail-icon">💰</span>
-                      <span>R$ {plan.totalCost.toFixed(2)}</span>
+                      <span>{costTierLabels[plan.costTier]}</span>
                     </div>
                     <div className="plan-detail-item">
                       <span className="detail-icon">🛒</span>
