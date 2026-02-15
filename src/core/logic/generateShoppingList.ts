@@ -29,7 +29,7 @@ import { getCostTier } from "../utils/getCostTier";
 
 interface IngredientOccurrence {
   foodId: string;
-  mealType: "breakfast" | "lunch" | "dinner" | "snack";
+  mealTypes: Set<"breakfast" | "lunch" | "dinner" | "snack">;
   occurrences: number;
 }
 
@@ -107,21 +107,38 @@ export function generateShoppingList(
     0
   );
 
-  // 5. Definir savings target baseado em cost tier
-  const savingsTargets = {
-    low: initialCost * 0.7,    // 30% reduction for low tier
-    medium: initialCost * 0.85, // 15% reduction for medium tier
-    high: initialCost * 1.0     // no reduction for high tier
-  };
-  const savingsTarget = savingsTargets[input.costTier];
-
-  // 6. Aplicar Smart Savings Optimization (protein-per-cost strategy)
-  const optimizationResult = optimizeSavings(
-    sortedItems,
-    initialCost,
-    savingsTarget,
-    input.excludedFoods || []
-  );
+  // 5. PASSO 24: SmartSavings only for low tier users
+  // Medium/high tier users get premium foods without optimization
+  let optimizationResult;
+  
+  if (input.costTier === "low") {
+    // Low tier: Apply aggressive savings optimization (30% reduction target)
+    const savingsTarget = initialCost * 0.7;
+    optimizationResult = optimizeSavings(
+      sortedItems,
+      initialCost,
+      savingsTarget,
+      input.excludedFoods || []
+    );
+  } else {
+    // Medium/high tier: Skip optimization, use foods as selected by MealBuilder
+    optimizationResult = {
+      items: sortedItems,
+      totalEstimatedCost: initialCost,
+      totalProtein: sortedItems.reduce((sum, item) => {
+        if (!item.macros?.protein) return sum;
+        return sum + (item.quantity * item.macros.protein * 10);
+      }, 0),
+      savingsStatus: "within_savings" as SavingsStatus,
+      substitutionsApplied: [],
+      efficiencyScore: initialCost > 0 
+        ? sortedItems.reduce((sum, item) => {
+            if (!item.macros?.protein) return sum;
+            return sum + (item.quantity * item.macros.protein * 10);
+          }, 0) / initialCost 
+        : 0,
+    };
+  }
 
   const costTier = getCostTier(optimizationResult.items);
 
@@ -177,15 +194,15 @@ function countMealIngredients(
   occurrenceMap: Map<string, IngredientOccurrence>
 ): void {
   meal.foodIds.forEach(foodId => {
-    const key = `${foodId}-${mealType}`;
-    const existing = occurrenceMap.get(key);
+    const existing = occurrenceMap.get(foodId);
 
     if (existing) {
       existing.occurrences += 1;
+      existing.mealTypes.add(mealType);
     } else {
-      occurrenceMap.set(key, {
+      occurrenceMap.set(foodId, {
         foodId,
-        mealType,
+        mealTypes: new Set([mealType]),
         occurrences: 1
       });
     }
@@ -216,9 +233,11 @@ function convertToFoodItem(
   };
 
   // Heurísticas de quantidade baseadas em meal prep real
+  // Use the first meal type for quantity calculation (they're similar anyway)
+  const primaryMealType = Array.from(occurrence.mealTypes)[0];
   const quantity = calculateRealisticQuantity(
     safeFood,
-    occurrence.mealType,
+    primaryMealType,
     occurrence.occurrences,
     mealsPerDay,
     macroScale
@@ -226,20 +245,26 @@ function convertToFoodItem(
 
   const estimatedPrice = quantity * food.pricePerUnit;
 
-  const reason = generateReason(
+  const mealTypesArray = Array.from(occurrence.mealTypes);
+  const reason = generateReasonFromMealTypes(
     safeFood,
-    occurrence.mealType,
+    mealTypesArray,
     occurrence.occurrences
   );
 
+  // Generate unique ID using foodId only since we now aggregate across meal types
+  // Add timestamp hash to ensure uniqueness across different plan generations
+  const uniqueId = occurrence.foodId;
+
   return {
-    id: food.id,
+    id: uniqueId,
     name: food.name,
     category: safeFood.category,
     unit: food.unit,
     pricePerUnit: food.pricePerUnit,
     quantity,
     macros: food.macros,
+    costLevel: food.costLevel, // PASSO 24: Preserve cost tier
     reason,
     estimatedPrice
   };
@@ -339,6 +364,62 @@ function calculateRealisticQuantity(
 
   // Arredondar para 2 casas decimais
   return Math.round(totalQuantity * 100) / 100;
+}
+
+/**
+ * Gera reason explicando por que o item está na lista (com múltiplos tipos de refeição)
+ */
+function generateReasonFromMealTypes(
+  food: FoodItem,
+  mealTypes: string[],
+  occurrences: number
+): string {
+  const category = food.category;
+  
+  // Classificar role do alimento
+  let role = "";
+  if (category === "proteins") {
+    role = "protein";
+  } else if (category === "grains") {
+    role = "carbs";
+  } else if (category === "vegetables") {
+    role = "vegetables";
+  } else if (category === "fruits") {
+    role = "fruit";
+  } else if (category === "dairy") {
+    role = "dairy";
+  } else if (category === "oils") {
+    role = "cooking oil";
+  } else if (category === "spices") {
+    role = "seasoning";
+  } else {
+    role = "ingredient";
+  }
+
+  if (mealTypes.length === 1) {
+    const mealLabel = {
+      breakfast: "Breakfast",
+      lunch: "Lunch",
+      dinner: "Dinner",
+      snack: "Snack"
+    }[mealTypes[0] as "breakfast" | "lunch" | "dinner" | "snack"];
+    
+    if (occurrences === 1) {
+      return `${mealLabel} ${role} (1 meal)`;
+    }
+    return `${mealLabel} ${role} for ${occurrences} meals`;
+  } else {
+    // Multiple meal types - show combined
+    const mealLabels = mealTypes.map(mt => {
+      return {
+        breakfast: "Breakfast",
+        lunch: "Lunch",
+        dinner: "Dinner",
+        snack: "Snack"
+      }[mt as "breakfast" | "lunch" | "dinner" | "snack"];
+    });
+    return `${mealLabels.join(", ")} ${role} for ${occurrences} meals`;
+  }
 }
 
 /**

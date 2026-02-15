@@ -1,6 +1,7 @@
 import { FoodItem } from "./FoodItem";
 import { PlanInput } from "./PlanInput";
 import { CostTier } from "./CostTier";
+import { MealPrepSummary } from "../logic/MealPrepSummary";
 
 export type DayOfWeek = 
   | "monday"
@@ -43,6 +44,7 @@ export interface DayMeals {
 export interface DayPlan {
   day: DayOfWeek;
   meals: DayMeals;
+  trainingDay: boolean; // PASSO 25: Training day flag for macro adjustments
 }
 
 export interface WeeklyPlan {
@@ -70,4 +72,6 @@ export interface WeeklyPlan {
     savings: number;
     proteinImpact: number;
   }>;
+  // PASSO 27: Meal prep summary (Sunday prep list)
+  mealPrepSummary?: MealPrepSummary;
 }

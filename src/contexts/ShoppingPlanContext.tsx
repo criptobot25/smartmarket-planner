@@ -9,6 +9,41 @@ import { suggestRecipes } from "../core/logic/suggestRecipes";
 import { savePlan } from "../core/storage/savePlan";
 import { loadHistory as loadHistoryFromStorage, loadLatestPlan } from "../core/storage/loadHistory";
 import { clearHistory as clearHistoryFromStorage } from "../core/storage/clearHistory";
+import { userPreferencesStore } from "../core/stores/UserPreferencesStore";
+
+const PURCHASED_ITEMS_KEY = "smartmarket_purchased_items";
+
+/**
+ * LocalStorage helpers for purchased items
+ */
+function savePurchasedItems(itemIds: string[]): void {
+  try {
+    localStorage.setItem(PURCHASED_ITEMS_KEY, JSON.stringify(itemIds));
+  } catch (error) {
+    console.error("❌ Error saving purchased items to localStorage:", error);
+  }
+}
+
+function loadPurchasedItems(): Set<string> {
+  try {
+    const stored = localStorage.getItem(PURCHASED_ITEMS_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      return new Set(Array.isArray(parsed) ? parsed : []);
+    }
+  } catch (error) {
+    console.error("❌ Error loading purchased items from localStorage:", error);
+  }
+  return new Set();
+}
+
+function clearPurchasedItems(): void {
+  try {
+    localStorage.removeItem(PURCHASED_ITEMS_KEY);
+  } catch (error) {
+    console.error("❌ Error clearing purchased items from localStorage:", error);
+  }
+}
 
 interface ShoppingPlanContextData {
   // Estado
@@ -58,9 +93,19 @@ export function ShoppingPlanProvider({ children }: ShoppingPlanProviderProps) {
         
         if (latestPlan) {
           console.log("📥 Último plano encontrado:", latestPlan.id);
+          
+          // Load purchased items from localStorage
+          const purchasedIds = loadPurchasedItems();
+          
+          // Mark items as purchased based on stored IDs
+          const listWithPurchasedState = latestPlan.shoppingList.map(item => ({
+            ...item,
+            purchased: purchasedIds.has(item.id)
+          })) as FoodItem[];
+          
           setWeeklyPlan(latestPlan);
           setCurrentInput(latestPlan.planInput);
-          setShoppingList(latestPlan.shoppingList);
+          setShoppingList(listWithPurchasedState);
           
           // Gera sugestões baseadas na lista salva
           const suggestions = suggestRecipes(latestPlan.shoppingList);
@@ -85,6 +130,17 @@ export function ShoppingPlanProvider({ children }: ShoppingPlanProviderProps) {
   const generatePlan = useCallback((input: PlanInput) => {
     try {
       console.log("🚀 Gerando plano com input:", input);
+
+      // Clear purchased items when generating a new plan
+      clearPurchasedItems();
+
+      // PASSO 26: Track excluded foods as disliked preferences
+      if (input.excludedFoods && input.excludedFoods.length > 0) {
+        input.excludedFoods.forEach(foodName => {
+          userPreferencesStore.addDislikedFood(foodName);
+        });
+        console.log("👎 Alimentos excluídos salvos como disliked:", input.excludedFoods);
+      }
 
       // Salva o input atual
       setCurrentInput(input);
@@ -156,7 +212,7 @@ export function ShoppingPlanProvider({ children }: ShoppingPlanProviderProps) {
    */
   const toggleItemPurchased = useCallback((id: string) => {
     setShoppingList(prevList => {
-      return prevList.map(item => {
+      const updatedList = prevList.map(item => {
         if (item.id === id) {
           return {
             ...item,
@@ -165,6 +221,14 @@ export function ShoppingPlanProvider({ children }: ShoppingPlanProviderProps) {
         }
         return item;
       });
+      
+      // Persist purchased items to localStorage
+      const purchasedIds = updatedList
+        .filter(item => (item as FoodItem & { purchased?: boolean }).purchased)
+        .map(item => item.id);
+      savePurchasedItems(purchasedIds);
+      
+      return updatedList;
     });
   }, []);
 

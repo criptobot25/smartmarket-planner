@@ -27,6 +27,7 @@ export const mockFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 7.99,
     quantity: 0,
+    costLevel: "medium",
     macros: {
       protein: 31,  // 31g protein per 100g
       carbs: 0,
@@ -40,6 +41,7 @@ export const mockFoods: FoodItem[] = [
     unit: "pack",  // 12 units
     pricePerUnit: 3.49,
     quantity: 0,
+    costLevel: "low",
     macros: {
       protein: 13,  // per 100g (2 eggs)
       carbs: 1.1,
@@ -53,6 +55,7 @@ export const mockFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 5.99,
     quantity: 0,
+    costLevel: "medium",
     macros: {
       protein: 10,
       carbs: 4,
@@ -66,6 +69,7 @@ export const mockFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 18.99,
     quantity: 0,
+    costLevel: "high",
     macros: {
       protein: 20,
       carbs: 0,
@@ -79,6 +83,7 @@ export const mockFoods: FoodItem[] = [
     unit: "can",  // 160g
     pricePerUnit: 1.99,
     quantity: 0,
+    costLevel: "low",
     macros: {
       protein: 25,
       carbs: 0,
@@ -92,6 +97,7 @@ export const mockFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 9.99,
     quantity: 0,
+    costLevel: "high",
     macros: {
       protein: 21,
       carbs: 0,
@@ -105,6 +111,7 @@ export const mockFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 4.49,
     quantity: 0,
+    costLevel: "medium",
     macros: {
       protein: 11,
       carbs: 3.4,
@@ -122,6 +129,7 @@ export const mockFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 2.49,
     quantity: 0,
+    costLevel: "low",
     macros: {
       protein: 7,
       carbs: 77,
@@ -135,6 +143,7 @@ export const mockFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 3.29,
     quantity: 0,
+    costLevel: "low",
     macros: {
       protein: 8,
       carbs: 76,
@@ -148,6 +157,7 @@ export const mockFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 2.99,
     quantity: 0,
+    costLevel: "low",
     macros: {
       protein: 13.7,
       carbs: 67,
@@ -161,6 +171,7 @@ export const mockFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 2.19,
     quantity: 0,
+    costLevel: "low",
     macros: {
       protein: 1.6,
       carbs: 20,
@@ -174,6 +185,7 @@ export const mockFoods: FoodItem[] = [
     unit: "loaf",  // 500g
     pricePerUnit: 2.49,
     quantity: 0,
+    costLevel: "low",
     macros: {
       protein: 9,
       carbs: 49,
@@ -187,6 +199,7 @@ export const mockFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 6.99,
     quantity: 0,
+    costLevel: "medium",
     macros: {
       protein: 14,
       carbs: 64,
@@ -200,6 +213,7 @@ export const mockFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 2.79,
     quantity: 0,
+    costLevel: "low",
     macros: {
       protein: 13,
       carbs: 67,
@@ -217,6 +231,7 @@ export const mockFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 2.99,
     quantity: 0,
+    costLevel: "low",
     macros: {
       protein: 2.8,
       carbs: 7,
@@ -230,6 +245,7 @@ export const mockFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 3.49,
     quantity: 0,
+    costLevel: "medium",
     macros: {
       protein: 2.9,
       carbs: 3.6,
@@ -243,6 +259,7 @@ export const mockFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 2.49,
     quantity: 0,
+    costLevel: "low",
     macros: {
       protein: 0.9,
       carbs: 3.9,
@@ -256,6 +273,7 @@ export const mockFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 3.99,
     quantity: 0,
+    costLevel: "medium",
     macros: {
       protein: 1,
       carbs: 6,
@@ -269,6 +287,7 @@ export const mockFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 1.29,
     quantity: 0,
+    costLevel: "low",
     macros: {
       protein: 0.9,
       carbs: 10,
@@ -282,6 +301,7 @@ export const mockFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 1.49,
     quantity: 0,
+    costLevel: "low",
     macros: {
       protein: 0.7,
       carbs: 3.6,
@@ -295,6 +315,7 @@ export const mockFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 2.99,
     quantity: 0,
+    costLevel: "low",
     macros: {
       protein: 1.4,
       carbs: 2.9,
@@ -312,6 +333,7 @@ export const mockFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 1.79,
     quantity: 0,
+    costLevel: "low",
     macros: {
       protein: 1.1,
       carbs: 23,
@@ -325,6 +347,7 @@ export const mockFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 2.49,
     quantity: 0,
+    costLevel: "low",
     macros: {
       protein: 0.3,
       carbs: 14,
@@ -338,6 +361,7 @@ export const mockFoods: FoodItem[] = [
     unit: "pack",  // 250g
     pricePerUnit: 3.99,
     quantity: 0,
+    costLevel: "medium",
     macros: {
       protein: 0.7,
       carbs: 14,
@@ -351,6 +375,7 @@ export const mockFoods: FoodItem[] = [
     unit: "pack",  // 500g
     pricePerUnit: 3.49,
     quantity: 0,
+    costLevel: "medium",
     macros: {
       protein: 0.7,
       carbs: 8,
@@ -364,6 +389,7 @@ export const mockFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 2.29,
     quantity: 0,
+    costLevel: "low",
     macros: {
       protein: 0.9,
       carbs: 12,
@@ -381,6 +407,7 @@ export const mockFoods: FoodItem[] = [
     unit: "L",
     pricePerUnit: 8.99,
     quantity: 0,
+    costLevel: "high",
     macros: {
       protein: 0,
       carbs: 0,
@@ -394,6 +421,7 @@ export const mockFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 4.99,
     quantity: 0,
+    costLevel: "medium",
     macros: {
       protein: 2,
       carbs: 9,
@@ -407,6 +435,7 @@ export const mockFoods: FoodItem[] = [
     unit: "jar",  // 500g
     pricePerUnit: 4.49,
     quantity: 0,
+    costLevel: "medium",
     macros: {
       protein: 25,
       carbs: 20,
@@ -420,6 +449,7 @@ export const mockFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 12.99,
     quantity: 0,
+    costLevel: "high",
     macros: {
       protein: 21,
       carbs: 22,
@@ -437,6 +467,7 @@ export const mockFoods: FoodItem[] = [
     unit: "pack",  // 500g
     pricePerUnit: 1.49,
     quantity: 0,
+    costLevel: "low",
     macros: {
       protein: 0,
       carbs: 0,
@@ -450,6 +481,7 @@ export const mockFoods: FoodItem[] = [
     unit: "pack",  // 100g
     pricePerUnit: 2.49,
     quantity: 0,
+    costLevel: "low",
     macros: {
       protein: 10,
       carbs: 64,
@@ -463,6 +495,7 @@ export const mockFoods: FoodItem[] = [
     unit: "pack",  // 100g
     pricePerUnit: 3.29,
     quantity: 0,
+    costLevel: "medium",
     macros: {
       protein: 18,
       carbs: 73,
@@ -476,6 +509,7 @@ export const mockFoods: FoodItem[] = [
     unit: "pack",  // 100g
     pricePerUnit: 2.99,
     quantity: 0,
+    costLevel: "low",
     macros: {
       protein: 14,
       carbs: 54,
@@ -493,6 +527,7 @@ export const mockFoods: FoodItem[] = [
     unit: "L",
     pricePerUnit: 1.49,
     quantity: 0,
+    costLevel: "low",
     macros: {
       protein: 3.4,
       carbs: 5,
@@ -506,6 +541,7 @@ export const mockFoods: FoodItem[] = [
     unit: "L",
     pricePerUnit: 2.49,
     quantity: 0,
+    costLevel: "low",
     macros: {
       protein: 0.4,
       carbs: 0.3,

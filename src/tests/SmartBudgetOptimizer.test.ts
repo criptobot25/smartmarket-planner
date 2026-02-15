@@ -22,6 +22,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 1,
         estimatedPrice: 7.99,
         macros: { protein: 31, carbs: 0, fat: 3.6 },
+        costLevel: "medium" as const,
       },
       {
         id: "test-002",
@@ -32,6 +33,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 2,
         estimatedPrice: 4.98,
         macros: { protein: 7, carbs: 77, fat: 0.6 },
+        costLevel: "low" as const,
       },
     ];
     
@@ -60,6 +62,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 2,
         estimatedPrice: 37.98,
         macros: { protein: 20, carbs: 0, fat: 13 },
+        costLevel: "high" as const,
       },
       {
         id: "test-003b",
@@ -70,6 +73,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 1,
         estimatedPrice: 7.99,
         macros: { protein: 31, carbs: 0, fat: 3.6 },
+        costLevel: "medium" as const,
       },
       {
         id: "test-004",
@@ -80,6 +84,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 3,
         estimatedPrice: 7.47,
         macros: { protein: 7, carbs: 77, fat: 0.6 },
+        costLevel: "low" as const,
       },
     ];
     
@@ -118,6 +123,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 2,
         estimatedPrice: 15.98,
         macros: { protein: 31, carbs: 0, fat: 3.6 },
+        costLevel: "medium" as const,
       },
       {
         id: "test-006",
@@ -128,6 +134,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 3,
         estimatedPrice: 20.97,
         macros: { protein: 14, carbs: 64, fat: 6 },
+        costLevel: "medium" as const,
       },
     ];
     
@@ -165,6 +172,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 1,
         estimatedPrice: 18.99,
         macros: { protein: 20, carbs: 0, fat: 13 },
+        costLevel: "high" as const,
       },
       {
         id: "test-007b",
@@ -175,6 +183,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 0.5,
         estimatedPrice: 4.00,
         macros: { protein: 31, carbs: 0, fat: 3.6 },
+        costLevel: "medium" as const,
       },
       {
         id: "test-008",
@@ -185,6 +194,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 2,
         estimatedPrice: 13.98,
         macros: { protein: 14, carbs: 64, fat: 6 },
+        costLevel: "medium" as const,
       },
     ];
     
@@ -220,6 +230,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 10, // Very high quantity
         estimatedPrice: 79.90,
         macros: { protein: 31, carbs: 0, fat: 3.6 },
+        costLevel: "medium" as const,
       },
     ];
     
@@ -247,6 +258,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 1.5,
         estimatedPrice: 28.49,
         macros: { protein: 20, carbs: 0, fat: 13 },
+        costLevel: "high" as const,
       },
       {
         id: "test-010b",
@@ -257,6 +269,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 1,
         estimatedPrice: 7.99,
         macros: { protein: 31, carbs: 0, fat: 3.6 },
+        costLevel: "medium" as const,
       },
       {
         id: "test-011",
@@ -267,6 +280,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 2,
         estimatedPrice: 13.98,
         macros: { protein: 14, carbs: 64, fat: 6 },
+        costLevel: "medium" as const,
       },
       {
         id: "test-012",
@@ -277,6 +291,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 1,
         estimatedPrice: 4.49,
         macros: { protein: 11, carbs: 3.4, fat: 4.3 },
+        costLevel: "medium" as const,
       },
     ];
     
@@ -312,6 +327,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 2,
         estimatedPrice: 37.98,
         macros: { protein: 20, carbs: 0, fat: 13 },
+        costLevel: "high" as const,
       },
     ];
     
@@ -346,6 +362,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 1,
         estimatedPrice: 7.99,
         macros: { protein: 31, carbs: 0, fat: 3.6 },
+        costLevel: "medium" as const,
       },
     ];
     
@@ -381,6 +398,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 2,
         estimatedPrice: 37.98,
         macros: { protein: 20, carbs: 0, fat: 13 },
+        costLevel: "high" as const,
       },
       {
         id: "test-div-002",
@@ -391,6 +409,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 1,
         estimatedPrice: 7.99,
         macros: { protein: 31, carbs: 0, fat: 3.6 },
+        costLevel: "medium" as const,
       },
       {
         id: "test-div-003",
@@ -401,6 +420,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 1,
         estimatedPrice: 5.99,
         macros: { protein: 10, carbs: 4, fat: 0.4 },
+        costLevel: "medium" as const,
       },
       {
         id: "test-div-004",
@@ -411,6 +431,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 2,
         estimatedPrice: 4.98,
         macros: { protein: 7, carbs: 77, fat: 0.6 },
+        costLevel: "low" as const,
       },
     ];
     
@@ -444,6 +465,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 1.5,
         estimatedPrice: 28.49,
         macros: { protein: 20, carbs: 0, fat: 13 },
+        costLevel: "high" as const,
       },
       {
         id: "test-max-002",
@@ -454,6 +476,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 1,
         estimatedPrice: 9.99,
         macros: { protein: 21, carbs: 0, fat: 5 },
+        costLevel: "high" as const,
       },
       {
         id: "test-max-003",
@@ -464,6 +487,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 1,
         estimatedPrice: 11.99,
         macros: { protein: 29, carbs: 0, fat: 1 },
+        costLevel: "high" as const,
       },
       {
         id: "test-max-004",
@@ -474,6 +498,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 2,
         estimatedPrice: 13.98,
         macros: { protein: 14, carbs: 64, fat: 6 },
+        costLevel: "medium" as const,
       },
     ];
     
@@ -510,6 +535,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 2,
         estimatedPrice: 37.98,
         macros: { protein: 20, carbs: 0, fat: 13 },
+        costLevel: "high" as const,
       },
       {
         id: "test-status-002",
@@ -520,6 +546,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 2,
         estimatedPrice: 15.98,
         macros: { protein: 31, carbs: 0, fat: 3.6 },
+        costLevel: "medium" as const,
       },
       {
         id: "test-status-003",
@@ -530,6 +557,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 3,
         estimatedPrice: 7.47,
         macros: { protein: 7, carbs: 77, fat: 0.6 },
+        costLevel: "low" as const,
       },
     ];
     
@@ -564,6 +592,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 1.5,
         estimatedPrice: 28.485,
         macros: { protein: 20, carbs: 0, fat: 13 },
+        costLevel: "high" as const,
       },
       {
         id: "test-chicken",
@@ -574,6 +603,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 1,
         estimatedPrice: 7.99,
         macros: { protein: 31, carbs: 0, fat: 3.6 },
+        costLevel: "medium" as const,
       },
       {
         id: "test-rice",
@@ -584,6 +614,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 2,
         estimatedPrice: 4.98,
         macros: { protein: 7, carbs: 77, fat: 0.6 },
+        costLevel: "low" as const,
       },
     ];
 
@@ -614,6 +645,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 2,
         estimatedPrice: 19.98,
         macros: { protein: 26, carbs: 0, fat: 15 },
+        costLevel: "high" as const,
       },
       {
         id: "test-chicken",
@@ -624,6 +656,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 1.5,
         estimatedPrice: 11.985,
         macros: { protein: 31, carbs: 0, fat: 3.6 },
+        costLevel: "medium" as const,
       },
       {
         id: "test-rice",
@@ -634,6 +667,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 2,
         estimatedPrice: 4.98,
         macros: { protein: 7, carbs: 77, fat: 0.6 },
+        costLevel: "low" as const,
       },
     ];
 
@@ -666,6 +700,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 2,
         estimatedPrice: 19.98,
         macros: { protein: 26, carbs: 0, fat: 15 },
+        costLevel: "high" as const,
       },
       {
         id: "test-chicken",
@@ -676,6 +711,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 1.5,
         estimatedPrice: 11.985,
         macros: { protein: 31, carbs: 0, fat: 3.6 },
+        costLevel: "medium" as const,
       },
       {
         id: "test-rice",
@@ -686,6 +722,7 @@ describe("SmartSavingsOptimizer", () => {
         quantity: 2,
         estimatedPrice: 4.98,
         macros: { protein: 7, carbs: 77, fat: 0.6 },
+        costLevel: "low" as const,
       },
     ];
 

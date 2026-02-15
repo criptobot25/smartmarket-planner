@@ -11,7 +11,8 @@ describe('suggestRecipes', () => {
         category: 'proteins',
         unit: 'dúzia',
         pricePerUnit: 12.00,
-        quantity: 1
+        quantity: 1,
+        costLevel: 'high' as const
       },
       {
         id: 'food-003',
@@ -19,7 +20,8 @@ describe('suggestRecipes', () => {
         category: 'grains',
         unit: 'kg',
         pricePerUnit: 8.50,
-        quantity: 0.5
+        quantity: 0.5,
+        costLevel: 'high' as const
       }
     ];
 
@@ -45,7 +47,8 @@ describe('suggestRecipes', () => {
         category: 'proteins',
         unit: 'dúzia',
         pricePerUnit: 12.00,
-        quantity: 2
+        quantity: 2,
+        costLevel: 'high' as const
       },
       {
         id: 'food-011',
@@ -53,7 +56,8 @@ describe('suggestRecipes', () => {
         category: 'vegetables',
         unit: 'kg',
         pricePerUnit: 6.00,
-        quantity: 0.5
+        quantity: 0.5,
+        costLevel: 'medium' as const
       },
       {
         id: 'food-012',
@@ -61,7 +65,8 @@ describe('suggestRecipes', () => {
         category: 'vegetables',
         unit: 'kg',
         pricePerUnit: 4.00,
-        quantity: 0.3
+        quantity: 0.3,
+        costLevel: 'medium' as const
       },
       {
         id: 'food-028',
@@ -69,7 +74,8 @@ describe('suggestRecipes', () => {
         category: 'oils',
         unit: 'L',
         pricePerUnit: 8.00,
-        quantity: 0.5
+        quantity: 0.5,
+        costLevel: 'high' as const
       },
       {
         id: 'food-029',
@@ -77,7 +83,8 @@ describe('suggestRecipes', () => {
         category: 'spices',
         unit: 'kg',
         pricePerUnit: 2.00,
-        quantity: 1
+        quantity: 1,
+        costLevel: 'low' as const
       }
     ];
 

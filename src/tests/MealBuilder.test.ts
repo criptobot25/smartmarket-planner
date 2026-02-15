@@ -16,7 +16,8 @@ const mockProteinFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 10,
     quantity: 1,
-    macros: { protein: 31, carbs: 0, fat: 3.6 }
+    macros: { protein: 31, carbs: 0, fat: 3.6 },
+    costLevel: "medium"
   },
   {
     id: "salmon",
@@ -25,7 +26,8 @@ const mockProteinFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 25,
     quantity: 1,
-    macros: { protein: 20, carbs: 0, fat: 13 }
+    macros: { protein: 20, carbs: 0, fat: 13 },
+    costLevel: "high"
   },
   {
     id: "tuna",
@@ -34,7 +36,8 @@ const mockProteinFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 8,
     quantity: 1,
-    macros: { protein: 26, carbs: 0, fat: 1 }
+    macros: { protein: 26, carbs: 0, fat: 1 },
+    costLevel: "low"
   }
 ];
 
@@ -46,7 +49,8 @@ const mockCarbFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 2,
     quantity: 1,
-    macros: { protein: 2.7, carbs: 28, fat: 0.3 }
+    macros: { protein: 2.7, carbs: 28, fat: 0.3 },
+    costLevel: "low"
   },
   {
     id: "quinoa",
@@ -55,7 +59,8 @@ const mockCarbFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 8,
     quantity: 1,
-    macros: { protein: 4.4, carbs: 21, fat: 1.9 }
+    macros: { protein: 4.4, carbs: 21, fat: 1.9 },
+    costLevel: "medium"
   },
   {
     id: "sweet-potato",
@@ -64,7 +69,8 @@ const mockCarbFoods: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 3,
     quantity: 1,
-    macros: { protein: 1.6, carbs: 20, fat: 0.1 }
+    macros: { protein: 1.6, carbs: 20, fat: 0.1 },
+    costLevel: "low"
   }
 ];
 
@@ -76,7 +82,8 @@ const mockVegetables: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 4,
     quantity: 1,
-    macros: { protein: 2.8, carbs: 7, fat: 0.4 }
+    macros: { protein: 2.8, carbs: 7, fat: 0.4 },
+    costLevel: "low"
   },
   {
     id: "spinach",
@@ -85,7 +92,8 @@ const mockVegetables: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 5,
     quantity: 1,
-    macros: { protein: 2.9, carbs: 3.6, fat: 0.4 }
+    macros: { protein: 2.9, carbs: 3.6, fat: 0.4 },
+    costLevel: "medium"
   }
 ];
 
@@ -97,7 +105,8 @@ const mockFatFoods: FoodItem[] = [
     unit: "L",
     pricePerUnit: 8,
     quantity: 1,
-    macros: { protein: 0, carbs: 0, fat: 100 }
+    macros: { protein: 0, carbs: 0, fat: 100 },
+    costLevel: "high"
   }
 ];
 
@@ -109,7 +118,8 @@ const mockDairy: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 6,
     quantity: 1,
-    macros: { protein: 10, carbs: 3.6, fat: 5 }
+    macros: { protein: 10, carbs: 3.6, fat: 5 },
+    costLevel: "medium"
   }
 ];
 
@@ -121,7 +131,8 @@ const mockFruits: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 2,
     quantity: 1,
-    macros: { protein: 1.1, carbs: 23, fat: 0.3 }
+    macros: { protein: 1.1, carbs: 23, fat: 0.3 },
+    costLevel: "low"
   }
 ];
 
@@ -133,7 +144,8 @@ const mockOats: FoodItem[] = [
     unit: "kg",
     pricePerUnit: 3,
     quantity: 1,
-    macros: { protein: 13.2, carbs: 67, fat: 6.9 }
+    macros: { protein: 13.2, carbs: 67, fat: 6.9 },
+    costLevel: "low"
   }
 ];
 
@@ -310,7 +322,7 @@ describe("MealBuilder - Meal Composition", () => {
       macroTargetsPerMeal: { protein: 40, carbs: 50, fats: 15 },
       availableFoods: allMockFoods,
       excludedFoods: [],
-      costTier: "medium"
+      costTier: "high" // Use high tier to ensure fat sources are available
     });
     
     expect(meal.macros.protein).toBeGreaterThan(30); // Close to 40g target

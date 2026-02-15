@@ -24,7 +24,8 @@ describe("PortionCalculator - Protein Calculations", () => {
       unit: "kg",
       pricePerUnit: 12,
       quantity: 1,
-      macros: { protein: 31, carbs: 0, fat: 3.6 }
+      macros: { protein: 31, carbs: 0, fat: 3.6 },
+      costLevel: "high" as const
     };
     
     // Target: 40g protein, Chicken has 31g/100g
@@ -41,7 +42,8 @@ describe("PortionCalculator - Protein Calculations", () => {
       unit: "kg",
       pricePerUnit: 20,
       quantity: 1,
-      macros: { protein: 20, carbs: 0, fat: 13 }
+      macros: { protein: 20, carbs: 0, fat: 13 },
+      costLevel: "high" as const
     };
     
     // Target: 30g protein, Salmon has 20g/100g
@@ -58,7 +60,8 @@ describe("PortionCalculator - Protein Calculations", () => {
       unit: "L",
       pricePerUnit: 8,
       quantity: 1,
-      macros: { protein: 0, carbs: 0, fat: 100 }
+      macros: { protein: 0, carbs: 0, fat: 100 },
+      costLevel: "high" as const
     };
     
     const result = gramsForProtein(noProtein, 40);
@@ -75,7 +78,8 @@ describe("PortionCalculator - Carbs Calculations", () => {
       unit: "kg",
       pricePerUnit: 2,
       quantity: 1,
-      macros: { protein: 2.7, carbs: 28, fat: 0.3 }
+      macros: { protein: 2.7, carbs: 28, fat: 0.3 },
+      costLevel: "low" as const
     };
     
     // Target: 50g carbs, Rice has 28g/100g
@@ -92,7 +96,8 @@ describe("PortionCalculator - Carbs Calculations", () => {
       unit: "kg",
       pricePerUnit: 3,
       quantity: 1,
-      macros: { protein: 1.6, carbs: 20, fat: 0.1 }
+      macros: { protein: 1.6, carbs: 20, fat: 0.1 },
+      costLevel: "medium" as const
     };
     
     // Target: 40g carbs, Sweet potato has 20g/100g
@@ -109,7 +114,8 @@ describe("PortionCalculator - Carbs Calculations", () => {
       unit: "kg",
       pricePerUnit: 12,
       quantity: 1,
-      macros: { protein: 31, carbs: 0, fat: 3.6 }
+      macros: { protein: 31, carbs: 0, fat: 3.6 },
+      costLevel: "high" as const
     };
     
     const result = gramsForCarbs(noCarbs, 50);
@@ -126,7 +132,8 @@ describe("PortionCalculator - Fats Calculations", () => {
       unit: "L",
       pricePerUnit: 8,
       quantity: 1,
-      macros: { protein: 0, carbs: 0, fat: 100 }
+      macros: { protein: 0, carbs: 0, fat: 100 },
+      costLevel: "high" as const
     };
     
     // Target: 15g fats, Oil has 100g/100g
@@ -143,7 +150,8 @@ describe("PortionCalculator - Fats Calculations", () => {
       unit: "kg",
       pricePerUnit: 15,
       quantity: 1,
-      macros: { protein: 21, carbs: 22, fat: 49 }
+      macros: { protein: 21, carbs: 22, fat: 49 },
+      costLevel: "high" as const
     };
     
     // Target: 20g fats, Almonds have 49g/100g
@@ -160,7 +168,8 @@ describe("PortionCalculator - Fats Calculations", () => {
       unit: "kg",
       pricePerUnit: 2,
       quantity: 1,
-      macros: { protein: 2.7, carbs: 28, fat: 0 }
+      macros: { protein: 2.7, carbs: 28, fat: 0 },
+      costLevel: "low" as const
     };
     
     const result = gramsForFats(noFat, 15);
@@ -177,7 +186,8 @@ describe("PortionCalculator - Macro Contribution", () => {
       unit: "kg",
       pricePerUnit: 12,
       quantity: 1,
-      macros: { protein: 31, carbs: 0, fat: 3.6 }
+      macros: { protein: 31, carbs: 0, fat: 3.6 },
+      costLevel: "high" as const
     };
     
     // 129g chicken
@@ -197,7 +207,8 @@ describe("PortionCalculator - Macro Contribution", () => {
       unit: "kg",
       pricePerUnit: 2,
       quantity: 1,
-      macros: { protein: 2.7, carbs: 28, fat: 0.3 }
+      macros: { protein: 2.7, carbs: 28, fat: 0.3 },
+      costLevel: "low" as const
     };
     
     // 179g rice
@@ -216,7 +227,8 @@ describe("PortionCalculator - Macro Contribution", () => {
       category: "others",
       unit: "kg",
       pricePerUnit: 1,
-      quantity: 1
+      quantity: 1,
+      costLevel: "low" as const
     };
     
     const result = calculateMacroContribution(noMacros, 100);
@@ -238,7 +250,8 @@ describe("PortionCalculator - Complete Meal", () => {
     unit: "kg",
     pricePerUnit: 12,
     quantity: 1,
-    macros: { protein: 31, carbs: 0, fat: 3.6 }
+    macros: { protein: 31, carbs: 0, fat: 3.6 },
+    costLevel: "high" as const
   };
   
   const rice: FoodItem = {
@@ -248,7 +261,8 @@ describe("PortionCalculator - Complete Meal", () => {
     unit: "kg",
     pricePerUnit: 2,
     quantity: 1,
-    macros: { protein: 2.7, carbs: 28, fat: 0.3 }
+    macros: { protein: 2.7, carbs: 28, fat: 0.3 },
+    costLevel: "low" as const
   };
   
   const oil: FoodItem = {
@@ -258,7 +272,8 @@ describe("PortionCalculator - Complete Meal", () => {
     unit: "L",
     pricePerUnit: 8,
     quantity: 1,
-    macros: { protein: 0, carbs: 0, fat: 100 }
+    macros: { protein: 0, carbs: 0, fat: 100 },
+    costLevel: "high" as const
   };
   
   const broccoli: FoodItem = {
@@ -268,7 +283,8 @@ describe("PortionCalculator - Complete Meal", () => {
     unit: "kg",
     pricePerUnit: 3,
     quantity: 1,
-    macros: { protein: 2.8, carbs: 7, fat: 0.4 }
+    macros: { protein: 2.8, carbs: 7, fat: 0.4 },
+    costLevel: "medium" as const
   };
   
   it("should calculate portions for complete meal with all components", () => {
@@ -336,7 +352,8 @@ describe("PortionCalculator - Complete Meal", () => {
       unit: "kg",
       pricePerUnit: 20,
       quantity: 1,
-      macros: { protein: 20, carbs: 0, fat: 13 }
+      macros: { protein: 20, carbs: 0, fat: 13 },
+      costLevel: "high" as const
     };
     
     const portions = calculateMealPortions(

@@ -100,6 +100,10 @@ export function ShoppingListPage() {
   const efficiencyScore = weeklyPlan.efficiencyScore || 0;
   const hasOptimizations = substitutionsApplied.length > 0;
 
+  // PASSO 27: Meal prep summary
+  const mealPrepSummary = weeklyPlan.mealPrepSummary;
+  const [showMealPrep, setShowMealPrep] = useState(false);
+
   return (
     <div className="shopping-list-page">
       {/* Sticky Header */}
@@ -201,6 +205,93 @@ export function ShoppingListPage() {
               ))}
             </ul>
           </div>
+        </div>
+      )}
+
+      {/* PASSO 27: Meal Prep Summary */}
+      {mealPrepSummary && (
+        <div className="meal-prep-section">
+          <div className="meal-prep-header" onClick={() => setShowMealPrep(!showMealPrep)}>
+            <h3 className="meal-prep-title">
+              🍱 Sunday Meal Prep Guide
+              <span className="meal-prep-time">({mealPrepSummary.totalPrepTime})</span>
+            </h3>
+            <button className="toggle-btn">
+              {showMealPrep ? '▼' : '▶'}
+            </button>
+          </div>
+
+          {showMealPrep && (
+            <div className="meal-prep-content">
+              {/* Batch summaries */}
+              <div className="prep-batches">
+                {mealPrepSummary.proteinBatches.length > 0 && (
+                  <div className="batch-group">
+                    <h4>🍗 Proteins</h4>
+                    <ul>
+                      {mealPrepSummary.proteinBatches.map((batch, i) => (
+                        <li key={i}>{batch}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                
+                {mealPrepSummary.grainBatches.length > 0 && (
+                  <div className="batch-group">
+                    <h4>🌾 Grains</h4>
+                    <ul>
+                      {mealPrepSummary.grainBatches.map((batch, i) => (
+                        <li key={i}>{batch}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                
+                {mealPrepSummary.vegetableBatches.length > 0 && (
+                  <div className="batch-group">
+                    <h4>🥬 Vegetables</h4>
+                    <ul>
+                      {mealPrepSummary.vegetableBatches.map((batch, i) => (
+                        <li key={i}>{batch}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+
+              {/* Step-by-step instructions */}
+              <div className="prep-steps">
+                <h4>📋 Step-by-Step Instructions</h4>
+                <ol className="steps-list">
+                  {mealPrepSummary.sundayPrepList.map((step) => (
+                    <li key={step.order} className="prep-step">
+                      <div className="step-header">
+                        <span className="step-number">{step.order}</span>
+                        <span className="step-action">{step.action}</span>
+                        <span className="step-time">{step.estimatedTime}</span>
+                      </div>
+                      <div className="step-content">
+                        <strong>{step.quantity}</strong>
+                        <p>{step.instructions}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+
+              {/* Meal prep tips */}
+              {mealPrepSummary.tips.length > 0 && (
+                <div className="prep-tips">
+                  <h4>💡 Meal Prep Tips</h4>
+                  <ul className="tips-list">
+                    {mealPrepSummary.tips.map((tip, i) => (
+                      <li key={i}>{tip}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 
