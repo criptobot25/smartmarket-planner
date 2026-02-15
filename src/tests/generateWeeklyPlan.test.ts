@@ -11,7 +11,7 @@ function buildInput(mealsPerDay: number): PlanInput {
     trains: true,
     mealsPerDay,
     dietStyle: "balanced",
-    budget: 300,
+    costTier: "medium",
     restrictions: [],
     fitnessGoal: "maintenance",
   };

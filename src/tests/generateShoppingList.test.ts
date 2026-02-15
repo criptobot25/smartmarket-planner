@@ -15,7 +15,7 @@ describe('generateShoppingList', () => {
       trains: true,
       mealsPerDay: 4,
       dietStyle: 'balanced',
-      budget: 300,
+      costTier: 'medium',
       restrictions: []
     };
 
@@ -51,7 +51,7 @@ describe('generateShoppingList', () => {
       trains: true,
       mealsPerDay: 3,
       dietStyle: 'healthy',
-      budget: 300,
+      costTier: 'low',
       restrictions: []
     };
 
@@ -74,7 +74,7 @@ describe('generateShoppingList', () => {
       trains: true,
       mealsPerDay: 5,
       dietStyle: 'balanced',
-      budget: 300,
+      costTier: 'high',
       restrictions: [],
       fitnessGoal: 'bulking'
     };
@@ -95,7 +95,7 @@ describe('generateShoppingList', () => {
       trains: true,
       mealsPerDay: 4,
       dietStyle: 'balanced',
-      budget: 40, // Very low budget to force adjustments
+      costTier: 'low',
       restrictions: [],
       fitnessGoal: 'cutting'
     };
@@ -117,7 +117,7 @@ describe('generateShoppingList', () => {
       trains: false,
       mealsPerDay: 3,
       dietStyle: 'balanced',
-      budget: 500, // High budget
+      costTier: 'high',
       restrictions: [],
       fitnessGoal: 'cutting'
     };
@@ -141,7 +141,7 @@ describe('generateShoppingList', () => {
       trains: true,
       mealsPerDay: 4,
       dietStyle: 'balanced',
-      budget: 300,
+      costTier: 'medium',
       restrictions: []
     };
 

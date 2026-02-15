@@ -1,6 +1,7 @@
 export type DietStyle = "healthy" | "balanced" | "comfort";
 export type FitnessGoal = "cutting" | "maintenance" | "bulking";
 export type Sex = "male" | "female";
+export type CostTier = "low" | "medium" | "high";
 
 export interface PlanInput {
   sex: Sex;
@@ -10,7 +11,7 @@ export interface PlanInput {
   trains: boolean;
   mealsPerDay: number;
   dietStyle: DietStyle;
-  budget: number;
+  costTier: CostTier;
   restrictions: string[];
   fitnessGoal?: FitnessGoal;
   proteinTargetPerDay?: number;  // grams per person per day

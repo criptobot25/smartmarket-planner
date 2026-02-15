@@ -2,7 +2,7 @@ import { useState, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useShoppingPlan } from "../../contexts/ShoppingPlanContext";
-import { DietStyle, Sex } from "../../core/models/PlanInput";
+import { DietStyle, Sex, CostTier } from "../../core/models/PlanInput";
 import "./PlannerPage.css";
 
 export function PlannerPage() {
@@ -17,18 +17,13 @@ export function PlannerPage() {
   const [trains, setTrains] = useState<boolean>(true);
   const [mealsPerDay, setMealsPerDay] = useState<number>(3);
   const [dietStyle, setDietStyle] = useState<DietStyle>("balanced");
-  const [budget, setBudget] = useState<number>(300);
+  const [costTier, setCostTier] = useState<CostTier>("medium");
   const [restrictions, setRestrictions] = useState<string>("");
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
     // Valida inputs
-    if (budget < 0) {
-      alert(t("planner.alertBudgetPositive"));
-      return;
-    }
-
     if (!sex) {
       alert(t("planner.alertSexRequired"));
       return;
@@ -70,7 +65,7 @@ export function PlannerPage() {
         trains,
         mealsPerDay,
         dietStyle,
-        budget,
+        costTier,
         restrictions: restrictionsArray
       });
 
@@ -210,19 +205,20 @@ export function PlannerPage() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="budget" className="form-label">
-                {t("planner.budgetLabel")}
+              <label htmlFor="cost-tier" className="form-label">
+                {t("planner.costTierLabel")}
               </label>
-              <input
-                type="number"
-                id="budget"
-                min="0"
-                step="10"
-                value={budget}
-                onChange={(e) => setBudget(Number(e.target.value))}
+              <select
+                id="cost-tier"
+                value={costTier}
+                onChange={(e) => setCostTier(e.target.value as CostTier)}
                 className="form-input"
                 required
-              />
+              >
+                <option value="low">{t("planner.costTierOption.low")}</option>
+                <option value="medium">{t("planner.costTierOption.medium")}</option>
+                <option value="high">{t("planner.costTierOption.high")}</option>
+              </select>
             </div>
 
             <div className="form-group">

@@ -107,11 +107,19 @@ export function generateShoppingList(
     0
   );
 
-  // 5. Aplicar Smart Savings Optimization (protein-per-cost strategy)
+  // 5. Definir savings target baseado em cost tier
+  const savingsTargets = {
+    low: initialCost * 0.7,    // 30% reduction for low tier
+    medium: initialCost * 0.85, // 15% reduction for medium tier
+    high: initialCost * 1.0     // no reduction for high tier
+  };
+  const savingsTarget = savingsTargets[input.costTier];
+
+  // 6. Aplicar Smart Savings Optimization (protein-per-cost strategy)
   const optimizationResult = optimizeSavings(
     sortedItems,
     initialCost,
-    input.budget,
+    savingsTarget,
     input.excludedFoods || []
   );
 

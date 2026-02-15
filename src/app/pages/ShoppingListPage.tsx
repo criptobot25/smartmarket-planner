@@ -98,7 +98,6 @@ export function ShoppingListPage() {
   const savingsStatus = weeklyPlan.savingsStatus;
   const substitutionsApplied = weeklyPlan.substitutionsApplied || [];
   const efficiencyScore = weeklyPlan.efficiencyScore || 0;
-  const totalSavings = substitutionsApplied.reduce((sum, sub) => sum + sub.savings, 0);
   const hasOptimizations = substitutionsApplied.length > 0;
 
   return (
@@ -166,19 +165,19 @@ export function ShoppingListPage() {
 
           <div className="budget-metrics">
             <div className="budget-metric">
-              <span className="metric-icon">💰</span>
-              <div className="metric-content">
-                <span className="metric-label">{t("shoppingList.metricSaved")}</span>
-                <span className="metric-value">{totalSavings.toFixed(2)}/week</span>
-              </div>
-            </div>
-            <div className="budget-metric">
-              <span className="metric-icon">📊</span>
+              <span className="metric-icon">�</span>
               <div className="metric-content">
                 <span className="metric-label">{t("shoppingList.metricProteinEfficiency")}</span>
                 <span className="metric-value">
                   {t("shoppingList.metricProteinEfficiencyValue", { value: efficiencyScore.toFixed(1) })}
                 </span>
+              </div>
+            </div>
+            <div className="budget-metric">
+              <span className="metric-icon">✅</span>
+              <div className="metric-content">
+                <span className="metric-label">{t("shoppingList.metricSubstitutions")}</span>
+                <span className="metric-value">{substitutionsApplied.length} swaps</span>
               </div>
             </div>
           </div>
@@ -192,10 +191,9 @@ export function ShoppingListPage() {
                     {sub.from} → {sub.to}
                   </span>
                   <span className="substitution-impact">
-                    {sub.savings > 0 && t("shoppingList.savedAmount", { amount: sub.savings.toFixed(2) })}
                     {sub.proteinImpact !== 0 && (
                       <span className={sub.proteinImpact > 0 ? "protein-gain" : "protein-loss"}>
-                        {sub.proteinImpact > 0 ? '+' : ''}{sub.proteinImpact.toFixed(0)}g
+                        {sub.proteinImpact > 0 ? '+' : ''}{sub.proteinImpact.toFixed(0)}g protein
                       </span>
                     )}
                   </span>
