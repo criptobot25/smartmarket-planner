@@ -1,7 +1,9 @@
 import { PlanInput } from "../models/PlanInput";
-import { WeeklyPlan, DayOfWeek, DayPlan, DayMeals, Meal } from "../models/WeeklyPlan";
+import { WeeklyPlan, DayOfWeek, DayPlan, DayMeals, Meal, FoodPortion } from "../models/WeeklyPlan";
 import { calculateMacroTargets } from "./MacroCalculator";
+import { calculateMealPortions, MacroTargetPerMeal } from "./PortionCalculator";
 import { mockFoods } from "../../data/mockFoods";
+import { FoodItem } from "../models/FoodItem";
 
 /**
  * FITNESS-FIRST WEEKLY PLAN GENERATOR
@@ -230,11 +232,18 @@ export function generateWeeklyPlan(input: PlanInput): WeeklyPlan {
   const days: DayPlan[] = daysOfWeek.map((day, index) => {
     const pattern = mealPattern[index];
     
-    // Converte templates para Meal (não Recipe)
-    const breakfast = convertToMeal(templates.breakfasts[pattern.breakfast]);
-    const lunch = convertToMeal(templates.lunches[pattern.lunch]);
-    const dinner = convertToMeal(templates.dinners[pattern.dinner]);
-    const snack = includeSnack ? convertToMeal(templates.snacks[0]) : null;
+    // Calculate meal macro targets
+    const mealMacroTarget: MacroTargetPerMeal = {
+      protein: macroTargets.proteinPerMeal,
+      carbs: macroTargets.carbsPerMeal,
+      fats: macroTargets.fatsPerMeal
+    };
+    
+    // Converte templates para Meal (não Recipe) with calculated portions
+    const breakfast = convertToMeal(templates.breakfasts[pattern.breakfast], mealMacroTarget);
+    const lunch = convertToMeal(templates.lunches[pattern.lunch], mealMacroTarget);
+    const dinner = convertToMeal(templates.dinners[pattern.dinner], mealMacroTarget);
+    const snack = includeSnack ? convertToMeal(templates.snacks[0], mealMacroTarget) : null;
 
     const meals: DayMeals = {
       breakfast,
@@ -268,12 +277,82 @@ export function generateWeeklyPlan(input: PlanInput): WeeklyPlan {
 /**
  * Converte MealTemplate para Meal (Clean Architecture)
  * NÃO depende de Recipe
+ * 
+ * PASSO 21: Now calculates exact portions in grams based on macro targets
+ * 
+ * Strategy:
+ * 1. Identify food types from template (protein source, carb source, fat source, veggies)
+ * 2. Use PortionCalculator to get exact grams needed
+ * 3. Return meal with calculated portions
+ * 
+ * @param template - Meal template with food IDs
+ * @param macroTarget - Target macros for this meal
  */
-function convertToMeal(template: MealTemplate): Meal {
+function convertToMeal(template: MealTemplate, macroTarget: MacroTargetPerMeal): Meal {
+  // Get actual food items from template
+  const foods = template.foodIds
+    .map(id => mockFoods.find(f => f.id === id))
+    .filter((food): food is FoodItem => food !== undefined);
+  
+  if (foods.length === 0) {
+    // Fallback if no foods found
+    return {
+      id: `meal-${template.name.toLowerCase().replace(/\s+/g, "-")}`,
+      name: template.name,
+      foodIds: template.foodIds,
+      portions: [],
+      protein: template.protein
+    };
+  }
+  
+  // Categorize foods by type (simple heuristic based on macros)
+  const proteinSource = foods.find(f => 
+    f.macros && f.macros.protein > 20 && f.category === "proteins"
+  );
+  
+  const carbSource = foods.find(f => 
+    f.macros && f.macros.carbs > 15 && f.category !== "vegetables"
+  );
+  
+  const fatSource = foods.find(f => 
+    f.macros && f.macros.fat > 10 && f.category === "oils"
+  );
+  
+  const vegetables = foods.find(f => 
+    f.category === "vegetables"
+  );
+  
+  // Calculate portions
+  let portions: FoodPortion[] = [];
+  
+  if (proteinSource && carbSource) {
+    // Use PortionCalculator for complete meal
+    const calculatedPortions = calculateMealPortions(
+      macroTarget,
+      proteinSource,
+      carbSource,
+      fatSource || null,
+      vegetables || null
+    );
+    
+    // Convert to FoodPortion format
+    portions = calculatedPortions.map(p => ({
+      foodId: p.foodId,
+      gramsNeeded: p.gramsNeeded
+    }));
+  } else {
+    // Fallback: Equal portions for all foods (150g each)
+    portions = foods.map(f => ({
+      foodId: f.id,
+      gramsNeeded: 150
+    }));
+  }
+  
   return {
     id: `meal-${template.name.toLowerCase().replace(/\s+/g, "-")}`,
     name: template.name,
     foodIds: template.foodIds,
+    portions,
     protein: template.protein
   };
 }

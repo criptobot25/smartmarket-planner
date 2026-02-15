@@ -14,12 +14,22 @@ export type DayOfWeek =
 export type MealType = "breakfast" | "lunch" | "dinner" | "snack";
 
 /**
+ * Food portion with calculated grams
+ */
+export interface FoodPortion {
+  foodId: string;
+  gramsNeeded: number;
+}
+
+/**
  * Refeição simples (não depende de Recipe)
+ * Uses portion-based system with calculated grams
  */
 export interface Meal {
   id: string;
   name: string;
-  foodIds: string[];  // IDs do mockFoods
+  foodIds: string[];  // IDs do mockFoods (kept for backwards compatibility)
+  portions: FoodPortion[]; // Calculated portions in grams based on macro targets
   protein: number;    // grams
 }
 
