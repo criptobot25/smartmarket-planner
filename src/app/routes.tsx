@@ -3,16 +3,18 @@ import { AppLayout } from "./layout/AppLayout";
 import { LandingPage } from "./pages/LandingPage";
 import { PlannerPage } from "./pages/PlannerPage";
 import { ShoppingListPage } from "./pages/ShoppingListPage";
+import { PrepGuidePage } from "./pages/PrepGuidePage"; // PASSO 36
 import { PremiumPage } from "./pages/PremiumPage";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 
 /**
  * CLEAN ROUTE STRUCTURE
  * 
- * /            → LandingPage (public marketing)
- * /app         → PlannerPage (main app - generate plans)
- * /app/list    → ShoppingListPage (view shopping list + budget)
- * /app/premium → PremiumPage (upgrade to premium)
+ * /                  → LandingPage (public marketing)
+ * /app               → PlannerPage (main app - generate plans)
+ * /app/list          → ShoppingListPage (view shopping list + budget)
+ * /app/prep-guide    → PrepGuidePage (Sunday meal prep instructions) - PASSO 36
+ * /app/premium       → PremiumPage (upgrade to premium)
  * 
  * Removed redundant routes:
  * - /plan (was duplicate of /)
@@ -48,6 +50,10 @@ export const router = createBrowserRouter([
       {
         path: "list",
         element: <ShoppingListPage />
+      },
+      {
+        path: "prep-guide", // PASSO 36: Sunday Meal Prep Guide
+        element: <PrepGuidePage />
       },
       {
         path: "premium",

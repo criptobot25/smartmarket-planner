@@ -273,6 +273,13 @@ export function ShoppingListPage() {
         {/* Action Buttons */}
         <div className="shopping-actions">
           <button 
+            className="btn-prep-guide"
+            onClick={() => navigate("/app/prep-guide")}
+            title="View Sunday Meal Prep Instructions"
+          >
+            🍳 Sunday Prep Guide
+          </button>
+          <button 
             className="btn-share-card"
             onClick={() => setShowShareCard(true)}
             title="Share your meal plan on social media"
