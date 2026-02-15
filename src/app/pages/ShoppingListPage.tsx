@@ -7,6 +7,8 @@ import { formatQuantity } from "../../core/utils/formatQuantity";
 import { exportShoppingListToPdf } from "../../utils/exportPdf";
 import { canExportPdf, getRemainingOptimizations } from "../../core/premium/features";
 import { PremiumModal } from "../components/PremiumModal";
+import { ShareCard } from "../components/ShareCard";
+import { PrepChecklist } from "../components/PrepChecklist"; // PASSO 33.5
 import "./ShoppingListPage.css";
 
 // Extensão do FoodItem para incluir purchased
@@ -20,6 +22,7 @@ export function ShoppingListPage() {
   const { shoppingList, toggleItemPurchased, weeklyPlan } = useShoppingPlan();
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [premiumFeature, setPremiumFeature] = useState<'savings' | 'pdf'>('pdf');
+  const [showShareCard, setShowShareCard] = useState(false);
 
   // Handler for PDF export
   const handlePdfExport = () => {
@@ -102,7 +105,6 @@ export function ShoppingListPage() {
 
   // PASSO 27: Meal prep summary
   const mealPrepSummary = weeklyPlan.mealPrepSummary;
-  const [showMealPrep, setShowMealPrep] = useState(false);
 
   return (
     <div className="shopping-list-page">
@@ -208,91 +210,12 @@ export function ShoppingListPage() {
         </div>
       )}
 
-      {/* PASSO 27: Meal Prep Summary */}
+      {/* PASSO 33.5: Sunday Meal Prep Ritual Checklist */}
       {mealPrepSummary && (
-        <div className="meal-prep-section">
-          <div className="meal-prep-header" onClick={() => setShowMealPrep(!showMealPrep)}>
-            <h3 className="meal-prep-title">
-              🍱 Sunday Meal Prep Guide
-              <span className="meal-prep-time">({mealPrepSummary.totalPrepTime})</span>
-            </h3>
-            <button className="toggle-btn">
-              {showMealPrep ? '▼' : '▶'}
-            </button>
-          </div>
-
-          {showMealPrep && (
-            <div className="meal-prep-content">
-              {/* Batch summaries */}
-              <div className="prep-batches">
-                {mealPrepSummary.proteinBatches.length > 0 && (
-                  <div className="batch-group">
-                    <h4>🍗 Proteins</h4>
-                    <ul>
-                      {mealPrepSummary.proteinBatches.map((batch, i) => (
-                        <li key={i}>{batch}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                
-                {mealPrepSummary.grainBatches.length > 0 && (
-                  <div className="batch-group">
-                    <h4>🌾 Grains</h4>
-                    <ul>
-                      {mealPrepSummary.grainBatches.map((batch, i) => (
-                        <li key={i}>{batch}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                
-                {mealPrepSummary.vegetableBatches.length > 0 && (
-                  <div className="batch-group">
-                    <h4>🥬 Vegetables</h4>
-                    <ul>
-                      {mealPrepSummary.vegetableBatches.map((batch, i) => (
-                        <li key={i}>{batch}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-
-              {/* Step-by-step instructions */}
-              <div className="prep-steps">
-                <h4>📋 Step-by-Step Instructions</h4>
-                <ol className="steps-list">
-                  {mealPrepSummary.sundayPrepList.map((step) => (
-                    <li key={step.order} className="prep-step">
-                      <div className="step-header">
-                        <span className="step-number">{step.order}</span>
-                        <span className="step-action">{step.action}</span>
-                        <span className="step-time">{step.estimatedTime}</span>
-                      </div>
-                      <div className="step-content">
-                        <strong>{step.quantity}</strong>
-                        <p>{step.instructions}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-
-              {/* Meal prep tips */}
-              {mealPrepSummary.tips.length > 0 && (
-                <div className="prep-tips">
-                  <h4>💡 Meal Prep Tips</h4>
-                  <ul className="tips-list">
-                    {mealPrepSummary.tips.map((tip, i) => (
-                      <li key={i}>{tip}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+        <PrepChecklist 
+          mealPrepSummary={mealPrepSummary}
+          weekId={weeklyPlan.id}
+        />
       )}
 
       {/* Categories Grid */}
@@ -344,6 +267,13 @@ export function ShoppingListPage() {
         {/* Action Buttons */}
         <div className="shopping-actions">
           <button 
+            className="btn-share-card"
+            onClick={() => setShowShareCard(true)}
+            title="Share your meal plan on social media"
+          >
+            📤 Share My Plan
+          </button>
+          <button 
             className={`btn-premium ${!canExportPdf() ? 'btn-locked' : ''}`}
             onClick={handlePdfExport}
             title={!canExportPdf() ? t("shoppingList.exportPdfLockedTitle") : t("shoppingList.exportPdfTitle")}
@@ -361,6 +291,15 @@ export function ShoppingListPage() {
         feature={premiumFeature}
         remainingOptimizations={getRemainingOptimizations()}
       />
+
+      {/* Share Card Modal */}
+      {showShareCard && (
+        <ShareCard
+          weeklyPlan={weeklyPlan}
+          planInput={weeklyPlan?.planInput || null}
+          onClose={() => setShowShareCard(false)}
+        />
+      )}
     </div>
   );
 }

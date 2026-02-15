@@ -33,6 +33,28 @@
   font-size: 1rem;
 }
 
+/* PASSO 33.4: Streak badge styling */
+.streak-badge {
+  background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+  color: white;
+  padding: 0.375rem 0.875rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin-left: 0.5rem;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
 .hero-badge {
   display: inline-block;
   background: linear-gradient(135deg, #059669 0%, #10b981 100%);
@@ -457,10 +479,178 @@
   margin: 0;
 }
 
+/* PASSO 33.5: Sunday Meal Prep Ritual */
+.meal-prep-ritual {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  padding: 5rem 2rem;
+}
+
+.ritual-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.ritual-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.ritual-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+  padding: 0.5rem 1.25rem;
+  border-radius: 2rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+}
+
+.ritual-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #78350f;
+  margin: 0 0 1rem 0;
+  line-height: 1.2;
+}
+
+.ritual-subtitle {
+  font-size: 1.125rem;
+  color: #92400e;
+  line-height: 1.6;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.ritual-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.ritual-step {
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 16px rgba(120, 53, 15, 0.1);
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ritual-step:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(120, 53, 15, 0.15);
+}
+
+.step-number {
+  position: absolute;
+  top: -1rem;
+  left: 1.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.125rem;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+}
+
+.step-content h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #78350f;
+  margin: 0 0 0.5rem 0;
+}
+
+.step-example {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  color: #92400e;
+  margin: 0.75rem 0;
+  font-size: 0.9375rem;
+  border-left: 3px solid #f59e0b;
+}
+
+.step-desc {
+  color: #a16207;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.ritual-outcome {
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+  box-shadow: 0 4px 16px rgba(120, 53, 15, 0.1);
+}
+
+.outcome-icon {
+  font-size: 3rem;
+  flex-shrink: 0;
+}
+
+.outcome-text h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #78350f;
+  margin: 0 0 0.5rem 0;
+}
+
+.outcome-text p {
+  color: #92400e;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.ritual-cta {
+  text-align: center;
+}
+
+.btn-ritual {
+  font-size: 1.125rem;
+  padding: 1rem 2.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.ritual-note {
+  font-size: 0.875rem;
+  color: #92400e;
+  margin: 0;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .hero-title {
     font-size: 2.5rem;
+  }
+
+  .ritual-title {
+    font-size: 2rem;
+  }
+
+  .ritual-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .ritual-outcome {
+    flex-direction: column;
+    text-align: center;
   }
   
   .hero-stats {

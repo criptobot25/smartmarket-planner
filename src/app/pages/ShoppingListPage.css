@@ -409,6 +409,28 @@
   margin-top: 2rem;
 }
 
+.btn-share-card {
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: var(--radius-lg);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+}
+
+.btn-share-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(102, 126, 234, 0.6);
+}
+
+.btn-share-card:active {
+  transform: translateY(0);
+}
+
 .btn-premium {
   padding: 1rem 2rem;
   background: var(--color-primary);

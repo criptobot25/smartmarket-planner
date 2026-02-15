@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Card } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
+import { useShoppingPlan } from "../../contexts/ShoppingPlanContext";
 import "./LandingPage.css";
 
 /**
@@ -17,6 +18,7 @@ import "./LandingPage.css";
  */
 export function LandingPage() {
   const { t } = useTranslation();
+  const { streak } = useShoppingPlan(); // PASSO 33.4
 
   return (
     <div className="landing-page">
@@ -26,6 +28,12 @@ export function LandingPage() {
           <div className="hero-logo">
             <span className="logo-icon">🎯</span>
             <span className="logo-text">{t("app.name")}</span>
+            {/* PASSO 33.4: Streak indicator */}
+            {streak > 0 && (
+              <span className="streak-badge">
+                🔥 {streak} week{streak > 1 ? 's' : ''} streak
+              </span>
+            )}
           </div>
           <div className="hero-badge">
             {t("landing.heroBadge")}
@@ -123,6 +131,66 @@ export function LandingPage() {
               {t("landing.featureListDesc")}
             </p>
           </Card>
+        </div>
+      </section>
+
+      {/* PASSO 33.5: Sunday Meal Prep Autopilot */}
+      <section className="meal-prep-ritual">
+        <div className="ritual-content">
+          <div className="ritual-header">
+            <span className="ritual-badge">🍳 SUNDAY RITUAL</span>
+            <h2 className="ritual-title">Your Sunday Meal Prep Autopilot</h2>
+            <p className="ritual-subtitle">
+              Turn meal prep from overwhelming chaos into a peaceful 2-hour routine.
+              We tell you exactly what to cook, chop, and store.
+            </p>
+          </div>
+
+          <div className="ritual-grid">
+            <div className="ritual-step">
+              <div className="step-number">1</div>
+              <div className="step-content">
+                <h3>🍗 Batch Cook Proteins</h3>
+                <p className="step-example">"Cook 2.4kg chicken breast"</p>
+                <p className="step-desc">Season, bake, portion into 7 containers</p>
+              </div>
+            </div>
+
+            <div className="ritual-step">
+              <div className="step-number">2</div>
+              <div className="step-content">
+                <h3>🌾 Prep Your Carbs</h3>
+                <p className="step-example">"Cook 1.5kg brown rice"</p>
+                <p className="step-desc">One big batch, divide for the week</p>
+              </div>
+            </div>
+
+            <div className="ritual-step">
+              <div className="step-number">3</div>
+              <div className="step-content">
+                <h3>🥬 Chop Vegetables</h3>
+                <p className="step-example">"Chop 1kg broccoli, 500g carrots"</p>
+                <p className="step-desc">Pre-portioned, grab-and-go ready</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="ritual-outcome">
+            <div className="outcome-icon">✨</div>
+            <div className="outcome-text">
+              <h3>Result: 7 days of stress-free eating</h3>
+              <p>Your fridge becomes your personal meal delivery service. Zero daily cooking stress.</p>
+            </div>
+          </div>
+
+          <div className="ritual-cta">
+            <Link to="/app" style={{ textDecoration: 'none' }}>
+              <Button variant="primary" className="btn-ritual">
+                🎯 Get My Sunday Checklist
+              </Button>
+            </Link>
+            <p className="ritual-note">Free • Takes 2 minutes to set up</p>
+          </div>
         </div>
       </section>
 

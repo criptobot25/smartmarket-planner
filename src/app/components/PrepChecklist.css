@@ -1,0 +1,385 @@
+/**
+ * PASSO 33.5: Sunday Meal Prep Ritual Mode - PrepChecklist Styling
+ * 
+ * Design Language: Peaceful Sunday ritual aesthetic
+ * - Warm amber/orange tones (Sunday morning vibes)
+ * - Generous spacing (calm, not rushed)
+ * - Smooth interactions (satisfying checkbox checks)
+ * - Clear visual hierarchy (guide users step-by-step)
+ */
+
+.prep-checklist-container {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border-radius: 1rem;
+  overflow: hidden;
+  margin: 2rem 0;
+  box-shadow: 0 4px 16px rgba(120, 53, 15, 0.1);
+  transition: all 0.3s ease;
+}
+
+.prep-checklist-container:hover {
+  box-shadow: 0 6px 24px rgba(120, 53, 15, 0.15);
+}
+
+/* Header Section */
+.prep-header {
+  padding: 1.5rem 2rem;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.prep-header:hover {
+  background-color: rgba(251, 191, 36, 0.2);
+}
+
+.prep-header-content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.prep-title-section {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  flex: 1;
+}
+
+.prep-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.prep-titles {
+  flex: 1;
+}
+
+.prep-main-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #78350f;
+  margin: 0 0 0.25rem 0;
+  line-height: 1.2;
+}
+
+.prep-subtitle {
+  font-size: 0.9375rem;
+  color: #92400e;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.expand-toggle {
+  background: transparent;
+  border: none;
+  color: #92400e;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.expand-toggle:hover {
+  transform: scale(1.1);
+}
+
+/* Progress Bar */
+.prep-progress-bar {
+  height: 0.5rem;
+  background-color: rgba(120, 53, 15, 0.15);
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+
+.prep-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 0.25rem;
+}
+
+/* Content Section */
+.prep-content {
+  padding: 0 2rem 2rem 2rem;
+}
+
+/* Quick Batches Summary */
+.prep-batches-quick {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.batch-quick {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: white;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(120, 53, 15, 0.08);
+}
+
+.batch-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.batch-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.batch-text strong {
+  color: #78350f;
+  font-size: 0.9375rem;
+}
+
+.batch-text span {
+  color: #92400e;
+  line-height: 1.4;
+}
+
+.batch-more {
+  color: #d97706 !important;
+  font-weight: 600;
+  font-size: 0.8125rem;
+}
+
+/* Steps Checklist */
+.prep-steps-checklist {
+  margin-bottom: 2rem;
+}
+
+.steps-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #78350f;
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Step Item (Checkbox) */
+.prep-step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: white;
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(120, 53, 15, 0.08);
+  border: 2px solid transparent;
+}
+
+.prep-step-item:hover {
+  box-shadow: 0 4px 12px rgba(120, 53, 15, 0.12);
+  border-color: #fbbf24;
+}
+
+.prep-step-item.checked {
+  opacity: 0.6;
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+}
+
+.prep-step-item.checked .step-quantity,
+.prep-step-item.checked .step-instructions {
+  text-decoration: line-through;
+}
+
+.step-checkbox {
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-top: 0.25rem;
+  cursor: pointer;
+  accent-color: #f59e0b;
+}
+
+.step-details {
+  flex: 1;
+}
+
+.step-header-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.step-action-name {
+  font-weight: 700;
+  color: #78350f;
+  font-size: 1rem;
+}
+
+.step-duration {
+  margin-left: auto;
+  font-size: 0.875rem;
+  color: #92400e;
+  font-weight: 600;
+  background: rgba(251, 191, 36, 0.2);
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+}
+
+.step-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.step-quantity {
+  font-weight: 600;
+  color: #78350f;
+  font-size: 0.9375rem;
+  margin: 0;
+}
+
+.step-instructions {
+  color: #92400e;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Completion Message */
+.prep-complete-message {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.15);
+}
+
+.complete-icon {
+  font-size: 2.5rem;
+  flex-shrink: 0;
+}
+
+.complete-text {
+  flex: 1;
+}
+
+.complete-text strong {
+  display: block;
+  font-size: 1.125rem;
+  color: #166534;
+  margin-bottom: 0.25rem;
+}
+
+.complete-text p {
+  color: #15803d;
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+}
+
+/* Tips Section */
+.prep-tips-section {
+  background: white;
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(120, 53, 15, 0.08);
+}
+
+.tips-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #78350f;
+  margin: 0 0 0.75rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tips-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tip-item {
+  padding-left: 1.5rem;
+  position: relative;
+  color: #92400e;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.tip-item::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: #f59e0b;
+  font-weight: 700;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .prep-header {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .prep-content {
+    padding: 0 1.5rem 1.5rem 1.5rem;
+  }
+
+  .prep-batches-quick {
+    grid-template-columns: 1fr;
+  }
+
+  .prep-main-title {
+    font-size: 1.25rem;
+  }
+
+  .prep-subtitle {
+    font-size: 0.875rem;
+  }
+
+  .step-header-row {
+    flex-wrap: wrap;
+  }
+
+  .step-duration {
+    margin-left: 0;
+    order: -1;
+    width: 100%;
+    text-align: center;
+  }
+}

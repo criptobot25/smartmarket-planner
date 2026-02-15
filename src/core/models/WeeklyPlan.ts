@@ -76,4 +76,10 @@ export interface WeeklyPlan {
   mealPrepSummary?: MealPrepSummary;
   // PASSO 31: Plan fingerprint for personalization guarantee
   planHash?: string; // Hash of PlanInput to detect when inputs change
+  // PASSO 33.2: Weekly adherence tracking for adaptive adjustment
+  adherenceScore?: {
+    score: number; // 0-100
+    timestamp: string;
+    level: "high" | "good" | "low";
+  };
 }
