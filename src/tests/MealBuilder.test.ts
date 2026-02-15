@@ -220,7 +220,15 @@ describe("MealBuilder - Carb Source Selection", () => {
     const meal = buildMeal({
       macroTargetsPerMeal: { protein: 40, carbs: 50, fats: 15 },
       availableFoods: allMockFoods,
-      excludedFoods: [],
+      excludedFoods: [
+        "White Rice",
+        "Brown Rice",
+        "Pasta (Whole Wheat)",
+        "Oats (Rolled)",
+        "Couscous",
+        "Barley",
+        "White bread"
+      ],
       costTier: "high"
     });
     

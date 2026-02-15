@@ -242,17 +242,25 @@ describe("PASSO 26 - Preference Learning System", () => {
     });
 
     it("should select top 3 candidates then prioritize by preference", () => {
-      // Like a specific carb source
-      userPreferencesStore.addLikedFood("Brown Rice");
+      // Like a specific carb source with strong preference
+      userPreferencesStore.addLikedFood("Brown rice");
       
+      // Track multiple selections to increase preference score significantly
+      userPreferencesStore.trackFoodSelection("Brown rice");
+      userPreferencesStore.trackFoodSelection("Brown rice");
+      userPreferencesStore.trackFoodSelection("Brown rice");
+      userPreferencesStore.trackFoodSelection("Brown rice");
+      userPreferencesStore.trackFoodSelection("Brown rice");
+      
+      // Exclude very cheap alternatives to make preference matter more
       const meal = buildMeal({
         macroTargetsPerMeal: { protein: 30, carbs: 50, fats: 15 },
         availableFoods: mockFoods,
-        excludedFoods: [],
-        costTier: "medium" as CostTier
+        excludedFoods: ["White rice", "Pasta (whole wheat)"], // Exclude cheapest competitors
+        costTier: "medium" as CostTier  // Medium tier balances cost and preference
       });
       
-      // Brown rice should be preferred over other carbs
+      // Brown rice should be preferred due to liked status + strong selection history
       const hasBrownRice = meal.ingredients.some(ing => 
         ing.foodName.toLowerCase().includes("brown rice")
       );

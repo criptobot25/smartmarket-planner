@@ -50,6 +50,8 @@ export class VarietyTracker {
   private mealNamesUsed: Map<string, number> = new Map();
   private fishMealsCount: number = 0;
   private redMeatMealsCount: number = 0;
+  // PASSO 31: Track food usage for variety scoring
+  private foodUsageCount: Map<string, number> = new Map();
   
   constructor(private constraints: VarietyConstraints = DEFAULT_VARIETY_CONSTRAINTS) {}
   
@@ -106,6 +108,21 @@ export class VarietyTracker {
   recordMealName(mealName: string): void {
     const currentCount = this.mealNamesUsed.get(mealName) || 0;
     this.mealNamesUsed.set(mealName, currentCount + 1);
+  }
+  
+  /**
+   * PASSO 31: Record usage of a food item for variety tracking
+   */
+  recordFoodUsage(foodName: string): void {
+    const currentCount = this.foodUsageCount.get(foodName) || 0;
+    this.foodUsageCount.set(foodName, currentCount + 1);
+  }
+  
+  /**
+   * PASSO 31: Get usage count for a food item
+   */
+  getFoodUsageCount(foodName: string): number {
+    return this.foodUsageCount.get(foodName) || 0;
   }
   
   /**

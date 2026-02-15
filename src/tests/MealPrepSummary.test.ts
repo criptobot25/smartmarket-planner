@@ -355,7 +355,7 @@ describe("PASSO 27 - Meal Prep Output Mode", () => {
     it("should work with excluded foods", () => {
       const inputWithExclusions = { 
         ...baseInput, 
-        excludedFoods: ["Tuna", "Salmon"] 
+        excludedFoods: ["Tuna (canned)", "Salmon fillet"] 
       };
       
       const plan = generateWeeklyPlan(inputWithExclusions);

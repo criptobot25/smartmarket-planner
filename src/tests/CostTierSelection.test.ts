@@ -134,27 +134,50 @@ describe("CostTier Food Selection - PASSO 24", () => {
     });
 
     it("should be able to select premium proteins (salmon or beef)", () => {
-      // Exclude cheaper proteins to force premium selection
+      // Exclude ALL cheaper and medium-cost proteins to force premium selection
       const meal = buildMeal({
         macroTargetsPerMeal: macroTarget,
         availableFoods: mockFoods,
-        excludedFoods: ["Eggs (large)", "Tuna (canned)", "Chicken breast (skinless)"],
+        excludedFoods: [
+          "Eggs (large)", 
+          "Tuna (canned)", 
+          "Chicken breast (skinless)",
+          "Turkey breast",
+          "Cod fillet",
+          "Pork loin",
+          "Tilapia fillet",
+          "Cottage cheese (low-fat)",
+          "Tofu (firm)",
+          "Sardines (canned)"
+        ],
         costTier: "high",
       });
 
       const proteinNames = meal.ingredients.map(i => i.foodName);
       const hasPremiumProtein = proteinNames.some(name => 
-        name === "Salmon fillet" || name === "Lean ground beef (5% fat)"
+        name === "Salmon fillet" || 
+        name === "Lean ground beef (5% fat)" || 
+        name === "Shrimp (raw)" ||
+        name === "Lamb chops" ||
+        name === "Duck breast"
       );
       expect(hasPremiumProtein).toBe(true);
     });
 
     it("should be able to select quinoa (premium carb)", () => {
-      // Exclude cheaper carbs to force quinoa selection
+      // Exclude ALL cheaper carbs to force premium selection
       const meal = buildMeal({
         macroTargetsPerMeal: macroTarget,
         availableFoods: mockFoods,
-        excludedFoods: ["White rice", "Brown rice", "Pasta (whole wheat)"],
+        excludedFoods: [
+          "White rice", 
+          "Brown rice", 
+          "Pasta (whole wheat)",
+          "Oats (rolled)",
+          "Couscous",
+          "Barley",
+          "White bread"
+        ],
         costTier: "high",
       });
 

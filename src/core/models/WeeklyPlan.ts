@@ -74,4 +74,6 @@ export interface WeeklyPlan {
   }>;
   // PASSO 27: Meal prep summary (Sunday prep list)
   mealPrepSummary?: MealPrepSummary;
+  // PASSO 31: Plan fingerprint for personalization guarantee
+  planHash?: string; // Hash of PlanInput to detect when inputs change
 }

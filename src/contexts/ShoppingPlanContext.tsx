@@ -10,6 +10,7 @@ import { savePlan } from "../core/storage/savePlan";
 import { loadHistory as loadHistoryFromStorage, loadLatestPlan } from "../core/storage/loadHistory";
 import { clearHistory as clearHistoryFromStorage } from "../core/storage/clearHistory";
 import { userPreferencesStore } from "../core/stores/UserPreferencesStore";
+import { isPlanValidForInput } from "../core/utils/planFingerprint";
 
 const PURCHASED_ITEMS_KEY = "smartmarket_purchased_items";
 
@@ -77,6 +78,7 @@ export function ShoppingPlanProvider({ children }: ShoppingPlanProviderProps) {
 
   /**
    * Carrega o último plano salvo ao iniciar o app (executa apenas uma vez)
+   * PASSO 31: Validates plan fingerprint to ensure personalization
    */
   useEffect(() => {
     if (!isInitialized) {
@@ -93,6 +95,18 @@ export function ShoppingPlanProvider({ children }: ShoppingPlanProviderProps) {
         
         if (latestPlan) {
           console.log("📥 Último plano encontrado:", latestPlan.id);
+          
+          // PASSO 31: Validate plan fingerprint before loading
+          // If plan was generated with different inputs, don't load it
+          // This prevents showing stale plans when user changes parameters
+          const isValid = isPlanValidForInput(latestPlan.planHash, latestPlan.planInput);
+          
+          if (!isValid) {
+            console.log("⚠️ Plano salvo tem inputs diferentes - ignorando para evitar confusão");
+            console.log("ℹ️ User will need to generate a new plan with their current preferences");
+            setIsInitialized(true);
+            return;
+          }
           
           // Load purchased items from localStorage
           const purchasedIds = loadPurchasedItems();

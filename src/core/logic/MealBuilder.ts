@@ -40,6 +40,7 @@ import {
 } from "./PortionCalculator";
 import { VarietyTracker } from "./VarietyConstraints";
 import { userPreferencesStore } from "../stores/UserPreferencesStore";
+import { RotationEngine } from "./RotationEngine";
 
 export interface MealIngredient {
   foodId: string;
@@ -63,6 +64,68 @@ export interface MealBuilderInput {
   excludedFoods?: string[];
   costTier: CostTier;
   varietyTracker?: VarietyTracker; // PASSO 23: Track variety constraints
+  rotationEngine?: RotationEngine; // PASSO 32: Track rotation penalties
+}
+
+/**
+ * PASSO 31-32: Calculate food score with quadratic rotation penalty
+ * 
+ * Scoring factors:
+ * - Base score: protein-per-cost or carbs-per-cost
+ * - Rotation penalty: Quadratic penalty (usageCount²) from RotationEngine
+ *   - Never used (0): penalty = 0
+ *   - Used once (1): penalty = 1
+ *   - Used twice (2): penalty = 4
+ *   - Used thrice (3): penalty = 9
+ *   - Used 4 times (4): penalty = 16
+ * - Cost tier match: Ensures appropriate food selection
+ * 
+ * This creates STRONG preference for variety over repetition
+ */
+function calculateFoodScore(
+  food: FoodItem,
+  costTier: CostTier,
+  varietyTracker?: VarietyTracker,
+  isProtein: boolean = true,
+  rotationEngine?: RotationEngine
+): number {
+  // Base score
+  const baseScore = isProtein 
+    ? getProteinPerCost(food)
+    : getCarbsPerCost(food);
+  
+  // If no rotation tracking, use old variety bonus/penalty system
+  if (!rotationEngine || !varietyTracker) {
+    if (!varietyTracker) return baseScore;
+    
+    // Fallback to PASSO 31 logic
+    const usageCount = varietyTracker.getFoodUsageCount(food.name);
+    let multiplier = 1.0;
+    
+    if (usageCount === 0) {
+      multiplier += 0.20; // +20% for fresh variety
+    } else if (usageCount === 1) {
+      multiplier += 0.10; // +10% for minimal repetition
+    }
+    
+    if (usageCount >= 4) {
+      multiplier -= 0.30; // -30% for excessive repetition
+    } else if (usageCount >= 3) {
+      multiplier -= 0.15; // -15% for high repetition
+    }
+    
+    return baseScore * multiplier;
+  }
+  
+  // PASSO 32: Use quadratic rotation penalty
+  const usageCount = varietyTracker.getFoodUsageCount(food.name);
+  const penalty = rotationEngine.calculateRotationPenalty(usageCount);
+  
+  // Apply penalty: higher penalty = lower score
+  // Penalty scale: divide by (1 + penalty * 0.5) to avoid negative scores
+  const penalizedScore = baseScore / (1 + penalty * 0.5);
+  
+  return penalizedScore;
 }
 
 /**
@@ -138,7 +201,8 @@ function selectProteinSource(
   availableFoods: FoodItem[],
   costTier: CostTier,
   excludedFoods: string[] = [],
-  varietyTracker?: VarietyTracker
+  varietyTracker?: VarietyTracker,
+  rotationEngine?: RotationEngine
 ): FoodItem | null {
   let proteinFoods = filterExcludedFoods(availableFoods, excludedFoods)
     .filter(f => 
@@ -157,23 +221,26 @@ function selectProteinSource(
   
   if (proteinFoods.length === 0) return null;
   
-  // PASSO 26: First sort by cost/quality, then prioritize user preferences among top candidates
+  // PASSO 26 & 31: Sort by cost/quality with variety bonus and repetition penalty
   let sorted: FoodItem[];
   if (costTier === "low") {
-    // Maximize protein per euro
+    // Maximize protein per euro with variety consideration
     sorted = proteinFoods.sort((a, b) => 
-      getProteinPerCost(b) - getProteinPerCost(a)
+      calculateFoodScore(b, costTier, varietyTracker, true, rotationEngine) - 
+      calculateFoodScore(a, costTier, varietyTracker, true, rotationEngine)
     );
   } else if (costTier === "high") {
-    // Maximize protein content (quality)
-    sorted = proteinFoods.sort((a, b) => 
-      (b.macros?.protein || 0) - (a.macros?.protein || 0)
-    );
-  } else {
-    // Medium: Balance (protein * protein_per_cost)
+    // Maximize protein content (quality) with variety consideration
     sorted = proteinFoods.sort((a, b) => {
-      const scoreA = (a.macros?.protein || 0) * getProteinPerCost(a);
-      const scoreB = (b.macros?.protein || 0) * getProteinPerCost(b);
+      const scoreA = (a.macros?.protein || 0) * (varietyTracker && varietyTracker.getFoodUsageCount(a.name) === 0 ? 1.2 : 1.0);
+      const scoreB = (b.macros?.protein || 0) * (varietyTracker && varietyTracker.getFoodUsageCount(b.name) === 0 ? 1.2 : 1.0);
+      return scoreB - scoreA;
+    });
+  } else {
+    // Medium: Balance with variety consideration
+    sorted = proteinFoods.sort((a, b) => {
+      const scoreA = calculateFoodScore(a, costTier, varietyTracker, true, rotationEngine) * (a.macros?.protein || 0);
+      const scoreB = calculateFoodScore(b, costTier, varietyTracker, true, rotationEngine) * (b.macros?.protein || 0);
       return scoreB - scoreA;
     });
   }
@@ -187,6 +254,7 @@ function selectProteinSource(
  * Select best carb source based on cost tier
  * 
  * PASSO 24: Filters by cost tier availability
+ * PASSO 31: Adds variety bonus and repetition penalty
  * 
  * Low tier: Highest carbs per euro (rice, pasta, oats)
  * Medium tier: Balance of carbs and quality
@@ -195,7 +263,9 @@ function selectProteinSource(
 function selectCarbSource(
   availableFoods: FoodItem[],
   costTier: CostTier,
-  excludedFoods: string[] = []
+  excludedFoods: string[] = [],
+  varietyTracker?: VarietyTracker,
+  rotationEngine?: RotationEngine
 ): FoodItem | null {
   let carbFoods = filterExcludedFoods(availableFoods, excludedFoods)
     .filter(f => 
@@ -211,33 +281,35 @@ function selectCarbSource(
   
   if (carbFoods.length === 0) return null;
   
-  // PASSO 26: First sort by cost/quality, then prioritize user preferences among top candidates
+  // PASSO 26 & 31: Sort by cost/quality with variety bonus and repetition penalty
   let sorted: FoodItem[];
   if (costTier === "low") {
-    // Maximize carbs per euro
+    // Maximize carbs per euro with variety consideration
     sorted = carbFoods.sort((a, b) => 
-      getCarbsPerCost(b) - getCarbsPerCost(a)
+      calculateFoodScore(b, costTier, varietyTracker, false, rotationEngine) - 
+      calculateFoodScore(a, costTier, varietyTracker, false, rotationEngine)
     );
   } else if (costTier === "high") {
-    // Prefer quinoa, sweet potato (lower GI, nutrient-dense)
-    const premium = carbFoods.find(f => 
-      f.name.toLowerCase().includes("quinoa") || 
-      f.name.toLowerCase().includes("sweet potato")
-    );
-    if (premium) return premium; // Keep preferred premium carb
+    // Prefer quinoa, sweet potato with variety consideration
+    if (varietyTracker) {
+      const premium = carbFoods.filter(f => 
+        f.name.toLowerCase().includes("quinoa") || 
+        f.name.toLowerCase().includes("sweet potato")
+      ).sort((a, b) => 
+        varietyTracker.getFoodUsageCount(a.name) - varietyTracker.getFoodUsageCount(b.name)
+      )[0];
+      if (premium) return premium;
+    }
     sorted = carbFoods.sort((a, b) => 
       (b.macros?.carbs || 0) - (a.macros?.carbs || 0)
     );
   } else {
-    // Medium: Brown rice, whole wheat
-    const balanced = carbFoods.find(f => 
-      f.name.toLowerCase().includes("brown") || 
-      f.name.toLowerCase().includes("whole")
-    );
-    if (balanced) return balanced; // Keep preferred balanced carb
-    sorted = carbFoods.sort((a, b) => 
-      getCarbsPerCost(b) - getCarbsPerCost(a)
-    );
+    // Medium: Balance with variety consideration
+    sorted = carbFoods.sort((a, b) => {
+      const scoreA = calculateFoodScore(a, costTier, varietyTracker, false, rotationEngine);
+      const scoreB = calculateFoodScore(b, costTier, varietyTracker, false, rotationEngine);
+      return scoreB - scoreA;
+    });
   }
   
   // Take top 3 candidates and prioritize by user preference
@@ -373,11 +445,11 @@ function generateMealName(
  * Output: Chicken + Rice + Broccoli (130g chicken, 179g rice, 150g broccoli)
  */
 export function buildMeal(input: MealBuilderInput): BuiltMeal {
-  const { macroTargetsPerMeal, availableFoods, excludedFoods = [], costTier, varietyTracker } = input;
+  const { macroTargetsPerMeal, availableFoods, excludedFoods = [], costTier, varietyTracker, rotationEngine } = input;
   
   // 1. Select food sources (with variety and cost tier constraints)
-  const proteinSource = selectProteinSource(availableFoods, costTier, excludedFoods, varietyTracker);
-  const carbSource = selectCarbSource(availableFoods, costTier, excludedFoods);
+  const proteinSource = selectProteinSource(availableFoods, costTier, excludedFoods, varietyTracker, rotationEngine);
+  const carbSource = selectCarbSource(availableFoods, costTier, excludedFoods, varietyTracker, rotationEngine);
   const vegetable = selectVegetable(availableFoods, costTier, excludedFoods, varietyTracker);
   const fatSource = selectFatSource(availableFoods, costTier, excludedFoods);
   
@@ -388,11 +460,19 @@ export function buildMeal(input: MealBuilderInput): BuiltMeal {
     );
   }
   
-  // 3. Record variety usage (PASSO 23)
+  // 3. Record variety usage (PASSO 23) + PASSO 31 food usage tracking
   if (varietyTracker) {
     varietyTracker.recordProteinSource(proteinSource);
+    varietyTracker.recordFoodUsage(proteinSource.name);
+    varietyTracker.recordFoodUsage(carbSource.name);
+    
     if (vegetable) {
       varietyTracker.recordVegetable(vegetable);
+      varietyTracker.recordFoodUsage(vegetable.name);
+    }
+    
+    if (fatSource) {
+      varietyTracker.recordFoodUsage(fatSource.name);
     }
   }
   

@@ -7,6 +7,7 @@ import { VarietyTracker, DEFAULT_VARIETY_CONSTRAINTS } from "./VarietyConstraint
 import { mockFoods } from "../../data/mockFoods";
 import { userPreferencesStore } from "../stores/UserPreferencesStore";
 import { generateMealPrepSummary } from "./MealPrepSummary";
+import { generatePlanFingerprint } from "../utils/planFingerprint";
 
 /**
  * FITNESS-FIRST WEEKLY PLAN GENERATOR (PASSO 25 - Training Day Nutrition)
@@ -220,7 +221,9 @@ export function generateWeeklyPlan(input: PlanInput): WeeklyPlan {
     fatTargetPerDay: macroTargets.fatTargetPerDay,
     proteinPerMeal: macroTargets.proteinPerMeal,
     carbsPerMeal: macroTargets.carbsPerMeal,
-    fatsPerMeal: macroTargets.fatsPerMeal
+    fatsPerMeal: macroTargets.fatsPerMeal,
+    // PASSO 31: Add plan fingerprint for personalization guarantee
+    planHash: generatePlanFingerprint(input)
   };
 
   // PASSO 27: Generate meal prep summary (Sunday prep list)
