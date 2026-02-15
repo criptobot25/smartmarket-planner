@@ -42,6 +42,46 @@ interface ShoppingListResult {
   substitutionsApplied: SubstitutionRecord[]; // NEW: Detailed substitutions
 }
 
+interface MacroScale {
+  protein: number;
+  carbs: number;
+  fats: number;
+}
+
+const VALID_CATEGORIES: FoodCategory[] = [
+  "proteins",
+  "grains",
+  "vegetables",
+  "fruits",
+  "dairy",
+  "oils",
+  "spices",
+  "beverages",
+  "others"
+];
+
+const BASELINE_MACROS = {
+  protein: 150,
+  carbs: 200,
+  fats: 70
+};
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value));
+}
+
+function getMacroScale(weeklyPlan: WeeklyPlan): MacroScale {
+  const proteinTarget = weeklyPlan.proteinTargetPerDay || BASELINE_MACROS.protein;
+  const carbsTarget = weeklyPlan.carbsTargetPerDay || BASELINE_MACROS.carbs;
+  const fatTarget = weeklyPlan.fatTargetPerDay || BASELINE_MACROS.fats;
+
+  return {
+    protein: clamp(proteinTarget / BASELINE_MACROS.protein, 0.7, 1.6),
+    carbs: clamp(carbsTarget / BASELINE_MACROS.carbs, 0.7, 1.6),
+    fats: clamp(fatTarget / BASELINE_MACROS.fats, 0.7, 1.6)
+  };
+}
+
 /**
  * Gera lista de compras derivada do WeeklyPlan
  */
@@ -53,8 +93,9 @@ export function generateShoppingList(
   const ingredientOccurrences = extractIngredientsFromPlan(weeklyPlan);
 
   // 2. Converter em FoodItems com quantidades realistas
+  const macroScale = getMacroScale(weeklyPlan);
   const items = ingredientOccurrences.map(occurrence =>
-    convertToFoodItem(occurrence, input.numberOfPeople, input.mealsPerDay)
+    convertToFoodItem(occurrence, input.mealsPerDay, macroScale)
   );
 
   // 3. Ordenar por categoria
@@ -148,8 +189,8 @@ function countMealIngredients(
  */
 function convertToFoodItem(
   occurrence: IngredientOccurrence,
-  numberOfPeople: number,
-  mealsPerDay: number
+  mealsPerDay: number,
+  macroScale: MacroScale
 ): FoodItem {
   const food = mockFoods.find(f => f.id === occurrence.foodId);
 
@@ -157,19 +198,28 @@ function convertToFoodItem(
     throw new Error(`Food not found: ${occurrence.foodId}`);
   }
 
+  const safeCategory: FoodCategory = VALID_CATEGORIES.includes(food.category)
+    ? food.category
+    : "others";
+
+  const safeFood: FoodItem = {
+    ...food,
+    category: safeCategory
+  };
+
   // Heurísticas de quantidade baseadas em meal prep real
   const quantity = calculateRealisticQuantity(
-    food,
+    safeFood,
     occurrence.mealType,
     occurrence.occurrences,
-    numberOfPeople,
-    mealsPerDay
+    mealsPerDay,
+    macroScale
   );
 
   const estimatedPrice = quantity * food.pricePerUnit;
 
   const reason = generateReason(
-    food,
+    safeFood,
     occurrence.mealType,
     occurrence.occurrences
   );
@@ -177,7 +227,7 @@ function convertToFoodItem(
   return {
     id: food.id,
     name: food.name,
-    category: food.category,
+    category: safeFood.category,
     unit: food.unit,
     pricePerUnit: food.pricePerUnit,
     quantity,
@@ -205,8 +255,8 @@ function calculateRealisticQuantity(
   food: FoodItem,
   mealType: "breakfast" | "lunch" | "dinner" | "snack",
   occurrences: number,
-  numberOfPeople: number,
-  mealsPerDay: number
+  mealsPerDay: number,
+  macroScale: MacroScale
 ): number {
   const category = food.category;
   const unit = food.unit;
@@ -217,13 +267,13 @@ function calculateRealisticQuantity(
   if (category === "proteins") {
     // 200g de proteína por refeição principal
     if (mealType === "breakfast") {
-      portionPerMeal = 0.1; // 100g (ex: ovos)
+      portionPerMeal = 0.1 * macroScale.protein; // 100g (ex: ovos)
     } else {
-      portionPerMeal = 0.2; // 200g (ex: frango, peixe)
+      portionPerMeal = 0.2 * macroScale.protein; // 200g (ex: frango, peixe)
     }
   } else if (category === "grains") {
     // 150g cooked de carbs por refeição
-    const carbMultiplier = mealsPerDay >= 5 ? 1.2 : 1;
+    const carbMultiplier = (mealsPerDay >= 5 ? 1.2 : 1) * macroScale.carbs;
     if (unit === "kg") {
       portionPerMeal = 0.08 * carbMultiplier; // ~80g dry = ~150g cooked
     } else if (unit === "loaf") {
@@ -231,44 +281,44 @@ function calculateRealisticQuantity(
     }
   } else if (category === "vegetables") {
     // 150g de vegetais por refeição
-    portionPerMeal = 0.15; // 150g
+    portionPerMeal = 0.15 * macroScale.carbs; // 150g
   } else if (category === "fruits") {
     // 1 fruta por dia ou 150g
     if (unit === "kg") {
-      portionPerMeal = 0.15; // 150g (ex: banana grande)
+      portionPerMeal = 0.15 * macroScale.carbs; // 150g (ex: banana grande)
     } else if (unit === "pack") {
-      portionPerMeal = 0.2; // 20% de um pack (ex: berries)
+      portionPerMeal = 0.2 * macroScale.carbs; // 20% de um pack (ex: berries)
     }
   } else if (category === "dairy") {
     // Iogurte/queijo: 150g por refeição
     if (unit === "kg") {
-      portionPerMeal = 0.15; // 150g
+      portionPerMeal = 0.15 * macroScale.fats; // 150g
     } else if (unit === "L") {
-      portionPerMeal = 0.25; // 250ml
+      portionPerMeal = 0.25 * macroScale.fats; // 250ml
     }
   } else if (category === "oils") {
     // Azeite: ~1 colher de sopa por refeição (15ml)
-    portionPerMeal = 0.015; // 15ml
+    portionPerMeal = 0.015 * macroScale.fats; // 15ml
   } else if (category === "spices") {
     // Temperos: mínimo
     portionPerMeal = 0.01; // 10g total semana
   } else if (category === "others") {
     // Nuts, peanut butter
     if (food.name.includes("butter")) {
-      portionPerMeal = 0.03; // 30g (2 colheres)
+      portionPerMeal = 0.03 * macroScale.fats; // 30g (2 colheres)
     } else if (unit === "kg") {
-      portionPerMeal = 0.03; // 30g (snack)
+      portionPerMeal = 0.03 * macroScale.fats; // 30g (snack)
     } else if (unit === "jar") {
-      portionPerMeal = 0.1; // 10% do jar
+      portionPerMeal = 0.1 * macroScale.fats; // 10% do jar
     }
   } else if (category === "beverages") {
-    portionPerMeal = 0.25; // 250ml
+    portionPerMeal = 0.25 * macroScale.carbs; // 250ml
   }
 
   // Ajuste especial para ovos (pack = 12 unidades)
   if (food.name.includes("Eggs")) {
     // 3 ovos por refeição = 3/12 = 0.25 pack
-    portionPerMeal = 0.25;
+    portionPerMeal = 0.25 * macroScale.protein;
   }
 
   // Ajuste especial para latas de atum
@@ -276,8 +326,8 @@ function calculateRealisticQuantity(
     portionPerMeal = 1; // 1 lata por refeição
   }
 
-  // Quantidade total = porção * ocorrências * pessoas
-  const totalQuantity = portionPerMeal * occurrences * numberOfPeople;
+  // Quantidade total = porção * ocorrências
+  const totalQuantity = portionPerMeal * occurrences;
 
   // Arredondar para 2 casas decimais
   return Math.round(totalQuantity * 100) / 100;

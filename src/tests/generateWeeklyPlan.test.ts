@@ -4,9 +4,11 @@ import { PlanInput } from "../core/models/PlanInput";
 
 function buildInput(mealsPerDay: number): PlanInput {
   return {
-    numberOfPeople: 2,
     sex: "male",
+    age: 30,
     weightKg: 80,
+    heightCm: 175,
+    trains: true,
     mealsPerDay,
     dietStyle: "balanced",
     budget: 300,

@@ -1,5 +1,6 @@
 import { PlanInput } from "../models/PlanInput";
 import { WeeklyPlan, DayOfWeek, DayPlan, DayMeals, Meal } from "../models/WeeklyPlan";
+import { calculateMacroTargets } from "./MacroCalculator";
 import { mockFoods } from "../../data/mockFoods";
 
 /**
@@ -25,26 +26,6 @@ interface MealTemplate {
   name: string;
   foodIds: string[];  // IDs dos alimentos do mockFoods
   protein: number;    // grams
-}
-
-/**
- * Calcula proteína alvo baseado no fitness goal e peso (g/kg)
- */
-function calculateProteinTarget(input: PlanInput): number {
-  // Se já foi especificado, usa o valor
-  if (input.proteinTargetPerDay && input.proteinTargetPerDay > 0) {
-    return input.proteinTargetPerDay;
-  }
-
-  const goal = input.fitnessGoal || "maintenance";
-  const multipliers = {
-    cutting: 2.2,
-    maintenance: 1.8,
-    bulking: 2.0
-  } as const;
-
-  const target = input.weightKg * multipliers[goal];
-  return Math.round(target);
 }
 
 /**
@@ -223,7 +204,7 @@ export function generateWeeklyPlan(input: PlanInput): WeeklyPlan {
   ];
 
   const goal = input.fitnessGoal || "maintenance";
-  const proteinTarget = calculateProteinTarget(input);
+  const macroTargets = calculateMacroTargets(input);
   const templates = getMealTemplates(goal, input.excludedFoods || [], input.mealsPerDay);
   const includeSnack = input.mealsPerDay >= 5 && templates.snacks.length > 0;
 
@@ -272,7 +253,10 @@ export function generateWeeklyPlan(input: PlanInput): WeeklyPlan {
     days,
     shoppingList: [],
     costTier: "low", // Will be set by generateShoppingList
-    proteinPerDay: proteinTarget
+    caloriesTargetPerDay: macroTargets.caloriesTargetPerDay,
+    proteinTargetPerDay: macroTargets.proteinTargetPerDay,
+    carbsTargetPerDay: macroTargets.carbsTargetPerDay,
+    fatTargetPerDay: macroTargets.fatTargetPerDay
   };
 
   return weeklyPlan;

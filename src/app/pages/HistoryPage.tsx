@@ -99,8 +99,8 @@ export function HistoryPage() {
 
                   <div className="plan-details">
                     <div className="plan-detail-item">
-                      <span className="detail-icon">👥</span>
-                      <span>{plan.planInput.numberOfPeople} pessoas</span>
+                      <span className="detail-icon">🧍</span>
+                      <span>{plan.planInput.age} anos · {plan.planInput.heightCm} cm</span>
                     </div>
                     <div className="plan-detail-item">
                       <span className="detail-icon">💰</span>

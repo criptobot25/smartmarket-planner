@@ -72,16 +72,16 @@ export function ShoppingListPage() {
     return [category, sorted] as [string, ShoppingItem[]];
   });
 
-  const categoryLabels: Record<FoodCategory, string> = {
-    vegetables: t("shoppingList.categories.vegetables"),
-    fruits: t("shoppingList.categories.fruits"),
-    proteins: t("shoppingList.categories.proteins"),
-    grains: t("shoppingList.categories.grains"),
-    dairy: t("shoppingList.categories.dairy"),
-    oils: t("shoppingList.categories.oils"),
-    spices: t("shoppingList.categories.spices"),
-    beverages: t("shoppingList.categories.beverages"),
-    others: t("shoppingList.categories.others")
+  const CATEGORY_META: Record<FoodCategory, { emoji: string; label: string }> = {
+    vegetables: { emoji: "🥬", label: t("shoppingList.categories.vegetables") },
+    fruits: { emoji: "🍎", label: t("shoppingList.categories.fruits") },
+    proteins: { emoji: "🍗", label: t("shoppingList.categories.proteins") },
+    grains: { emoji: "🌾", label: t("shoppingList.categories.grains") },
+    dairy: { emoji: "🥛", label: t("shoppingList.categories.dairy") },
+    oils: { emoji: "🫒", label: t("shoppingList.categories.oils") },
+    spices: { emoji: "🌶️", label: t("shoppingList.categories.spices") },
+    beverages: { emoji: "🥤", label: t("shoppingList.categories.beverages") },
+    others: { emoji: "📦", label: t("shoppingList.categories.others") }
   };
 
   const costTierMeta = {
@@ -90,7 +90,7 @@ export function ShoppingListPage() {
     high: { label: t("shoppingList.costLevel.high"), emoji: "🔴" }
   } as const;
   const costTierDisplay = costTierMeta[weeklyPlan.costTier];
-  const proteinPerDay = weeklyPlan.proteinPerDay;
+  const proteinPerDay = weeklyPlan.proteinTargetPerDay;
   const purchasedCount = shoppingList.filter(item => (item as ShoppingItem).purchased).length;
   const totalCount = shoppingList.length;
 
@@ -209,10 +209,16 @@ export function ShoppingListPage() {
       {/* Categories Grid */}
       <main className="shopping-main">
         <div className="categories-grid">
-          {sortedCategories.map(([category, items]) => (
+          {sortedCategories.map(([category, items]) => {
+            const meta = CATEGORY_META[category as FoodCategory] ?? {
+              emoji: "🛒",
+              label: category
+            };
+
+            return (
             <div key={category} className="category-card">
               <h3 className="category-title">
-                {categoryLabels[category as FoodCategory]}
+                {meta.emoji} {meta.label}
               </h3>
               <ul className="items-list">
                 {items.map((item) => (
@@ -242,7 +248,8 @@ export function ShoppingListPage() {
                 ))}
               </ul>
             </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Action Buttons */}

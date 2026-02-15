@@ -42,7 +42,10 @@ export interface WeeklyPlan {
   days: DayPlan[];
   shoppingList: FoodItem[];
   costTier: CostTier; // Low / Medium / High cost tier
-  proteinPerDay: number;  // Protein target in grams per person per day
+  caloriesTargetPerDay: number;
+  proteinTargetPerDay: number;
+  carbsTargetPerDay: number;
+  fatTargetPerDay: number;
   // Smart Savings optimization data
   totalProtein?: number; // Total protein in shopping list (grams)
   efficiencyScore?: number; // Protein per euro

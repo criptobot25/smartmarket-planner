@@ -3,13 +3,16 @@ import { generateShoppingList } from '../core/logic/generateShoppingList';
 import { generateWeeklyPlan } from '../core/logic/generateWeeklyPlan';
 import { PlanInput } from '../core/models/PlanInput';
 import { getCostTier } from '../core/utils/getCostTier';
+import { mockFoods } from '../data/mockFoods';
 
 describe('generateShoppingList', () => {
   it('should generate shopping list with categorized items', () => {
     const input: PlanInput = {
-      numberOfPeople: 2,
       sex: "male",
+      age: 30,
       weightKg: 80,
+      heightCm: 175,
+      trains: true,
       mealsPerDay: 4,
       dietStyle: 'balanced',
       budget: 300,
@@ -41,9 +44,11 @@ describe('generateShoppingList', () => {
 
   it('should group items by category', () => {
     const input: PlanInput = {
-      numberOfPeople: 2,
       sex: "female",
+      age: 28,
       weightKg: 65,
+      heightCm: 165,
+      trains: true,
       mealsPerDay: 3,
       dietStyle: 'healthy',
       budget: 300,
@@ -62,9 +67,11 @@ describe('generateShoppingList', () => {
 
   it('should calculate correct cost tier', () => {
     const input: PlanInput = {
-      numberOfPeople: 2,
       sex: "male",
+      age: 32,
       weightKg: 85,
+      heightCm: 180,
+      trains: true,
       mealsPerDay: 5,
       dietStyle: 'balanced',
       budget: 300,
@@ -81,9 +88,11 @@ describe('generateShoppingList', () => {
 
   it('should apply Smart Savings adjustments when cost exceeds target', () => {
     const input: PlanInput = {
-      numberOfPeople: 2,
       sex: "female",
+      age: 26,
       weightKg: 62,
+      heightCm: 162,
+      trains: true,
       mealsPerDay: 4,
       dietStyle: 'balanced',
       budget: 40, // Very low budget to force adjustments
@@ -101,9 +110,11 @@ describe('generateShoppingList', () => {
 
   it('should return within_savings status when cost is under target', () => {
     const input: PlanInput = {
-      numberOfPeople: 1,
       sex: "male",
+      age: 29,
       weightKg: 75,
+      heightCm: 178,
+      trains: false,
       mealsPerDay: 3,
       dietStyle: 'balanced',
       budget: 500, // High budget
@@ -116,5 +127,30 @@ describe('generateShoppingList', () => {
 
     expect(result.savingsStatus).toBe('within_savings');
     expect(result.substitutionsApplied).toHaveLength(0);
+  });
+
+  it('should fallback to others for unexpected category', () => {
+    const originalCategory = mockFoods[0].category;
+    (mockFoods[0] as { category: unknown }).category = "mystery";
+
+    const input: PlanInput = {
+      sex: "female",
+      age: 31,
+      weightKg: 68,
+      heightCm: 168,
+      trains: true,
+      mealsPerDay: 4,
+      dietStyle: 'balanced',
+      budget: 300,
+      restrictions: []
+    };
+
+    try {
+      const weeklyPlan = generateWeeklyPlan(input);
+      const result = generateShoppingList(input, weeklyPlan);
+      expect(result.items.some(item => item.category === 'others')).toBe(true);
+    } finally {
+      mockFoods[0].category = originalCategory;
+    }
   });
 });

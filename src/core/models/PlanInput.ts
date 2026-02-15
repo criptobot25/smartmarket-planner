@@ -3,9 +3,11 @@ export type FitnessGoal = "cutting" | "maintenance" | "bulking";
 export type Sex = "male" | "female";
 
 export interface PlanInput {
-  numberOfPeople: number;
   sex: Sex;
+  age: number;
   weightKg: number;
+  heightCm: number;
+  trains: boolean;
   mealsPerDay: number;
   dietStyle: DietStyle;
   budget: number;

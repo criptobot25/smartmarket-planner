@@ -10,9 +10,11 @@ export function PlannerPage() {
   const { generatePlan } = useShoppingPlan();
   const { t } = useTranslation();
 
-  const [numberOfPeople, setNumberOfPeople] = useState<number>(2);
   const [sex, setSex] = useState<Sex>("male");
+  const [age, setAge] = useState<number>(30);
   const [weightKg, setWeightKg] = useState<number>(70);
+  const [heightCm, setHeightCm] = useState<number>(175);
+  const [trains, setTrains] = useState<boolean>(true);
   const [mealsPerDay, setMealsPerDay] = useState<number>(3);
   const [dietStyle, setDietStyle] = useState<DietStyle>("balanced");
   const [budget, setBudget] = useState<number>(300);
@@ -22,11 +24,6 @@ export function PlannerPage() {
     e.preventDefault();
 
     // Valida inputs
-    if (numberOfPeople < 1) {
-      alert(t("planner.alertPeopleMin"));
-      return;
-    }
-
     if (budget < 0) {
       alert(t("planner.alertBudgetPositive"));
       return;
@@ -39,6 +36,16 @@ export function PlannerPage() {
 
     if (weightKg <= 0) {
       alert(t("planner.alertWeightPositive"));
+      return;
+    }
+
+    if (age <= 0) {
+      alert(t("planner.alertAgePositive"));
+      return;
+    }
+
+    if (heightCm <= 0) {
+      alert(t("planner.alertHeightPositive"));
       return;
     }
 
@@ -56,9 +63,11 @@ export function PlannerPage() {
     // Gera o plano
     try {
       generatePlan({
-        numberOfPeople,
         sex,
+        age,
         weightKg,
+        heightCm,
+        trains,
         mealsPerDay,
         dietStyle,
         budget,
@@ -84,22 +93,6 @@ export function PlannerPage() {
         <div className="planner-card">
           <form className="planner-form" onSubmit={handleSubmit}>
             <div className="form-group">
-              <label htmlFor="people" className="form-label">
-                {t("planner.peopleLabel")}
-              </label>
-              <input
-                type="number"
-                id="people"
-                min="1"
-                max="10"
-                value={numberOfPeople}
-                onChange={(e) => setNumberOfPeople(Number(e.target.value))}
-                className="form-input"
-                required
-              />
-            </div>
-
-            <div className="form-group">
               <label htmlFor="sex" className="form-label">
                 {t("planner.sexLabel")}
               </label>
@@ -113,6 +106,22 @@ export function PlannerPage() {
                 <option value="male">{t("planner.sexOption.male")}</option>
                 <option value="female">{t("planner.sexOption.female")}</option>
               </select>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="age" className="form-label">
+                {t("planner.ageLabel")}
+              </label>
+              <input
+                type="number"
+                id="age"
+                min="12"
+                max="90"
+                value={age}
+                onChange={(e) => setAge(Number(e.target.value))}
+                className="form-input"
+                required
+              />
             </div>
 
             <div className="form-group">
@@ -130,6 +139,38 @@ export function PlannerPage() {
                 className="form-input"
                 required
               />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="height" className="form-label">
+                {t("planner.heightLabel")}
+              </label>
+              <input
+                type="number"
+                id="height"
+                min="120"
+                max="220"
+                value={heightCm}
+                onChange={(e) => setHeightCm(Number(e.target.value))}
+                className="form-input"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="trains" className="form-label">
+                {t("planner.trainsLabel")}
+              </label>
+              <select
+                id="trains"
+                value={trains ? "yes" : "no"}
+                onChange={(e) => setTrains(e.target.value === "yes")}
+                className="form-input"
+                required
+              >
+                <option value="yes">{t("planner.trainsOption.yes")}</option>
+                <option value="no">{t("planner.trainsOption.no")}</option>
+              </select>
             </div>
 
             <div className="form-group">
