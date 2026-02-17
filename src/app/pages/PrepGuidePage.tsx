@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useShoppingPlan } from "../../contexts/ShoppingPlanContext";
 import { generateMealPrepGuide, CookingTask, MealPrepGuide } from "../../core/logic/MealPrepGuide";
 import { exportPrepGuideToPdf } from "../../utils/exportPrepGuidePdf";
@@ -9,6 +10,7 @@ import "./PrepGuidePage.css";
 
 export function PrepGuidePage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { weeklyPlan } = useShoppingPlan();
   const [completedTasks, setCompletedTasks] = useState<Set<number>>(new Set());
   const [showPremiumModal, setShowPremiumModal] = useState(false);
@@ -48,10 +50,10 @@ export function PrepGuidePage() {
     return (
       <div className="prep-guide-page">
         <div className="empty-state">
-          <h2>📋 No Meal Plan Yet</h2>
-          <p>Generate a weekly meal plan first to see your Sunday prep guide.</p>
+          <h2>{t("prepGuide.emptyTitle")}</h2>
+          <p>{t("prepGuide.emptySubtitle")}</p>
           <button className="btn-primary" onClick={() => navigate("/app")}>
-            Create Meal Plan
+            {t("prepGuide.emptyButton")}
           </button>
         </div>
       </div>
@@ -76,50 +78,50 @@ export function PrepGuidePage() {
       <header className="prep-guide-header">
         <div className="header-top">
           <button className="btn-back" onClick={() => navigate("/app/shopping-list")}>
-            ← Back to Shopping List
+            ← {t("prepGuide.backButton")}
           </button>
-          <h1>🍳 Sunday Meal Prep Guide</h1>
+          <h1>🍳 {t("prepGuide.title")}</h1>
         </div>
         
         <div className="guide-summary">
           <div className="summary-card">
             <div className="summary-icon">⏱️</div>
             <div className="summary-content">
-              <div className="summary-label">Total Time</div>
+              <div className="summary-label">{t("prepGuide.summaryTimeLabel")}</div>
               <div className="summary-value">{prepGuide.totalPrepTime}</div>
-              <div className="summary-detail">Sequential: {prepGuide.sequentialTime}</div>
+              <div className="summary-detail">{t("prepGuide.summarySequentialLabel")}: {prepGuide.sequentialTime}</div>
             </div>
           </div>
           
           <div className="summary-card">
             <div className="summary-icon">🍱</div>
             <div className="summary-content">
-              <div className="summary-label">Meals Prepared</div>
+              <div className="summary-label">{t("prepGuide.summaryMealsLabel")}</div>
               <div className="summary-value">{prepGuide.servingsProduced}</div>
-              <div className="summary-detail">Full week ready!</div>
+              <div className="summary-detail">{t("prepGuide.summaryMealsDetail")}</div>
             </div>
           </div>
           
           <div className="summary-card">
             <div className="summary-icon">📊</div>
             <div className="summary-content">
-              <div className="summary-label">Difficulty</div>
+              <div className="summary-label">{t("prepGuide.summaryDifficultyLabel")}</div>
               <div 
                 className="summary-value difficulty-badge" 
                 style={{ color: difficultyColor }}
               >
-                {prepGuide.difficulty.toUpperCase()}
+                {t(`prepGuide.difficulty.${prepGuide.difficulty}`)}
               </div>
-              <div className="summary-detail">{totalTasks} cooking tasks</div>
+              <div className="summary-detail">{t("prepGuide.summaryDifficultyDetail", { count: totalTasks })}</div>
             </div>
           </div>
           
           <div className="summary-card">
             <div className="summary-icon">✅</div>
             <div className="summary-content">
-              <div className="summary-label">Progress</div>
+              <div className="summary-label">{t("prepGuide.summaryProgressLabel")}</div>
               <div className="summary-value">{progress}%</div>
-              <div className="summary-detail">{completedCount}/{totalTasks} tasks done</div>
+              <div className="summary-detail">{t("prepGuide.summaryProgressDetail", { count: completedCount, total: totalTasks })}</div>
             </div>
           </div>
         </div>
@@ -139,9 +141,9 @@ export function PrepGuidePage() {
         {/* Cooking Tasks Checklist */}
         <section className="cooking-tasks-section">
           <div className="section-header">
-            <h2>📝 Cooking Instructions</h2>
+            <h2>📝 {t("prepGuide.checklistTitle")}</h2>
             <p className="section-subtitle">
-              Follow these steps in order for efficient meal prep
+              {t("prepGuide.checklistSubtitle")}
             </p>
           </div>
 
@@ -159,7 +161,7 @@ export function PrepGuidePage() {
 
         {/* Tips Section */}
         <section className="tips-section">
-          <h3>💡 Pro Tips</h3>
+          <h3>💡 {t("prepGuide.tipsTitle")}</h3>
           <ul className="tips-list">
             {prepGuide.tips.map((tip, index) => (
               <li key={index} className="tip-item">
@@ -172,7 +174,7 @@ export function PrepGuidePage() {
 
         {/* Ingredient Summary */}
         <section className="ingredients-section">
-          <h3>📦 What You'll Cook</h3>
+          <h3>📦 {t("prepGuide.ingredientsTitle")}</h3>
           <div className="ingredients-grid">
             {prepGuide.ingredientSummary
               .sort((a, b) => b.totalGrams - a.totalGrams)
@@ -197,14 +199,14 @@ export function PrepGuidePage() {
             className="btn-primary btn-print"
             onClick={handlePrintGuide}
           >
-            🖨️ Print Prep Guide {!canExportPdf() && "(Premium)"}
+            🖨️ {canExportPdf() ? t("prepGuide.printButton") : t("prepGuide.printButtonPremium")}
           </button>
           
           <button 
             className="btn-secondary"
             onClick={() => navigate("/app/shopping-list")}
           >
-            🛒 View Shopping List
+            🛍️ {t("prepGuide.viewShoppingButton")}
           </button>
         </div>
 
@@ -213,8 +215,8 @@ export function PrepGuidePage() {
           <div className="completion-celebration">
             <div className="celebration-content">
               <div className="celebration-icon">🎉</div>
-              <h2>Meal Prep Complete!</h2>
-              <p>You're all set for the week. Great job!</p>
+              <h2>{t("prepGuide.completionTitle")}</h2>
+              <p>{t("prepGuide.completionSubtitle")}</p>
             </div>
           </div>
         )}
