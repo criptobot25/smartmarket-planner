@@ -13,6 +13,7 @@
  */
 
 import { describe, it, expect } from "vitest";
+import { CATEGORIES } from "../core/constants/categories";
 import { generateWeeklyPlan } from "../core/logic/generateWeeklyPlan";
 import { generateMealPrepSummary } from "../core/logic/MealPrepSummary";
 import { PlanInput } from "../core/models/PlanInput";
@@ -67,7 +68,7 @@ describe("PASSO 27 - Meal Prep Output Mode", () => {
       const plan = generateWeeklyPlan(baseInput);
       const prepSummary = generateMealPrepSummary(plan);
       
-      const validCategories = ["proteins", "grains", "vegetables", "fruits", "dairy", "oils", "spices", "beverages", "others"];
+      const validCategories = [CATEGORIES.protein, CATEGORIES.grains, CATEGORIES.vegetables, CATEGORIES.fruits, CATEGORIES.dairy, CATEGORIES.fats, CATEGORIES.others];
       
       prepSummary.ingredients.forEach(ing => {
         expect(validCategories).toContain(ing.category);
@@ -491,3 +492,4 @@ describe("PASSO 27 - Meal Prep Output Mode", () => {
     });
   });
 });
+

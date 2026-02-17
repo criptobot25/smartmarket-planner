@@ -32,6 +32,7 @@
  */
 
 import { FoodItem } from "../models/FoodItem";
+import { CATEGORIES } from "../../core/constants/categories";
 import { CostTier } from "../models/CostTier";
 import { 
   calculateMealPortions, 
@@ -84,7 +85,7 @@ export interface MealBuilderInput {
  */
 function calculateFoodScore(
   food: FoodItem,
-  costTier: CostTier,
+  _costTier: CostTier,
   varietyTracker?: VarietyTracker,
   isProtein: boolean = true,
   rotationEngine?: RotationEngine
@@ -206,7 +207,7 @@ function selectProteinSource(
 ): FoodItem | null {
   let proteinFoods = filterExcludedFoods(availableFoods, excludedFoods)
     .filter(f => 
-      f.category === "proteins" && 
+      f.category === CATEGORIES.protein && 
       f.macros && 
       f.macros.protein > 15 // At least 15g protein per 100g
     );
@@ -269,7 +270,7 @@ function selectCarbSource(
 ): FoodItem | null {
   let carbFoods = filterExcludedFoods(availableFoods, excludedFoods)
     .filter(f => 
-      (f.category === "grains" || f.category === "vegetables") &&
+      (f.category === CATEGORIES.grains || f.category === CATEGORIES.vegetables) &&
       f.macros && 
       f.macros.carbs > 15 && // At least 15g carbs per 100g
       f.macros.carbs > f.macros.protein && // More carbs than protein
@@ -331,7 +332,7 @@ function selectVegetable(
 ): FoodItem | null {
   let vegetables = filterExcludedFoods(availableFoods, excludedFoods)
     .filter(f => 
-      f.category === "vegetables" &&
+      f.category === CATEGORIES.vegetables &&
       f.macros &&
       f.macros.carbs < 15 // Low-carb vegetables (broccoli, spinach, not sweet potato)
     );
@@ -378,7 +379,7 @@ function selectFatSource(
 ): FoodItem | null {
   let fatFoods = filterExcludedFoods(availableFoods, excludedFoods)
     .filter(f => 
-      f.category === "oils" && 
+      f.category === CATEGORIES.fats && 
       f.macros && 
       f.macros.fat > 50
     );
@@ -531,13 +532,13 @@ export function buildBreakfast(input: MealBuilderInput): BuiltMeal {
   
   const dairy = filterExcludedFoods(tierFoods, excludedFoods)
     .find(f => 
-      f.category === "dairy" && 
+      f.category === CATEGORIES.dairy && 
       f.macros && 
       f.macros.protein > 5
     );
   
   const fruit = filterExcludedFoods(tierFoods, excludedFoods)
-    .find(f => f.category === "fruits");
+    .find(f => f.category === CATEGORIES.fruits);
   
   // Fallback to regular meal builder if breakfast-specific foods not available
   if (!oats || !dairy) {

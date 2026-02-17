@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useShoppingPlan } from "../../contexts/ShoppingPlanContext";
 import { FoodItem, FoodCategory } from "../../core/models/FoodItem";
-import { formatQuantity } from "../../core/utils/formatQuantity";
 import { normalizeQuantity } from "../../core/utils/QuantityNormalizer"; // PASSO 35
 import { exportShoppingListToPdf } from "../../utils/exportPdf";
 import { canExportPdf, getRemainingOptimizations } from "../../core/premium/features";
@@ -79,12 +78,14 @@ export function ShoppingListPage() {
   const CATEGORY_META: Record<FoodCategory, { emoji: string; label: string }> = {
     vegetables: { emoji: "🥬", label: t("shoppingList.categories.vegetables") },
     fruits: { emoji: "🍎", label: t("shoppingList.categories.fruits") },
-    proteins: { emoji: "🍗", label: t("shoppingList.categories.proteins") },
+    protein: { emoji: "🍗", label: t("shoppingList.categories.protein") },
     grains: { emoji: "🌾", label: t("shoppingList.categories.grains") },
     dairy: { emoji: "🥛", label: t("shoppingList.categories.dairy") },
-    oils: { emoji: "🫒", label: t("shoppingList.categories.oils") },
-    spices: { emoji: "🌶️", label: t("shoppingList.categories.spices") },
-    beverages: { emoji: "🥤", label: t("shoppingList.categories.beverages") },
+    fats: { emoji: "🫒", label: t("shoppingList.categories.fats") },
+    legumes: { emoji: "🫘", label: t("shoppingList.categories.legumes") },
+    carbs: { emoji: "🍞", label: t("shoppingList.categories.carbs") },
+    snacks: { emoji: "🍿", label: t("shoppingList.categories.snacks") },
+    supplements: { emoji: "💊", label: t("shoppingList.categories.supplements") },
     others: { emoji: "📦", label: t("shoppingList.categories.others") }
   };
 

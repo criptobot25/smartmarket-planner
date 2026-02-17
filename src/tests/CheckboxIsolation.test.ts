@@ -12,21 +12,20 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { generateShoppingList } from "../core/logic/generateShoppingList";
 import { generateWeeklyPlan } from "../core/logic/generateWeeklyPlan";
 import { PlanInput } from "../core/models/PlanInput";
+import { createPlanInput } from "./factories/createPlanInput";
 
 describe("BUGFIX: Checkbox Isolation", () => {
   let planInput: PlanInput;
 
   beforeEach(() => {
     // Create a plan that will result in the same food appearing multiple times
-    planInput = {
-      fitnessGoal: "muscle-gain",
-      dietaryRestrictions: [],
-      budget: "medium",
-      proteinGoal: 150,
-      daysPerWeek: 7,
-      mealsPerDay: 4,
-      savingsMode: false
-    };
+    planInput = createPlanInput({
+      fitnessGoal: "bulking",
+      restrictions: [],
+      costTier: "medium",
+      proteinTargetPerDay: 150,
+      mealsPerDay: 4
+    });
   });
 
   describe("Unique ID Generation", () => {
@@ -139,10 +138,9 @@ describe("BUGFIX: Checkbox Isolation", () => {
     });
 
     it("should handle empty shopping list", () => {
-      const emptyInput: PlanInput = {
-        ...planInput,
-        daysPerWeek: 0
-      };
+      const emptyInput = createPlanInput({
+        mealsPerDay: 0
+      });
 
       const weeklyPlan = generateWeeklyPlan(emptyInput);
       const { items } = generateShoppingList(emptyInput, weeklyPlan);
@@ -152,11 +150,9 @@ describe("BUGFIX: Checkbox Isolation", () => {
     });
 
     it("should handle maximum shopping list size", () => {
-      const maxInput: PlanInput = {
-        ...planInput,
-        daysPerWeek: 7,
+      const maxInput = createPlanInput({
         mealsPerDay: 5
-      };
+      });
 
       const weeklyPlan = generateWeeklyPlan(maxInput);
       const { items } = generateShoppingList(maxInput, weeklyPlan);

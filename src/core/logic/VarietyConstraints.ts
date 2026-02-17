@@ -15,6 +15,7 @@
  */
 
 import { FoodItem } from "../models/FoodItem";
+import { CATEGORIES } from "../../core/constants/categories";
 
 /**
  * Variety constraints for diet adherence
@@ -216,7 +217,7 @@ export class VarietyTracker {
    */
   suggestAlternativeProtein(availableFoods: FoodItem[], excludedNames: string[] = []): FoodItem | null {
     const candidates = availableFoods.filter(f => 
-      f.category === "proteins" &&
+      f.category === CATEGORIES.protein &&
       f.macros &&
       f.macros.protein > 15 &&
       !this.proteinSourcesUsed.has(f.name) &&
@@ -232,7 +233,7 @@ export class VarietyTracker {
    */
   suggestAlternativeVegetable(availableFoods: FoodItem[], excludedNames: string[] = []): FoodItem | null {
     const candidates = availableFoods.filter(f => 
-      f.category === "vegetables" &&
+      f.category === CATEGORIES.vegetables &&
       f.macros &&
       f.macros.carbs < 15 &&
       !this.vegetablesUsed.has(f.name) &&

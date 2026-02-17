@@ -1,4 +1,5 @@
 import { PlanInput } from "../models/PlanInput";
+import { CATEGORIES } from "../../core/constants/categories";
 import { WeeklyPlan, DayOfWeek, DayPlan, DayMeals, Meal, FoodPortion } from "../models/WeeklyPlan";
 import { calculateMacroTargets } from "./MacroCalculator";
 import { MacroTargetPerMeal } from "./PortionCalculator";
@@ -268,13 +269,13 @@ function buildSnack(
   excludedFoods: string[]
 ): ReturnType<typeof buildMeal> {
   const yogurt = availableFoods.find(f => 
-    f.category === "dairy" && 
+    f.category === CATEGORIES.dairy && 
     !excludedFoods.includes(f.name) &&
     f.name.toLowerCase().includes("yogurt")
   );
   
   const fruit = availableFoods.find(f => 
-    f.category === "fruits" && 
+    f.category === CATEGORIES.fruits && 
     !excludedFoods.includes(f.name)
   );
   

@@ -1,13 +1,7 @@
-export type FoodCategory = 
-  | "vegetables"
-  | "fruits"
-  | "proteins"
-  | "grains"
-  | "dairy"
-  | "spices"
-  | "oils"
-  | "beverages"
-  | "others";
+import { FoodCategory } from "../../types/enums";
+
+// Re-export for backward compatibility
+export type { FoodCategory };
 
 /**
  * PASSO 24 - Cost tier classification

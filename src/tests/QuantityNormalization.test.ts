@@ -13,13 +13,13 @@
  */
 
 import { describe, it, expect } from "vitest";
+import { CATEGORIES } from "../core/constants/categories";
 import {
   normalizeQuantity,
   normalizeFoodItem,
   normalizeShoppingList,
   supportsConversion,
-  getSupportedConversions,
-  type NormalizedQuantity
+  getSupportedConversions
 } from "../core/utils/QuantityNormalizer";
 import type { FoodItem } from "../core/models/FoodItem";
 
@@ -272,7 +272,7 @@ describe("PASSO 35: Grocery Unit Normalization", () => {
         name: "Yogurt (plain)",
         quantity: 1.2,
         unit: "kg",
-        category: "dairy",
+        category: CATEGORIES.dairy,
         pricePerUnit: 2.5,
         costLevel: "medium"
       };
@@ -292,7 +292,7 @@ describe("PASSO 35: Grocery Unit Normalization", () => {
         name: "Tomatoes",
         quantity: 0.3,
         unit: "kg",
-        category: "vegetables",
+        category: CATEGORIES.vegetables,
         pricePerUnit: 3.0,
         costLevel: "medium"
       };
@@ -313,7 +313,7 @@ describe("PASSO 35: Grocery Unit Normalization", () => {
           name: "Yogurt (plain)",
           quantity: 1.2,
           unit: "kg",
-          category: "dairy",
+          category: CATEGORIES.dairy,
           pricePerUnit: 2.5,
           costLevel: "medium"
         },
@@ -322,7 +322,7 @@ describe("PASSO 35: Grocery Unit Normalization", () => {
           name: "Tomatoes",
           quantity: 0.3,
           unit: "kg",
-          category: "vegetables",
+          category: CATEGORIES.vegetables,
           pricePerUnit: 3.0,
           costLevel: "medium"
         },
@@ -331,7 +331,7 @@ describe("PASSO 35: Grocery Unit Normalization", () => {
           name: "Tuna (canned)",
           quantity: 360,
           unit: "g",
-          category: "proteins",
+          category: CATEGORIES.protein,
           pricePerUnit: 1.5,
           costLevel: "medium"
         }
@@ -352,7 +352,7 @@ describe("PASSO 35: Grocery Unit Normalization", () => {
           name: "Milk (whole)",
           quantity: 2,
           unit: "L",
-          category: "dairy",
+          category: CATEGORIES.dairy,
           pricePerUnit: 1.8,
           costLevel: "low"
         }
@@ -420,12 +420,12 @@ describe("PASSO 35: Grocery Unit Normalization", () => {
   describe("13. Real-World Shopping Scenarios", () => {
     it("should create realistic grocery list for meal prep", () => {
       const groceryList: FoodItem[] = [
-        { id: "1", name: "Yogurt (plain)", quantity: 1.4, unit: "kg", category: "dairy", pricePerUnit: 2.5, costLevel: "medium" },
-        { id: "2", name: "Tomatoes", quantity: 0.6, unit: "kg", category: "vegetables", pricePerUnit: 3.0, costLevel: "medium" },
-        { id: "3", name: "Bananas", quantity: 0.48, unit: "kg", category: "fruits", pricePerUnit: 2.0, costLevel: "low" },
-        { id: "4", name: "Tuna (canned)", quantity: 480, unit: "g", category: "proteins", pricePerUnit: 1.5, costLevel: "medium" },
-        { id: "5", name: "Milk (whole)", quantity: 3, unit: "L", category: "dairy", pricePerUnit: 1.8, costLevel: "low" },
-        { id: "6", name: "Spinach (fresh)", quantity: 600, unit: "g", category: "vegetables", pricePerUnit: 2.2, costLevel: "medium" }
+        { id: "1", name: "Yogurt (plain)", quantity: 1.4, unit: "kg", category: CATEGORIES.dairy, pricePerUnit: 2.5, costLevel: "medium" },
+        { id: "2", name: "Tomatoes", quantity: 0.6, unit: "kg", category: CATEGORIES.vegetables, pricePerUnit: 3.0, costLevel: "medium" },
+        { id: "3", name: "Bananas", quantity: 0.48, unit: "kg", category: CATEGORIES.fruits, pricePerUnit: 2.0, costLevel: "low" },
+        { id: "4", name: "Tuna (canned)", quantity: 480, unit: "g", category: CATEGORIES.protein, pricePerUnit: 1.5, costLevel: "medium" },
+        { id: "5", name: "Milk (whole)", quantity: 3, unit: "L", category: CATEGORIES.dairy, pricePerUnit: 1.8, costLevel: "low" },
+        { id: "6", name: "Spinach (fresh)", quantity: 600, unit: "g", category: CATEGORIES.vegetables, pricePerUnit: 2.2, costLevel: "medium" }
       ];
 
       const normalized = normalizeShoppingList(groceryList);
@@ -440,9 +440,9 @@ describe("PASSO 35: Grocery Unit Normalization", () => {
 
     it("should feel supermarket-native (no decimal grams)", () => {
       const groceryList: FoodItem[] = [
-        { id: "1", name: "Bell peppers", quantity: 0.4, unit: "kg", category: "vegetables", pricePerUnit: 4.0, costLevel: "high" },
-        { id: "2", name: "Avocados", quantity: 0.45, unit: "kg", category: "fruits", pricePerUnit: 3.5, costLevel: "high" },
-        { id: "3", name: "Garlic", quantity: 100, unit: "g", category: "vegetables", pricePerUnit: 5.0, costLevel: "medium" }
+        { id: "1", name: "Bell peppers", quantity: 0.4, unit: "kg", category: CATEGORIES.vegetables, pricePerUnit: 4.0, costLevel: "high" },
+        { id: "2", name: "Avocados", quantity: 0.45, unit: "kg", category: CATEGORIES.fruits, pricePerUnit: 3.5, costLevel: "high" },
+        { id: "3", name: "Garlic", quantity: 100, unit: "g", category: CATEGORIES.vegetables, pricePerUnit: 5.0, costLevel: "medium" }
       ];
 
       const normalized = normalizeShoppingList(groceryList);
@@ -478,3 +478,5 @@ describe("PASSO 35: Grocery Unit Normalization", () => {
     });
   });
 });
+
+

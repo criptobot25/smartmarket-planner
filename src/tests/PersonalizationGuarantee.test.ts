@@ -16,7 +16,8 @@ import { describe, it, expect } from "vitest";
 import { generateWeeklyPlan } from "../core/logic/generateWeeklyPlan";
 import { generateShoppingList } from "../core/logic/generateShoppingList";
 import { PlanInput } from "../core/models/PlanInput";
-import { generatePlanFingerprint, arePlanInputsEqual, isPlanValidForInput } from "../core/utils/planFingerprint";
+import { generatePlanFingerprint, isPlanValidForInput } from "../core/utils/planFingerprint";
+import { createPlanInput } from "./factories/createPlanInput";
 
 describe("PASSO 31 - Personalization Guarantee", () => {
   
@@ -261,7 +262,7 @@ describe("PASSO 31 - Personalization Guarantee", () => {
 
   describe("5. Budget Tier Variations", () => {
     it("should produce different shopping lists for different budget tiers", () => {
-      const lowBudget: PlanInput = {
+      const lowBudget = createPlanInput({
         fitnessGoal: "maintenance",
         sex: "male",
         age: 30,
@@ -272,12 +273,20 @@ describe("PASSO 31 - Personalization Guarantee", () => {
         dietStyle: "balanced",
         costTier: "low",
         restrictions: []
-      };
+      });
 
-      const highBudget: PlanInput = {
-        ...lowBudget,
-        costTier: "high"
-      };
+      const highBudget = createPlanInput({
+        fitnessGoal: "maintenance",
+        sex: "male",
+        age: 30,
+        weightKg: 75,
+        heightCm: 175,
+        trains: false,
+        mealsPerDay: 4,
+        dietStyle: "balanced",
+        costTier: "high",
+        restrictions: []
+      });
 
       const plan1 = generateWeeklyPlan(lowBudget);
       const plan2 = generateWeeklyPlan(highBudget);
@@ -326,7 +335,6 @@ describe("PASSO 31 - Personalization Guarantee", () => {
       const plan1 = generateWeeklyPlan(noExclusions);
       const plan2 = generateWeeklyPlan(withExclusions);
 
-      const { items: items1 } = generateShoppingList(noExclusions, plan1);
       const { items: items2 } = generateShoppingList(withExclusions, plan2);
 
       // Different fingerprints

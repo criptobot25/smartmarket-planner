@@ -11,6 +11,7 @@
  */
 
 import { FoodCategory } from "../models/FoodItem";
+import { CATEGORIES } from "../constants/categories";
 
 /**
  * Safe category fallback
@@ -18,15 +19,15 @@ import { FoodCategory } from "../models/FoodItem";
  */
 export function getSafeCategory(category: unknown): FoodCategory {
   const validCategories: FoodCategory[] = [
-    "vegetables",
-    "fruits", 
-    "proteins",
-    "grains",
-    "dairy",
-    "oils",
-    "spices",
-    "beverages",
-    "others"
+    CATEGORIES.vegetables,
+    CATEGORIES.fruits, 
+    CATEGORIES.protein,
+    CATEGORIES.grains,
+    CATEGORIES.dairy,
+    CATEGORIES.fats,
+    CATEGORIES.others,
+    CATEGORIES.others,
+    CATEGORIES.others
   ];
   
   if (typeof category === "string" && validCategories.includes(category as FoodCategory)) {
@@ -34,7 +35,7 @@ export function getSafeCategory(category: unknown): FoodCategory {
   }
   
   console.warn(`Unknown category "${category}", using fallback "others"`);
-  return "others";
+  return CATEGORIES.others;
 }
 
 /**
@@ -45,12 +46,14 @@ export function getSafeEmoji(category: FoodCategory): string {
   const categoryEmojis: Record<FoodCategory, string> = {
     vegetables: "🥬",
     fruits: "🍎",
-    proteins: "🍗",
+    protein: "🍗",
+    carbs: "🍞",
     grains: "🌾",
+    legumes: "🫘",
     dairy: "🥛",
-    oils: "🫒",
-    spices: "🌶️",
-    beverages: "🥤",
+    fats: "🫒",
+    snacks: "🍿",
+    supplements: "💊",
     others: "📦"
   };
   

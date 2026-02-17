@@ -15,6 +15,7 @@
  */
 
 import { FoodItem } from "../models/FoodItem";
+import { CATEGORIES } from "../../core/constants/categories";
 import { mockFoods } from "../../data/mockFoods";
 
 export type SavingsStatus = "within_savings" | "adjusted_to_savings" | "over_savings_minimum";
@@ -79,7 +80,7 @@ const MIN_UNIQUE_PROTEINS = 2;
  */
 function countUniqueProteins(items: FoodItem[]): number {
   const proteinNames = items
-    .filter(item => item.category === "proteins")
+    .filter(item => item.category === CATEGORIES.protein)
     .map(item => item.name);
   
   return new Set(proteinNames).size;
@@ -89,7 +90,7 @@ function countUniqueProteins(items: FoodItem[]): number {
  * Check if a food item is a protein
  */
 function isProteinItem(item: FoodItem): boolean {
-  return item.category === "proteins";
+  return item.category === CATEGORIES.protein;
 }
 
 /**

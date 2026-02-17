@@ -9,6 +9,7 @@
  */
 
 import { describe, it, expect } from "vitest";
+import { CATEGORIES } from "../core/constants/categories";
 import { buildMeal, buildBreakfast } from "../core/logic/MealBuilder";
 import { mockFoods } from "../data/mockFoods";
 import { MacroTargetPerMeal } from "../core/logic/PortionCalculator";
@@ -48,7 +49,7 @@ describe("CostTier Food Selection - PASSO 24", () => {
 
       const protein = meal.ingredients.find(i => {
         const food = mockFoods.find(f => f.name === i.foodName);
-        return food?.category === "proteins";
+        return food?.category === CATEGORIES.protein;
       });
 
       expect(protein).toBeDefined();
@@ -67,7 +68,7 @@ describe("CostTier Food Selection - PASSO 24", () => {
 
       const carb = meal.ingredients.find(i => {
         const food = mockFoods.find(f => f.name === i.foodName);
-        return food?.category === "grains";
+        return food?.category === CATEGORIES.grains;
       });
 
       expect(carb).toBeDefined();
@@ -189,12 +190,12 @@ describe("CostTier Food Selection - PASSO 24", () => {
   describe("Cost tier impact on food availability", () => {
     it("low tier should have fewer protein options than high tier", () => {
       const lowTierProteins = mockFoods.filter(f => 
-        f.category === "proteins" && 
+        f.category === CATEGORIES.protein && 
         (f.costLevel === "low" || f.costLevel === "medium")
       );
 
       const highTierProteins = mockFoods.filter(f => 
-        f.category === "proteins"
+        f.category === CATEGORIES.protein
       );
 
       expect(lowTierProteins.length).toBeLessThan(highTierProteins.length);
@@ -261,3 +262,4 @@ describe("CostTier Food Selection - PASSO 24", () => {
     });
   });
 });
+

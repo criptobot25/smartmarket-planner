@@ -9,23 +9,25 @@
  * - Metrics display accuracy
  */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { WeeklyPlan } from "../core/models/WeeklyPlan";
-import { PlanInput } from "../core/models/PlanInput";
+import { describe, it, expect } from "vitest";
+import { CATEGORIES } from "../core/constants/categories";
+import { createFoodItem } from "./factories/createFoodItem";
+import { createPlanInput } from "./factories/createPlanInput";
+import { createWeeklyPlan } from "./factories/createWeeklyPlan";
 
 describe("PASSO 33.3: Share Card Generator", () => {
   describe("Variety Score Calculation", () => {
     it("should calculate variety score based on unique proteins and vegetables", () => {
-      const weeklyPlan: Partial<WeeklyPlan> = {
+      const weeklyPlan = createWeeklyPlan({
         shoppingList: [
-          { id: "1", name: "Chicken", category: "proteins", quantity: 2, unit: "kg" },
-          { id: "2", name: "Beef", category: "proteins", quantity: 1, unit: "kg" },
-          { id: "3", name: "Eggs", category: "proteins", quantity: 12, unit: "unit" },
-          { id: "4", name: "Broccoli", category: "vegetables", quantity: 1, unit: "kg" },
-          { id: "5", name: "Spinach", category: "vegetables", quantity: 1, unit: "kg" },
-          { id: "6", name: "Carrots", category: "vegetables", quantity: 0.5, unit: "kg" },
+          createFoodItem({ id: "1", name: "Chicken", category: CATEGORIES.protein, quantity: 2 }),
+          createFoodItem({ id: "2", name: "Beef", category: CATEGORIES.protein, quantity: 1 }),
+          createFoodItem({ id: "3", name: "Eggs", category: CATEGORIES.protein, quantity: 12, unit: "unit" }),
+          createFoodItem({ id: "4", name: "Broccoli", category: CATEGORIES.vegetables, quantity: 1 }),
+          createFoodItem({ id: "5", name: "Spinach", category: CATEGORIES.vegetables, quantity: 1 }),
+          createFoodItem({ id: "6", name: "Carrots", category: CATEGORIES.vegetables, quantity: 0.5 }),
         ]
-      };
+      });
 
       // 3 unique proteins (max 10) = 15% of total
       // 3 unique vegetables (max 15) = 10% of total
@@ -34,13 +36,13 @@ describe("PASSO 33.3: Share Card Generator", () => {
 
       const uniqueProteins = new Set(
         weeklyPlan.shoppingList!
-          .filter(item => item.category === "proteins")
+          .filter(item => item.category === CATEGORIES.protein)
           .map(p => p.name)
       ).size;
       
       const uniqueVegetables = new Set(
         weeklyPlan.shoppingList!
-          .filter(item => item.category === "vegetables")
+          .filter(item => item.category === CATEGORIES.vegetables)
           .map(v => v.name)
       ).size;
 
@@ -52,35 +54,37 @@ describe("PASSO 33.3: Share Card Generator", () => {
     });
 
     it("should cap variety score at 100 with maximum diversity", () => {
-      const proteins = Array.from({ length: 15 }, (_, i) => ({
-        id: `protein-${i}`,
-        name: `Protein ${i}`,
-        category: "proteins" as const,
-        quantity: 1,
-        unit: "kg" as const
-      }));
+      const proteins = Array.from({ length: 15 }, (_, i) => 
+        createFoodItem({
+          id: `protein-${i}`,
+          name: `Protein ${i}`,
+          category: CATEGORIES.protein,
+          quantity: 1
+        })
+      );
 
-      const vegetables = Array.from({ length: 20 }, (_, i) => ({
-        id: `veg-${i}`,
-        name: `Vegetable ${i}`,
-        category: "vegetables" as const,
-        quantity: 1,
-        unit: "kg" as const
-      }));
+      const vegetables = Array.from({ length: 20 }, (_, i) => 
+        createFoodItem({
+          id: `veg-${i}`,
+          name: `Vegetable ${i}`,
+          category: CATEGORIES.vegetables,
+          quantity: 1
+        })
+      );
 
-      const weeklyPlan: Partial<WeeklyPlan> = {
+      const weeklyPlan = createWeeklyPlan({
         shoppingList: [...proteins, ...vegetables]
-      };
+      });
 
       const uniqueProteins = new Set(
         weeklyPlan.shoppingList!
-          .filter(item => item.category === "proteins")
+          .filter(item => item.category === CATEGORIES.protein)
           .map(p => p.name)
       ).size;
       
       const uniqueVegetables = new Set(
         weeklyPlan.shoppingList!
-          .filter(item => item.category === "vegetables")
+          .filter(item => item.category === CATEGORIES.vegetables)
           .map(v => v.name)
       ).size;
 
@@ -92,9 +96,9 @@ describe("PASSO 33.3: Share Card Generator", () => {
     });
 
     it("should return 0 for empty shopping list", () => {
-      const weeklyPlan: Partial<WeeklyPlan> = {
+      const weeklyPlan = createWeeklyPlan({
         shoppingList: []
-      };
+      });
 
       if (!weeklyPlan.shoppingList || weeklyPlan.shoppingList.length === 0) {
         expect(0).toBe(0);
@@ -102,22 +106,22 @@ describe("PASSO 33.3: Share Card Generator", () => {
     });
 
     it("should handle shopping list with only proteins", () => {
-      const weeklyPlan: Partial<WeeklyPlan> = {
+      const weeklyPlan = createWeeklyPlan({
         shoppingList: [
-          { id: "1", name: "Chicken", category: "proteins", quantity: 2, unit: "kg" },
-          { id: "2", name: "Beef", category: "proteins", quantity: 1, unit: "kg" },
+          createFoodItem({ id: "1", name: "Chicken", category: CATEGORIES.protein, quantity: 2 }),
+          createFoodItem({ id: "2", name: "Beef", category: CATEGORIES.protein, quantity: 1 }),
         ]
-      };
+      });
 
       const uniqueProteins = new Set(
         weeklyPlan.shoppingList!
-          .filter(item => item.category === "proteins")
+          .filter(item => item.category === CATEGORIES.protein)
           .map(p => p.name)
       ).size;
       
       const uniqueVegetables = new Set(
         weeklyPlan.shoppingList!
-          .filter(item => item.category === "vegetables")
+          .filter(item => item.category === CATEGORIES.vegetables)
           .map(v => v.name)
       ).size;
 
@@ -130,23 +134,23 @@ describe("PASSO 33.3: Share Card Generator", () => {
     });
 
     it("should handle shopping list with only vegetables", () => {
-      const weeklyPlan: Partial<WeeklyPlan> = {
+      const weeklyPlan = createWeeklyPlan({
         shoppingList: [
-          { id: "1", name: "Broccoli", category: "vegetables", quantity: 1, unit: "kg" },
-          { id: "2", name: "Spinach", category: "vegetables", quantity: 1, unit: "kg" },
-          { id: "3", name: "Carrots", category: "vegetables", quantity: 0.5, unit: "kg" },
+          createFoodItem({ id: "1", name: "Broccoli", category: CATEGORIES.vegetables, quantity: 1 }),
+          createFoodItem({ id: "2", name: "Spinach", category: CATEGORIES.vegetables, quantity: 1 }),
+          createFoodItem({ id: "3", name: "Carrots", category: CATEGORIES.vegetables, quantity: 0.5 }),
         ]
-      };
+      });
 
       const uniqueProteins = new Set(
         weeklyPlan.shoppingList!
-          .filter(item => item.category === "proteins")
+          .filter(item => item.category === CATEGORIES.protein)
           .map(p => p.name)
       ).size;
       
       const uniqueVegetables = new Set(
         weeklyPlan.shoppingList!
-          .filter(item => item.category === "vegetables")
+          .filter(item => item.category === CATEGORIES.vegetables)
           .map(v => v.name)
       ).size;
 
@@ -161,9 +165,9 @@ describe("PASSO 33.3: Share Card Generator", () => {
 
   describe("Goal Label Mapping", () => {
     it("should map 'healthy' diet style to 'Muscle Gain'", () => {
-      const planInput: Partial<PlanInput> = {
+      const planInput = createPlanInput({
         dietStyle: "healthy"
-      };
+      });
 
       const getGoalLabel = (dietStyle: string) => {
         if (dietStyle === "healthy") return "🎯 Muscle Gain";
@@ -175,9 +179,9 @@ describe("PASSO 33.3: Share Card Generator", () => {
     });
 
     it("should map 'comfort' diet style to 'Bulking'", () => {
-      const planInput: Partial<PlanInput> = {
+      const planInput = createPlanInput({
         dietStyle: "comfort"
-      };
+      });
 
       const getGoalLabel = (dietStyle: string) => {
         if (dietStyle === "healthy") return "🎯 Muscle Gain";
@@ -189,9 +193,9 @@ describe("PASSO 33.3: Share Card Generator", () => {
     });
 
     it("should map 'balanced' diet style to 'Balanced'", () => {
-      const planInput: Partial<PlanInput> = {
+      const planInput = createPlanInput({
         dietStyle: "balanced"
-      };
+      });
 
       const getGoalLabel = (dietStyle: string) => {
         if (dietStyle === "healthy") return "🎯 Muscle Gain";
@@ -205,9 +209,9 @@ describe("PASSO 33.3: Share Card Generator", () => {
 
   describe("Cost Tier Emoji Mapping", () => {
     it("should map 'low' cost tier to 💰 emoji", () => {
-      const weeklyPlan: Partial<WeeklyPlan> = {
+      const weeklyPlan = createWeeklyPlan({
         costTier: "low"
-      };
+      });
 
       const getCostTierEmoji = (tier: string) => {
         if (tier === "low") return "💰";
@@ -219,9 +223,9 @@ describe("PASSO 33.3: Share Card Generator", () => {
     });
 
     it("should map 'medium' cost tier to 💳 emoji", () => {
-      const weeklyPlan: Partial<WeeklyPlan> = {
+      const weeklyPlan = createWeeklyPlan({
         costTier: "medium"
-      };
+      });
 
       const getCostTierEmoji = (tier: string) => {
         if (tier === "low") return "💰";
@@ -233,9 +237,9 @@ describe("PASSO 33.3: Share Card Generator", () => {
     });
 
     it("should map 'high' cost tier to ✨ emoji", () => {
-      const weeklyPlan: Partial<WeeklyPlan> = {
+      const weeklyPlan = createWeeklyPlan({
         costTier: "high"
-      };
+      });
 
       const getCostTierEmoji = (tier: string) => {
         if (tier === "low") return "💰";
@@ -249,10 +253,10 @@ describe("PASSO 33.3: Share Card Generator", () => {
 
   describe("Protein Per Day Calculation", () => {
     it("should use proteinTargetPerDay if available", () => {
-      const weeklyPlan: Partial<WeeklyPlan> = {
+      const weeklyPlan = createWeeklyPlan({
         proteinTargetPerDay: 150,
         totalProtein: 1100
-      };
+      });
 
       const proteinPerDay = weeklyPlan.proteinTargetPerDay || 
         Math.round((weeklyPlan.totalProtein || 0) / 7);
@@ -261,9 +265,10 @@ describe("PASSO 33.3: Share Card Generator", () => {
     });
 
     it("should fallback to totalProtein / 7 if proteinTargetPerDay is missing", () => {
-      const weeklyPlan: Partial<WeeklyPlan> = {
+      const weeklyPlan = createWeeklyPlan({
+        proteinTargetPerDay: undefined,
         totalProtein: 1050
-      };
+      });
 
       const proteinPerDay = weeklyPlan.proteinTargetPerDay || 
         Math.round((weeklyPlan.totalProtein || 0) / 7);
@@ -272,9 +277,10 @@ describe("PASSO 33.3: Share Card Generator", () => {
     });
 
     it("should handle zero protein gracefully", () => {
-      const weeklyPlan: Partial<WeeklyPlan> = {
+      const weeklyPlan = createWeeklyPlan({
+        proteinTargetPerDay: undefined,
         totalProtein: 0
-      };
+      });
 
       const proteinPerDay = weeklyPlan.proteinTargetPerDay || 
         Math.round((weeklyPlan.totalProtein || 0) / 7);
@@ -285,20 +291,20 @@ describe("PASSO 33.3: Share Card Generator", () => {
 
   describe("Share Card Data Validation", () => {
     it("should have all required metrics for share card", () => {
-      const weeklyPlan: Partial<WeeklyPlan> = {
+      const weeklyPlan = createWeeklyPlan({
         proteinTargetPerDay: 150,
         caloriesTargetPerDay: 2500,
         costTier: "medium",
         shoppingList: [
-          { id: "1", name: "Chicken", category: "proteins", quantity: 2, unit: "kg" },
-          { id: "2", name: "Broccoli", category: "vegetables", quantity: 1, unit: "kg" },
+          createFoodItem({ id: "1", name: "Chicken", category: CATEGORIES.protein, quantity: 2 }),
+          createFoodItem({ id: "2", name: "Broccoli", category: CATEGORIES.vegetables, quantity: 1 }),
         ]
-      };
+      });
 
-      const planInput: Partial<PlanInput> = {
+      const planInput = createPlanInput({
         dietStyle: "healthy",
         mealsPerDay: 4
-      };
+      });
 
       expect(weeklyPlan.proteinTargetPerDay).toBeDefined();
       expect(weeklyPlan.caloriesTargetPerDay).toBeDefined();
@@ -316,3 +322,5 @@ describe("PASSO 33.3: Share Card Generator", () => {
     });
   });
 });
+
+

@@ -57,7 +57,7 @@ function groupByCategory(items: FoodItem[]): Map<string, FoodItem[]> {
  */
 function formatCategoryName(category: string): string {
   const names: Record<string, string> = {
-    proteins: '🥩 Proteins',
+    protein: '🥩 Protein',
     grains: '🌾 Grains & Carbs',
     vegetables: '🥦 Vegetables',
     fruits: '🍎 Fruits',

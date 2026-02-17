@@ -4,6 +4,7 @@
  */
 
 import { describe, it, expect } from "vitest";
+import { CATEGORIES } from "../core/constants/categories";
 import {
   gramsForProtein,
   gramsForCarbs,
@@ -20,7 +21,7 @@ describe("PortionCalculator - Protein Calculations", () => {
     const chicken: FoodItem = {
       id: "chicken",
       name: "Chicken Breast",
-      category: "proteins",
+      category: CATEGORIES.protein,
       unit: "kg",
       pricePerUnit: 12,
       quantity: 1,
@@ -38,7 +39,7 @@ describe("PortionCalculator - Protein Calculations", () => {
     const salmon: FoodItem = {
       id: "salmon",
       name: "Salmon",
-      category: "proteins",
+      category: CATEGORIES.protein,
       unit: "kg",
       pricePerUnit: 20,
       quantity: 1,
@@ -56,7 +57,7 @@ describe("PortionCalculator - Protein Calculations", () => {
     const noProtein: FoodItem = {
       id: "oil",
       name: "Olive Oil",
-      category: "oils",
+      category: CATEGORIES.fats,
       unit: "L",
       pricePerUnit: 8,
       quantity: 1,
@@ -74,7 +75,7 @@ describe("PortionCalculator - Carbs Calculations", () => {
     const rice: FoodItem = {
       id: "rice",
       name: "White Rice",
-      category: "grains",
+      category: CATEGORIES.grains,
       unit: "kg",
       pricePerUnit: 2,
       quantity: 1,
@@ -92,7 +93,7 @@ describe("PortionCalculator - Carbs Calculations", () => {
     const sweetPotato: FoodItem = {
       id: "sweet-potato",
       name: "Sweet Potato",
-      category: "vegetables",
+      category: CATEGORIES.vegetables,
       unit: "kg",
       pricePerUnit: 3,
       quantity: 1,
@@ -110,7 +111,7 @@ describe("PortionCalculator - Carbs Calculations", () => {
     const noCarbs: FoodItem = {
       id: "chicken",
       name: "Chicken",
-      category: "proteins",
+      category: CATEGORIES.protein,
       unit: "kg",
       pricePerUnit: 12,
       quantity: 1,
@@ -128,7 +129,7 @@ describe("PortionCalculator - Fats Calculations", () => {
     const oil: FoodItem = {
       id: "olive-oil",
       name: "Olive Oil",
-      category: "oils",
+      category: CATEGORIES.fats,
       unit: "L",
       pricePerUnit: 8,
       quantity: 1,
@@ -146,7 +147,7 @@ describe("PortionCalculator - Fats Calculations", () => {
     const almonds: FoodItem = {
       id: "almonds",
       name: "Almonds",
-      category: "proteins",
+      category: CATEGORIES.protein,
       unit: "kg",
       pricePerUnit: 15,
       quantity: 1,
@@ -164,7 +165,7 @@ describe("PortionCalculator - Fats Calculations", () => {
     const noFat: FoodItem = {
       id: "rice",
       name: "Rice",
-      category: "grains",
+      category: CATEGORIES.grains,
       unit: "kg",
       pricePerUnit: 2,
       quantity: 1,
@@ -182,7 +183,7 @@ describe("PortionCalculator - Macro Contribution", () => {
     const chicken: FoodItem = {
       id: "chicken",
       name: "Chicken Breast",
-      category: "proteins",
+      category: CATEGORIES.protein,
       unit: "kg",
       pricePerUnit: 12,
       quantity: 1,
@@ -203,7 +204,7 @@ describe("PortionCalculator - Macro Contribution", () => {
     const rice: FoodItem = {
       id: "rice",
       name: "White Rice",
-      category: "grains",
+      category: CATEGORIES.grains,
       unit: "kg",
       pricePerUnit: 2,
       quantity: 1,
@@ -224,7 +225,7 @@ describe("PortionCalculator - Macro Contribution", () => {
     const noMacros: FoodItem = {
       id: "test",
       name: "Test Food",
-      category: "others",
+      category: CATEGORIES.others,
       unit: "kg",
       pricePerUnit: 1,
       quantity: 1,
@@ -246,7 +247,7 @@ describe("PortionCalculator - Complete Meal", () => {
   const chicken: FoodItem = {
     id: "chicken",
     name: "Chicken Breast",
-    category: "proteins",
+    category: CATEGORIES.protein,
     unit: "kg",
     pricePerUnit: 12,
     quantity: 1,
@@ -257,7 +258,7 @@ describe("PortionCalculator - Complete Meal", () => {
   const rice: FoodItem = {
     id: "rice",
     name: "White Rice",
-    category: "grains",
+    category: CATEGORIES.grains,
     unit: "kg",
     pricePerUnit: 2,
     quantity: 1,
@@ -268,7 +269,7 @@ describe("PortionCalculator - Complete Meal", () => {
   const oil: FoodItem = {
     id: "olive-oil",
     name: "Olive Oil",
-    category: "oils",
+    category: CATEGORIES.fats,
     unit: "L",
     pricePerUnit: 8,
     quantity: 1,
@@ -279,7 +280,7 @@ describe("PortionCalculator - Complete Meal", () => {
   const broccoli: FoodItem = {
     id: "broccoli",
     name: "Broccoli",
-    category: "vegetables",
+    category: CATEGORIES.vegetables,
     unit: "kg",
     pricePerUnit: 3,
     quantity: 1,
@@ -348,7 +349,7 @@ describe("PortionCalculator - Complete Meal", () => {
     const highFatProtein: FoodItem = {
       id: "salmon",
       name: "Salmon",
-      category: "proteins",
+      category: CATEGORIES.protein,
       unit: "kg",
       pricePerUnit: 20,
       quantity: 1,
@@ -408,3 +409,5 @@ describe("PortionCalculator - Total Macros", () => {
     expect(total).toEqual({ protein: 0, carbs: 0, fats: 0 });
   });
 });
+
+

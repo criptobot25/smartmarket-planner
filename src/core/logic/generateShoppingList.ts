@@ -1,4 +1,5 @@
 import { PlanInput } from "../models/PlanInput";
+import { CATEGORIES } from "../../core/constants/categories";
 import { WeeklyPlan, Meal } from "../models/WeeklyPlan";
 import { FoodItem, FoodCategory } from "../models/FoodItem";
 import { CostTier } from "../models/CostTier";
@@ -49,15 +50,15 @@ interface MacroScale {
 }
 
 const VALID_CATEGORIES: FoodCategory[] = [
-  "proteins",
-  "grains",
-  "vegetables",
-  "fruits",
-  "dairy",
-  "oils",
-  "spices",
-  "beverages",
-  "others"
+  CATEGORIES.protein,
+  CATEGORIES.grains,
+  CATEGORIES.vegetables,
+  CATEGORIES.fruits,
+  CATEGORIES.dairy,
+  CATEGORIES.fats,
+  CATEGORIES.others,
+  CATEGORIES.others,
+  CATEGORIES.others
 ];
 
 const BASELINE_MACROS = {
@@ -225,7 +226,7 @@ function convertToFoodItem(
 
   const safeCategory: FoodCategory = VALID_CATEGORIES.includes(food.category)
     ? food.category
-    : "others";
+    : CATEGORIES.others;
 
   const safeFood: FoodItem = {
     ...food,
@@ -297,14 +298,14 @@ function calculateRealisticQuantity(
   // Porção base por refeição por pessoa
   let portionPerMeal = 0;
 
-  if (category === "proteins") {
+  if (category === CATEGORIES.protein) {
     // 200g de proteína por refeição principal
     if (mealType === "breakfast") {
       portionPerMeal = 0.1 * macroScale.protein; // 100g (ex: ovos)
     } else {
       portionPerMeal = 0.2 * macroScale.protein; // 200g (ex: frango, peixe)
     }
-  } else if (category === "grains") {
+  } else if (category === CATEGORIES.grains) {
     // 150g cooked de carbs por refeição
     const carbMultiplier = (mealsPerDay >= 5 ? 1.2 : 1) * macroScale.carbs;
     if (unit === "kg") {
@@ -312,30 +313,27 @@ function calculateRealisticQuantity(
     } else if (unit === "loaf") {
       portionPerMeal = 0.15 * carbMultiplier; // ~15% de um pão (2-3 fatias)
     }
-  } else if (category === "vegetables") {
+  } else if (category === CATEGORIES.vegetables) {
     // 150g de vegetais por refeição
     portionPerMeal = 0.15 * macroScale.carbs; // 150g
-  } else if (category === "fruits") {
+  } else if (category === CATEGORIES.fruits) {
     // 1 fruta por dia ou 150g
     if (unit === "kg") {
       portionPerMeal = 0.15 * macroScale.carbs; // 150g (ex: banana grande)
     } else if (unit === "pack") {
       portionPerMeal = 0.2 * macroScale.carbs; // 20% de um pack (ex: berries)
     }
-  } else if (category === "dairy") {
+  } else if (category === CATEGORIES.dairy) {
     // Iogurte/queijo: 150g por refeição
     if (unit === "kg") {
       portionPerMeal = 0.15 * macroScale.fats; // 150g
     } else if (unit === "L") {
       portionPerMeal = 0.25 * macroScale.fats; // 250ml
     }
-  } else if (category === "oils") {
+  } else if (category === CATEGORIES.fats) {
     // Azeite: ~1 colher de sopa por refeição (15ml)
     portionPerMeal = 0.015 * macroScale.fats; // 15ml
-  } else if (category === "spices") {
-    // Temperos: mínimo
-    portionPerMeal = 0.01; // 10g total semana
-  } else if (category === "others") {
+  } else if (category === CATEGORIES.snacks) {
     // Nuts, peanut butter
     if (food.name.includes("butter")) {
       portionPerMeal = 0.03 * macroScale.fats; // 30g (2 colheres)
@@ -344,8 +342,8 @@ function calculateRealisticQuantity(
     } else if (unit === "jar") {
       portionPerMeal = 0.1 * macroScale.fats; // 10% do jar
     }
-  } else if (category === "beverages") {
-    portionPerMeal = 0.25 * macroScale.carbs; // 250ml
+  } else if (category === CATEGORIES.others) {
+    portionPerMeal = 0.01; // 10g total semana (temperos, etc.)
   }
 
   // Ajuste especial para ovos (pack = 12 unidades)
@@ -377,24 +375,26 @@ function generateReasonFromMealTypes(
   const category = food.category;
   
   // Classificar role do alimento
+  /* eslint-disable no-restricted-syntax -- role is display text, not category enum */
   let role = "";
-  if (category === "proteins") {
+  if (category === CATEGORIES.protein) {
     role = "protein";
-  } else if (category === "grains") {
+  } else if (category === CATEGORIES.grains) {
     role = "carbs";
-  } else if (category === "vegetables") {
+  } else if (category === CATEGORIES.vegetables) {
     role = "vegetables";
-  } else if (category === "fruits") {
+  } else if (category === CATEGORIES.fruits) {
     role = "fruit";
-  } else if (category === "dairy") {
+  } else if (category === CATEGORIES.dairy) {
     role = "dairy";
-  } else if (category === "oils") {
+  } else if (category === CATEGORIES.fats) {
     role = "cooking oil";
-  } else if (category === "spices") {
+  } else if (category === CATEGORIES.others) {
     role = "seasoning";
   } else {
     role = "ingredient";
   }
+  /* eslint-enable no-restricted-syntax */
 
   if (mealTypes.length === 1) {
     const mealLabel = {
@@ -428,7 +428,7 @@ function generateReasonFromMealTypes(
  * Objetivo: Usuário entende por que aquele item está na lista
  * Exemplo: "Lunch protein for 10 meals"
  */
-function generateReason(
+function _generateReason(
   food: FoodItem,
   mealType: "breakfast" | "lunch" | "dinner" | "snack",
   occurrences: number
@@ -443,25 +443,27 @@ function generateReason(
   const mealLabel = mealLabels[mealType];
 
   // Classificar role do alimento
+  /* eslint-disable no-restricted-syntax -- role is display text, not category enum */
   let role = "";
 
-  if (food.category === "proteins") {
+  if (food.category === CATEGORIES.protein) {
     role = "protein";
-  } else if (food.category === "grains") {
+  } else if (food.category === CATEGORIES.grains) {
     role = "carbs";
-  } else if (food.category === "vegetables") {
+  } else if (food.category === CATEGORIES.vegetables) {
     role = "vegetables";
-  } else if (food.category === "fruits") {
+  } else if (food.category === CATEGORIES.fruits) {
     role = "fruit";
-  } else if (food.category === "dairy") {
+  } else if (food.category === CATEGORIES.dairy) {
     role = "dairy";
-  } else if (food.category === "oils") {
+  } else if (food.category === CATEGORIES.fats) {
     role = "cooking oil";
-  } else if (food.category === "spices") {
+  } else if (food.category === CATEGORIES.others) {
     role = "seasoning";
   } else {
     role = "ingredient";
   }
+  /* eslint-enable no-restricted-syntax */
 
   // Construir reason
   if (occurrences === 1) {
@@ -476,15 +478,15 @@ function generateReason(
  */
 function sortByCategory(items: FoodItem[]): FoodItem[] {
   const categoryOrder: FoodCategory[] = [
-    "proteins",
-    "grains",
-    "vegetables",
-    "fruits",
-    "dairy",
-    "oils",
-    "spices",
-    "beverages",
-    "others"
+    CATEGORIES.protein,
+    CATEGORIES.grains,
+    CATEGORIES.vegetables,
+    CATEGORIES.fruits,
+    CATEGORIES.dairy,
+    CATEGORIES.fats,
+    CATEGORIES.others,
+    CATEGORIES.others,
+    CATEGORIES.others
   ];
 
   return items.sort((a, b) => {

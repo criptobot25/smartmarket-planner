@@ -11,6 +11,7 @@
  */
 
 import { describe, it, expect } from "vitest";
+import { CATEGORIES } from "../core/constants/categories";
 import { 
   validatePlanInput
 } from "../core/validation/PlanInputSchema";
@@ -283,33 +284,33 @@ describe("PASSO 34: Robustness & Validation Layer", () => {
 
   describe("2. Safe Category Fallback", () => {
     it("should return valid category unchanged", () => {
-      expect(getSafeCategory("proteins")).toBe("proteins");
-      expect(getSafeCategory("vegetables")).toBe("vegetables");
-      expect(getSafeCategory("grains")).toBe("grains");
+      expect(getSafeCategory(CATEGORIES.protein)).toBe(CATEGORIES.protein);
+      expect(getSafeCategory(CATEGORIES.vegetables)).toBe(CATEGORIES.vegetables);
+      expect(getSafeCategory(CATEGORIES.grains)).toBe(CATEGORIES.grains);
     });
 
     it("should return 'others' for unknown category", () => {
-      expect(getSafeCategory("unknown")).toBe("others");
-      expect(getSafeCategory("invalid")).toBe("others");
-      expect(getSafeCategory(123)).toBe("others");
+      expect(getSafeCategory("unknown")).toBe(CATEGORIES.others);
+      expect(getSafeCategory("invalid")).toBe(CATEGORIES.others);
+      expect(getSafeCategory(123)).toBe(CATEGORIES.others);
     });
 
     it("should handle null/undefined gracefully", () => {
-      expect(getSafeCategory(null)).toBe("others");
-      expect(getSafeCategory(undefined)).toBe("others");
+      expect(getSafeCategory(null)).toBe(CATEGORIES.others);
+      expect(getSafeCategory(undefined)).toBe(CATEGORIES.others);
     });
   });
 
   describe("3. Safe Emoji Fallback", () => {
     it("should return correct emoji for valid category", () => {
-      expect(getSafeEmoji("proteins")).toBe("🍗");
-      expect(getSafeEmoji("vegetables")).toBe("🥬");
-      expect(getSafeEmoji("fruits")).toBe("🍎");
+      expect(getSafeEmoji(CATEGORIES.protein)).toBe("🍗");
+      expect(getSafeEmoji(CATEGORIES.vegetables)).toBe("🥬");
+      expect(getSafeEmoji(CATEGORIES.fruits)).toBe("🍎");
     });
 
     it("should return default emoji for unknown category", () => {
       // This test will fail because we pass valid category, but shows fallback logic
-      const emoji = getSafeEmoji("others");
+      const emoji = getSafeEmoji(CATEGORIES.others);
       expect(emoji).toBe("📦"); // Valid category emoji
     });
   });
@@ -520,3 +521,4 @@ describe("PASSO 34: Robustness & Validation Layer", () => {
     });
   });
 });
+

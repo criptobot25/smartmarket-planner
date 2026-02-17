@@ -1,0 +1,142 @@
+/**
+ * PASSO 39: Premium Upgrade Styles
+ */
+
+/* Upgrade Prompt */
+.premium-upgrade-prompt {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 16px;
+  max-width: 500px;
+  margin: 2rem auto;
+}
+
+.upgrade-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.premium-upgrade-prompt h3 {
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+  color: #2d3748;
+}
+
+.premium-upgrade-prompt > p {
+  color: #4a5568;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+}
+
+.upgrade-benefits {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.benefit {
+  background: white;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  color: #2d3748;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.upgrade-price {
+  margin-bottom: 1.5rem;
+}
+
+.upgrade-price .price {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #667eea;
+}
+
+.upgrade-price .period {
+  font-size: 1.25rem;
+  color: #718096;
+  margin-left: 0.5rem;
+}
+
+.btn-upgrade-now {
+  width: 100%;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin-bottom: 1rem;
+}
+
+.btn-upgrade-now:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-upgrade-now:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.upgrade-note {
+  font-size: 0.85rem;
+  color: #718096;
+  margin: 0;
+  font-style: italic;
+}
+
+/* Inline Premium Badge */
+.premium-badge-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 12px;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+
+/* Small upgrade button */
+.btn-upgrade-small {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.btn-upgrade-small:hover {
+  transform: translateY(-1px);
+}
+
+.btn-upgrade-small:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}

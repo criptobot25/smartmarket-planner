@@ -131,12 +131,6 @@ describe("PASSO 33.2: Adaptive Adjustments", () => {
       restrictions: []
     };
 
-    const adherence = {
-      score: 95,
-      timestamp: new Date().toISOString(),
-      level: "high" as const
-    };
-
     // High adherence should not trigger adjustments
     // (we'll test this by checking that input remains unchanged)
     const adjustedInput = { ...originalInput };
@@ -159,12 +153,6 @@ describe("PASSO 33.2: Adaptive Adjustments", () => {
       restrictions: []
     };
 
-    const adherence = {
-      score: 80,
-      timestamp: new Date().toISOString(),
-      level: "good" as const
-    };
-
     // Good adherence should not trigger adjustments
     const adjustedInput = { ...originalInput };
     
@@ -184,12 +172,6 @@ describe("PASSO 33.2: Adaptive Adjustments", () => {
       dietStyle: "healthy",
       costTier: "high",
       restrictions: []
-    };
-
-    const adherence = {
-      score: 50,
-      timestamp: new Date().toISOString(),
-      level: "low" as const
     };
 
     // Simulate adaptive adjustments

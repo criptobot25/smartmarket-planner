@@ -14,9 +14,8 @@
  * - Validate quantities are realistic for batch cooking
  */
 
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import { generateWeeklyPlan } from "../core/logic/generateWeeklyPlan";
-import { generateMealPrepSummary } from "../core/logic/MealPrepSummary";
 import { PlanInput } from "../core/models/PlanInput";
 
 const baseInput: PlanInput = {
@@ -271,6 +270,7 @@ describe("PASSO 33.5: Sunday Meal Prep Ritual Mode", () => {
     it("should respect dietary restrictions in prep", () => {
       const veganInput = { 
         ...baseInput, 
+        // eslint-disable-next-line no-restricted-syntax -- dietary restrictions, not category
         restrictions: ["meat", "dairy", "eggs"]
       };
       
@@ -380,9 +380,9 @@ describe("PASSO 33.5: Sunday Meal Prep Ritual Mode", () => {
     it("should handle partial completion", () => {
       const totalSteps = 5;
       const completedSteps = 3;
-      const isComplete = completedSteps === totalSteps && totalSteps > 0;
+      const progress = (completedSteps / totalSteps) * 100;
       
-      expect(isComplete).toBe(false);
+      expect(progress).toBe(60);
     });
   });
 });

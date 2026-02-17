@@ -4,6 +4,7 @@
  */
 
 import { describe, it, expect } from "vitest";
+import { CATEGORIES } from "../core/constants/categories";
 import { buildMeal, buildBreakfast } from "../core/logic/MealBuilder";
 import { FoodItem } from "../core/models/FoodItem";
 
@@ -12,7 +13,7 @@ const mockProteinFoods: FoodItem[] = [
   {
     id: "chicken",
     name: "Chicken Breast",
-    category: "proteins",
+    category: CATEGORIES.protein,
     unit: "kg",
     pricePerUnit: 10,
     quantity: 1,
@@ -22,7 +23,7 @@ const mockProteinFoods: FoodItem[] = [
   {
     id: "salmon",
     name: "Salmon",
-    category: "proteins",
+    category: CATEGORIES.protein,
     unit: "kg",
     pricePerUnit: 25,
     quantity: 1,
@@ -32,7 +33,7 @@ const mockProteinFoods: FoodItem[] = [
   {
     id: "tuna",
     name: "Tuna",
-    category: "proteins",
+    category: CATEGORIES.protein,
     unit: "kg",
     pricePerUnit: 8,
     quantity: 1,
@@ -45,7 +46,7 @@ const mockCarbFoods: FoodItem[] = [
   {
     id: "rice",
     name: "White Rice",
-    category: "grains",
+    category: CATEGORIES.grains,
     unit: "kg",
     pricePerUnit: 2,
     quantity: 1,
@@ -55,7 +56,7 @@ const mockCarbFoods: FoodItem[] = [
   {
     id: "quinoa",
     name: "Quinoa",
-    category: "grains",
+    category: CATEGORIES.grains,
     unit: "kg",
     pricePerUnit: 8,
     quantity: 1,
@@ -65,7 +66,7 @@ const mockCarbFoods: FoodItem[] = [
   {
     id: "sweet-potato",
     name: "Sweet Potato",
-    category: "vegetables",
+    category: CATEGORIES.vegetables,
     unit: "kg",
     pricePerUnit: 3,
     quantity: 1,
@@ -78,7 +79,7 @@ const mockVegetables: FoodItem[] = [
   {
     id: "broccoli",
     name: "Broccoli",
-    category: "vegetables",
+    category: CATEGORIES.vegetables,
     unit: "kg",
     pricePerUnit: 4,
     quantity: 1,
@@ -88,7 +89,7 @@ const mockVegetables: FoodItem[] = [
   {
     id: "spinach",
     name: "Spinach",
-    category: "vegetables",
+    category: CATEGORIES.vegetables,
     unit: "kg",
     pricePerUnit: 5,
     quantity: 1,
@@ -101,7 +102,7 @@ const mockFatFoods: FoodItem[] = [
   {
     id: "olive-oil",
     name: "Olive Oil",
-    category: "oils",
+    category: CATEGORIES.fats,
     unit: "L",
     pricePerUnit: 8,
     quantity: 1,
@@ -114,7 +115,7 @@ const mockDairy: FoodItem[] = [
   {
     id: "yogurt",
     name: "Greek Yogurt",
-    category: "dairy",
+    category: CATEGORIES.dairy,
     unit: "kg",
     pricePerUnit: 6,
     quantity: 1,
@@ -127,7 +128,7 @@ const mockFruits: FoodItem[] = [
   {
     id: "banana",
     name: "Banana",
-    category: "fruits",
+    category: CATEGORIES.fruits,
     unit: "kg",
     pricePerUnit: 2,
     quantity: 1,
@@ -140,7 +141,7 @@ const mockOats: FoodItem[] = [
   {
     id: "oats",
     name: "Oats",
-    category: "grains",
+    category: CATEGORIES.grains,
     unit: "kg",
     pricePerUnit: 3,
     quantity: 1,
@@ -438,3 +439,5 @@ describe("MealBuilder - Vegetable Selection", () => {
     expect(vegetable?.grams).toBe(150);
   });
 });
+
+

@@ -223,6 +223,7 @@ export function PrepGuidePage() {
       {/* Premium Modal */}
       {showPremiumModal && (
         <PremiumModal
+          isOpen={showPremiumModal}
           feature="pdf"
           onClose={() => setShowPremiumModal(false)}
         />

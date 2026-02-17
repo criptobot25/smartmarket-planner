@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { suggestRecipes } from '../core/logic/suggestRecipes';
 import { FoodItem } from '../core/models/FoodItem';
+import { CATEGORIES } from '../core/constants/categories';
 
 describe('suggestRecipes', () => {
   it('should return at least 3 recipe suggestions', () => {
@@ -8,7 +9,7 @@ describe('suggestRecipes', () => {
       {
         id: 'food-007',
         name: 'Ovos',
-        category: 'proteins',
+        category: CATEGORIES.protein,
         unit: 'dúzia',
         pricePerUnit: 12.00,
         quantity: 1,
@@ -17,7 +18,7 @@ describe('suggestRecipes', () => {
       {
         id: 'food-003',
         name: 'Aveia em flocos',
-        category: 'grains',
+        category: CATEGORIES.grains,
         unit: 'kg',
         pricePerUnit: 8.50,
         quantity: 0.5,
@@ -44,7 +45,7 @@ describe('suggestRecipes', () => {
       {
         id: 'food-007',
         name: 'Ovos',
-        category: 'proteins',
+        category: CATEGORIES.protein,
         unit: 'dúzia',
         pricePerUnit: 12.00,
         quantity: 2,
@@ -53,7 +54,7 @@ describe('suggestRecipes', () => {
       {
         id: 'food-011',
         name: 'Tomate',
-        category: 'vegetables',
+        category: CATEGORIES.vegetables,
         unit: 'kg',
         pricePerUnit: 6.00,
         quantity: 0.5,
@@ -62,7 +63,7 @@ describe('suggestRecipes', () => {
       {
         id: 'food-012',
         name: 'Cebola',
-        category: 'vegetables',
+        category: CATEGORIES.vegetables,
         unit: 'kg',
         pricePerUnit: 4.00,
         quantity: 0.3,
@@ -71,7 +72,7 @@ describe('suggestRecipes', () => {
       {
         id: 'food-028',
         name: 'Óleo de soja',
-        category: 'oils',
+        category: CATEGORIES.fats,
         unit: 'L',
         pricePerUnit: 8.00,
         quantity: 0.5,
@@ -80,7 +81,7 @@ describe('suggestRecipes', () => {
       {
         id: 'food-029',
         name: 'Sal',
-        category: 'spices',
+        category: CATEGORIES.others,
         unit: 'kg',
         pricePerUnit: 2.00,
         quantity: 1,
@@ -112,3 +113,4 @@ describe('suggestRecipes', () => {
     expect(suggestions.length).toBeGreaterThanOrEqual(3);
   });
 });
+

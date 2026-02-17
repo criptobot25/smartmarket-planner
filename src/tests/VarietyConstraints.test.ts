@@ -5,6 +5,7 @@
  */
 
 import { describe, it, expect, beforeEach } from "vitest";
+import { CATEGORIES } from "../core/constants/categories";
 import {
   VarietyTracker,
   DEFAULT_VARIETY_CONSTRAINTS,
@@ -221,7 +222,7 @@ describe("VarietyConstraints - PASSO 23", () => {
       const chicken = mockFoods.find(f => f.name === "Chicken breast (skinless)")!;
       tracker.recordProteinSource(chicken);
 
-      const proteins = mockFoods.filter(f => f.category === "proteins");
+      const proteins = mockFoods.filter(f => f.category === CATEGORIES.protein);
       const alternative = tracker.suggestAlternativeProtein(proteins);
 
       expect(alternative).toBeDefined();
@@ -232,7 +233,7 @@ describe("VarietyConstraints - PASSO 23", () => {
       const broccoli = mockFoods.find(f => f.name === "Broccoli")!;
       tracker.recordVegetable(broccoli);
 
-      const vegetables = mockFoods.filter(f => f.category === "vegetables");
+      const vegetables = mockFoods.filter(f => f.category === CATEGORIES.vegetables);
       const alternative = tracker.suggestAlternativeVegetable(vegetables);
 
       expect(alternative).toBeDefined();
@@ -240,7 +241,7 @@ describe("VarietyConstraints - PASSO 23", () => {
     });
 
     it("should return null if all options used", () => {
-      const vegetables = mockFoods.filter(f => f.category === "vegetables");
+      const vegetables = mockFoods.filter(f => f.category === CATEGORIES.vegetables);
       vegetables.forEach(veg => tracker.recordVegetable(veg));
 
       const alternative = tracker.suggestAlternativeVegetable(vegetables);
@@ -346,3 +347,4 @@ describe("VarietyConstraints - PASSO 23", () => {
     });
   });
 });
+

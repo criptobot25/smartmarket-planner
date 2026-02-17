@@ -1,4 +1,5 @@
 import { Recipe } from "../core/models/Recipe";
+import { CATEGORIES } from "../core/constants/categories";
 
 export const mockRecipes: Recipe[] = [
   {
@@ -14,35 +15,35 @@ export const mockRecipes: Recipe[] = [
         name: "Ovos",
         quantity: 4,
         unit: "un",
-        category: "proteins"
+        category: CATEGORIES.protein
       },
       {
         foodItemId: "food-011",
         name: "Tomate",
         quantity: 0.1,
         unit: "kg",
-        category: "vegetables"
+        category: CATEGORIES.vegetables
       },
       {
         foodItemId: "food-012",
         name: "Cebola",
         quantity: 0.05,
         unit: "kg",
-        category: "vegetables"
+        category: CATEGORIES.vegetables
       },
       {
         foodItemId: "food-028",
         name: "Óleo de soja",
         quantity: 0.02,
         unit: "L",
-        category: "oils"
+        category: CATEGORIES.fats
       },
       {
         foodItemId: "food-029",
         name: "Sal",
         quantity: 0.005,
         unit: "kg",
-        category: "spices"
+        category: CATEGORIES.others
       }
     ],
     instructions: [
@@ -67,56 +68,56 @@ export const mockRecipes: Recipe[] = [
         name: "Frango (peito)",
         quantity: 0.6,
         unit: "kg",
-        category: "proteins"
+        category: CATEGORIES.protein
       },
       {
         foodItemId: "food-002",
         name: "Arroz integral",
         quantity: 0.3,
         unit: "kg",
-        category: "grains"
+        category: CATEGORIES.grains
       },
       {
         foodItemId: "food-014",
         name: "Cenoura",
         quantity: 0.2,
         unit: "kg",
-        category: "vegetables"
+        category: CATEGORIES.vegetables
       },
       {
         foodItemId: "food-015",
         name: "Brócolis",
         quantity: 0.3,
         unit: "kg",
-        category: "vegetables"
+        category: CATEGORIES.vegetables
       },
       {
         foodItemId: "food-012",
         name: "Cebola",
         quantity: 0.1,
         unit: "kg",
-        category: "vegetables"
+        category: CATEGORIES.vegetables
       },
       {
         foodItemId: "food-013",
         name: "Alho",
         quantity: 0.01,
         unit: "kg",
-        category: "vegetables"
+        category: CATEGORIES.vegetables
       },
       {
         foodItemId: "food-027",
         name: "Azeite de oliva",
         quantity: 0.03,
         unit: "L",
-        category: "oils"
+        category: CATEGORIES.fats
       },
       {
         foodItemId: "food-029",
         name: "Sal",
         quantity: 0.01,
         unit: "kg",
-        category: "spices"
+        category: CATEGORIES.others
       }
     ],
     instructions: [
@@ -142,35 +143,35 @@ export const mockRecipes: Recipe[] = [
         name: "Aveia em flocos",
         quantity: 0.06,
         unit: "kg",
-        category: "grains"
+        category: CATEGORIES.grains
       },
       {
         foodItemId: "food-024",
         name: "Iogurte natural",
         quantity: 0.15,
         unit: "kg",
-        category: "dairy"
+        category: CATEGORIES.dairy
       },
       {
         foodItemId: "food-019",
         name: "Banana",
         quantity: 0.1,
         unit: "kg",
-        category: "fruits"
+        category: CATEGORIES.fruits
       },
       {
         foodItemId: "food-032",
         name: "Mel",
         quantity: 0.015,
         unit: "kg",
-        category: "others"
+        category: CATEGORIES.others
       },
       {
         foodItemId: "food-034",
         name: "Granola",
         quantity: 0.02,
         unit: "kg",
-        category: "others"
+        category: CATEGORIES.others
       }
     ],
     instructions: [
@@ -194,63 +195,63 @@ export const mockRecipes: Recipe[] = [
         name: "Macarrão",
         quantity: 0.5,
         unit: "kg",
-        category: "grains"
+        category: CATEGORIES.grains
       },
       {
         foodItemId: "food-008",
         name: "Carne moída",
         quantity: 0.4,
         unit: "kg",
-        category: "proteins"
+        category: CATEGORIES.protein
       },
       {
         foodItemId: "food-011",
         name: "Tomate",
         quantity: 0.3,
         unit: "kg",
-        category: "vegetables"
+        category: CATEGORIES.vegetables
       },
       {
         foodItemId: "food-012",
         name: "Cebola",
         quantity: 0.1,
         unit: "kg",
-        category: "vegetables"
+        category: CATEGORIES.vegetables
       },
       {
         foodItemId: "food-013",
         name: "Alho",
         quantity: 0.015,
         unit: "kg",
-        category: "vegetables"
+        category: CATEGORIES.vegetables
       },
       {
         foodItemId: "food-025",
         name: "Queijo mussarela",
         quantity: 0.1,
         unit: "kg",
-        category: "dairy"
+        category: CATEGORIES.dairy
       },
       {
         foodItemId: "food-028",
         name: "Óleo de soja",
         quantity: 0.03,
         unit: "L",
-        category: "oils"
+        category: CATEGORIES.fats
       },
       {
         foodItemId: "food-029",
         name: "Sal",
         quantity: 0.01,
         unit: "kg",
-        category: "spices"
+        category: CATEGORIES.others
       },
       {
         foodItemId: "food-031",
         name: "Orégano",
         quantity: 0.005,
         unit: "g",
-        category: "spices"
+        category: CATEGORIES.others
       }
     ],
     instructions: [
@@ -277,49 +278,49 @@ export const mockRecipes: Recipe[] = [
         name: "Alface",
         quantity: 1,
         unit: "un",
-        category: "vegetables"
+        category: CATEGORIES.vegetables
       },
       {
         foodItemId: "food-011",
         name: "Tomate",
         quantity: 0.15,
         unit: "kg",
-        category: "vegetables"
+        category: CATEGORIES.vegetables
       },
       {
         foodItemId: "food-014",
         name: "Cenoura",
         quantity: 0.1,
         unit: "kg",
-        category: "vegetables"
+        category: CATEGORIES.vegetables
       },
       {
         foodItemId: "food-010",
         name: "Atum em lata",
         quantity: 2,
         unit: "un",
-        category: "proteins"
+        category: CATEGORIES.protein
       },
       {
         foodItemId: "food-007",
         name: "Ovos",
         quantity: 2,
         unit: "un",
-        category: "proteins"
+        category: CATEGORIES.protein
       },
       {
         foodItemId: "food-027",
         name: "Azeite de oliva",
         quantity: 0.02,
         unit: "L",
-        category: "oils"
+        category: CATEGORIES.fats
       },
       {
         foodItemId: "food-029",
         name: "Sal",
         quantity: 0.005,
         unit: "kg",
-        category: "spices"
+        category: CATEGORIES.others
       }
     ],
     instructions: [
@@ -345,21 +346,21 @@ export const mockRecipes: Recipe[] = [
         name: "Banana",
         quantity: 0.12,
         unit: "kg",
-        category: "fruits"
+        category: CATEGORIES.fruits
       },
       {
         foodItemId: "food-033",
         name: "Amendoim",
         quantity: 0.03,
         unit: "kg",
-        category: "others"
+        category: CATEGORIES.others
       },
       {
         foodItemId: "food-032",
         name: "Mel",
         quantity: 0.01,
         unit: "kg",
-        category: "others"
+        category: CATEGORIES.others
       }
     ],
     instructions: [
@@ -382,42 +383,42 @@ export const mockRecipes: Recipe[] = [
         name: "Arroz branco",
         quantity: 0.3,
         unit: "kg",
-        category: "grains"
+        category: CATEGORIES.grains
       },
       {
         foodItemId: "food-009",
         name: "Feijão preto",
         quantity: 0.3,
         unit: "kg",
-        category: "proteins"
+        category: CATEGORIES.protein
       },
       {
         foodItemId: "food-012",
         name: "Cebola",
         quantity: 0.1,
         unit: "kg",
-        category: "vegetables"
+        category: CATEGORIES.vegetables
       },
       {
         foodItemId: "food-013",
         name: "Alho",
         quantity: 0.02,
         unit: "kg",
-        category: "vegetables"
+        category: CATEGORIES.vegetables
       },
       {
         foodItemId: "food-028",
         name: "Óleo de soja",
         quantity: 0.03,
         unit: "L",
-        category: "oils"
+        category: CATEGORIES.fats
       },
       {
         foodItemId: "food-029",
         name: "Sal",
         quantity: 0.01,
         unit: "kg",
-        category: "spices"
+        category: CATEGORIES.others
       }
     ],
     instructions: [
@@ -443,28 +444,28 @@ export const mockRecipes: Recipe[] = [
         name: "Iogurte natural",
         quantity: 0.2,
         unit: "kg",
-        category: "dairy"
+        category: CATEGORIES.dairy
       },
       {
         foodItemId: "food-022",
         name: "Morango",
         quantity: 0.1,
         unit: "kg",
-        category: "fruits"
+        category: CATEGORIES.fruits
       },
       {
         foodItemId: "food-032",
         name: "Mel",
         quantity: 0.015,
         unit: "kg",
-        category: "others"
+        category: CATEGORIES.others
       },
       {
         foodItemId: "food-035",
         name: "Castanhas mix",
         quantity: 0.02,
         unit: "kg",
-        category: "others"
+        category: CATEGORIES.others
       }
     ],
     instructions: [
@@ -476,3 +477,4 @@ export const mockRecipes: Recipe[] = [
     tags: ["rápido", "proteína", "antioxidante"]
   }
 ];
+

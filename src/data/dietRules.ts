@@ -1,5 +1,6 @@
 import { DietStyle } from "../core/models/PlanInput";
 import { FoodCategory } from "../core/models/FoodItem";
+import { CATEGORIES } from "../core/constants/categories";
 
 export interface DietPreferences {
   preferredCategories: FoodCategory[];
@@ -11,10 +12,10 @@ export interface DietPreferences {
 export const dietRules: Record<DietStyle, DietPreferences> = {
   healthy: {
     preferredCategories: [
-      "vegetables",
-      "fruits",
-      "proteins",
-      "grains"
+      CATEGORIES.vegetables,
+      CATEGORIES.fruits,
+      CATEGORIES.protein,
+      CATEGORIES.grains
     ],
     avoidCategories: [],
     maxDailyCalories: 2000,
@@ -22,11 +23,11 @@ export const dietRules: Record<DietStyle, DietPreferences> = {
   },
   balanced: {
     preferredCategories: [
-      "vegetables",
-      "proteins",
-      "grains",
-      "fruits",
-      "dairy"
+      CATEGORIES.vegetables,
+      CATEGORIES.protein,
+      CATEGORIES.grains,
+      CATEGORIES.fruits,
+      CATEGORIES.dairy
     ],
     avoidCategories: [],
     maxDailyCalories: 2200,
@@ -34,10 +35,10 @@ export const dietRules: Record<DietStyle, DietPreferences> = {
   },
   comfort: {
     preferredCategories: [
-      "grains",
-      "proteins",
-      "dairy",
-      "vegetables"
+      CATEGORIES.grains,
+      CATEGORIES.protein,
+      CATEGORIES.dairy,
+      CATEGORIES.vegetables
     ],
     avoidCategories: [],
     maxDailyCalories: 2500,

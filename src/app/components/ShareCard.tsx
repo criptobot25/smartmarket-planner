@@ -24,6 +24,7 @@
  */
 
 import { useRef } from "react";
+import { CATEGORIES } from "../../core/constants/categories";
 import { toPng } from "html-to-image";
 import { WeeklyPlan } from "../../core/models/WeeklyPlan";
 import { PlanInput } from "../../core/models/PlanInput";
@@ -48,8 +49,8 @@ export function ShareCard({ weeklyPlan, planInput, onClose }: ShareCardProps) {
       return 0;
     }
 
-    const proteins = weeklyPlan.shoppingList.filter(item => item.category === "proteins");
-    const vegetables = weeklyPlan.shoppingList.filter(item => item.category === "vegetables");
+    const proteins = weeklyPlan.shoppingList.filter(item => item.category === CATEGORIES.protein);
+    const vegetables = weeklyPlan.shoppingList.filter(item => item.category === CATEGORIES.vegetables);
     
     const uniqueProteins = new Set(proteins.map(p => p.name)).size;
     const uniqueVegetables = new Set(vegetables.map(v => v.name)).size;

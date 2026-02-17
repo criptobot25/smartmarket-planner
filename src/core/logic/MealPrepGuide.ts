@@ -22,6 +22,7 @@
  */
 
 import { WeeklyPlan } from "../models/WeeklyPlan";
+import { CATEGORIES } from "../../core/constants/categories";
 import { mockFoods } from "../../data/mockFoods";
 
 export type CookingMethod = 
@@ -43,6 +44,7 @@ export interface CookingTask {
   duration: number;                 // Minutes
   temperature?: string;             // "180°C" for oven tasks
   parallel?: boolean;               // Can be done simultaneously with other tasks
+  category?: string;                // Food category for filtering tips
 }
 
 export interface PrepIngredientSummary {
@@ -250,11 +252,11 @@ function getDefaultCookingInstruction(
   const kg = (totalGrams / 1000).toFixed(1);
   const g = totalGrams;
   
-  if (category === "proteins") {
+  if (category === CATEGORIES.protein) {
     return `Cook ${kg}kg ${ingredient} (check package instructions)`;
-  } else if (category === "grains") {
+  } else if (category === CATEGORIES.grains) {
     return `Prepare ${kg}kg ${ingredient} according to package (usually boil)`;
-  } else if (category === "vegetables") {
+  } else if (category === CATEGORIES.vegetables) {
     return `Prep ${g}g ${ingredient} (wash, chop, store raw or steam)`;
   } else {
     return `Prepare ${g}g ${ingredient} according to preference`;
@@ -459,7 +461,7 @@ function generatePrepTips(tasks: CookingTask[], totalMeals: number): string[] {
   }
   
   // Vegetable tip
-  const vegTasks = tasks.filter(t => t.category === "vegetables");
+  const vegTasks = tasks.filter(t => t.category === CATEGORIES.vegetables);
   if (vegTasks.length > 2) {
     tips.push("Prep vegetables last to maintain maximum freshness and crunch");
   }

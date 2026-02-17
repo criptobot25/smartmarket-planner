@@ -4,6 +4,7 @@
  */
 
 import { describe, it, expect } from "vitest";
+import { CATEGORIES } from "../core/constants/categories";
 import { optimizeSavings as optimizeBudget } from "../core/logic/SmartSavingsOptimizer";
 import { FoodItem } from "../core/models/FoodItem";
 
@@ -16,7 +17,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-001",
         name: "Chicken breast (skinless)",
-        category: "proteins",
+        category: CATEGORIES.protein,
         unit: "kg",
         pricePerUnit: 7.99,
         quantity: 1,
@@ -27,7 +28,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-002",
         name: "White rice",
-        category: "grains",
+        category: CATEGORIES.grains,
         unit: "kg",
         pricePerUnit: 2.49,
         quantity: 2,
@@ -56,7 +57,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-003",
         name: "Salmon fillet",
-        category: "proteins",
+        category: CATEGORIES.protein,
         unit: "kg",
         pricePerUnit: 18.99,
         quantity: 2,
@@ -67,7 +68,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-003b",
         name: "Chicken breast (skinless)",
-        category: "proteins",
+        category: CATEGORIES.protein,
         unit: "kg",
         pricePerUnit: 7.99,
         quantity: 1,
@@ -78,7 +79,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-004",
         name: "White rice",
-        category: "grains",
+        category: CATEGORIES.grains,
         unit: "kg",
         pricePerUnit: 2.49,
         quantity: 3,
@@ -117,7 +118,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-005",
         name: "Chicken breast (skinless)",
-        category: "proteins",
+        category: CATEGORIES.protein,
         unit: "kg",
         pricePerUnit: 7.99,
         quantity: 2,
@@ -128,7 +129,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-006",
         name: "Quinoa",
-        category: "grains",
+        category: CATEGORIES.grains,
         unit: "kg",
         pricePerUnit: 6.99,
         quantity: 3,
@@ -166,7 +167,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-007",
         name: "Salmon fillet",
-        category: "proteins",
+        category: CATEGORIES.protein,
         unit: "kg",
         pricePerUnit: 18.99,
         quantity: 1,
@@ -177,7 +178,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-007b",
         name: "Chicken breast (skinless)",
-        category: "proteins",
+        category: CATEGORIES.protein,
         unit: "kg",
         pricePerUnit: 7.99,
         quantity: 0.5,
@@ -188,7 +189,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-008",
         name: "Quinoa",
-        category: "grains",
+        category: CATEGORIES.grains,
         unit: "kg",
         pricePerUnit: 6.99,
         quantity: 2,
@@ -224,7 +225,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-009",
         name: "Chicken breast (skinless)",
-        category: "proteins",
+        category: CATEGORIES.protein,
         unit: "kg",
         pricePerUnit: 7.99,
         quantity: 10, // Very high quantity
@@ -252,7 +253,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-010",
         name: "Salmon fillet",
-        category: "proteins",
+        category: CATEGORIES.protein,
         unit: "kg",
         pricePerUnit: 18.99,
         quantity: 1.5,
@@ -263,7 +264,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-010b",
         name: "Chicken breast (skinless)",
-        category: "proteins",
+        category: CATEGORIES.protein,
         unit: "kg",
         pricePerUnit: 7.99,
         quantity: 1,
@@ -274,7 +275,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-011",
         name: "Quinoa",
-        category: "grains",
+        category: CATEGORIES.grains,
         unit: "kg",
         pricePerUnit: 6.99,
         quantity: 2,
@@ -285,7 +286,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-012",
         name: "Cottage cheese (low fat)",
-        category: "dairy",
+        category: CATEGORIES.dairy,
         unit: "kg",
         pricePerUnit: 4.49,
         quantity: 1,
@@ -321,7 +322,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-013",
         name: "Salmon fillet",
-        category: "proteins",
+        category: CATEGORIES.protein,
         unit: "kg",
         pricePerUnit: 18.99,
         quantity: 2,
@@ -341,7 +342,7 @@ describe("SmartSavingsOptimizer", () => {
       const firstSub = result.substitutionsApplied[0];
       expect(firstSub.proteinImpact).toBeDefined();
       expect(typeof firstSub.proteinImpact).toBe("number");
-      expect(firstSub.reason).toContain("protein");
+      expect(firstSub.reason).toContain(CATEGORIES.protein);
     }
     
     // Total protein should be calculated
@@ -356,7 +357,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-014",
         name: "Chicken breast (skinless)",
-        category: "proteins",
+        category: CATEGORIES.protein,
         unit: "kg",
         pricePerUnit: 7.99,
         quantity: 1,
@@ -392,7 +393,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-div-001",
         name: "Salmon fillet",
-        category: "proteins",
+        category: CATEGORIES.protein,
         unit: "kg",
         pricePerUnit: 18.99,
         quantity: 2,
@@ -403,7 +404,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-div-002",
         name: "Chicken breast (skinless)",
-        category: "proteins",
+        category: CATEGORIES.protein,
         unit: "kg",
         pricePerUnit: 7.99,
         quantity: 1,
@@ -414,7 +415,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-div-003",
         name: "Greek yogurt (0% fat)",
-        category: "dairy",
+        category: CATEGORIES.dairy,
         unit: "kg",
         pricePerUnit: 5.99,
         quantity: 1,
@@ -425,7 +426,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-div-004",
         name: "White rice",
-        category: "grains",
+        category: CATEGORIES.grains,
         unit: "kg",
         pricePerUnit: 2.49,
         quantity: 2,
@@ -441,7 +442,7 @@ describe("SmartSavingsOptimizer", () => {
     const result = optimizeBudget(items, totalCost, budget);
     
     // Count unique protein sources
-    const proteinItems = result.items.filter(item => item.category === "proteins");
+    const proteinItems = result.items.filter(item => item.category === CATEGORIES.protein);
     const uniqueProteins = new Set(proteinItems.map(item => item.name));
     
     // CRITICAL: Must have at least 2 different proteins
@@ -459,7 +460,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-max-001",
         name: "Salmon fillet",
-        category: "proteins",
+        category: CATEGORIES.protein,
         unit: "kg",
         pricePerUnit: 18.99,
         quantity: 1.5,
@@ -470,7 +471,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-max-002",
         name: "Lean ground beef (5% fat)",
-        category: "proteins",
+        category: CATEGORIES.protein,
         unit: "kg",
         pricePerUnit: 9.99,
         quantity: 1,
@@ -481,7 +482,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-max-003",
         name: "Turkey breast",
-        category: "proteins",
+        category: CATEGORIES.protein,
         unit: "kg",
         pricePerUnit: 11.99,
         quantity: 1,
@@ -492,7 +493,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-max-004",
         name: "Quinoa",
-        category: "grains",
+        category: CATEGORIES.grains,
         unit: "kg",
         pricePerUnit: 6.99,
         quantity: 2,
@@ -511,7 +512,7 @@ describe("SmartSavingsOptimizer", () => {
     const proteinSubstitutions = result.substitutionsApplied.filter(sub => {
       // Check if original item was a protein (by looking at mockFoods or items)
       const originalItem = items.find(item => item.name === sub.from);
-      return originalItem?.category === "proteins";
+      return originalItem?.category === CATEGORIES.protein;
     });
     
     // CRITICAL: Max 2 protein substitutions
@@ -529,7 +530,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-status-001",
         name: "Salmon fillet",
-        category: "proteins",
+        category: CATEGORIES.protein,
         unit: "kg",
         pricePerUnit: 18.99,
         quantity: 2,
@@ -540,7 +541,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-status-002",
         name: "Chicken breast (skinless)",
-        category: "proteins",
+        category: CATEGORIES.protein,
         unit: "kg",
         pricePerUnit: 7.99,
         quantity: 2,
@@ -551,7 +552,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-status-003",
         name: "White rice",
-        category: "grains",
+        category: CATEGORIES.grains,
         unit: "kg",
         pricePerUnit: 2.49,
         quantity: 3,
@@ -571,7 +572,7 @@ describe("SmartSavingsOptimizer", () => {
     expect(result.totalEstimatedCost).toBeGreaterThan(budget);
     
     // But should maintain variety
-    const proteinItems = result.items.filter(item => item.category === "proteins");
+    const proteinItems = result.items.filter(item => item.category === CATEGORIES.protein);
     const uniqueProteins = new Set(proteinItems.map(item => item.name));
     expect(uniqueProteins.size).toBeGreaterThanOrEqual(2);
     
@@ -586,7 +587,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-salmon",
         name: "Salmon fillet",
-        category: "proteins",
+        category: CATEGORIES.protein,
         unit: "kg",
         pricePerUnit: 18.99,
         quantity: 1.5,
@@ -597,7 +598,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-chicken",
         name: "Chicken breast (skinless)",
-        category: "proteins",
+        category: CATEGORIES.protein,
         unit: "kg",
         pricePerUnit: 7.99,
         quantity: 1,
@@ -608,7 +609,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-rice",
         name: "White rice",
-        category: "grains",
+        category: CATEGORIES.grains,
         unit: "kg",
         pricePerUnit: 2.49,
         quantity: 2,
@@ -639,7 +640,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-beef",
         name: "Ground beef (lean)",
-        category: "proteins",
+        category: CATEGORIES.protein,
         unit: "kg",
         pricePerUnit: 9.99,
         quantity: 2,
@@ -650,7 +651,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-chicken",
         name: "Chicken breast (skinless)",
-        category: "proteins",
+        category: CATEGORIES.protein,
         unit: "kg",
         pricePerUnit: 7.99,
         quantity: 1.5,
@@ -661,7 +662,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-rice",
         name: "White rice",
-        category: "grains",
+        category: CATEGORIES.grains,
         unit: "kg",
         pricePerUnit: 2.49,
         quantity: 2,
@@ -694,7 +695,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-beef",
         name: "Ground beef (lean)",
-        category: "proteins",
+        category: CATEGORIES.protein,
         unit: "kg",
         pricePerUnit: 9.99,
         quantity: 2,
@@ -705,7 +706,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-chicken",
         name: "Chicken breast (skinless)",
-        category: "proteins",
+        category: CATEGORIES.protein,
         unit: "kg",
         pricePerUnit: 7.99,
         quantity: 1.5,
@@ -716,7 +717,7 @@ describe("SmartSavingsOptimizer", () => {
       {
         id: "test-rice",
         name: "White rice",
-        category: "grains",
+        category: CATEGORIES.grains,
         unit: "kg",
         pricePerUnit: 2.49,
         quantity: 2,
@@ -746,3 +747,5 @@ describe("SmartSavingsOptimizer", () => {
     expect(hasTuna).toBe(false);
   });
 });
+
+

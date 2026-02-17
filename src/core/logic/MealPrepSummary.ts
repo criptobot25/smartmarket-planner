@@ -13,7 +13,8 @@
  * - Advance preparation increases healthy eating compliance
  */
 
-import { WeeklyPlan, Meal } from "../models/WeeklyPlan";
+import { WeeklyPlan } from "../models/WeeklyPlan";
+import { CATEGORIES } from "../../core/constants/categories";
 import { FoodItem } from "../models/FoodItem";
 import { mockFoods } from "../../data/mockFoods";
 
@@ -53,9 +54,9 @@ export function generateMealPrepSummary(weeklyPlan: WeeklyPlan): MealPrepSummary
   const ingredients = aggregateIngredients(weeklyPlan);
   
   // 2. Categorize ingredients by type
-  const proteinIngredients = ingredients.filter(i => i.category === "proteins");
-  const grainIngredients = ingredients.filter(i => i.category === "grains");
-  const vegetableIngredients = ingredients.filter(i => i.category === "vegetables");
+  const proteinIngredients = ingredients.filter(i => i.category === CATEGORIES.protein);
+  const grainIngredients = ingredients.filter(i => i.category === CATEGORIES.grains);
+  const vegetableIngredients = ingredients.filter(i => i.category === CATEGORIES.vegetables);
   
   // 3. Generate prep steps
   const sundayPrepList = generatePrepSteps(ingredients);
@@ -127,7 +128,7 @@ function aggregateIngredients(weeklyPlan: WeeklyPlan): PrepIngredient[] {
  * Determine if a food needs cooking
  */
 function needsCooking(food: FoodItem): boolean {
-  const cookedCategories = ["proteins", "grains"];
+  const cookedCategories = [CATEGORIES.protein, CATEGORIES.grains];
   const cookedNames = ["chicken", "rice", "pasta", "beef", "pork", "fish", "salmon", "tuna"];
   
   if (cookedCategories.includes(food.category)) return true;
@@ -144,9 +145,9 @@ function generatePrepSteps(ingredients: PrepIngredient[]): PrepStep[] {
   let stepOrder = 1;
   
   // Group by category for logical prep order
-  const proteins = ingredients.filter(i => i.category === "proteins" && i.isCooked);
-  const grains = ingredients.filter(i => i.category === "grains" && i.isCooked);
-  const vegetables = ingredients.filter(i => i.category === "vegetables" && i.isCooked);
+  const proteins = ingredients.filter(i => i.category === CATEGORIES.protein && i.isCooked);
+  const grains = ingredients.filter(i => i.category === CATEGORIES.grains && i.isCooked);
+  const vegetables = ingredients.filter(i => i.category === CATEGORIES.vegetables && i.isCooked);
   const readyToEat = ingredients.filter(i => !i.isCooked);
   
   // 1. Cook proteins (longest cooking time)
@@ -302,7 +303,7 @@ function generateMealPrepTips(ingredients: PrepIngredient[]): string[] {
   const tips: string[] = [];
   
   // Tip 1: Cook proteins together
-  const proteins = ingredients.filter(i => i.category === "proteins" && i.isCooked);
+  const proteins = ingredients.filter(i => i.category === CATEGORIES.protein && i.isCooked);
   if (proteins.length > 1) {
     tips.push("Cook all proteins at once in the oven to save time and energy.");
   }
@@ -314,7 +315,7 @@ function generateMealPrepTips(ingredients: PrepIngredient[]): string[] {
   }
   
   // Tip 3: Frozen vegetables
-  const hasVegetables = ingredients.filter(i => i.category === "vegetables").length > 0;
+  const hasVegetables = ingredients.filter(i => i.category === CATEGORIES.vegetables).length > 0;
   if (hasVegetables) {
     tips.push("Consider buying frozen vegetables to save prep time - they're pre-washed and cut.");
   }

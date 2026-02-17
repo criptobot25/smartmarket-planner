@@ -10,6 +10,7 @@
  */
 
 import { jsPDF } from "jspdf";
+import { CATEGORIES } from "../constants/categories";
 import { FoodItem, FoodCategory } from "../models/FoodItem";
 import { formatQuantity } from "../utils/formatQuantity";
 import { CostTier } from "../models/CostTier";
@@ -39,17 +40,19 @@ function groupByCategory(items: FoodItem[]): Record<FoodCategory, FoodItem[]> {
 /**
  * Category icons and labels for PDF
  */
-const CATEGORY_INFO: Record<FoodCategory, { emoji: string; label: string }> = {
-  vegetables: { emoji: "🥬", label: "Vegetables" },
-  fruits: { emoji: "🍎", label: "Fruits" },
-  proteins: { emoji: "🍗", label: "Proteins" },
-  grains: { emoji: "🌾", label: "Grains" },
-  dairy: { emoji: "🥛", label: "Dairy" },
-  oils: { emoji: "🫒", label: "Oils" },
-  spices: { emoji: "🌶️", label: "Spices" },
-  beverages: { emoji: "☕", label: "Beverages" },
-  others: { emoji: "📦", label: "Others" },
-};
+const CATEGORY_INFO = {
+  [CATEGORIES.vegetables]: { emoji: "🥬", label: "Vegetables" },
+  [CATEGORIES.fruits]: { emoji: "🍎", label: "Fruits" },
+  [CATEGORIES.protein]: { emoji: "🍗", label: "Protein" },
+  [CATEGORIES.carbs]: { emoji: "🍞", label: "Carbs" },
+  [CATEGORIES.grains]: { emoji: "🌾", label: "Grains" },
+  [CATEGORIES.legumes]: { emoji: "🫘", label: "Legumes" },
+  [CATEGORIES.dairy]: { emoji: "🥛", label: "Dairy" },
+  [CATEGORIES.fats]: { emoji: "🫒", label: "Fats" },
+  [CATEGORIES.snacks]: { emoji: "🍿", label: "Snacks" },
+  [CATEGORIES.supplements]: { emoji: "💊", label: "Supplements" },
+  [CATEGORIES.others]: { emoji: "📦", label: "Others" },
+} as Record<FoodCategory, { emoji: string; label: string }>;
 
 /**
  * Export shopping list to PDF
@@ -167,7 +170,7 @@ export function exportShoppingListPdf(
         doc.text(`€${item.estimatedPrice.toFixed(2)}`, pageWidth - margin - 25, yPosition);
       }
 
-      // Reason (italic, smaller)
+      // Reason (italic, smalher)
       if (item.reason) {
         doc.setTextColor(120, 120, 120);
         doc.setFontSize(8);

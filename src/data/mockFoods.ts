@@ -1,4 +1,5 @@
 import { FoodItem } from "../core/models/FoodItem";
+import { CATEGORIES } from "../core/constants/categories";
 
 /**
  * PASSO 32: MVP FITNESS DATABASE
@@ -28,7 +29,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-001",
     name: "Chicken breast (skinless)",
-    category: "proteins",
+    category: CATEGORIES.protein,
     unit: "kg",
     pricePerUnit: 7.99,
     quantity: 0,
@@ -42,7 +43,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-002",
     name: "Eggs (large)",
-    category: "proteins",
+    category: CATEGORIES.protein,
     unit: "pack",  // 12 units
     pricePerUnit: 3.49,
     quantity: 0,
@@ -56,7 +57,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-003",
     name: "Greek yogurt (0% fat)",
-    category: "dairy",
+    category: CATEGORIES.dairy,
     unit: "kg",
     pricePerUnit: 5.99,
     quantity: 0,
@@ -70,7 +71,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-004",
     name: "Salmon fillet",
-    category: "proteins",
+    category: CATEGORIES.protein,
     unit: "kg",
     pricePerUnit: 18.99,
     quantity: 0,
@@ -84,7 +85,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-005",
     name: "Tuna (canned)",
-    category: "proteins",
+    category: CATEGORIES.protein,
     unit: "can",  // 160g
     pricePerUnit: 1.99,
     quantity: 0,
@@ -98,7 +99,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-006",
     name: "Lean ground beef (5% fat)",
-    category: "proteins",
+    category: CATEGORIES.protein,
     unit: "kg",
     pricePerUnit: 9.99,
     quantity: 0,
@@ -113,7 +114,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-031",
     name: "Turkey breast",
-    category: "proteins",
+    category: CATEGORIES.protein,
     unit: "kg",
     pricePerUnit: 7.99,
     quantity: 0,
@@ -127,7 +128,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-032",
     name: "Cod fillet",
-    category: "proteins",
+    category: CATEGORIES.protein,
     unit: "kg",
     pricePerUnit: 12.99,
     quantity: 0,
@@ -141,7 +142,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-033",
     name: "Pork loin",
-    category: "proteins",
+    category: CATEGORIES.protein,
     unit: "kg",
     pricePerUnit: 6.99,
     quantity: 0,
@@ -155,7 +156,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-007",
     name: "Cottage cheese (low fat)",
-    category: "dairy",
+    category: CATEGORIES.dairy,
     unit: "kg",
     pricePerUnit: 4.49,
     quantity: 0,
@@ -173,7 +174,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-008",
     name: "White rice",
-    category: "grains",
+    category: CATEGORIES.grains,
     unit: "kg",
     pricePerUnit: 2.49,
     quantity: 0,
@@ -187,7 +188,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-009",
     name: "Brown rice",
-    category: "grains",
+    category: CATEGORIES.grains,
     unit: "kg",
     pricePerUnit: 3.29,
     quantity: 0,
@@ -201,7 +202,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-010",
     name: "Oats (rolled)",
-    category: "grains",
+    category: CATEGORIES.grains,
     unit: "kg",
     pricePerUnit: 2.99,
     quantity: 0,
@@ -215,7 +216,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-011",
     name: "Sweet potato",
-    category: "vegetables",
+    category: CATEGORIES.vegetables,
     unit: "kg",
     pricePerUnit: 2.19,
     quantity: 0,
@@ -229,7 +230,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-012",
     name: "Whole wheat bread",
-    category: "grains",
+    category: CATEGORIES.grains,
     unit: "loaf",  // 500g
     pricePerUnit: 2.49,
     quantity: 0,
@@ -243,7 +244,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-013",
     name: "Quinoa",
-    category: "grains",
+    category: CATEGORIES.grains,
     unit: "kg",
     pricePerUnit: 6.99,
     quantity: 0,
@@ -257,7 +258,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-014",
     name: "Pasta (whole wheat)",
-    category: "grains",
+    category: CATEGORIES.grains,
     unit: "kg",
     pricePerUnit: 2.79,
     quantity: 0,
@@ -272,7 +273,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-034",
     name: "Couscous",
-    category: "grains",
+    category: CATEGORIES.grains,
     unit: "kg",
     pricePerUnit: 3.49,
     quantity: 0,
@@ -286,7 +287,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-035",
     name: "Barley",
-    category: "grains",
+    category: CATEGORIES.grains,
     unit: "kg",
     pricePerUnit: 2.99,
     quantity: 0,
@@ -300,7 +301,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-036",
     name: "White bread",
-    category: "grains",
+    category: CATEGORIES.grains,
     unit: "pack",
     pricePerUnit: 1.99,
     quantity: 0,
@@ -318,7 +319,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-015",
     name: "Broccoli",
-    category: "vegetables",
+    category: CATEGORIES.vegetables,
     unit: "kg",
     pricePerUnit: 2.99,
     quantity: 0,
@@ -332,7 +333,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-016",
     name: "Spinach (fresh)",
-    category: "vegetables",
+    category: CATEGORIES.vegetables,
     unit: "kg",
     pricePerUnit: 3.49,
     quantity: 0,
@@ -346,7 +347,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-017",
     name: "Tomatoes",
-    category: "vegetables",
+    category: CATEGORIES.vegetables,
     unit: "kg",
     pricePerUnit: 2.49,
     quantity: 0,
@@ -360,7 +361,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-018",
     name: "Bell peppers",
-    category: "vegetables",
+    category: CATEGORIES.vegetables,
     unit: "kg",
     pricePerUnit: 3.99,
     quantity: 0,
@@ -374,7 +375,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-019",
     name: "Carrots",
-    category: "vegetables",
+    category: CATEGORIES.vegetables,
     unit: "kg",
     pricePerUnit: 1.29,
     quantity: 0,
@@ -388,7 +389,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-020",
     name: "Cucumber",
-    category: "vegetables",
+    category: CATEGORIES.vegetables,
     unit: "kg",
     pricePerUnit: 1.49,
     quantity: 0,
@@ -402,7 +403,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-021",
     name: "Lettuce (mixed greens)",
-    category: "vegetables",
+    category: CATEGORIES.vegetables,
     unit: "kg",
     pricePerUnit: 2.99,
     quantity: 0,
@@ -420,7 +421,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-022",
     name: "Bananas",
-    category: "fruits",
+    category: CATEGORIES.fruits,
     unit: "kg",
     pricePerUnit: 1.79,
     quantity: 0,
@@ -434,7 +435,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-023",
     name: "Apples",
-    category: "fruits",
+    category: CATEGORIES.fruits,
     unit: "kg",
     pricePerUnit: 2.49,
     quantity: 0,
@@ -448,7 +449,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-024",
     name: "Blueberries",
-    category: "fruits",
+    category: CATEGORIES.fruits,
     unit: "pack",  // 250g
     pricePerUnit: 3.99,
     quantity: 0,
@@ -462,7 +463,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-025",
     name: "Strawberries",
-    category: "fruits",
+    category: CATEGORIES.fruits,
     unit: "pack",  // 500g
     pricePerUnit: 3.49,
     quantity: 0,
@@ -476,7 +477,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-026",
     name: "Oranges",
-    category: "fruits",
+    category: CATEGORIES.fruits,
     unit: "kg",
     pricePerUnit: 2.29,
     quantity: 0,
@@ -494,7 +495,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-027",
     name: "Extra virgin olive oil",
-    category: "oils",
+    category: CATEGORIES.fats,
     unit: "L",
     pricePerUnit: 8.99,
     quantity: 0,
@@ -508,7 +509,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-028",
     name: "Avocado",
-    category: "fruits",
+    category: CATEGORIES.fruits,
     unit: "kg",
     pricePerUnit: 4.99,
     quantity: 0,
@@ -522,7 +523,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-029",
     name: "Peanut butter (natural)",
-    category: "others",
+    category: CATEGORIES.others,
     unit: "jar",  // 500g
     pricePerUnit: 4.49,
     quantity: 0,
@@ -536,7 +537,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-030",
     name: "Almonds (raw)",
-    category: "others",
+    category: CATEGORIES.others,
     unit: "kg",
     pricePerUnit: 12.99,
     quantity: 0,
@@ -554,7 +555,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-031",
     name: "Sea salt",
-    category: "spices",
+    category: CATEGORIES.others,
     unit: "pack",  // 500g
     pricePerUnit: 1.49,
     quantity: 0,
@@ -568,7 +569,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-032",
     name: "Black pepper",
-    category: "spices",
+    category: CATEGORIES.others,
     unit: "pack",  // 100g
     pricePerUnit: 2.49,
     quantity: 0,
@@ -582,7 +583,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-033",
     name: "Garlic powder",
-    category: "spices",
+    category: CATEGORIES.others,
     unit: "pack",  // 100g
     pricePerUnit: 3.29,
     quantity: 0,
@@ -596,7 +597,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-034",
     name: "Paprika",
-    category: "spices",
+    category: CATEGORIES.others,
     unit: "pack",  // 100g
     pricePerUnit: 2.99,
     quantity: 0,
@@ -614,7 +615,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-035",
     name: "Milk (skim)",
-    category: "dairy",
+    category: CATEGORIES.dairy,
     unit: "L",
     pricePerUnit: 1.49,
     quantity: 0,
@@ -628,7 +629,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-036",
     name: "Almond milk (unsweetened)",
-    category: "beverages",
+    category: CATEGORIES.others,
     unit: "L",
     pricePerUnit: 2.49,
     quantity: 0,
@@ -646,7 +647,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-037",
     name: "Tilapia fillet",
-    category: "proteins",
+    category: CATEGORIES.protein,
     unit: "kg",
     pricePerUnit: 8.99,
     quantity: 0,
@@ -660,7 +661,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-038",
     name: "Cottage cheese (low-fat)",
-    category: "proteins",
+    category: CATEGORIES.protein,
     unit: "pack", // 500g
     pricePerUnit: 2.99,
     quantity: 0,
@@ -674,7 +675,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-039",
     name: "Tofu (firm)",
-    category: "proteins",
+    category: CATEGORIES.protein,
     unit: "pack", // 400g
     pricePerUnit: 2.49,
     quantity: 0,
@@ -688,7 +689,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-040",
     name: "Shrimp (raw)",
-    category: "proteins",
+    category: CATEGORIES.protein,
     unit: "kg",
     pricePerUnit: 14.99,
     quantity: 0,
@@ -702,7 +703,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-041",
     name: "Lamb chops",
-    category: "proteins",
+    category: CATEGORIES.protein,
     unit: "kg",
     pricePerUnit: 16.99,
     quantity: 0,
@@ -716,7 +717,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-042",
     name: "Duck breast",
-    category: "proteins",
+    category: CATEGORIES.protein,
     unit: "kg",
     pricePerUnit: 15.99,
     quantity: 0,
@@ -730,7 +731,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-043",
     name: "Sardines (canned)",
-    category: "proteins",
+    category: CATEGORIES.protein,
     unit: "can", // 120g
     pricePerUnit: 1.99,
     quantity: 0,
@@ -748,7 +749,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-044",
     name: "Buckwheat",
-    category: "carbs",
+    category: CATEGORIES.carbs,
     unit: "pack", // 500g
     pricePerUnit: 2.99,
     quantity: 0,
@@ -762,7 +763,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-045",
     name: "Rye bread",
-    category: "carbs",
+    category: CATEGORIES.carbs,
     unit: "pack", // 500g
     pricePerUnit: 2.49,
     quantity: 0,
@@ -776,7 +777,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-046",
     name: "Whole wheat tortillas",
-    category: "carbs",
+    category: CATEGORIES.carbs,
     unit: "pack", // 8 units
     pricePerUnit: 2.99,
     quantity: 0,
@@ -790,7 +791,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-047",
     name: "Corn (frozen)",
-    category: "carbs",
+    category: CATEGORIES.carbs,
     unit: "pack", // 500g
     pricePerUnit: 1.99,
     quantity: 0,
@@ -808,7 +809,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-048",
     name: "Cauliflower",
-    category: "vegetables",
+    category: CATEGORIES.vegetables,
     unit: "kg",
     pricePerUnit: 2.49,
     quantity: 0,
@@ -822,7 +823,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-049",
     name: "Zucchini",
-    category: "vegetables",
+    category: CATEGORIES.vegetables,
     unit: "kg",
     pricePerUnit: 1.99,
     quantity: 0,
@@ -836,7 +837,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-050",
     name: "Asparagus",
-    category: "vegetables",
+    category: CATEGORIES.vegetables,
     unit: "bunch",
     pricePerUnit: 3.49,
     quantity: 0,
@@ -850,7 +851,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-051",
     name: "Green beans",
-    category: "vegetables",
+    category: CATEGORIES.vegetables,
     unit: "kg",
     pricePerUnit: 2.99,
     quantity: 0,
@@ -864,7 +865,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-052",
     name: "Brussels sprouts",
-    category: "vegetables",
+    category: CATEGORIES.vegetables,
     unit: "kg",
     pricePerUnit: 2.99,
     quantity: 0,
@@ -878,7 +879,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-053",
     name: "Kale",
-    category: "vegetables",
+    category: CATEGORIES.vegetables,
     unit: "bunch",
     pricePerUnit: 1.99,
     quantity: 0,
@@ -892,7 +893,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-054",
     name: "Cucumber",
-    category: "vegetables",
+    category: CATEGORIES.vegetables,
     unit: "kg",
     pricePerUnit: 1.49,
     quantity: 0,
@@ -906,7 +907,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-055",
     name: "Carrots",
-    category: "vegetables",
+    category: CATEGORIES.vegetables,
     unit: "kg",
     pricePerUnit: 1.29,
     quantity: 0,
@@ -920,7 +921,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-056",
     name: "Mushrooms (button)",
-    category: "vegetables",
+    category: CATEGORIES.vegetables,
     unit: "pack", // 250g
     pricePerUnit: 2.49,
     quantity: 0,
@@ -934,7 +935,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-057",
     name: "Eggplant",
-    category: "vegetables",
+    category: CATEGORIES.vegetables,
     unit: "kg",
     pricePerUnit: 2.29,
     quantity: 0,
@@ -948,7 +949,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-058",
     name: "Celery",
-    category: "vegetables",
+    category: CATEGORIES.vegetables,
     unit: "bunch",
     pricePerUnit: 1.49,
     quantity: 0,
@@ -962,7 +963,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-059",
     name: "Lettuce (romaine)",
-    category: "vegetables",
+    category: CATEGORIES.vegetables,
     unit: "head",
     pricePerUnit: 1.29,
     quantity: 0,
@@ -980,7 +981,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-060",
     name: "Strawberries",
-    category: "fruits",
+    category: CATEGORIES.fruits,
     unit: "pack", // 250g
     pricePerUnit: 2.99,
     quantity: 0,
@@ -994,7 +995,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-061",
     name: "Grapes",
-    category: "fruits",
+    category: CATEGORIES.fruits,
     unit: "kg",
     pricePerUnit: 3.49,
     quantity: 0,
@@ -1008,7 +1009,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-062",
     name: "Pineapple",
-    category: "fruits",
+    category: CATEGORIES.fruits,
     unit: "unit",
     pricePerUnit: 2.99,
     quantity: 0,
@@ -1022,7 +1023,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-063",
     name: "Watermelon",
-    category: "fruits",
+    category: CATEGORIES.fruits,
     unit: "kg",
     pricePerUnit: 1.49,
     quantity: 0,
@@ -1036,7 +1037,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-064",
     name: "Kiwi",
-    category: "fruits",
+    category: CATEGORIES.fruits,
     unit: "kg",
     pricePerUnit: 3.99,
     quantity: 0,
@@ -1050,7 +1051,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-065",
     name: "Mango",
-    category: "fruits",
+    category: CATEGORIES.fruits,
     unit: "unit",
     pricePerUnit: 1.99,
     quantity: 0,
@@ -1064,7 +1065,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-066",
     name: "Peach",
-    category: "fruits",
+    category: CATEGORIES.fruits,
     unit: "kg",
     pricePerUnit: 2.99,
     quantity: 0,
@@ -1078,7 +1079,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-067",
     name: "Pear",
-    category: "fruits",
+    category: CATEGORIES.fruits,
     unit: "kg",
     pricePerUnit: 2.49,
     quantity: 0,
@@ -1096,7 +1097,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-068",
     name: "Cashews",
-    category: "fats",
+    category: CATEGORIES.fats,
     unit: "pack", // 200g
     pricePerUnit: 4.99,
     quantity: 0,
@@ -1110,7 +1111,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-069",
     name: "Walnuts",
-    category: "fats",
+    category: CATEGORIES.fats,
     unit: "pack", // 200g
     pricePerUnit: 5.49,
     quantity: 0,
@@ -1124,7 +1125,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-070",
     name: "Flaxseed",
-    category: "fats",
+    category: CATEGORIES.fats,
     unit: "pack", // 250g
     pricePerUnit: 3.49,
     quantity: 0,
@@ -1138,7 +1139,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-071",
     name: "Chia seeds",
-    category: "fats",
+    category: CATEGORIES.fats,
     unit: "pack", // 200g
     pricePerUnit: 4.99,
     quantity: 0,
@@ -1152,7 +1153,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-072",
     name: "Coconut oil",
-    category: "fats",
+    category: CATEGORIES.fats,
     unit: "jar", // 500ml
     pricePerUnit: 6.99,
     quantity: 0,
@@ -1166,7 +1167,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-073",
     name: "Butter (unsalted)",
-    category: "fats",
+    category: CATEGORIES.fats,
     unit: "pack", // 250g
     pricePerUnit: 2.99,
     quantity: 0,
@@ -1184,7 +1185,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-074",
     name: "Protein bar (25g protein)",
-    category: "snacks",
+    category: CATEGORIES.snacks,
     unit: "unit",
     pricePerUnit: 2.49,
     quantity: 0,
@@ -1198,7 +1199,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-075",
     name: "Rice cakes",
-    category: "snacks",
+    category: CATEGORIES.snacks,
     unit: "pack", // 10 units
     pricePerUnit: 1.99,
     quantity: 0,
@@ -1212,7 +1213,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-076",
     name: "Dark chocolate (85%)",
-    category: "snacks",
+    category: CATEGORIES.snacks,
     unit: "bar", // 100g
     pricePerUnit: 2.99,
     quantity: 0,
@@ -1226,7 +1227,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-077",
     name: "Beef jerky",
-    category: "snacks",
+    category: CATEGORIES.snacks,
     unit: "pack", // 50g
     pricePerUnit: 3.99,
     quantity: 0,
@@ -1240,7 +1241,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-078",
     name: "Hummus",
-    category: "snacks",
+    category: CATEGORIES.snacks,
     unit: "pack", // 200g
     pricePerUnit: 2.49,
     quantity: 0,
@@ -1254,7 +1255,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-079",
     name: "Edamame (frozen)",
-    category: "snacks",
+    category: CATEGORIES.snacks,
     unit: "pack", // 300g
     pricePerUnit: 2.99,
     quantity: 0,
@@ -1268,7 +1269,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-080",
     name: "Trail mix",
-    category: "snacks",
+    category: CATEGORIES.snacks,
     unit: "pack", // 200g
     pricePerUnit: 3.99,
     quantity: 0,
@@ -1282,7 +1283,7 @@ export const mockFoods: FoodItem[] = [
   {
     id: "food-081",
     name: "Popcorn (air-popped)",
-    category: "snacks",
+    category: CATEGORIES.snacks,
     unit: "pack", // 100g
     pricePerUnit: 1.49,
     quantity: 0,
@@ -1294,3 +1295,4 @@ export const mockFoods: FoodItem[] = [
     }
   }
 ];
+

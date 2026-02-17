@@ -12,6 +12,7 @@
  */
 
 import { describe, it, expect, beforeEach } from "vitest";
+import { CATEGORIES } from "../core/constants/categories";
 import { userPreferencesStore } from "../core/stores/UserPreferencesStore";
 import { buildMeal } from "../core/logic/MealBuilder";
 import { mockFoods } from "../data/mockFoods";
@@ -195,7 +196,7 @@ describe("PASSO 26 - Preference Learning System", () => {
   describe("5. MealBuilder Integration - Preference Prioritization", () => {
     it("should prioritize liked foods in protein selection", () => {
       // Find a protein food that exists in mockFoods
-      const proteinFood = mockFoods.find(f => f.category === "proteins");
+      const proteinFood = mockFoods.find(f => f.category === CATEGORIES.protein);
       if (!proteinFood) throw new Error("No protein foods available in mockFoods");
       
       // Mark it as liked
@@ -211,11 +212,7 @@ describe("PASSO 26 - Preference Learning System", () => {
       // Verify preferences were considered (meal should be built successfully)
       expect(meal.ingredients.length).toBeGreaterThan(0);
       
-      // Check if liked food appeared (it should be preferred)
-      const containsLikedFood = meal.ingredients.some(ing => 
-        ing.foodName === proteinFood.name
-      );
-      // Note: Can't guarantee it will always appear due to macro constraints,
+      // Note: Can't guarantee liked food will always appear due to macro constraints,
       // but preference score should be high
       const score = userPreferencesStore.getPreferenceScore(proteinFood.name);
       expect(score).toBeGreaterThan(5); // Should have positive preference
@@ -223,7 +220,7 @@ describe("PASSO 26 - Preference Learning System", () => {
 
     it("should avoid disliked foods completely", () => {
       // Find a protein that exists
-      const proteinFood = mockFoods.find(f => f.category === "proteins");
+      const proteinFood = mockFoods.find(f => f.category === CATEGORIES.protein);
       if (!proteinFood) throw new Error("No protein foods available");
       
       // Exclude it
@@ -341,10 +338,10 @@ describe("PASSO 26 - Preference Learning System", () => {
       
       // Meals should contain similar ingredients due to learned preferences
       const meal1Protein = meal1.ingredients.find(i => 
-        mockFoods.find(f => f.id === i.foodId && f.category === "proteins")
+        mockFoods.find(f => f.id === i.foodId && f.category === CATEGORIES.protein)
       );
       const meal2Protein = meal2.ingredients.find(i => 
-        mockFoods.find(f => f.id === i.foodId && f.category === "proteins")
+        mockFoods.find(f => f.id === i.foodId && f.category === CATEGORIES.protein)
       );
       
       expect(meal1Protein?.foodName).toBe(meal2Protein?.foodName);
@@ -439,7 +436,7 @@ describe("PASSO 26 - Preference Learning System", () => {
 
     it("Scenario: User loves chicken → app prioritizes it", () => {
       // Find a protein food
-      const proteinFood = mockFoods.find(f => f.category === "proteins");
+      const proteinFood = mockFoods.find(f => f.category === CATEGORIES.protein);
       if (!proteinFood) {
         expect(true).toBe(true);
         return;
@@ -498,3 +495,4 @@ describe("PASSO 26 - Preference Learning System", () => {
     });
   });
 });
+

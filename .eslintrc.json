@@ -1,0 +1,80 @@
+{
+  "root": true,
+  "env": {
+    "browser": true,
+    "es2020": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react-hooks/recommended"
+  ],
+  "ignorePatterns": ["dist", ".eslintrc.json"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "project": ["./tsconfig.json"]
+  },
+  "plugins": ["react-refresh", "@typescript-eslint"],
+  "rules": {
+    "react-refresh/only-export-components": [
+      "warn",
+      { "allowConstantExport": true }
+    ],
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "Literal[value='protein']",
+        "message": "❌ Use CATEGORIES.protein instead of string literal 'protein'. Import from src/core/constants/categories"
+      },
+      {
+        "selector": "Literal[value='carbs']",
+        "message": "❌ Use CATEGORIES.carbs instead of string literal 'carbs'. Import from src/core/constants/categories"
+      },
+      {
+        "selector": "Literal[value='vegetables']",
+        "message": "❌ Use CATEGORIES.vegetables instead of string literal 'vegetables'. Import from src/core/constants/categories"
+      },
+      {
+        "selector": "Literal[value='fruits']",
+        "message": "❌ Use CATEGORIES.fruits instead of string literal 'fruits'. Import from src/core/constants/categories"
+      },
+      {
+        "selector": "Literal[value='dairy']",
+        "message": "❌ Use CATEGORIES.dairy instead of string literal 'dairy'. Import from src/core/constants/categories"
+      },
+      {
+        "selector": "Literal[value='fats']",
+        "message": "❌ Use CATEGORIES.fats instead of string literal 'fats'. Import from src/core/constants/categories"
+      },
+      {
+        "selector": "Literal[value='grains']",
+        "message": "❌ Use CATEGORIES.grains instead of string literal 'grains'. Import from src/core/constants/categories"
+      },
+      {
+        "selector": "Literal[value='legumes']",
+        "message": "❌ Use CATEGORIES.legumes instead of string literal 'legumes'. Import from src/core/constants/categories"
+      },
+      {
+        "selector": "Literal[value='snacks']",
+        "message": "❌ Use CATEGORIES.snacks instead of string literal 'snacks'. Import from src/core/constants/categories"
+      },
+      {
+        "selector": "Literal[value='supplements']",
+        "message": "❌ Use CATEGORIES.supplements instead of string literal 'supplements'. Import from src/core/constants/categories"
+      },
+      {
+        "selector": "Literal[value='others']",
+        "message": "❌ Use CATEGORIES.others instead of string literal 'others'. Import from src/core/constants/categories"
+      }
+    ]
+  }
+}

@@ -25,6 +25,7 @@
  */
 
 import { describe, it, expect, beforeEach } from "vitest";
+import { CATEGORIES } from "../core/constants/categories";
 import { RotationEngine } from "../core/logic/RotationEngine";
 import { VarietyTracker } from "../core/logic/VarietyConstraints";
 import { buildMeal } from "../core/logic/MealBuilder";
@@ -131,7 +132,7 @@ describe("PASSO 32: Meal Plan Variety", () => {
       if (meal.ingredients.length > 0) {
         const proteinIngredient = meal.ingredients[0];
         const proteinFood = mockFoods.find(f => f.id === proteinIngredient.foodId);
-        if (proteinFood?.category === "proteins") {
+        if (proteinFood?.category === CATEGORIES.protein) {
           proteinSources.add(proteinFood.name);
         }
       }
@@ -163,7 +164,7 @@ describe("PASSO 32: Meal Plan Variety", () => {
     meals.forEach(meal => {
       meal.ingredients.forEach(ingredient => {
         const food = mockFoods.find(f => f.id === ingredient.foodId);
-        if (food?.category === "vegetables") {
+        if (food?.category === CATEGORIES.vegetables) {
           vegetables.add(food.name);
         }
       });
@@ -195,7 +196,7 @@ describe("PASSO 32: Meal Plan Variety", () => {
     meals.forEach(meal => {
       meal.ingredients.forEach(ingredient => {
         const food = mockFoods.find(f => f.id === ingredient.foodId);
-        if (food?.category === "grains" || (food?.category === "vegetables" && food.macros && food.macros.carbs > 15)) {
+        if (food?.category === CATEGORIES.grains || (food?.category === CATEGORIES.vegetables && food.macros && food.macros.carbs > 15)) {
           carbSources.add(food.name);
         }
       });
@@ -260,7 +261,7 @@ describe("PASSO 32: Meal Plan Variety", () => {
       if (meal.ingredients.length > 0) {
         const proteinIngredient = meal.ingredients[0];
         const proteinFood = mockFoods.find(f => f.id === proteinIngredient.foodId);
-        if (proteinFood?.category === "proteins") {
+        if (proteinFood?.category === CATEGORIES.protein) {
           const count = proteinCounts.get(proteinFood.name) || 0;
           proteinCounts.set(proteinFood.name, count + 1);
         }
@@ -289,7 +290,7 @@ describe("PASSO 32: Meal Plan Variety", () => {
       });
       if (meal.ingredients[0]) {
         const protein = mockFoods.find(f => f.id === meal.ingredients[0].foodId);
-        if (protein?.category === "proteins") {
+        if (protein?.category === CATEGORIES.protein) {
           lowTierProteins.add(protein.name);
         }
       }
@@ -308,7 +309,7 @@ describe("PASSO 32: Meal Plan Variety", () => {
       });
       if (meal.ingredients[0]) {
         const protein = mockFoods.find(f => f.id === meal.ingredients[0].foodId);
-        if (protein?.category === "proteins") {
+        if (protein?.category === CATEGORIES.protein) {
           highTierProteins.add(protein.name);
         }
       }
@@ -320,3 +321,4 @@ describe("PASSO 32: Meal Plan Variety", () => {
     expect(allProteins.size).toBeGreaterThan(Math.max(lowTierProteins.size, highTierProteins.size));
   });
 });
+

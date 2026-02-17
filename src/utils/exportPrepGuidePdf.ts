@@ -7,6 +7,14 @@
 import { MealPrepGuide } from "../core/logic/MealPrepGuide";
 import { WeeklyPlan } from "../core/models/WeeklyPlan";
 
+// Re-export from core/logic
+export { exportPrepGuidePdf, downloadPrepGuidePdf } from "../core/logic/exportPrepGuidePdf";
+export type { PdfExportOptions } from "../core/logic/exportPrepGuidePdf";
+
+/**
+ * Legacy function - wrapper around exportPrepGuidePdf
+ * @deprecated Use exportPrepGuidePdf instead
+ */
 export function exportPrepGuideToPdf(
   prepGuide: MealPrepGuide,
   weeklyPlan: WeeklyPlan
