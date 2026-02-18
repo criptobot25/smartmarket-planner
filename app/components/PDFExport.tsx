@@ -1,6 +1,9 @@
 "use client";
 
-import { CATEGORIES } from "../../src/core/constants/categories";
+import { useMemo } from "react";
+import { useShoppingPlan } from "../../src/contexts/ShoppingPlanContext";
+import { aggregateShoppingList } from "../../src/core/logic/aggregateShoppingList";
+import type { FoodItem } from "../../src/core/models/FoodItem";
 import { useAppTranslation } from "../lib/i18n";
 import { exportShoppingListPdfNext } from "../lib/export/exportShoppingListPdfNext";
 
@@ -10,38 +13,31 @@ type PDFExportProps = {
 
 export default function PDFExport({ onStatus }: PDFExportProps) {
   const { t } = useAppTranslation();
+  const { weeklyPlan, shoppingList } = useShoppingPlan();
+
+  const planDays = weeklyPlan?.days.length || 7;
+  const aggregatedList = useMemo(
+    () => aggregateShoppingList(shoppingList as (FoodItem & { purchased?: boolean })[], planDays),
+    [planDays, shoppingList],
+  );
 
   const handlePdfExport = async () => {
-    const sampleItems = [
-      {
-        id: "demo-protein",
-        name: "Chicken breast (skinless)",
-        category: CATEGORIES.protein,
-        unit: "kg",
-        quantity: 1,
-        estimatedPrice: 7.99,
-        pricePerUnit: 7.99,
-        costLevel: "medium" as const,
-        macros: { protein: 31, carbs: 0, fat: 3.6 },
-      },
-      {
-        id: "demo-carb",
-        name: "White rice",
-        category: CATEGORIES.grains,
-        unit: "kg",
-        quantity: 1,
-        estimatedPrice: 2.49,
-        pricePerUnit: 2.49,
-        costLevel: "low" as const,
-        macros: { protein: 7, carbs: 77, fat: 0.6 },
-      },
-    ];
+    if (!weeklyPlan || aggregatedList.length === 0) {
+      onStatus(t("shoppingList.emptySubtitle"));
+      return;
+    }
 
     const result = await exportShoppingListPdfNext({
-      items: sampleItems,
-      costTier: "medium",
-      totalProtein: 136,
-      fitnessGoal: "maintenance",
+      items: aggregatedList,
+      costTier: weeklyPlan.costTier,
+      totalProtein: weeklyPlan.totalProtein,
+      fitnessGoal: weeklyPlan.planInput.fitnessGoal,
+      savingsStatus: weeklyPlan.savingsStatus,
+      substitutionsApplied: weeklyPlan.substitutionsApplied?.map((substitution) => ({
+        from: substitution.from,
+        to: substitution.to,
+        savings: substitution.savings,
+      })),
     });
 
     if (!result.ok && result.reason === "premium_locked") {

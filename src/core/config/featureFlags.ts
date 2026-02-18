@@ -21,12 +21,25 @@ function parseBoolean(value: string | undefined): boolean | undefined {
   return undefined;
 }
 
+function readEnv(name: string): string | undefined {
+  const viteEnv = (import.meta as { env?: Record<string, string | undefined> }).env;
+  if (viteEnv && typeof viteEnv[name] === "string") {
+    return viteEnv[name];
+  }
+
+  if (typeof process !== "undefined" && process.env) {
+    return process.env[name] ?? process.env[`NEXT_PUBLIC_${name}`];
+  }
+
+  return undefined;
+}
+
 const ENV_OVERRIDES: Partial<Record<FeatureFlagKey, boolean>> = {
-  analytics: parseBoolean(import.meta.env.VITE_FLAG_ANALYTICS),
-  errorMonitoring: parseBoolean(import.meta.env.VITE_FLAG_ERROR_MONITORING),
-  waitlistCapture: parseBoolean(import.meta.env.VITE_FLAG_WAITLIST_CAPTURE),
-  premiumMonetizationV2: parseBoolean(import.meta.env.VITE_FLAG_PREMIUM_MONETIZATION_V2),
-  weeklyCoachAdjustmentsPremiumOnly: parseBoolean(import.meta.env.VITE_FLAG_WEEKLY_COACH_PREMIUM_ONLY),
+  analytics: parseBoolean(readEnv("VITE_FLAG_ANALYTICS")),
+  errorMonitoring: parseBoolean(readEnv("VITE_FLAG_ERROR_MONITORING")),
+  waitlistCapture: parseBoolean(readEnv("VITE_FLAG_WAITLIST_CAPTURE")),
+  premiumMonetizationV2: parseBoolean(readEnv("VITE_FLAG_PREMIUM_MONETIZATION_V2")),
+  weeklyCoachAdjustmentsPremiumOnly: parseBoolean(readEnv("VITE_FLAG_WEEKLY_COACH_PREMIUM_ONLY")),
 };
 
 export function isFeatureEnabled(feature: FeatureFlagKey): boolean {

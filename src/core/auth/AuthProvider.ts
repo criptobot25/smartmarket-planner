@@ -300,6 +300,10 @@ export class LocalAuthProvider implements IAuthProvider {
   }
 
   private loadSession(): void {
+    if (typeof window === "undefined") {
+      return;
+    }
+
     try {
       const sessionData = localStorage.getItem(LocalAuthProvider.STORAGE_KEYS.SESSION)
         ?? localStorage.getItem(LocalAuthProvider.STORAGE_KEYS.LEGACY_SESSION);
@@ -321,12 +325,21 @@ export class LocalAuthProvider implements IAuthProvider {
   }
 
   private saveSession(session: AuthSession): void {
+    if (typeof window === "undefined") {
+      this.currentSession = session;
+      return;
+    }
+
     this.currentSession = session;
     localStorage.setItem(LocalAuthProvider.STORAGE_KEYS.SESSION, JSON.stringify(session));
     localStorage.removeItem(LocalAuthProvider.STORAGE_KEYS.LEGACY_SESSION);
   }
 
   private getStoredUsers(): User[] {
+    if (typeof window === "undefined") {
+      return [];
+    }
+
     try {
       const data = localStorage.getItem(LocalAuthProvider.STORAGE_KEYS.USERS)
         ?? localStorage.getItem(LocalAuthProvider.STORAGE_KEYS.LEGACY_USERS);
@@ -346,6 +359,10 @@ export class LocalAuthProvider implements IAuthProvider {
   }
 
   private saveUsers(users: User[]): void {
+    if (typeof window === "undefined") {
+      return;
+    }
+
     localStorage.setItem(LocalAuthProvider.STORAGE_KEYS.USERS, JSON.stringify(users));
     localStorage.removeItem(LocalAuthProvider.STORAGE_KEYS.LEGACY_USERS);
   }
@@ -360,16 +377,28 @@ export class LocalAuthProvider implements IAuthProvider {
   }
 
   private savePassword(userId: string, password: string): void {
+    if (typeof window === "undefined") {
+      return;
+    }
+
     // In production, this would hash the password
     localStorage.setItem(`${LocalAuthProvider.STORAGE_KEYS.PASSWORD_PREFIX}${userId}`, password);
   }
 
   private getStoredPassword(userId: string): string | null {
+    if (typeof window === "undefined") {
+      return null;
+    }
+
     return localStorage.getItem(`${LocalAuthProvider.STORAGE_KEYS.PASSWORD_PREFIX}${userId}`)
       ?? localStorage.getItem(`${LocalAuthProvider.STORAGE_KEYS.LEGACY_PASSWORD_PREFIX}${userId}`);
   }
 
   private getMagicLinks(): Record<string, { token: string; expiresAt: string }> {
+    if (typeof window === "undefined") {
+      return {};
+    }
+
     try {
       const data = localStorage.getItem(LocalAuthProvider.STORAGE_KEYS.MAGIC_LINKS)
         ?? localStorage.getItem(LocalAuthProvider.STORAGE_KEYS.LEGACY_MAGIC_LINKS);

@@ -41,6 +41,10 @@ class UserPreferencesStore {
    * Load preferences from localStorage
    */
   private loadFromStorage(): UserPreferences {
+    if (typeof window === "undefined") {
+      return { ...DEFAULT_PREFERENCES };
+    }
+
     try {
       const stored = localStorage.getItem(STORAGE_KEY) ?? localStorage.getItem(LEGACY_STORAGE_KEY);
       if (stored) {
@@ -61,6 +65,10 @@ class UserPreferencesStore {
    * Save preferences to localStorage
    */
   private saveToStorage(): void {
+    if (typeof window === "undefined") {
+      return;
+    }
+
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(this.preferences));
       localStorage.removeItem(LEGACY_STORAGE_KEY);
