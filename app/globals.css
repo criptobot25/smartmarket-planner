@@ -1,4 +1,9 @@
 @import "../src/styles/tokens.css";
+@import "../src/app/pages/PlannerPage.css";
+@import "../src/app/pages/ShoppingListPage.css";
+@import "../src/app/pages/PrepGuidePage.css";
+@import "../src/app/components/OnboardingWizard.css";
+@import "../src/app/components/WeeklyCheckInModal.css";
 
 * {
   box-sizing: border-box;

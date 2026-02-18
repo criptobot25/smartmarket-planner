@@ -1,12 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useShoppingPlan } from "../../../src/contexts/ShoppingPlanContext";
 import { aggregateShoppingList } from "../../../src/core/logic/aggregateShoppingList";
 import type { AggregatedShoppingItem } from "../../../src/core/logic/aggregateShoppingList";
 import type { FoodItem } from "../../../src/core/models/FoodItem";
+import type { FoodCategory } from "../../../src/core/models/FoodItem";
 import { GroceryItemRow } from "../../../src/app/components/GroceryItemRow";
+import { WeeklyCheckInModal } from "../../../src/app/components/WeeklyCheckInModal";
+import { detectRepetitionRisk, type WeeklyFeedbackResponse, useWeeklyFeedback } from "../../../src/hooks/useWeeklyFeedback";
+import { isPremiumUser } from "../../../src/core/premium/PremiumFeatures";
 import { AppNav } from "../../components/AppNav";
 import PDFExportButton from "../../components/PDFExportButton";
 import ShareCardExportButton from "../../components/ShareCardExportButton";
@@ -15,9 +19,12 @@ import { useShoppingProgressStore } from "../../stores/shoppingProgressStore";
 
 export default function ShoppingListRoute() {
   const { t } = useAppTranslation();
-  const { weeklyPlan, shoppingList, toggleItemPurchased } = useShoppingPlan();
+  const isPremium = isPremiumUser();
+  const { weeklyPlan, shoppingList, toggleItemPurchased, history, saveAdherenceScore } = useShoppingPlan();
   const [statusMessage, setStatusMessage] = useState("");
+  const [showCheckInModal, setShowCheckInModal] = useState(false);
   const cardRef = useRef<HTMLElement | null>(null);
+  const { hasFeedbackForPlan, submitWeeklyFeedback } = useWeeklyFeedback();
   const isHydrated = useShoppingProgressStore((state) => state.isHydrated);
   const purchasedCountStore = useShoppingProgressStore((state) => state.purchasedCount);
   const totalCountStore = useShoppingProgressStore((state) => state.totalCount);
@@ -25,7 +32,10 @@ export default function ShoppingListRoute() {
   const setProgressCounts = useShoppingProgressStore((state) => state.setProgressCounts);
 
   const planDays = weeklyPlan?.days.length || 7;
-  const aggregatedShoppingList = aggregateShoppingList(shoppingList as (FoodItem & { purchased?: boolean })[], planDays);
+  const aggregatedShoppingList = useMemo(
+    () => aggregateShoppingList(shoppingList as (FoodItem & { purchased?: boolean })[], planDays),
+    [shoppingList, planDays],
+  );
   const groupedItems = aggregatedShoppingList.reduce<Record<string, AggregatedShoppingItem[]>>((accumulator, item) => {
     if (!accumulator[item.category]) {
       accumulator[item.category] = [];
@@ -37,6 +47,37 @@ export default function ShoppingListRoute() {
 
   const purchasedCount = aggregatedShoppingList.filter((item) => item.purchased).length;
   const totalCount = aggregatedShoppingList.length;
+  const shoppingProgress = totalCount > 0 ? Math.round((purchasedCount / totalCount) * 100) : 0;
+  const prepUnlocked = shoppingProgress === 100;
+
+  const CATEGORY_META: Record<FoodCategory, { emoji: string; label: string }> = {
+    vegetables: { emoji: "🥬", label: t("shoppingList.categories.vegetables") },
+    fruits: { emoji: "🍎", label: t("shoppingList.categories.fruits") },
+    protein: { emoji: "🍗", label: t("shoppingList.categories.protein") },
+    grains: { emoji: "🌾", label: t("shoppingList.categories.grains") },
+    dairy: { emoji: "🥛", label: t("shoppingList.categories.dairy") },
+    fats: { emoji: "🫒", label: t("shoppingList.categories.fats") },
+    legumes: { emoji: "🫘", label: t("shoppingList.categories.legumes") },
+    carbs: { emoji: "🍞", label: t("shoppingList.categories.carbs") },
+    snacks: { emoji: "🍿", label: t("shoppingList.categories.snacks") },
+    supplements: { emoji: "💊", label: t("shoppingList.categories.supplements") },
+    others: { emoji: "📦", label: t("shoppingList.categories.others") },
+  };
+
+  const costTierMeta = {
+    low: { label: t("shoppingList.costLevel.low"), emoji: "🟢" },
+    medium: { label: t("shoppingList.costLevel.medium"), emoji: "🟡" },
+    high: { label: t("shoppingList.costLevel.high"), emoji: "🔴" },
+  } as const;
+
+  const sortedCategories = Object.entries(groupedItems).map(([category, items]) => {
+    const sorted = [...items].sort((a, b) => {
+      if (a.purchased === b.purchased) return 0;
+      return a.purchased ? 1 : -1;
+    });
+
+    return [category, sorted] as [string, AggregatedShoppingItem[]];
+  });
 
   useEffect(() => {
     if (!isHydrated) {
@@ -46,20 +87,35 @@ export default function ShoppingListRoute() {
     setProgressCounts(purchasedCount, totalCount);
   }, [isHydrated, purchasedCount, setProgressCounts, totalCount]);
 
+  useEffect(() => {
+    if (!weeklyPlan) {
+      return;
+    }
+
+    setShowCheckInModal(!hasFeedbackForPlan(weeklyPlan.id));
+  }, [hasFeedbackForPlan, weeklyPlan]);
+
+  const handleWeeklyFeedbackSubmit = async (response: WeeklyFeedbackResponse) => {
+    if (!weeklyPlan) {
+      return;
+    }
+
+    const repeatedTooMuch = detectRepetitionRisk(history.slice(0, 2));
+    const { adherence } = await submitWeeklyFeedback(weeklyPlan.id, response, repeatedTooMuch);
+    saveAdherenceScore(adherence);
+    setShowCheckInModal(false);
+  };
+
   if (!weeklyPlan || aggregatedShoppingList.length === 0) {
     return (
       <div className="np-shell">
         <AppNav />
 
-        <main className="np-main">
-          <section className="np-card">
+        <main className="np-main shopping-list-page">
+          <section className="empty-state">
             <h2>{t("shoppingList.emptyTitle")}</h2>
             <p>{t("shoppingList.emptySubtitle")}</p>
-            <div className="np-actions">
-              <Link href="/app" className="np-btn np-btn-primary">
-                {t("shoppingList.emptyButton")}
-              </Link>
-            </div>
+            <Link href="/app" className="btn-primary">{t("shoppingList.emptyButton")}</Link>
           </section>
         </main>
       </div>
@@ -70,69 +126,93 @@ export default function ShoppingListRoute() {
     <div className="np-shell">
       <AppNav />
 
-      <main className="np-main">
-        <section ref={cardRef} className="np-card">
-          <h2>{t("shoppingList.pageTitle")}</h2>
-          <p>{t("shoppingList.subtitle")}</p>
-
-          <div className="np-kpi-grid" role="list" aria-label="Shopping overview">
-            <article className="np-kpi-card" role="listitem">
-              <span className="np-kpi-label">{t("shoppingList.metricProgress")}</span>
-              <strong className="np-kpi-value">{progressPercent}%</strong>
-              <div className="np-progress" aria-hidden="true">
-                <div className="np-progress-fill" style={{ width: `${progressPercent}%` }} />
-              </div>
-            </article>
-
-            <article className="np-kpi-card" role="listitem">
-              <span className="np-kpi-label">{t("shoppingList.itemsCount", { purchased: purchasedCount, total: totalCount })}</span>
-              <strong className="np-kpi-value">{purchasedCount}/{totalCount}</strong>
-              <span className="np-muted">{t("shoppingList.metricSubstitutions")}</span>
-            </article>
-
-            <article className="np-kpi-card" role="listitem">
-              <span className="np-kpi-label">{t("shoppingList.metricProtein")}</span>
-              <strong className="np-kpi-value">{Math.round(weeklyPlan.proteinTargetPerDay)}g/day</strong>
-              <span className="np-muted">{t("shoppingList.costDisclaimer")}</span>
-            </article>
+      <main className="np-main shopping-list-page" ref={cardRef}>
+        <header className="shopping-header">
+          <div className="header-top">
+            <h1 className="page-title">{t("shoppingList.pageTitle")}</h1>
+            <div className="header-actions">
+              <span className="items-count">
+                {t("shoppingList.itemsCount", { purchased: purchasedCount, total: totalCount })}
+              </span>
+            </div>
           </div>
 
-          <div className="np-actions">
-            <PDFExportButton onStatus={setStatusMessage} />
+          <div className="metrics-bar">
+            <div className="metric">
+              <span className="metric-label">{t("shoppingList.metricProtein")}</span>
+              <span className="metric-value">{Math.round(weeklyPlan.proteinTargetPerDay)}g/day</span>
+            </div>
+            <div className="metric">
+              <span className="metric-label">{t("shoppingList.metricCostLevel")}</span>
+              <span className={`cost-tier-badge cost-tier-${weeklyPlan.costTier}`}>
+                {costTierMeta[weeklyPlan.costTier].emoji} {costTierMeta[weeklyPlan.costTier].label}
+              </span>
+            </div>
+            <div className="metric">
+              <span className="metric-label">{t("shoppingList.metricProgress")}</span>
+              <span className="metric-value">{shoppingProgress}%</span>
+            </div>
+          </div>
+
+          <p className="cost-disclaimer">{t("shoppingList.costDisclaimer")}</p>
+        </header>
+
+        {!isPremium && (
+          <section className="premium-upgrade-strip" role="complementary">
+            <p className="upgrade-strip-title">🔒 {t("shoppingList.upgradeTitle")}</p>
+            <p className="upgrade-strip-subtitle">{t("shoppingList.upgradeSubtitle")}</p>
+            <Link href="/pricing" className="upgrade-strip-btn">{t("shoppingList.upgradeButton")}</Link>
+          </section>
+        )}
+
+        <main className="shopping-main">
+          <div className="categories-grid">
+            {sortedCategories.map(([category, items]) => {
+              const meta = CATEGORY_META[category as FoodCategory] ?? { emoji: "🛒", label: category };
+
+              return (
+                <div key={category} className="category-card">
+                  <h3 className="category-title">{meta.emoji} {meta.label}</h3>
+                  <ul className="items-list">
+                    {items.map((item) => (
+                      <GroceryItemRow
+                        key={item.id}
+                        item={item}
+                        onTogglePurchased={(sourceIds) => {
+                          sourceIds.forEach((sourceId) => toggleItemPurchased(sourceId));
+                        }}
+                      />
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="shopping-actions">
+            {prepUnlocked && (
+              <Link href="/app/prep-guide" className="btn-prep-guide" title={t("shoppingList.startMondayPrep")}>
+                🍳 {t("shoppingList.startMondayPrep")}
+              </Link>
+            )}
+
             <ShareCardExportButton targetRef={cardRef} onStatus={setStatusMessage} />
-            <Link href="/app/prep-guide" className="np-btn np-btn-primary">
-              {t("nav.mondayPrep")}
-            </Link>
-            <Link href="/app" className="np-btn np-btn-secondary">
-              {t("nav.nutritionPlan")}
-            </Link>
+            <PDFExportButton onStatus={setStatusMessage} />
+            <Link href="/app" className="btn-share-card">{t("nav.nutritionPlan")}</Link>
           </div>
+        </main>
 
-          <div className="np-category-grid" role="list" aria-label="Grocery categories">
-            {Object.entries(groupedItems).map(([category, items]) => (
-              <article key={category} className="np-category-card" role="listitem">
-                <h3>{t(`shoppingList.categories.${category}`)}</h3>
-                <ul className="np-item-list">
-                  {items.map((item) => (
-                    <GroceryItemRow
-                      key={item.id}
-                      item={item}
-                      onTogglePurchased={(sourceIds) => {
-                        sourceIds.forEach((sourceId) => toggleItemPurchased(sourceId));
-                      }}
-                    />
-                  ))}
-                </ul>
-              </article>
-            ))}
-          </div>
+        {statusMessage ? (
+          <p className="np-inline-note">{statusMessage}</p>
+        ) : (
+          <p className="np-muted">{t("shoppingList.shareTitle")} · {purchasedCountStore}/{totalCountStore} · {progressPercent}%</p>
+        )}
 
-          {statusMessage ? (
-            <p className="np-inline-note">{statusMessage}</p>
-          ) : (
-            <p className="np-muted">{t("shoppingList.shareTitle")} · {purchasedCountStore}/{totalCountStore}</p>
-          )}
-        </section>
+        <WeeklyCheckInModal
+          isOpen={showCheckInModal}
+          onClose={() => setShowCheckInModal(false)}
+          onSubmit={handleWeeklyFeedbackSubmit}
+        />
       </main>
     </div>
   );

@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CostTier, DietStyle, FitnessGoal, PlanInput, Sex } from "../../core/models/PlanInput";
 import { validatePlanInput } from "../../core/validation/PlanInputSchema";
-import "./OnboardingWizard.css";
 
 interface OnboardingWizardProps {
   onComplete: (input: PlanInput) => void;

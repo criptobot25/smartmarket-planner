@@ -4,8 +4,10 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useShoppingPlan } from "../../../src/contexts/ShoppingPlanContext";
 import { aggregateShoppingList } from "../../../src/core/logic/aggregateShoppingList";
-import { generateMealPrepGuide } from "../../../src/core/logic/MealPrepGuide";
+import { generateMealPrepGuide, type CookingTask } from "../../../src/core/logic/MealPrepGuide";
 import { canExportPdf } from "../../../src/core/premium/features";
+import { isPremiumUser } from "../../../src/core/premium/PremiumFeatures";
+import { localizeFoodName, localizeFoodText } from "../../../src/app/utils/foodLocalization";
 import { AppNav } from "../../components/AppNav";
 import { useAppTranslation } from "../../lib/i18n";
 import { useShoppingProgressStore } from "../../stores/shoppingProgressStore";
@@ -13,8 +15,9 @@ import { useShoppingProgressStore } from "../../stores/shoppingProgressStore";
 export default function PrepGuideRoute() {
   const { t } = useAppTranslation();
   const { weeklyPlan, shoppingList } = useShoppingPlan();
+  const isPremium = isPremiumUser();
   const [statusMessage, setStatusMessage] = useState("");
-  const [completedTaskIds, setCompletedTaskIds] = useState<Set<number>>(new Set());
+  const [completedTasks, setCompletedTasks] = useState<Set<number>>(new Set());
 
   const planDays = weeklyPlan?.days.length || 7;
   const aggregatedList = useMemo(
@@ -31,49 +34,45 @@ export default function PrepGuideRoute() {
 
   const prepGuide = weeklyPlan ? generateMealPrepGuide(weeklyPlan) : null;
 
-  const quickTasks = [
-    {
-      title: t("prepGuide.taskStep", { order: 1 }),
-      description: t("prepGuide.instructions.oven", {
-        quantity: "1kg",
-        ingredient: "protein",
-        temperature: "180°C",
-        duration: 35,
-      }),
-    },
-    {
-      title: t("prepGuide.taskStep", { order: 2 }),
-      description: t("prepGuide.instructions.boil", {
-        quantity: "800g",
-        ingredient: "carbs",
-        duration: 18,
-      }),
-    },
-    {
-      title: t("prepGuide.taskStep", { order: 3 }),
-      description: t("prepGuide.instructions.portion", {
-        quantity: "weekly meals",
-        ingredient: "containers",
-      }),
-    },
-  ];
+  const localizedTips = useMemo(() => {
+    if (!prepGuide) {
+      return [] as string[];
+    }
 
-  const generatedTasks = prepGuide?.cookingTasks.map((task) => ({
-    id: task.order,
-    title: t("prepGuide.taskStep", { order: task.order }),
-    description: `${task.action} ${task.quantity} ${task.ingredient} · ${t("prepGuide.taskDurationMinutes", { minutes: task.duration })}`,
-  })) ?? quickTasks.map((task, index) => ({ id: index + 1, ...task }));
+    const tips: string[] = [];
+    const totalMeals = prepGuide.servingsProduced;
 
-  const completedCount = completedTaskIds.size;
-  const taskProgress = generatedTasks.length > 0 ? Math.round((completedCount / generatedTasks.length) * 100) : 0;
+    tips.push(t("prepGuide.tips.containers", { count: totalMeals }));
 
-  const toggleTask = (id: number) => {
-    setCompletedTaskIds((previous) => {
+    const hasOven = prepGuide.cookingTasks.some((task) => task.method === "oven");
+    const hasBoil = prepGuide.cookingTasks.some((task) => task.method === "boil");
+
+    if (hasOven && hasBoil) {
+      tips.push(t("prepGuide.tips.parallel"));
+    }
+
+    tips.push(t("prepGuide.tips.labels"));
+
+    if (totalMeals > 14) {
+      tips.push(t("prepGuide.tips.freeze"));
+    } else {
+      tips.push(t("prepGuide.tips.fridge"));
+    }
+
+    return tips;
+  }, [prepGuide, t]);
+
+  const totalTasks = prepGuide?.cookingTasks.length ?? 0;
+  const completedCount = completedTasks.size;
+  const taskProgress = totalTasks > 0 ? Math.round((completedCount / totalTasks) * 100) : 0;
+
+  const toggleTask = (taskOrder: number) => {
+    setCompletedTasks((previous) => {
       const next = new Set(previous);
-      if (next.has(id)) {
-        next.delete(id);
+      if (next.has(taskOrder)) {
+        next.delete(taskOrder);
       } else {
-        next.add(id);
+        next.add(taskOrder);
       }
 
       return next;
@@ -96,79 +95,242 @@ export default function PrepGuideRoute() {
     setStatusMessage(t("prepGuide.printButton"));
   };
 
+  if (!weeklyPlan || !prepGuide) {
+    return (
+      <div className="np-shell">
+        <AppNav />
+
+        <main className="np-main prep-guide-page">
+          <div className="empty-state">
+            <h2>{t("prepGuide.emptyTitle")}</h2>
+            <p>{t("prepGuide.emptySubtitle")}</p>
+            <Link href="/app" className="btn-primary">{t("prepGuide.emptyButton")}</Link>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (!prepUnlocked) {
+    return (
+      <div className="np-shell">
+        <AppNav />
+
+        <main className="np-main prep-guide-page">
+          <div className="empty-state">
+            <h2>🔒 {t("prepGuide.lockedTitle")}</h2>
+            <p>{t("prepGuide.lockedSubtitle")}</p>
+            <p>{t("prepGuide.lockedProgress", { progress: effectiveProgress })}</p>
+            <Link href="/app/list" className="btn-primary">{t("prepGuide.lockedBackButton")}</Link>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  const difficultyColor = {
+    easy: "#4caf50",
+    medium: "#ff9800",
+    advanced: "#f44336",
+  }[prepGuide.difficulty];
+
   return (
-    <div className="np-shell">
+    <div className="np-shell prep-guide-page">
       <AppNav />
 
-      <main className="np-main">
-        <section className="np-card">
-          <h2>{t("prepGuide.title")}</h2>
-          <p>{prepUnlocked ? t("prepGuide.checklistSubtitle") : t("prepGuide.lockedSubtitle")}</p>
+      <header className="prep-guide-header">
+        <div className="header-top">
+          <Link className="btn-back" href="/app/list">← {t("prepGuide.backButton")}</Link>
+          <h1>🍳 {t("prepGuide.title")}</h1>
+        </div>
 
-          <div className="np-kpi-grid" role="list" aria-label="Prep guide status">
-            <article className="np-kpi-card" role="listitem">
-              <span className="np-kpi-label">{t("shoppingList.metricProgress")}</span>
-              <strong className="np-kpi-value">{effectiveProgress}%</strong>
-              <div className="np-progress" aria-hidden="true">
-                <div className="np-progress-fill" style={{ width: `${effectiveProgress}%` }} />
-              </div>
-            </article>
-
-            <article className="np-kpi-card" role="listitem">
-              <span className="np-kpi-label">{t("prepGuide.summaryTimeLabel")}</span>
-              <strong className="np-kpi-value">90 min</strong>
-              <span className="np-muted">{t("prepGuide.summarySequentialLabel")}: 120 min</span>
-            </article>
-
-            <article className="np-kpi-card" role="listitem">
-              <span className="np-kpi-label">{t("prepGuide.summaryMealsLabel")}</span>
-              <strong className="np-kpi-value">{prepGuide?.servingsProduced ?? 14}</strong>
-              <span className="np-muted">{t("prepGuide.summaryMealsDetail")}</span>
-            </article>
-
-            <article className="np-kpi-card" role="listitem">
-              <span className="np-kpi-label">{t("prepGuide.summaryProgressLabel")}</span>
-              <strong className="np-kpi-value">{taskProgress}%</strong>
-              <span className="np-muted">{t("prepGuide.summaryProgressDetail", { count: completedCount, total: generatedTasks.length })}</span>
-            </article>
-          </div>
-
-          {prepUnlocked ? (
-            <div className="np-step-list" role="list">
-              {generatedTasks.map((task) => (
-                <article key={task.id} className="np-step-item" role="listitem">
-                  <div className="np-step-header">
-                    <h3>{task.title}</h3>
-                    <button type="button" className="np-btn np-btn-secondary" onClick={() => toggleTask(task.id)}>
-                      {completedTaskIds.has(task.id) ? "✓" : "○"}
-                    </button>
-                  </div>
-                  <p>{task.description}</p>
-                </article>
-              ))}
+        <div className="guide-summary">
+          <div className="summary-card">
+            <div className="summary-icon">⏱️</div>
+            <div className="summary-content">
+              <div className="summary-label">{t("prepGuide.summaryTimeLabel")}</div>
+              <div className="summary-value">{prepGuide.totalPrepTime}</div>
+              <div className="summary-detail">{t("prepGuide.summarySequentialLabel")}: {prepGuide.sequentialTime}</div>
             </div>
-          ) : (
-            <p className="np-inline-note">{t("prepGuide.lockedProgress", { progress: effectiveProgress })}</p>
-          )}
-
-          <div className="np-actions">
-            <Link href="/app/list" className="np-btn np-btn-primary">
-              {t("shoppingList.pageTitle")}
-            </Link>
-            <Link href="/app" className="np-btn np-btn-secondary">
-              {t("nav.nutritionPlan")}
-            </Link>
-            <button type="button" className="np-btn np-btn-secondary" onClick={handlePrintGuide}>
-              {canExportPdf() ? t("prepGuide.printButton") : t("prepGuide.printButtonPremium")}
-            </button>
-            <Link href="/pricing" className="np-btn np-btn-secondary">
-              {t("prepGuide.upgradeButton")}
-            </Link>
           </div>
 
-          {statusMessage ? <p className="np-inline-note">{statusMessage}</p> : null}
+          <div className="summary-card">
+            <div className="summary-icon">🍱</div>
+            <div className="summary-content">
+              <div className="summary-label">{t("prepGuide.summaryMealsLabel")}</div>
+              <div className="summary-value">{prepGuide.servingsProduced}</div>
+              <div className="summary-detail">{t("prepGuide.summaryMealsDetail")}</div>
+            </div>
+          </div>
+
+          <div className="summary-card">
+            <div className="summary-icon">📊</div>
+            <div className="summary-content">
+              <div className="summary-label">{t("prepGuide.summaryDifficultyLabel")}</div>
+              <div className="summary-value difficulty-badge" style={{ color: difficultyColor }}>
+                {t(`prepGuide.difficulty.${prepGuide.difficulty}`)}
+              </div>
+              <div className="summary-detail">{t("prepGuide.summaryDifficultyDetail", { count: totalTasks })}</div>
+            </div>
+          </div>
+
+          <div className="summary-card">
+            <div className="summary-icon">✅</div>
+            <div className="summary-content">
+              <div className="summary-label">{t("prepGuide.summaryProgressLabel")}</div>
+              <div className="summary-value">{taskProgress}%</div>
+              <div className="summary-detail">{t("prepGuide.summaryProgressDetail", { count: completedCount, total: totalTasks })}</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="progress-container">
+          <div className="progress-bar">
+            <div className="progress-fill" style={{ width: `${taskProgress}%` }} />
+          </div>
+        </div>
+      </header>
+
+      <main className="prep-guide-content">
+        <section className="cooking-tasks-section">
+          <div className="section-header">
+            <h2>📝 {t("prepGuide.checklistTitle")}</h2>
+            <p className="section-subtitle">{t("prepGuide.checklistSubtitle")}</p>
+          </div>
+
+          <div className="tasks-list">
+            {prepGuide.cookingTasks.map((task) => (
+              <TaskCard
+                key={task.order}
+                task={task}
+                completed={completedTasks.has(task.order)}
+                onToggle={() => toggleTask(task.order)}
+              />
+            ))}
+          </div>
         </section>
+
+        <section className="tips-section">
+          <h3>💡 {t("prepGuide.tipsTitle")}</h3>
+          <ul className="tips-list">
+            {localizedTips.map((tip, index) => (
+              <li key={`${tip}-${index}`} className="tip-item">
+                <span className="tip-bullet">•</span>
+                <span className="tip-text">{tip}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="ingredients-section">
+          <h3>📦 {t("prepGuide.ingredientsTitle")}</h3>
+          <div className="ingredients-grid">
+            {prepGuide.ingredientSummary
+              .sort((a, b) => b.totalGrams - a.totalGrams)
+              .slice(0, 8)
+              .map((ingredient, index) => (
+                <div key={`${ingredient.ingredient}-${index}`} className="ingredient-card">
+                  <div className="ingredient-name">{localizeFoodName(ingredient.ingredient, "pt")}</div>
+                  <div className="ingredient-quantity">{(ingredient.totalGrams / 1000).toFixed(1)}kg</div>
+                  <div className="ingredient-method">{t(`prepGuide.method.${ingredient.cookingMethod}`)}</div>
+                </div>
+              ))}
+          </div>
+        </section>
+
+        <div className="action-buttons">
+          <button className="btn-primary btn-print" onClick={handlePrintGuide}>
+            🖨️ {canExportPdf() ? t("prepGuide.printButton") : t("prepGuide.printButtonPremium")}
+          </button>
+
+          <Link className="btn-secondary" href="/app/list">🛍️ {t("prepGuide.viewShoppingButton")}</Link>
+        </div>
+
+        {!isPremium && (
+          <div className="prep-upgrade-callout">
+            <h4>🔒 {t("prepGuide.upgradeTitle")}</h4>
+            <p>{t("prepGuide.upgradeSubtitle")}</p>
+            <Link className="btn-secondary" href="/pricing">{t("prepGuide.upgradeButton")}</Link>
+          </div>
+        )}
+
+        {taskProgress === 100 && (
+          <div className="completion-celebration">
+            <div className="celebration-content">
+              <div className="celebration-icon">🎉</div>
+              <h2>{t("prepGuide.completionTitle")}</h2>
+              <p>{t("prepGuide.completionSubtitle")}</p>
+            </div>
+          </div>
+        )}
+
+        {statusMessage ? <p className="np-inline-note">{statusMessage}</p> : null}
       </main>
+    </div>
+  );
+}
+
+interface TaskCardProps {
+  task: CookingTask;
+  completed: boolean;
+  onToggle: () => void;
+}
+
+function TaskCard({ task, completed, onToggle }: TaskCardProps) {
+  const { t } = useAppTranslation();
+
+  const methodEmoji: Record<string, string> = {
+    oven: "🔥",
+    boil: "🫕",
+    steam: "♨️",
+    stovetop: "🍳",
+    chop: "🔪",
+    raw: "🥗",
+    portion: "📦",
+  };
+
+  const methodColor: Record<string, string> = {
+    oven: "#ff6b6b",
+    boil: "#4ecdc4",
+    steam: "#95e1d3",
+    stovetop: "#f38181",
+    chop: "#aa96da",
+    raw: "#fcbad3",
+    portion: "#a8dadc",
+  };
+
+  return (
+    <div className={`task-card ${completed ? "completed" : ""}`}>
+      <div className="task-checkbox-container">
+        <input type="checkbox" checked={completed} onChange={onToggle} className="task-checkbox" />
+      </div>
+
+      <div className="task-content">
+        <div className="task-header">
+          <span className="task-order">{t("prepGuide.taskStep", { order: task.order })}</span>
+          <span className="task-method-badge" style={{ backgroundColor: methodColor[task.method] }}>
+            {methodEmoji[task.method]} {t(`prepGuide.method.${task.method}`)}
+          </span>
+          {task.parallel && (
+            <span className="task-parallel-badge">⚡ {t("prepGuide.taskParallel")}</span>
+          )}
+        </div>
+
+        <div className="task-main">
+          <div className="task-action">
+            {task.action} {localizeFoodText(task.quantity, "pt")} {localizeFoodName(task.ingredient, "pt")}
+          </div>
+          {task.duration > 0 && (
+            <div className="task-duration">⏱️ {t("prepGuide.taskDurationMinutes", { minutes: task.duration })}</div>
+          )}
+        </div>
+
+        <div className="task-instructions">{localizeFoodText(task.instructions, "pt")}</div>
+
+        {task.temperature && (
+          <div className="task-temperature">🌡️ {task.temperature}</div>
+        )}
+      </div>
     </div>
   );
 }

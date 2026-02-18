@@ -8,6 +8,10 @@ const MAX_HISTORY_ENTRIES = 24;
 const STORAGE_USER_ID = "local-user";
 const CLOUD_HISTORY_ID = "weeklyFitnessLoopHistory";
 
+function canUseBrowserStorage(): boolean {
+  return typeof window !== "undefined" && typeof window.localStorage !== "undefined";
+}
+
 export type WeeklyFeedbackResponse = "yes" | "partially" | "no";
 
 export interface WeeklyFeedbackEntry {
@@ -39,6 +43,10 @@ function mapResponseToAdherence(response: WeeklyFeedbackResponse): WeeklyFeedbac
 }
 
 export function loadWeeklyFeedbackHistory(): WeeklyFeedbackEntry[] {
+  if (!canUseBrowserStorage()) {
+    return [];
+  }
+
   try {
     const raw = localStorage.getItem(USER_HISTORY_KEY) ?? localStorage.getItem(LEGACY_USER_HISTORY_KEY);
     if (!raw) return [];
@@ -63,6 +71,10 @@ export function getLatestWeeklyFeedback(): WeeklyFeedbackEntry | null {
 }
 
 function saveWeeklyFeedbackHistory(history: WeeklyFeedbackEntry[]): void {
+  if (!canUseBrowserStorage()) {
+    return;
+  }
+
   try {
     localStorage.setItem(USER_HISTORY_KEY, JSON.stringify(history.slice(0, MAX_HISTORY_ENTRIES)));
     localStorage.removeItem(LEGACY_USER_HISTORY_KEY);
