@@ -39,6 +39,46 @@ export function PrepGuidePage() {
     ? generateMealPrepGuide(weeklyPlan) 
     : null;
 
+  const localizedTips = useMemo(() => {
+    if (!prepGuide) return [] as string[];
+
+    const tips: string[] = [];
+    const totalMeals = prepGuide.servingsProduced;
+
+    tips.push(t("prepGuide.tips.containers", { count: totalMeals }));
+
+    const hasOven = prepGuide.cookingTasks.some((task) => task.method === "oven");
+    const hasBoil = prepGuide.cookingTasks.some((task) => task.method === "boil");
+    if (hasOven && hasBoil) {
+      tips.push(t("prepGuide.tips.parallel"));
+    }
+
+    tips.push(t("prepGuide.tips.labels"));
+
+    if (totalMeals > 14) {
+      tips.push(t("prepGuide.tips.freeze"));
+    } else {
+      tips.push(t("prepGuide.tips.fridge"));
+    }
+
+    const vegetableTasksCount = prepGuide.cookingTasks.filter((task) => task.category === "vegetables").length;
+    if (vegetableTasksCount > 2) {
+      tips.push(t("prepGuide.tips.vegetables"));
+    }
+
+    const hasRice = prepGuide.cookingTasks.some((task) => task.ingredient.toLowerCase().includes("rice"));
+    if (hasRice) {
+      tips.push(t("prepGuide.tips.rice"));
+    }
+
+    const hasChicken = prepGuide.cookingTasks.some((task) => task.ingredient.toLowerCase().includes("chicken"));
+    if (hasChicken) {
+      tips.push(t("prepGuide.tips.chicken"));
+    }
+
+    return tips;
+  }, [prepGuide, t]);
+
   // Handle PDF export
   const handlePrintGuide = () => {
     if (!canExportPdf()) {
@@ -195,7 +235,7 @@ export function PrepGuidePage() {
         <section className="tips-section">
           <h3>💡 {t("prepGuide.tipsTitle")}</h3>
           <ul className="tips-list">
-            {prepGuide.tips.map((tip, index) => (
+            {localizedTips.map((tip, index) => (
               <li key={index} className="tip-item">
                 <span className="tip-bullet">•</span>
                 <span className="tip-text">{tip}</span>
@@ -218,7 +258,7 @@ export function PrepGuidePage() {
                     {(ingredient.totalGrams / 1000).toFixed(1)}kg
                   </div>
                   <div className="ingredient-method">
-                    {ingredient.cookingMethod}
+                    {t(`prepGuide.method.${ingredient.cookingMethod}`)}
                   </div>
                 </div>
               ))}
@@ -325,6 +365,42 @@ function TaskCard({ task, completed, onToggle }: TaskCardProps) {
 
   const localizedAction = actionLabelByValue[task.action] || task.action;
   const localizedMethod = methodLabelByValue[task.method] || task.method.toUpperCase();
+  const localizedInstructionsByMethod: Record<string, string> = {
+    oven: t("prepGuide.instructions.oven", {
+      quantity: task.quantity,
+      ingredient: task.ingredient,
+      temperature: task.temperature || "180°C",
+      duration: task.duration
+    }),
+    boil: t("prepGuide.instructions.boil", {
+      quantity: task.quantity,
+      ingredient: task.ingredient,
+      duration: task.duration
+    }),
+    steam: t("prepGuide.instructions.steam", {
+      quantity: task.quantity,
+      ingredient: task.ingredient,
+      duration: task.duration
+    }),
+    stovetop: t("prepGuide.instructions.stovetop", {
+      quantity: task.quantity,
+      ingredient: task.ingredient,
+      duration: task.duration
+    }),
+    chop: t("prepGuide.instructions.chop", {
+      quantity: task.quantity,
+      ingredient: task.ingredient
+    }),
+    raw: t("prepGuide.instructions.raw", {
+      quantity: task.quantity,
+      ingredient: task.ingredient
+    }),
+    portion: t("prepGuide.instructions.portion", {
+      quantity: task.quantity,
+      ingredient: task.ingredient
+    })
+  };
+  const localizedInstructions = localizedInstructionsByMethod[task.method] || task.instructions;
 
   return (
     <div className={`task-card ${completed ? "completed" : ""}`}>
@@ -361,7 +437,7 @@ function TaskCard({ task, completed, onToggle }: TaskCardProps) {
         </div>
 
         <div className="task-instructions">
-          {task.instructions}
+          {localizedInstructions}
         </div>
 
         {task.temperature && (

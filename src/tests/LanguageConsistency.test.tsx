@@ -34,6 +34,8 @@ const REQUIRED_KEYS = [
   "prepGuide.taskStep",
   "prepGuide.taskParallel",
   "prepGuide.taskDurationMinutes",
+  "prepGuide.instructions.oven",
+  "prepGuide.tips.containers",
   "premium.modal.title",
   "premium.modal.ctaFallback",
   "premium.modal.headline.unlimitedFoodRotation",
