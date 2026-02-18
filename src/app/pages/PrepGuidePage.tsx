@@ -9,6 +9,7 @@ import { exportPrepGuideToPdf } from "../../utils/exportPrepGuidePdf";
 import { canExportPdf } from "../../core/premium/features";
 import { isPremiumUser } from "../../core/premium/PremiumFeatures";
 import { PremiumModal } from "../components/PremiumModal";
+import { localizeFoodName, localizeFoodText } from "../utils/foodLocalization";
 import "./PrepGuidePage.css";
 
 interface ShoppingItem extends FoodItem {
@@ -17,7 +18,7 @@ interface ShoppingItem extends FoodItem {
 
 export function PrepGuidePage() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { weeklyPlan, shoppingList } = useShoppingPlan();
   const isPremium = isPremiumUser();
   const [completedTasks, setCompletedTasks] = useState<Set<number>>(new Set());
@@ -253,7 +254,7 @@ export function PrepGuidePage() {
               .slice(0, 8) // Top 8 ingredients
               .map((ingredient, index) => (
                 <div key={index} className="ingredient-card">
-                  <div className="ingredient-name">{ingredient.ingredient}</div>
+                  <div className="ingredient-name">{localizeFoodName(ingredient.ingredient, i18n.language)}</div>
                   <div className="ingredient-quantity">
                     {(ingredient.totalGrams / 1000).toFixed(1)}kg
                   </div>
@@ -324,7 +325,7 @@ interface TaskCardProps {
 }
 
 function TaskCard({ task, completed, onToggle }: TaskCardProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const methodEmoji: Record<string, string> = {
     oven: "🔥",
@@ -347,6 +348,10 @@ function TaskCard({ task, completed, onToggle }: TaskCardProps) {
   };
 
   const actionLabelByValue: Record<string, string> = {
+    Bake: t("prepGuide.action.bake"),
+    Boil: t("prepGuide.action.boil"),
+    Steam: t("prepGuide.action.steam"),
+    Chop: t("prepGuide.action.chop"),
     Cook: t("prepGuide.action.cook"),
     Prepare: t("prepGuide.action.prepare"),
     Portion: t("prepGuide.action.portion"),
@@ -364,43 +369,45 @@ function TaskCard({ task, completed, onToggle }: TaskCardProps) {
   };
 
   const localizedAction = actionLabelByValue[task.action] || task.action;
+  const localizedIngredient = localizeFoodName(task.ingredient, i18n.language);
+  const localizedQuantity = localizeFoodText(task.quantity, i18n.language);
   const localizedMethod = methodLabelByValue[task.method] || task.method.toUpperCase();
   const localizedInstructionsByMethod: Record<string, string> = {
     oven: t("prepGuide.instructions.oven", {
-      quantity: task.quantity,
-      ingredient: task.ingredient,
+      quantity: localizedQuantity,
+      ingredient: localizedIngredient,
       temperature: task.temperature || "180°C",
       duration: task.duration
     }),
     boil: t("prepGuide.instructions.boil", {
-      quantity: task.quantity,
-      ingredient: task.ingredient,
+      quantity: localizedQuantity,
+      ingredient: localizedIngredient,
       duration: task.duration
     }),
     steam: t("prepGuide.instructions.steam", {
-      quantity: task.quantity,
-      ingredient: task.ingredient,
+      quantity: localizedQuantity,
+      ingredient: localizedIngredient,
       duration: task.duration
     }),
     stovetop: t("prepGuide.instructions.stovetop", {
-      quantity: task.quantity,
-      ingredient: task.ingredient,
+      quantity: localizedQuantity,
+      ingredient: localizedIngredient,
       duration: task.duration
     }),
     chop: t("prepGuide.instructions.chop", {
-      quantity: task.quantity,
-      ingredient: task.ingredient
+      quantity: localizedQuantity,
+      ingredient: localizedIngredient
     }),
     raw: t("prepGuide.instructions.raw", {
-      quantity: task.quantity,
-      ingredient: task.ingredient
+      quantity: localizedQuantity,
+      ingredient: localizedIngredient
     }),
     portion: t("prepGuide.instructions.portion", {
-      quantity: task.quantity,
-      ingredient: task.ingredient
+      quantity: localizedQuantity,
+      ingredient: localizedIngredient
     })
   };
-  const localizedInstructions = localizedInstructionsByMethod[task.method] || task.instructions;
+  const localizedInstructions = localizedInstructionsByMethod[task.method] || localizeFoodText(task.instructions, i18n.language);
 
   return (
     <div className={`task-card ${completed ? "completed" : ""}`}>
@@ -429,7 +436,7 @@ function TaskCard({ task, completed, onToggle }: TaskCardProps) {
 
         <div className="task-main">
           <div className="task-action">
-            {localizedAction} {task.quantity} {task.ingredient}
+            {localizedAction} {localizedQuantity} {localizedIngredient}
           </div>
           {task.duration > 0 && (
             <div className="task-duration">⏱️ {t("prepGuide.taskDurationMinutes", { minutes: task.duration })}</div>
