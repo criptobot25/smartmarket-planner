@@ -1,3 +1,10 @@
+import {
+  canUseRecipePacksAndPrepPdf,
+  canUseUnlimitedFoodRotation,
+  canUseWeeklyCoachAdjustments,
+  isPremiumUser,
+} from "./PremiumFeatures";
+
 /**
  * PREMIUM FEATURE FLAGS
  * 
@@ -87,7 +94,7 @@ export function incrementOptimizationUsage(): void {
  * Check if user can use Smart Savings optimizer
  */
 export function canUseSavingsOptimizer(): boolean {
-  if (FEATURES.isPremium || FEATURES.premiumUnlimitedSavings) {
+  if (isPremiumUser() || FEATURES.premiumUnlimitedSavings) {
     return true;
   }
   
@@ -99,17 +106,29 @@ export function canUseSavingsOptimizer(): boolean {
  * Check if user can export to PDF
  */
 export function canExportPdf(): boolean {
-  return FEATURES.isPremium || FEATURES.premiumPdfExport;
+  return canUseRecipePacksAndPrepPdf() || FEATURES.premiumPdfExport;
 }
 
 /**
  * Get remaining free optimizations this week
  */
 export function getRemainingOptimizations(): number {
-  if (FEATURES.isPremium || FEATURES.premiumUnlimitedSavings) {
+  if (isPremiumUser() || FEATURES.premiumUnlimitedSavings) {
     return Infinity;
   }
   
   const usage = getOptimizationUsage();
   return Math.max(0, FEATURES.freeSavingsOptimizationsPerWeek - usage.count);
+}
+
+export function canUseUnlimitedRotation(): boolean {
+  return canUseUnlimitedFoodRotation();
+}
+
+export function canUseWeeklyCoach(): boolean {
+  return canUseWeeklyCoachAdjustments();
+}
+
+export function canUseRecipePacks(): boolean {
+  return canUseRecipePacksAndPrepPdf();
 }

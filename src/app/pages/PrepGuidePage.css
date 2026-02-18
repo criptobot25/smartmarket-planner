@@ -400,6 +400,26 @@
   flex-wrap: wrap;
 }
 
+.prep-upgrade-callout {
+  margin-top: 1.25rem;
+  background: #ffffff;
+  border: 1px solid #c7d2fe;
+  border-left: 4px solid #6366f1;
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.prep-upgrade-callout h4 {
+  margin: 0 0 0.35rem;
+  color: #3730a3;
+}
+
+.prep-upgrade-callout p {
+  margin: 0 0 0.8rem;
+  color: #4b5563;
+}
+
 .btn-primary, .btn-secondary {
   flex: 1;
   min-width: 200px;

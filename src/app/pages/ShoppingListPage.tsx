@@ -7,6 +7,7 @@ import { aggregateShoppingList, AggregatedShoppingItem } from "../../core/logic/
 import { exportShoppingListToPdf } from "../../utils/exportPdf";
 import { canExportPdf, getRemainingOptimizations } from "../../core/premium/features";
 import { PremiumModal } from "../components/PremiumModal";
+import { isPremiumUser } from "../../core/premium/PremiumFeatures";
 import { ShareCard } from "../components/ShareCard";
 import { PrepChecklist } from "../components/PrepChecklist"; // PASSO 33.5
 import { WeeklyCheckInModal } from "../components/WeeklyCheckInModal";
@@ -21,9 +22,10 @@ interface ShoppingItem extends FoodItem {
 export function ShoppingListPage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const isPremium = isPremiumUser();
   const { shoppingList, toggleItemPurchased, weeklyPlan, history, saveAdherenceScore } = useShoppingPlan();
   const [showPremiumModal, setShowPremiumModal] = useState(false);
-  const [premiumFeature, setPremiumFeature] = useState<'savings' | 'pdf'>('pdf');
+  const [premiumFeature, setPremiumFeature] = useState<"unlimitedFoodRotation" | "weeklyCoachAdjustments" | "recipePacksPrepPdf">("recipePacksPrepPdf");
   const [showShareCard, setShowShareCard] = useState(false);
   const [showCheckInModal, setShowCheckInModal] = useState(false);
   const { hasFeedbackForPlan, submitWeeklyFeedback } = useWeeklyFeedback();
@@ -50,7 +52,7 @@ export function ShoppingListPage() {
   // Handler for PDF export
   const handlePdfExport = () => {
     if (!canExportPdf()) {
-      setPremiumFeature('pdf');
+      setPremiumFeature("recipePacksPrepPdf");
       setShowPremiumModal(true);
       return;
     }
@@ -233,6 +235,14 @@ export function ShoppingListPage() {
             </ul>
           </div>
         </div>
+      )}
+
+      {!isPremium && (
+        <section className="premium-upgrade-strip" role="complementary">
+          <p className="upgrade-strip-title">🔒 Premium unlocks all monetization drivers</p>
+          <p className="upgrade-strip-subtitle">Unlimited Food Rotation • Weekly Coach Adjustments • Recipe Packs + Meal Prep PDF</p>
+          <button className="upgrade-strip-btn" onClick={() => navigate("/pricing")}>See pricing</button>
+        </section>
       )}
 
       {/* PASSO 33.5: Sunday Meal Prep Ritual Checklist */}

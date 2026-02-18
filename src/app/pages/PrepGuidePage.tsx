@@ -5,6 +5,7 @@ import { useShoppingPlan } from "../../contexts/ShoppingPlanContext";
 import { generateMealPrepGuide, CookingTask, MealPrepGuide } from "../../core/logic/MealPrepGuide";
 import { exportPrepGuideToPdf } from "../../utils/exportPrepGuidePdf";
 import { canExportPdf } from "../../core/premium/features";
+import { isPremiumUser } from "../../core/premium/PremiumFeatures";
 import { PremiumModal } from "../components/PremiumModal";
 import "./PrepGuidePage.css";
 
@@ -12,6 +13,7 @@ export function PrepGuidePage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { weeklyPlan } = useShoppingPlan();
+  const isPremium = isPremiumUser();
   const [completedTasks, setCompletedTasks] = useState<Set<number>>(new Set());
   const [showPremiumModal, setShowPremiumModal] = useState(false);
 
@@ -210,6 +212,14 @@ export function PrepGuidePage() {
           </button>
         </div>
 
+        {!isPremium && (
+          <div className="prep-upgrade-callout">
+            <h4>🔒 Unlock Recipe Packs + Prep Guide PDF</h4>
+            <p>Premium gives full recipe packs plus printable prep flow for your Sunday ritual.</p>
+            <button className="btn-secondary" onClick={() => navigate("/pricing")}>View premium pricing</button>
+          </div>
+        )}
+
         {/* Completion Celebration */}
         {progress === 100 && (
           <div className="completion-celebration">
@@ -226,7 +236,7 @@ export function PrepGuidePage() {
       {showPremiumModal && (
         <PremiumModal
           isOpen={showPremiumModal}
-          feature="pdf"
+          feature="recipePacksPrepPdf"
           onClose={() => setShowPremiumModal(false)}
         />
       )}

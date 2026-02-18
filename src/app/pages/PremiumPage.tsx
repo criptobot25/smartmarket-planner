@@ -7,84 +7,84 @@ export function PremiumPage() {
   return (
     <div className="premium-page">
       <header className="premium-header">
-        <button className="btn-back" onClick={() => navigate("/app")}>
-          ← Voltar
+        <button className="btn-back" onClick={() => navigate("/app/list")}>
+          ← Back
         </button>
         <h1>✨ SmartMarket Premium</h1>
-        <p className="subtitle">Planeje melhor. Economize mais.</p>
+        <p className="subtitle">Know in 5 seconds why people pay: less repetition, better adherence, printable execution.</p>
       </header>
 
       <main className="premium-main">
+        <section className="value-intro">
+          <h2>3 features impossible in Free</h2>
+          <p>Free gives a solid base. Premium gives the execution system.</p>
+        </section>
+
         <section className="comparison-section">
           <div className="plan-card free-plan">
             <div className="plan-header">
-              <h2>Gratuito</h2>
+              <h2>Free</h2>
               <div className="price">
                 <span className="amount">€0</span>
-                <span className="period">/mês</span>
+                <span className="period">/month</span>
               </div>
             </div>
             <ul className="features-list">
-              <li className="included">✓ Planejamento semanal</li>
-              <li className="included">✓ Lista de compras básica</li>
-              <li className="included">✓ Sugestões de receitas</li>
-              <li className="included">✓ Histórico de 3 planos</li>
-              <li className="excluded">✗ Exportar PDF</li>
-              <li className="excluded">✗ Modo Orçamento</li>
-              <li className="excluded">✗ Dietas personalizadas</li>
-              <li className="excluded">✗ Comparação de preços</li>
+              <li className="included">✓ Weekly plan + shopping list</li>
+              <li className="included">✓ Macro-based nutrition targets</li>
+              <li className="included">✓ Basic recipe suggestions</li>
+              <li className="excluded">✗ Unlimited Food Rotation</li>
+              <li className="excluded">✗ Weekly Coach Adjustments</li>
+              <li className="excluded">✗ Recipe Packs + Meal Prep Guide PDF</li>
             </ul>
             <button className="btn-current" disabled>
-              Plano Atual
+              Current Plan
             </button>
           </div>
 
           <div className="plan-card premium-plan">
-            <div className="badge">🔥 Em breve</div>
+            <div className="badge">🔥 Best Value</div>
             <div className="plan-header">
               <h2>Premium</h2>
               <div className="price">
-                <span className="amount">€4.99</span>
-                <span className="period">/mês</span>
+                <span className="amount">€9.99</span>
+                <span className="period">/month</span>
               </div>
             </div>
             <ul className="features-list">
-              <li className="included">✓ Tudo do plano gratuito</li>
-              <li className="included">✓ Exportar PDF da lista</li>
-              <li className="included">✓ Modo Orçamento inteligente</li>
-              <li className="included">✓ Dietas personalizadas (vegana, keto, etc)</li>
-              <li className="included">✓ Comparação de preços por mercado</li>
-              <li className="included">✓ Histórico ilimitado</li>
-              <li className="included">✓ Análise nutricional</li>
-              <li className="included">✓ Suporte prioritário</li>
+              <li className="included">✓ Everything in Free</li>
+              <li className="included">✓ Unlimited Food Rotation</li>
+              <li className="included">✓ Weekly Coach Adjustments</li>
+              <li className="included">✓ Recipe Packs + Meal Prep Guide PDF</li>
+              <li className="included">✓ Faster weekly execution with less decision fatigue</li>
             </ul>
-            <button className="btn-waitlist" onClick={() => alert("✅ Você será notificado quando o Premium estiver disponível!")}>
-              📩 Entrar na Lista de Espera
+            <button className="btn-waitlist" onClick={() => navigate("/app") }>
+              🚀 Upgrade Now
             </button>
           </div>
         </section>
 
         <section className="faq-section">
-          <h2>Perguntas Frequentes</h2>
+          <h2>What each premium feature changes</h2>
           <div className="faq-item">
-            <h3>Quando o Premium estará disponível?</h3>
-            <p>Estamos finalizando os testes beta. Cadastre-se na lista de espera para ser notificado no lançamento.</p>
+            <h3>Unlimited Food Rotation</h3>
+            <p>Prevents repeating the same proteins week after week while preserving your targets and budget constraints.</p>
           </div>
           <div className="faq-item">
-            <h3>Posso cancelar a qualquer momento?</h3>
-            <p>Sim! Sem fidelidade. Cancele quando quiser e continue usando o plano gratuito.</p>
+            <h3>Weekly Coach Adjustments</h3>
+            <p>Reads your adherence and repetition signals, then adapts next week automatically for consistency.</p>
           </div>
           <div className="faq-item">
-            <h3>Há desconto para pagamento anual?</h3>
-            <p>Sim! Planos anuais terão 20% de desconto (€47.90/ano ao invés de €59.88).</p>
+            <h3>Recipe Packs + Meal Prep Guide PDF</h3>
+            <p>Turns planning into execution with structured recipe packs and printable prep workflow.</p>
           </div>
         </section>
 
         <section className="cta-section">
-          <h2>Comece agora gratuitamente</h2>
-          <p>Experimente todas as funcionalidades básicas sem custo. Upgrade quando precisar.</p>
+          <h2>Start free, upgrade when repetition starts costing results.</h2>
+          <p>If you want less friction and better weekly adherence, Premium pays for itself in consistency.</p>
           <button className="btn-start" onClick={() => navigate("/app")}>
-            🚀 Criar Meu Primeiro Plano
+            🧭 Go to Planner
           </button>
         </section>
       </main>

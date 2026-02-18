@@ -109,6 +109,40 @@
   color: var(--color-muted);
 }
 
+.premium-upgrade-strip {
+  margin: 1rem 0 2rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid #c7d2fe;
+  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+}
+
+.upgrade-strip-title {
+  margin: 0;
+  font-weight: 700;
+  color: #3730a3;
+}
+
+.upgrade-strip-subtitle {
+  margin: 0.4rem 0 0.85rem;
+  color: #4338ca;
+  font-size: 0.9rem;
+}
+
+.upgrade-strip-btn {
+  border: none;
+  background: #4f46e5;
+  color: white;
+  padding: 0.6rem 0.9rem;
+  border-radius: 0.6rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.upgrade-strip-btn:hover {
+  background: #4338ca;
+}
+
 /* Budget Transparency Box */
 .budget-transparency {
   background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);

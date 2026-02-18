@@ -267,7 +267,7 @@ export function LandingPage() {
                 <li>{t("landing.pricingPremiumFeature3")}</li>
                 <li>{t("landing.pricingPremiumFeature4")}</li>
               </ul>
-              <Link to="/app/premium" style={{ textDecoration: 'none' }}>
+              <Link to="/pricing" style={{ textDecoration: 'none' }}>
                 <Button variant="primary">{t("landing.pricingPremiumCta")}</Button>
               </Link>
             </Card>

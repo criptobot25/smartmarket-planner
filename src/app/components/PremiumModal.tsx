@@ -12,12 +12,14 @@
  */
 
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import { getPremiumFeatureById, PremiumFeatureId } from "../../core/premium/PremiumFeatures";
 import "./PremiumModal.css";
 
 interface PremiumModalProps {
   isOpen: boolean;
   onClose: () => void;
-  feature: 'savings' | 'pdf';
+  feature: PremiumFeatureId;
   remainingOptimizations?: number;
 }
 
@@ -28,36 +30,44 @@ export function PremiumModal({
   remainingOptimizations = 0
 }: PremiumModalProps) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   if (!isOpen) return null;
 
-  const content = feature === 'savings' ? {
-    icon: '⚡',
-    title: t("premium.savings.title"),
-    headline: t("premium.savings.headline"),
-    description: t("premium.savings.description"),
-    benefits: [
-      t("premium.savings.benefit1"),
-      t("premium.savings.benefit2"),
-      t("premium.savings.benefit3"),
-      t("premium.savings.benefit4"),
-      t("premium.savings.benefit5"),
+  const selectedFeature = getPremiumFeatureById(feature);
+
+  const benefitsByFeature: Record<PremiumFeatureId, string[]> = {
+    unlimitedFoodRotation: [
+      "Rotate proteins every week without repeating the same base foods",
+      "Keep macro targets stable while swapping ingredients",
+      "Reduce adherence drop from menu fatigue"
     ],
-    cta: t("premium.savings.cta", { count: remainingOptimizations }),
-    price: t("premium.price")
-  } : {
-    icon: '📄',
-    title: t("premium.pdf.title"),
-    headline: t("premium.pdf.headline"),
-    description: t("premium.pdf.description"),
-    benefits: [
-      t("premium.pdf.benefit1"),
-      t("premium.pdf.benefit2"),
-      t("premium.pdf.benefit3"),
-      t("premium.pdf.benefit4"),
-      t("premium.pdf.benefit5"),
+    weeklyCoachAdjustments: [
+      "Adjust next week based on Yes / Partial / No adherence",
+      "Automatically simplify plan when consistency drops",
+      "Increase variety when repetition risk is detected"
     ],
-    cta: t("premium.pdf.cta"),
+    recipePacksPrepPdf: [
+      "Unlock premium recipe packs built for meal prep",
+      "Export shopping list and prep workflow as PDF",
+      "Share or print complete prep instructions"
+    ]
+  };
+
+  const content = {
+    icon: selectedFeature.icon,
+    title: selectedFeature.title,
+    headline: selectedFeature.valueProp,
+    description: selectedFeature.freeLimit,
+    benefits: benefitsByFeature[feature],
+    cta: remainingOptimizations > 0
+      ? t("premium.savings.cta", { count: remainingOptimizations })
+      : "Premium unlocks this instantly",
     price: t("premium.price")
+  };
+
+  const handleUpgrade = () => {
+    onClose();
+    navigate("/pricing");
   };
 
   return (
@@ -89,7 +99,7 @@ export function PremiumModal({
         </div>
 
         <div className="premium-actions">
-          <button className="btn-premium-upgrade" disabled>
+          <button className="btn-premium-upgrade" onClick={handleUpgrade}>
             {t("premium.upgradeButton")}
           </button>
           <p className="premium-note">
@@ -97,7 +107,7 @@ export function PremiumModal({
           </p>
         </div>
 
-        {feature === 'savings' && remainingOptimizations > 0 && (
+        {feature === 'unlimitedFoodRotation' && remainingOptimizations > 0 && (
           <button className="btn-continue-free" onClick={onClose}>
             {t("premium.continueFree", { count: remainingOptimizations })}
           </button>

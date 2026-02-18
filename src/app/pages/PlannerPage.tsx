@@ -5,12 +5,14 @@ import { useShoppingPlan } from "../../contexts/ShoppingPlanContext";
 import { DietStyle, FitnessGoal, Sex, CostTier } from "../../core/models/PlanInput";
 import { validatePlanInput } from "../../core/validation/PlanInputSchema"; // PASSO 34
 import { calculateMacroPlan } from "../../core/logic/MacroPlanner";
+import { isPremiumUser } from "../../core/premium/PremiumFeatures";
 import "./PlannerPage.css";
 
 export function PlannerPage() {
   const navigate = useNavigate();
   const { generatePlan, repeatLastWeek, streak } = useShoppingPlan(); // PASSO 33.1 & 33.4
   const { t } = useTranslation();
+  const isPremium = isPremiumUser();
 
   const [sex, setSex] = useState<Sex>("male");
   const [age, setAge] = useState<number>(30);
@@ -138,6 +140,18 @@ export function PlannerPage() {
             🔁 {t("planner.repeatLastWeek", "Repeat Last Week")}
           </button>
         </div>
+
+        {!isPremium && (
+          <div className="premium-trigger-panel">
+            <h3>🔒 Premium performance stack</h3>
+            <ul>
+              <li>Unlimited Food Rotation</li>
+              <li>Weekly Coach Adjustments</li>
+              <li>Recipe Packs + Meal Prep Guide PDF</li>
+            </ul>
+            <button type="button" className="btn-premium-trigger" onClick={() => navigate("/pricing")}>See why people upgrade</button>
+          </div>
+        )}
 
         <div className="planner-card">
           {/* PASSO 34: Validation Errors Display */}

@@ -14,7 +14,8 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
  * /app               → PlannerPage (main app - generate plans)
  * /app/list          → ShoppingListPage (view shopping list + budget)
  * /app/prep-guide    → PrepGuidePage (Sunday meal prep instructions) - PASSO 36
- * /app/premium       → PremiumPage (upgrade to premium)
+ * /pricing           → PremiumPage (real pricing/paywall)
+ * /app/premium       → PremiumPage (legacy shortcut)
  * 
  * Removed redundant routes:
  * - /plan (was duplicate of /)
@@ -40,6 +41,14 @@ export const router = createBrowserRouter([
     element: (
       <ErrorBoundary>
         <LandingPage />
+      </ErrorBoundary>
+    ),
+  },
+  {
+    path: "/pricing",
+    element: (
+      <ErrorBoundary>
+        <PremiumPage />
       </ErrorBoundary>
     ),
   },

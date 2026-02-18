@@ -61,7 +61,7 @@ export function Navbar() {
 
         {/* CTA */}
         <div className="navbar-cta">
-          <NavLink to="/app/premium" className="btn-premium-nav">
+          <NavLink to="/pricing" className="btn-premium-nav">
             {t("landing.footerPremium")}
           </NavLink>
         </div>

@@ -108,6 +108,40 @@
   text-align: center;
 }
 
+.premium-trigger-panel {
+  background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+  color: #f9fafb;
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 8px 18px rgba(17, 24, 39, 0.22);
+}
+
+.premium-trigger-panel h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.premium-trigger-panel ul {
+  margin: 0 0 0.75rem;
+  padding-left: 1.2rem;
+  font-size: 0.875rem;
+}
+
+.btn-premium-trigger {
+  border: 1px solid #6366f1;
+  background: #4f46e5;
+  color: #fff;
+  border-radius: 0.65rem;
+  padding: 0.6rem 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-premium-trigger:hover {
+  background: #4338ca;
+}
+
 .btn-repeat-week {
   display: inline-flex;
   align-items: center;
