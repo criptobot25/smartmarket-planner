@@ -118,6 +118,8 @@
   "shoppingList.emptySubtitle": "Gere um plano primeiro!",
   "shoppingList.emptyButton": "Voltar ao início",
   "shoppingList.pageTitle": "Missão de Compras",
+  "shoppingList.subtitle": "Sua missão semanal de compras com economia inteligente e fluxo de preparo.",
+  "shoppingList.progress": "Progresso",
   "shoppingList.itemsCount": "{{purchased}} / {{total}} itens",
   "shoppingList.metricProtein": "Meta de proteína",
   "shoppingList.metricCostLevel": "Nível de custo",

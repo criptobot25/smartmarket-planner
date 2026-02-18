@@ -118,6 +118,8 @@
   "shoppingList.emptySubtitle": "Generate a plan first!",
   "shoppingList.emptyButton": "Back to Start",
   "shoppingList.pageTitle": "Grocery Mission",
+  "shoppingList.subtitle": "Your weekly grocery mission with smart savings and prep flow.",
+  "shoppingList.progress": "Progress",
   "shoppingList.itemsCount": "{{purchased}} / {{total}} items",
   "shoppingList.metricProtein": "Protein Target",
   "shoppingList.metricCostLevel": "Cost Level",
