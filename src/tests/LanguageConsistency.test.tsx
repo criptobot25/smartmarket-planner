@@ -1,3 +1,4 @@
+import React from "react";
 import { describe, expect, it } from "vitest";
 import { createInstance } from "i18next";
 import { initReactI18next, I18nextProvider } from "react-i18next";
