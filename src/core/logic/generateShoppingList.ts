@@ -142,9 +142,10 @@ export function generateShoppingList(
   }
 
   const costTier = getCostTier(optimizationResult.items);
+  const consolidatedItems = consolidateItemsByName(optimizationResult.items);
 
   return {
-    items: optimizationResult.items,
+    items: consolidatedItems,
     costTier,
     totalProtein: optimizationResult.totalProtein,
     efficiencyScore: optimizationResult.efficiencyScore,
@@ -493,5 +494,84 @@ function sortByCategory(items: FoodItem[]): FoodItem[] {
     const indexA = categoryOrder.indexOf(a.category);
     const indexB = categoryOrder.indexOf(b.category);
     return indexA - indexB;
+  });
+}
+
+function normalizeName(name: string): string {
+  return name.trim().toLowerCase();
+}
+
+function toBaseQuantity(quantity: number, unit: string): { quantity: number; unit: string } {
+  const normalizedUnit = unit.trim().toLowerCase();
+
+  if (normalizedUnit === "kg") {
+    return { quantity: quantity * 1000, unit: "g" };
+  }
+
+  if (normalizedUnit === "l") {
+    return { quantity: quantity * 1000, unit: "ml" };
+  }
+
+  return { quantity, unit };
+}
+
+function fromBaseQuantity(quantity: number, unit: string): { quantity: number; unit: string } {
+  if (unit === "g" && quantity >= 1000) {
+    return { quantity: Math.round((quantity / 1000) * 100) / 100, unit: "kg" };
+  }
+
+  if (unit === "ml" && quantity >= 1000) {
+    return { quantity: Math.round((quantity / 1000) * 100) / 100, unit: "L" };
+  }
+
+  return { quantity: Math.round(quantity * 100) / 100, unit };
+}
+
+function consolidateItemsByName(items: FoodItem[]): FoodItem[] {
+  const byName = new Map<string, {
+    base: FoodItem;
+    quantity: number;
+    unit: string;
+    estimatedPrice: number;
+    reasons: Set<string>;
+  }>();
+
+  items.forEach((item) => {
+    const key = `${normalizeName(item.name)}::${item.category}`;
+    const baseQuantity = toBaseQuantity(item.quantity, item.unit);
+    const existing = byName.get(key);
+
+    if (!existing) {
+      byName.set(key, {
+        base: item,
+        quantity: baseQuantity.quantity,
+        unit: baseQuantity.unit,
+        estimatedPrice: item.estimatedPrice || 0,
+        reasons: new Set(item.reason ? [item.reason] : [])
+      });
+      return;
+    }
+
+    if (existing.unit === baseQuantity.unit) {
+      existing.quantity += baseQuantity.quantity;
+    }
+
+    existing.estimatedPrice += item.estimatedPrice || 0;
+
+    if (item.reason) {
+      existing.reasons.add(item.reason);
+    }
+  });
+
+  return Array.from(byName.values()).map(({ base, quantity, unit, estimatedPrice, reasons }) => {
+    const converted = fromBaseQuantity(quantity, unit);
+
+    return {
+      ...base,
+      quantity: converted.quantity,
+      unit: converted.unit,
+      estimatedPrice: Math.round(estimatedPrice * 100) / 100,
+      reason: reasons.size > 0 ? Array.from(reasons).join(" · ") : base.reason
+    };
   });
 }

@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useShoppingPlan } from "../../contexts/ShoppingPlanContext";
 import { FoodItem, FoodCategory } from "../../core/models/FoodItem";
-import { normalizeQuantity } from "../../core/utils/QuantityNormalizer"; // PASSO 35
+import { aggregateShoppingList, AggregatedShoppingItem } from "../../core/logic/aggregateShoppingList";
 import { exportShoppingListToPdf } from "../../utils/exportPdf";
 import { canExportPdf, getRemainingOptimizations } from "../../core/premium/features";
 import { PremiumModal } from "../components/PremiumModal";
@@ -27,6 +27,11 @@ export function ShoppingListPage() {
   const [showShareCard, setShowShareCard] = useState(false);
   const [showCheckInModal, setShowCheckInModal] = useState(false);
   const { hasFeedbackForPlan, submitWeeklyFeedback } = useWeeklyFeedback();
+  const planDays = weeklyPlan?.days.length || 7;
+  const aggregatedShoppingList = useMemo(
+    () => aggregateShoppingList(shoppingList as ShoppingItem[], planDays),
+    [shoppingList, planDays]
+  );
 
   useEffect(() => {
     if (!weeklyPlan) return;
@@ -52,7 +57,7 @@ export function ShoppingListPage() {
 
     if (weeklyPlan) {
       exportShoppingListToPdf({
-        items: shoppingList,
+        items: aggregatedShoppingList,
         costTier: weeklyPlan.costTier,
         totalProtein: weeklyPlan.totalProtein,
         savingsStatus: weeklyPlan.savingsStatus,
@@ -67,7 +72,7 @@ export function ShoppingListPage() {
   };
 
   // Se não houver lista, redireciona para home
-  if (!weeklyPlan || shoppingList.length === 0) {
+  if (!weeklyPlan || aggregatedShoppingList.length === 0) {
     return (
       <div className="shopping-list-page">
         <div className="empty-state">
@@ -82,7 +87,7 @@ export function ShoppingListPage() {
   }
 
   // Agrupa itens por categoria
-  const groupedItems = groupByCategory(shoppingList as ShoppingItem[]);
+  const groupedItems = groupByCategory(aggregatedShoppingList);
 
   // Ordena itens: não comprados primeiro, depois comprados
   const sortedCategories = Object.entries(groupedItems).map(([category, items]) => {
@@ -90,7 +95,7 @@ export function ShoppingListPage() {
       if (a.purchased === b.purchased) return 0;
       return a.purchased ? 1 : -1;
     });
-    return [category, sorted] as [string, ShoppingItem[]];
+    return [category, sorted] as [string, AggregatedShoppingItem[]];
   });
 
   const CATEGORY_META: Record<FoodCategory, { emoji: string; label: string }> = {
@@ -114,8 +119,8 @@ export function ShoppingListPage() {
   } as const;
   const costTierDisplay = costTierMeta[weeklyPlan.costTier];
   const proteinPerDay = weeklyPlan.proteinTargetPerDay;
-  const purchasedCount = shoppingList.filter(item => (item as ShoppingItem).purchased).length;
-  const totalCount = shoppingList.length;
+  const purchasedCount = aggregatedShoppingList.filter(item => item.purchased).length;
+  const totalCount = aggregatedShoppingList.length;
 
   // Smart Savings optimization data
   const savingsStatus = weeklyPlan.savingsStatus;
@@ -254,22 +259,19 @@ export function ShoppingListPage() {
               </h3>
               <ul className="items-list">
                 {items.map((item) => {
-                  // PASSO 35: Normalize quantity to real-world units
-                  const normalized = normalizeQuantity(item.name, item.quantity, item.unit);
-                  
                   return (
                   <li
                     key={item.id}
                     className={`item ${item.purchased ? "purchased" : ""}`}
-                    onClick={() => toggleItemPurchased(item.id)}
+                    onClick={() => item.sourceIds.forEach((sourceId: string) => toggleItemPurchased(sourceId))}
                   >
                     <div className="item-checkbox">
                       {item.purchased ? "✓" : "○"}
                     </div>
                     <div className="item-info">
-                      <span className="item-name">{item.name}</span>
+                      <span className="item-name">{item.name} — {item.normalizedDisplayText}</span>
                       <span className="item-quantity">
-                        {normalized.displayText}
+                        {item.coverageText}
                       </span>
                       {item.reason && (
                         <span className="item-reason">{item.reason}</span>
@@ -343,7 +345,7 @@ export function ShoppingListPage() {
 }
 
 // Função auxiliar para agrupar itens por categoria
-function groupByCategory(items: ShoppingItem[]): Record<string, ShoppingItem[]> {
+function groupByCategory(items: AggregatedShoppingItem[]): Record<string, AggregatedShoppingItem[]> {
   return items.reduce((acc, item) => {
     const category = item.category;
     if (!acc[category]) {
@@ -351,5 +353,5 @@ function groupByCategory(items: ShoppingItem[]): Record<string, ShoppingItem[]> 
     }
     acc[category].push(item);
     return acc;
-  }, {} as Record<string, ShoppingItem[]>);
+  }, {} as Record<string, AggregatedShoppingItem[]>);
 }
