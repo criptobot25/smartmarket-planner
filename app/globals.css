@@ -32,13 +32,61 @@ a {
   top: 0;
   z-index: 20;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   gap: 0.75rem;
   padding: 0.9rem 1rem;
   border-bottom: 1px solid var(--color-border);
   background: rgba(6, 24, 38, 0.75);
   backdrop-filter: blur(14px);
+  flex-wrap: wrap;
+}
+
+.np-nav-right {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.np-nav-app {
+  row-gap: 0.55rem;
+}
+
+.np-tabs {
+  order: 4;
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  overflow-x: auto;
+  padding-bottom: 0.15rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.np-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.np-tab {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.25rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  text-decoration: none;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.np-tab.active {
+  color: var(--color-text);
+  border-color: rgba(20, 184, 166, 0.45);
+  background: rgba(20, 184, 166, 0.14);
 }
 
 .np-brand {
@@ -115,6 +163,12 @@ a {
   font-weight: 700;
 }
 
+.np-btn-nav {
+  min-height: 2.25rem;
+  padding: 0.5rem 0.8rem;
+  font-size: 0.8rem;
+}
+
 .np-btn-primary {
   background: var(--color-primary);
   color: #042f2e;
@@ -171,11 +225,47 @@ a {
 }
 
 @media (max-width: 640px) {
+  .np-nav {
+    padding: 0.75rem 0.75rem;
+  }
+
+  .np-nav-right {
+    gap: 0.4rem;
+  }
+
+  .np-btn-nav {
+    padding: 0.45rem 0.65rem;
+    font-size: 0.76rem;
+  }
+
   .np-actions {
     flex-direction: column;
   }
 
   .np-btn {
     width: 100%;
+  }
+}
+
+@media (min-width: 900px) {
+  .np-nav {
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    padding: 0.9rem 1.2rem;
+  }
+
+  .np-nav-app {
+    row-gap: 0;
+  }
+
+  .np-tabs {
+    order: initial;
+    width: auto;
+    overflow: visible;
+    padding-bottom: 0;
+  }
+
+  .np-tab {
+    font-size: 0.88rem;
   }
 }
