@@ -12,6 +12,7 @@ body {
 
 body {
   font-family: var(--font-main);
+  line-height: 1.45;
   color: var(--color-text);
   background:
     radial-gradient(circle at 20% 0%, rgba(20, 184, 166, 0.18), transparent 42%),
@@ -151,6 +152,13 @@ a {
   flex-wrap: wrap;
 }
 
+.np-actions label {
+  width: 100%;
+  font-size: 0.86rem;
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
 .np-btn {
   display: inline-flex;
   align-items: center;
@@ -163,6 +171,20 @@ a {
   font-weight: 700;
   font-family: inherit;
   cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.np-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.np-btn:focus-visible,
+.np-tab:focus-visible,
+.np-lang button:focus-visible,
+.np-input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 .np-btn-nav {
@@ -180,6 +202,22 @@ a {
   border-color: var(--color-border);
   background: var(--color-surface);
   color: var(--color-text);
+}
+
+.np-input {
+  width: min(100%, 420px);
+  min-height: 2.75rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+}
+
+.np-input::placeholder {
+  color: var(--color-text-muted);
+  opacity: 0.9;
 }
 
 .np-grid {
@@ -226,6 +264,10 @@ a {
   color: var(--color-text-muted);
 }
 
+.np-card .np-actions {
+  justify-content: flex-start;
+}
+
 .np-muted {
   font-size: 0.88rem;
   color: var(--color-text-muted);
@@ -247,9 +289,14 @@ a {
 
   .np-actions {
     flex-direction: column;
+    align-items: stretch;
   }
 
   .np-btn {
+    width: 100%;
+  }
+
+  .np-input {
     width: 100%;
   }
 }
