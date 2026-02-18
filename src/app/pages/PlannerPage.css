@@ -230,6 +230,12 @@
   margin: 0;
 }
 
+.preview-grid {
+  display: grid;
+  gap: 0.35rem;
+  text-align: left;
+}
+
 /* PASSO 34: Validation Errors Display */
 .validation-errors {
   background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);

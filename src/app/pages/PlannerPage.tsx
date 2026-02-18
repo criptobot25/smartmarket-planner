@@ -1,9 +1,10 @@
-import { useState, FormEvent } from "react";
+import { useMemo, useState, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useShoppingPlan } from "../../contexts/ShoppingPlanContext";
-import { DietStyle, Sex, CostTier } from "../../core/models/PlanInput";
+import { DietStyle, FitnessGoal, Sex, CostTier } from "../../core/models/PlanInput";
 import { validatePlanInput } from "../../core/validation/PlanInputSchema"; // PASSO 34
+import { calculateMacroPlan } from "../../core/logic/MacroPlanner";
 import "./PlannerPage.css";
 
 export function PlannerPage() {
@@ -17,12 +18,33 @@ export function PlannerPage() {
   const [heightCm, setHeightCm] = useState<number>(175);
   const [trains, setTrains] = useState<boolean>(true);
   const [mealsPerDay, setMealsPerDay] = useState<number>(3);
-  const [dietStyle, setDietStyle] = useState<DietStyle>("balanced");
+  const [fitnessGoal, setFitnessGoal] = useState<FitnessGoal>("maintenance");
   const [costTier, setCostTier] = useState<CostTier>("medium");
   const [restrictions, setRestrictions] = useState<string>("");
   
   // PASSO 34: Validation errors state
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
+
+  const dietStyle: DietStyle = fitnessGoal === "cutting"
+    ? "healthy"
+    : fitnessGoal === "bulking"
+      ? "comfort"
+      : "balanced";
+
+  const macroPreview = useMemo(() => {
+    return calculateMacroPlan({
+      sex,
+      age,
+      weightKg,
+      heightCm,
+      trains,
+      mealsPerDay,
+      dietStyle,
+      costTier,
+      restrictions: [],
+      fitnessGoal,
+    });
+  }, [sex, age, weightKg, heightCm, trains, mealsPerDay, dietStyle, costTier, fitnessGoal]);
 
   // PASSO 33.1: Handler for Repeat Last Week button
   const handleRepeatLastWeek = () => {
@@ -59,7 +81,8 @@ export function PlannerPage() {
       mealsPerDay,
       dietStyle,
       costTier,
-      restrictions: restrictionsArray
+      restrictions: restrictionsArray,
+      fitnessGoal,
     };
     
     const validation = validatePlanInput(planInput);
@@ -239,14 +262,14 @@ export function PlannerPage() {
               </label>
               <select
                 id="diet-style"
-                value={dietStyle}
-                onChange={(e) => setDietStyle(e.target.value as DietStyle)}
+                value={fitnessGoal}
+                onChange={(e) => setFitnessGoal(e.target.value as FitnessGoal)}
                 className="form-input"
                 required
               >
-                <option value="healthy">{t("planner.goalOption.healthy")}</option>
-                <option value="balanced">{t("planner.goalOption.balanced")}</option>
-                <option value="comfort">{t("planner.goalOption.comfort")}</option>
+                <option value="cutting">{t("planner.goalOption.healthy")}</option>
+                <option value="maintenance">{t("planner.goalOption.balanced")}</option>
+                <option value="bulking">{t("planner.goalOption.comfort")}</option>
               </select>
             </div>
 
@@ -289,7 +312,14 @@ export function PlannerPage() {
 
           <div className="planner-preview">
             <p className="preview-label">{t("planner.previewLabel")}</p>
-            <p className="preview-value">{t("planner.previewValue")}</p>
+            <div className="preview-grid">
+              <p className="preview-value">TDEE: {macroPreview.tdee} kcal</p>
+              <p className="preview-value">Target: {macroPreview.calorieTargetPerDay} kcal/day</p>
+              <p className="preview-value">Protein: {macroPreview.proteinTargetPerDay}g/day</p>
+              <p className="preview-value">Carbs: {macroPreview.carbsTargetPerDay}g/day</p>
+              <p className="preview-value">Fats: {macroPreview.fatsTargetPerDay}g/day</p>
+              <p className="preview-value">Per meal: {macroPreview.proteinPerMeal}P / {macroPreview.carbsPerMeal}C / {macroPreview.fatsPerMeal}F</p>
+            </div>
           </div>
         </div>
       </div>

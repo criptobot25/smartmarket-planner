@@ -13,6 +13,7 @@ export interface PlanInput {
   dietStyle: DietStyle;
   costTier: CostTier;
   restrictions: string[];
+  // Mandatory in onboarding flow; optional here for backward compatibility in legacy tests/data.
   fitnessGoal?: FitnessGoal;
   proteinTargetPerDay?: number;  // grams per person per day
   excludedFoods?: string[];      // Food names to exclude (e.g., ["tuna", "salmon"] for no fish)

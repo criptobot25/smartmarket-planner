@@ -54,6 +54,8 @@ export interface WeeklyPlan {
   days: DayPlan[];
   shoppingList: FoodItem[];
   costTier: CostTier; // Low / Medium / High cost tier
+  tdee?: number;
+  calorieTargetPerDay?: number;
   caloriesTargetPerDay: number;
   proteinTargetPerDay: number;
   carbsTargetPerDay: number;

@@ -80,6 +80,41 @@ describe("MacroCalculator", () => {
   });
 
   describe("calculateMacroTargets", () => {
+    it("should change calorie and macro targets drastically across sex/age/activity profiles", () => {
+      const activeYoungMale: PlanInput = {
+        sex: "male",
+        age: 22,
+        weightKg: 92,
+        heightCm: 188,
+        trains: true,
+        mealsPerDay: 5,
+        dietStyle: "comfort",
+        costTier: "high",
+        restrictions: [],
+        fitnessGoal: "bulking"
+      };
+
+      const sedentaryOlderFemale: PlanInput = {
+        sex: "female",
+        age: 48,
+        weightKg: 58,
+        heightCm: 160,
+        trains: false,
+        mealsPerDay: 3,
+        dietStyle: "healthy",
+        costTier: "low",
+        restrictions: [],
+        fitnessGoal: "cutting"
+      };
+
+      const profileA = calculateMacroTargets(activeYoungMale);
+      const profileB = calculateMacroTargets(sedentaryOlderFemale);
+
+      expect(Math.abs(profileA.caloriesTargetPerDay - profileB.caloriesTargetPerDay)).toBeGreaterThan(600);
+      expect(Math.abs(profileA.proteinTargetPerDay - profileB.proteinTargetPerDay)).toBeGreaterThan(50);
+      expect(Math.abs(profileA.carbsTargetPerDay - profileB.carbsTargetPerDay)).toBeGreaterThan(60);
+    });
+
     it("should apply -15% for cutting goal", () => {
       const input: PlanInput = {
         sex: "male",

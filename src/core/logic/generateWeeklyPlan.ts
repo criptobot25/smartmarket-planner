@@ -2,6 +2,7 @@ import { PlanInput } from "../models/PlanInput";
 import { CATEGORIES } from "../../core/constants/categories";
 import { WeeklyPlan, DayOfWeek, DayPlan, DayMeals, Meal, FoodPortion } from "../models/WeeklyPlan";
 import { calculateMacroTargets } from "./MacroCalculator";
+import { calculateTDEE } from "./calculateTDEE";
 import { MacroTargetPerMeal } from "./PortionCalculator";
 import { buildMeal, buildBreakfast } from "./MealBuilder";
 import { VarietyTracker, DEFAULT_VARIETY_CONSTRAINTS } from "./VarietyConstraints";
@@ -53,6 +54,7 @@ export function generateWeeklyPlan(input: PlanInput): WeeklyPlan {
   const trainingDays = determineTrainingDays(input.trains);
 
   const macroTargets = calculateMacroTargets(input);
+  const tdeeData = calculateTDEE(input);
   const costTier = input.costTier;
   
   // Calculate meal macro targets (rest days - baseline)
@@ -135,6 +137,8 @@ export function generateWeeklyPlan(input: PlanInput): WeeklyPlan {
     days,
     shoppingList: [],
     costTier: costTier,
+    tdee: Math.round(tdeeData.tdee),
+    calorieTargetPerDay: macroTargets.caloriesTargetPerDay,
     caloriesTargetPerDay: macroTargets.caloriesTargetPerDay,
     proteinTargetPerDay: macroTargets.proteinTargetPerDay,
     carbsTargetPerDay: macroTargets.carbsTargetPerDay,
