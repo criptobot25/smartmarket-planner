@@ -35,12 +35,12 @@ export default function PlannerDashboard() {
 
   const hasPlan = Boolean(activePlanId);
   const profileLabel = status === "authenticated"
-    ? session?.user?.email ?? "Premium account"
-    : "Guest mode";
+    ? session?.user?.email ?? t("planner.dashboard.accountPremium")
+    : t("planner.dashboard.accountGuest");
 
   const generatedLabel = hasPlan && lastGeneratedAt
     ? new Date(lastGeneratedAt).toLocaleDateString()
-    : "Not generated yet";
+    : t("planner.dashboard.planDateFallback");
 
   const currentGoalLabel = useMemo(() => {
     if (fitnessGoal === "cutting") {
@@ -129,26 +129,26 @@ export default function PlannerDashboard() {
             </article>
 
             <article className="np-kpi-card" role="listitem">
-              <span className="np-kpi-label">Plan status</span>
-              <strong className="np-kpi-value">{hasPlan ? "Ready" : "Draft"}</strong>
+              <span className="np-kpi-label">{t("planner.dashboard.planStatus")}</span>
+              <strong className="np-kpi-value">{hasPlan ? t("planner.dashboard.planReady") : t("planner.dashboard.planDraft")}</strong>
               <span className="np-muted">{generatedLabel}</span>
             </article>
 
             <article className="np-kpi-card" role="listitem">
-              <span className="np-kpi-label">Account</span>
-              <strong className="np-kpi-value">{status === "authenticated" ? "Connected" : "Anonymous"}</strong>
+              <span className="np-kpi-label">{t("planner.dashboard.account")}</span>
+              <strong className="np-kpi-value">{status === "authenticated" ? t("planner.dashboard.accountConnected") : t("planner.dashboard.accountAnonymous")}</strong>
               <span className="np-muted">{profileLabel}</span>
             </article>
 
             <article className="np-kpi-card" role="listitem">
-              <span className="np-kpi-label">Consistency streak</span>
+              <span className="np-kpi-label">{t("planner.dashboard.streak")}</span>
               <strong className="np-kpi-value">🔥 {streak}</strong>
               <span className="np-muted">{t("planner.streakWeeks_other", { count: streak })}</span>
             </article>
           </div>
 
           {status === "authenticated" && session?.user?.email && (
-            <p className="np-muted">Signed in as {session.user.email}</p>
+            <p className="np-muted">{t("planner.dashboard.signedInAs", { email: session.user.email })}</p>
           )}
 
           {plannerIsHydrated && (
@@ -245,11 +245,11 @@ export default function PlannerDashboard() {
 
             {status === "authenticated" ? (
               <button type="button" className="np-btn np-btn-secondary" onClick={() => signOut({ callbackUrl: "/" })}>
-                Logout
+                {t("planner.dashboard.logout")}
               </button>
             ) : (
               <button type="button" className="np-btn np-btn-secondary" onClick={() => signIn(undefined, { callbackUrl: "/app" })}>
-                Login
+                {t("planner.dashboard.login")}
               </button>
             )}
           </div>
