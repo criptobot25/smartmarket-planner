@@ -34,8 +34,15 @@ export function Navbar() {
           <span className="logo-text">{t("app.name")}</span>
         </NavLink>
 
-        {/* Navigation Links - Only 2 core pages */}
+        {/* Navigation Links */}
         <div className="navbar-links">
+          <NavLink 
+            to="/" 
+            className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+          >
+            🏠 Home
+          </NavLink>
+          
           <NavLink 
             to="/app" 
             className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
