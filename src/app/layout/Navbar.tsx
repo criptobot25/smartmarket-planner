@@ -55,7 +55,7 @@ export function Navbar() {
             to="/app/prep-guide"
             className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
           >
-            Prep Guide
+            Monday Prep
           </NavLink>
         </div>
 

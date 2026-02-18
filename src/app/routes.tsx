@@ -13,7 +13,7 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
  * /                  → LandingPage (public marketing)
  * /app               → PlannerPage (main app - generate plans)
  * /app/list          → ShoppingListPage (view shopping list + budget)
- * /app/prep-guide    → PrepGuidePage (Sunday meal prep instructions) - PASSO 36
+ * /app/prep-guide    → PrepGuidePage (separate Monday prep flow, unlocked after shopping completion)
  * /pricing           → PremiumPage (real pricing/paywall)
  * /app/premium       → PremiumPage (legacy shortcut)
  * 
@@ -69,7 +69,7 @@ export const router = createBrowserRouter([
         element: <ShoppingListPage />
       },
       {
-        path: "prep-guide", // PASSO 36: Sunday Meal Prep Guide
+        path: "prep-guide", // PASSO 1: Separate Prep Guide Flow
         element: <PrepGuidePage />
       },
       {

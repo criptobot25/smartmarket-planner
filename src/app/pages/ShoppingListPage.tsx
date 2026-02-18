@@ -9,7 +9,6 @@ import { canExportPdf, getRemainingOptimizations } from "../../core/premium/feat
 import { PremiumModal } from "../components/PremiumModal";
 import { isPremiumUser } from "../../core/premium/PremiumFeatures";
 import { ShareCard } from "../components/ShareCard";
-import { PrepChecklist } from "../components/PrepChecklist"; // PASSO 33.5
 import { WeeklyCheckInModal } from "../components/WeeklyCheckInModal";
 import { detectRepetitionRisk, useWeeklyFeedback, type WeeklyFeedbackResponse } from "../../hooks/useWeeklyFeedback";
 import "./ShoppingListPage.css";
@@ -130,8 +129,9 @@ export function ShoppingListPage() {
   const efficiencyScore = weeklyPlan.efficiencyScore || 0;
   const hasOptimizations = substitutionsApplied.length > 0;
 
-  // PASSO 27: Meal prep summary
-  const mealPrepSummary = weeklyPlan.mealPrepSummary;
+  const shoppingProgress = totalCount > 0 ? Math.round((purchasedCount / totalCount) * 100) : 0;
+  const shoppingCompleted = shoppingProgress === 100;
+  const prepUnlocked = shoppingCompleted;
 
   return (
     <div className="shopping-list-page">
@@ -160,7 +160,7 @@ export function ShoppingListPage() {
           </div>
           <div className="metric">
             <span className="metric-label">{t("shoppingList.metricProgress")}</span>
-            <span className="metric-value">{Math.round((purchasedCount / totalCount) * 100)}%</span>
+            <span className="metric-value">{shoppingProgress}%</span>
           </div>
         </div>
 
@@ -245,14 +245,6 @@ export function ShoppingListPage() {
         </section>
       )}
 
-      {/* PASSO 33.5: Sunday Meal Prep Ritual Checklist */}
-      {mealPrepSummary && (
-        <PrepChecklist 
-          mealPrepSummary={mealPrepSummary}
-          weekId={weeklyPlan.id}
-        />
-      )}
-
       {/* Categories Grid */}
       <main className="shopping-main">
         <div className="categories-grid">
@@ -303,13 +295,15 @@ export function ShoppingListPage() {
 
         {/* Action Buttons */}
         <div className="shopping-actions">
-          <button 
-            className="btn-prep-guide"
-            onClick={() => navigate("/app/prep-guide")}
-            title="View Sunday Meal Prep Instructions"
-          >
-            🍳 Sunday Prep Guide
-          </button>
+          {prepUnlocked && (
+            <button
+              className="btn-prep-guide"
+              onClick={() => navigate("/app/prep-guide")}
+              title="Start Monday Prep"
+            >
+              🍳 Start Monday Prep
+            </button>
+          )}
           <button 
             className="btn-share-card"
             onClick={() => setShowShareCard(true)}

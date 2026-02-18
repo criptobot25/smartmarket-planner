@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useShoppingPlan } from "../../contexts/ShoppingPlanContext";
+import { aggregateShoppingList, AggregatedShoppingItem } from "../../core/logic/aggregateShoppingList";
+import { FoodItem } from "../../core/models/FoodItem";
 import { generateMealPrepGuide, CookingTask, MealPrepGuide } from "../../core/logic/MealPrepGuide";
 import { exportPrepGuideToPdf } from "../../utils/exportPrepGuidePdf";
 import { canExportPdf } from "../../core/premium/features";
@@ -9,13 +11,28 @@ import { isPremiumUser } from "../../core/premium/PremiumFeatures";
 import { PremiumModal } from "../components/PremiumModal";
 import "./PrepGuidePage.css";
 
+interface ShoppingItem extends FoodItem {
+  purchased?: boolean;
+}
+
 export function PrepGuidePage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { weeklyPlan } = useShoppingPlan();
+  const { weeklyPlan, shoppingList } = useShoppingPlan();
   const isPremium = isPremiumUser();
   const [completedTasks, setCompletedTasks] = useState<Set<number>>(new Set());
   const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const planDays = weeklyPlan?.days.length || 7;
+
+  const aggregatedShoppingList = useMemo(
+    () => aggregateShoppingList(shoppingList as ShoppingItem[], planDays),
+    [shoppingList, planDays]
+  );
+  const purchasedCount = aggregatedShoppingList.filter((item: AggregatedShoppingItem) => item.purchased).length;
+  const totalCount = aggregatedShoppingList.length;
+  const shoppingProgress = totalCount > 0 ? Math.round((purchasedCount / totalCount) * 100) : 0;
+  const shoppingCompleted = shoppingProgress === 100;
+  const prepUnlocked = shoppingCompleted;
 
   // Generate prep guide if weeklyPlan exists
   const prepGuide: MealPrepGuide | null = weeklyPlan 
@@ -62,6 +79,19 @@ export function PrepGuidePage() {
     );
   }
 
+  if (!prepUnlocked) {
+    return (
+      <div className="prep-guide-page">
+        <div className="empty-state">
+          <h2>🔒 Prep Guide locked</h2>
+          <p>Complete your Grocery Mission to unlock Monday Prep.</p>
+          <p>Progress: {shoppingProgress}%</p>
+          <button className="btn-primary" onClick={() => navigate("/app/list")}>Back to Grocery Mission</button>
+        </div>
+      </div>
+    );
+  }
+
   // Progress calculation
   const completedCount = completedTasks.size;
   const totalTasks = prepGuide.cookingTasks.length;
@@ -79,7 +109,7 @@ export function PrepGuidePage() {
       {/* Header */}
       <header className="prep-guide-header">
         <div className="header-top">
-          <button className="btn-back" onClick={() => navigate("/app/shopping-list")}>
+          <button className="btn-back" onClick={() => navigate("/app/list")}>
             ← {t("prepGuide.backButton")}
           </button>
           <h1>🍳 {t("prepGuide.title")}</h1>
@@ -206,7 +236,7 @@ export function PrepGuidePage() {
           
           <button 
             className="btn-secondary"
-            onClick={() => navigate("/app/shopping-list")}
+            onClick={() => navigate("/app/list")}
           >
             🛍️ {t("prepGuide.viewShoppingButton")}
           </button>
