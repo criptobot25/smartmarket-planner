@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import { LEGACY_STORAGE_KEYS, STORAGE_KEYS } from "./storageKeys";
 import { runStorageMigration } from "./storageMigration";
+import { hydrateProgress } from "./hydrate";
 
 interface ShoppingProgressState {
   isHydrated: boolean;
@@ -66,11 +67,17 @@ export const useShoppingProgressStore = create<ShoppingProgressState>((set) => (
   totalCount: 0,
   progressPercent: 0,
   setProgressCounts: (purchasedCount, totalCount) => {
+    const progressPercent = calculateProgress(purchasedCount, totalCount);
+
     set({
       purchasedCount,
       totalCount,
-      progressPercent: calculateProgress(purchasedCount, totalCount),
+      progressPercent,
     });
+
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("nutripilot_progress", String(progressPercent));
+    }
   },
   hydrateFromStorage: () => {
     if (typeof window === "undefined") {
@@ -78,6 +85,9 @@ export const useShoppingProgressStore = create<ShoppingProgressState>((set) => (
     }
 
     runStorageMigration(window.localStorage);
+    hydrateProgress((progressPercent) => {
+      set({ progressPercent });
+    });
     const persistedState = readShoppingProgressStorage();
 
     set({
