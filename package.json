@@ -5,7 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:next": "next dev",
     "build": "tsc && vite build",
+    "build:next": "next build",
+    "start:next": "next start",
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
@@ -14,6 +17,7 @@
   },
   "dependencies": {
     "@sentry/react": "^10.39.0",
+    "next": "^14.2.30",
     "html-to-image": "^1.11.13",
     "i18next": "^25.8.7",
     "jspdf": "^4.1.0",
@@ -32,6 +36,7 @@
     "@vitejs/plugin-react": "^4.2.1",
     "@vitest/ui": "^4.0.18",
     "eslint": "^8.55.0",
+    "eslint-config-next": "^14.2.30",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "jsdom": "^28.0.0",
