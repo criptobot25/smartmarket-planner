@@ -53,7 +53,7 @@ export function PlannerPage() {
                 <span className="streak-flame">🔥</span>
                 <div className="streak-content">
                   <span className="streak-number">{streak}</span>
-                  <span className="streak-label">week{streak > 1 ? 's' : ''}</span>
+                  <span className="streak-label">{t("planner.streakWeeks", { count: streak })}</span>
                 </div>
               </div>
             )}
@@ -74,13 +74,13 @@ export function PlannerPage() {
 
         {!isPremium && (
           <div className="premium-trigger-panel">
-            <h3>🔒 Premium performance stack</h3>
+            <h3>🔒 {t("planner.premiumStackTitle")}</h3>
             <ul>
-              <li>Unlimited Food Rotation</li>
-              <li>Weekly Coach Adjustments</li>
-              <li>Recipe Packs + Meal Prep Guide PDF</li>
+              <li>{t("planner.premiumStackItem1")}</li>
+              <li>{t("planner.premiumStackItem2")}</li>
+              <li>{t("planner.premiumStackItem3")}</li>
             </ul>
-            <button type="button" className="btn-premium-trigger" onClick={() => navigate("/pricing")}>See why people upgrade</button>
+            <button type="button" className="btn-premium-trigger" onClick={() => navigate("/pricing")}>{t("planner.premiumStackButton")}</button>
           </div>
         )}
 

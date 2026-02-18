@@ -38,6 +38,11 @@ const REQUIRED_KEYS = [
   "premium.modal.benefits.unlimitedFoodRotation.1",
   "premium.modal.benefits.weeklyCoachAdjustments.1",
   "premium.modal.benefits.recipePacksPrepPdf.1",
+  "planner.repeatLastWeek",
+  "planner.premiumStackTitle",
+  "planner.premiumStackButton",
+  "planner.streakWeeks_one",
+  "planner.streakWeeks_other",
   "shoppingList.categories.protein",
   "shoppingList.categories.fats",
   "shoppingList.categories.legumes",
@@ -99,6 +104,8 @@ describe("Language consistency (PASSO 3)", () => {
     expect(enHtml).toContain("Grocery Mission");
     expect(enHtml).toContain("Monday Prep");
     expect(enHtml).toContain("Unlock your NutriPilot Pro Experience");
+    expect(i18n.t("planner.repeatLastWeek")).toBe("Repeat Last Week");
+    expect(i18n.t("planner.premiumStackTitle")).toBe("Premium performance stack");
 
     await i18n.changeLanguage("pt");
     const ptHtml = renderUI();
@@ -107,6 +114,8 @@ describe("Language consistency (PASSO 3)", () => {
     expect(ptHtml).toContain("Missão de Compras");
     expect(ptHtml).toContain("Preparo de Segunda");
     expect(ptHtml).toContain("Desbloqueie sua experiência NutriPilot Pro");
+    expect(i18n.t("planner.repeatLastWeek")).toBe("Repetir Semana Passada");
+    expect(i18n.t("planner.premiumStackTitle")).toBe("Stack de performance Premium");
 
     expect(ptHtml).not.toContain("Nutrition Plan");
     expect(ptHtml).not.toContain("Grocery Mission");
