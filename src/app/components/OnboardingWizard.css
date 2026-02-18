@@ -177,6 +177,7 @@
   padding: 0.7rem 1rem;
   font-weight: 700;
   cursor: pointer;
+  min-height: 2.8rem;
 }
 
 .wizard-btn.primary {
@@ -198,5 +199,14 @@
   .wizard-grid-two,
   .wizard-choice-grid {
     grid-template-columns: 1fr;
+  }
+
+  .wizard-actions {
+    flex-direction: column-reverse;
+    gap: 0.55rem;
+  }
+
+  .wizard-btn {
+    width: 100%;
   }
 }

@@ -1,12 +1,13 @@
 .shopping-list-page {
   min-height: calc(100vh - 5rem);
   --color-card-bg: var(--color-background);
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
 }
 
 /* Sticky Header */
 .shopping-header {
   position: sticky;
-  top: 4rem;
+  top: calc(var(--app-navbar-offset, 4rem) + 0.45rem);
   background: var(--color-surface);
   backdrop-filter: blur(20px);
   border-radius: var(--radius-xl);
@@ -138,6 +139,7 @@
   border-radius: 0.6rem;
   font-weight: 600;
   cursor: pointer;
+  min-height: 2.75rem;
 }
 
 .upgrade-strip-btn:hover {
@@ -351,6 +353,7 @@
   background: var(--color-card-bg, var(--color-surface));
   color: var(--color-text);
   border: 1px solid var(--color-border);
+  min-height: 3.5rem;
 }
 
 .item:last-child {
@@ -570,12 +573,23 @@
 /* Mobile adjustments */
 @media (max-width: 640px) {
   .shopping-header {
+    top: calc(var(--app-navbar-offset, 4rem) + 0.25rem);
     padding: 1.5rem;
     border-radius: var(--radius-lg);
   }
 
+  .header-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.65rem;
+  }
+
   .page-title {
     font-size: 1.75rem;
+  }
+
+  .items-count {
+    align-self: flex-start;
   }
 
   .metrics-bar {

@@ -1,16 +1,29 @@
 .app-layout {
   min-height: 100vh;
   background: #f9fafb;
+  --app-navbar-offset: 7.8rem;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .app-main {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 5rem 1.5rem 2rem;
+  padding: calc(var(--app-navbar-offset) + 0.5rem) 1rem 2rem;
+}
+
+@media (min-width: 640px) {
+  .app-main {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
 }
 
 /* Desktop */
-@media (min-width: 768px) {
+@media (min-width: 900px) {
+  .app-layout {
+    --app-navbar-offset: 5rem;
+  }
+
   .app-main {
     padding: 5rem 2rem 2rem;
   }
