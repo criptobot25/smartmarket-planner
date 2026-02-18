@@ -26,7 +26,6 @@
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { CATEGORIES } from "../../core/constants/categories";
-import { toPng } from "html-to-image";
 import { WeeklyPlan } from "../../core/models/WeeklyPlan";
 import { PlanInput } from "../../core/models/PlanInput";
 import "./ShareCard.css";
@@ -88,6 +87,8 @@ export function ShareCard({ weeklyPlan, planInput, onClose }: ShareCardProps) {
     if (!cardRef.current) return;
 
     try {
+      const { toPng } = await import("html-to-image");
+
       const dataUrl = await toPng(cardRef.current, {
         cacheBust: true,
         pixelRatio: 2, // High quality for social media
@@ -111,6 +112,8 @@ export function ShareCard({ weeklyPlan, planInput, onClose }: ShareCardProps) {
     if (!cardRef.current) return;
 
     try {
+      const { toPng } = await import("html-to-image");
+
       const blob = await toPng(cardRef.current, {
         cacheBust: true,
         pixelRatio: 2,
