@@ -36,6 +36,14 @@ export const router = createBrowserRouter([
     ),
   },
   {
+    path: "/landing",
+    element: (
+      <ErrorBoundary>
+        <LandingPage />
+      </ErrorBoundary>
+    ),
+  },
+  {
     path: "/app",
     element: (
       <ErrorBoundary>

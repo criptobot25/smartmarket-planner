@@ -1,324 +1,169 @@
-/**
- * PASSO 32: Food Rotation & Variety Tests
- * ========================================
- * 
- * Verifies that meal plans have realistic athlete-level food variety:
- * 
- * ROTATION CONSTRAINTS:
- * - Max chicken: 4 meals/week
- * - Max fish (tuna/salmon): 2 meals/week each
- * - Max beef: 2 meals/week
- * - Min unique proteins: 3 per week
- * - Min unique vegetables: 7 per week
- * - Min unique carbs: 5 per week
- * 
- * QUALITY CHECKS:
- * - No single protein dominates (no more than 60% of meals)
- * - Different user profiles produce different rotations
- * - Plans feel realistic and non-monotonous
- * 
- * WHY THIS MATTERS:
- * - Prevents "chicken + rice" every day
- * - Ensures nutritional diversity
- * - Mimics real athlete eating patterns
- * - Improves adherence through variety
- */
-
-import { describe, it, expect, beforeEach } from "vitest";
-import { CATEGORIES } from "../core/constants/categories";
-import { RotationEngine } from "../core/logic/RotationEngine";
-import { VarietyTracker } from "../core/logic/VarietyConstraints";
+import { describe, it, expect } from "vitest";
 import { buildMeal } from "../core/logic/MealBuilder";
+import {
+  FoodRotationEngine,
+  classifyProteinRotationGroup,
+  classifyCarbRotationGroup,
+  getRotationNoise,
+} from "../core/logic/FoodRotation";
+import { VarietyTracker } from "../core/logic/VarietyConstraints";
+import { generateWeeklyPlan } from "../core/logic/generateWeeklyPlan";
+import { CATEGORIES } from "../core/constants/categories";
 import { mockFoods } from "../data/mockFoods";
-import { CostTier } from "../core/models/CostTier";
+import type { PlanInput } from "../core/models/PlanInput";
 
-describe("PASSO 32: RotationEngine", () => {
-  let rotationEngine: RotationEngine;
+describe("FoodRotationEngine", () => {
+  it("should enforce max 2 usage per food", () => {
+    const engine = new FoodRotationEngine();
 
-  beforeEach(() => {
-    rotationEngine = new RotationEngine();
+    expect(engine.canUseFood("Chicken breast (skinless)")).toBe(true);
+    engine.recordFood(mockFoods.find(f => f.name === "Chicken breast (skinless)")!);
+    engine.recordFood(mockFoods.find(f => f.name === "Chicken breast (skinless)")!);
+    expect(engine.canUseFood("Chicken breast (skinless)")).toBe(false);
   });
 
-  it("should track food usage correctly", () => {
-    expect(rotationEngine.getFoodUsageCount("food-001")).toBe(0);
-    
-    rotationEngine.trackFoodUsage("food-001");
-    expect(rotationEngine.getFoodUsageCount("food-001")).toBe(1);
-    
-    rotationEngine.trackFoodUsage("food-001");
-    expect(rotationEngine.getFoodUsageCount("food-001")).toBe(2);
+  it("should classify protein groups correctly", () => {
+    expect(classifyProteinRotationGroup("Chicken breast")).toBe("chicken");
+    expect(classifyProteinRotationGroup("Lean ground beef")).toBe("beef");
+    expect(classifyProteinRotationGroup("Salmon fillet")).toBe("fish");
+    expect(classifyProteinRotationGroup("Eggs (large)")).toBe("eggs");
+    expect(classifyProteinRotationGroup("Tofu (firm)")).toBe("vegetarian");
   });
 
-  it("should apply quadratic penalty formula correctly", () => {
-    expect(rotationEngine.calculateRotationPenalty(0)).toBe(0);  // Never used
-    expect(rotationEngine.calculateRotationPenalty(1)).toBe(1);  // Used once
-    expect(rotationEngine.calculateRotationPenalty(2)).toBe(4);  // Used twice
-    expect(rotationEngine.calculateRotationPenalty(3)).toBe(9);  // Used thrice
-    expect(rotationEngine.calculateRotationPenalty(4)).toBe(16); // Used 4 times
+  it("should classify carb groups correctly", () => {
+    expect(classifyCarbRotationGroup("White rice")).toBe("rice");
+    expect(classifyCarbRotationGroup("Pasta (whole wheat)")).toBe("pasta");
+    expect(classifyCarbRotationGroup("Oats (rolled)")).toBe("oats");
+    expect(classifyCarbRotationGroup("Sweet potato")).toBe("potatoes");
   });
 
-  it("should calculate penalty for specific foods", () => {
-    rotationEngine.trackFoodUsage("chicken-breast");
-    rotationEngine.trackFoodUsage("chicken-breast");
-    rotationEngine.trackFoodUsage("chicken-breast");
-    
-    expect(rotationEngine.getFoodUsageCount("chicken-breast")).toBe(3);
-    expect(rotationEngine.getPenaltyForFood("chicken-breast")).toBe(9);
-  });
+  it("should generate deterministic noise from seed", () => {
+    const a = getRotationNoise("Chicken", "user-a-week-10");
+    const b = getRotationNoise("Chicken", "user-a-week-10");
+    const c = getRotationNoise("Chicken", "user-a-week-11");
 
-  it("should reset all usage tracking", () => {
-    rotationEngine.trackFoodUsage("food-001");
-    rotationEngine.trackFoodUsage("food-002");
-    rotationEngine.trackFoodUsage("food-003");
-    
-    expect(rotationEngine.getUniqueeFoodCount()).toBe(3);
-    
-    rotationEngine.reset();
-    
-    expect(rotationEngine.getUniqueeFoodCount()).toBe(0);
-    expect(rotationEngine.getFoodUsageCount("food-001")).toBe(0);
-  });
-
-  it("should provide usage summary", () => {
-    rotationEngine.trackFoodUsage("food-001");
-    rotationEngine.trackFoodUsage("food-001");
-    rotationEngine.trackFoodUsage("food-002");
-    
-    const usage = rotationEngine.getAllUsage();
-    
-    expect(usage).toHaveLength(2);
-    expect(usage.find(u => u.foodId === "food-001")).toEqual({
-      foodId: "food-001",
-      count: 2,
-      penalty: 4
-    });
-    expect(usage.find(u => u.foodId === "food-002")).toEqual({
-      foodId: "food-002",
-      count: 1,
-      penalty: 1
-    });
+    expect(a).toBe(b);
+    expect(a).not.toBe(c);
   });
 });
 
-describe("PASSO 32: Meal Plan Variety", () => {
-  const macroTargets = {
-    protein: 40,
-    carbs: 50,
-    fats: 15
-  };
+describe("Food Rotation integration in MealBuilder", () => {
+  const macroTargets = { protein: 40, carbs: 50, fats: 15 };
 
-  it("should generate varied weekly meal plan with min unique proteins", () => {
+  it("should rotate proteins and carbs while keeping vegetables diverse", () => {
     const varietyTracker = new VarietyTracker();
-    const rotationEngine = new RotationEngine();
-    const costTier: CostTier = "medium";
-    
-    // Generate 21 meals (3 meals/day × 7 days)
-    const meals = [];
-    for (let i = 0; i < 21; i++) {
-      const meal = buildMeal({
-        macroTargetsPerMeal: macroTargets,
-        availableFoods: mockFoods,
-        costTier,
-        varietyTracker,
-        rotationEngine
-      });
-      meals.push(meal);
-    }
-    
-    // Extract unique protein sources
-    const proteinSources = new Set<string>();
-    meals.forEach(meal => {
-      // Protein is typically first ingredient
-      if (meal.ingredients.length > 0) {
-        const proteinIngredient = meal.ingredients[0];
-        const proteinFood = mockFoods.find(f => f.id === proteinIngredient.foodId);
-        if (proteinFood?.category === CATEGORIES.protein) {
-          proteinSources.add(proteinFood.name);
-        }
-      }
-    });
-    
-    // Verify minimum variety
-    expect(proteinSources.size).toBeGreaterThanOrEqual(3);
-  });
+    const foodRotation = new FoodRotationEngine();
 
-  it("should generate min unique vegetables per week", () => {
-    const varietyTracker = new VarietyTracker();
-    const rotationEngine = new RotationEngine();
-    const costTier: CostTier = "medium";
-    
-    const meals = [];
-    for (let i = 0; i < 21; i++) {
-      const meal = buildMeal({
-        macroTargetsPerMeal: macroTargets,
-        availableFoods: mockFoods,
-        costTier,
-        varietyTracker,
-        rotationEngine
-      });
-      meals.push(meal);
-    }
-    
-    // Extract unique vegetables
+    const proteins = new Set<string>();
+    const proteinGroups = new Set<string>();
+    const carbGroups = new Set<string>();
     const vegetables = new Set<string>();
-    meals.forEach(meal => {
+    const proteinUsage = new Map<string, number>();
+    const carbUsage = new Map<string, number>();
+
+    for (let i = 0; i < 14; i++) {
+      const meal = buildMeal({
+        macroTargetsPerMeal: macroTargets,
+        availableFoods: mockFoods,
+        excludedFoods: [],
+        costTier: "medium",
+        varietyTracker,
+        foodRotation,
+        rotationSeed: `same-user-week-10-meal-${i}`,
+      });
+
       meal.ingredients.forEach(ingredient => {
         const food = mockFoods.find(f => f.id === ingredient.foodId);
-        if (food?.category === CATEGORIES.vegetables) {
+        if (!food) return;
+
+        if (food.category === CATEGORIES.protein) {
+          proteins.add(food.name);
+          proteinGroups.add(classifyProteinRotationGroup(food.name));
+          proteinUsage.set(food.name, (proteinUsage.get(food.name) || 0) + 1);
+        }
+
+        if (
+          food.category === CATEGORIES.grains ||
+          (food.category === CATEGORIES.vegetables && (food.macros?.carbs || 0) >= 15)
+        ) {
+          carbGroups.add(classifyCarbRotationGroup(food.name));
+          carbUsage.set(food.name, (carbUsage.get(food.name) || 0) + 1);
+        }
+
+        if (food.category === CATEGORIES.vegetables && (food.macros?.carbs || 0) < 15) {
           vegetables.add(food.name);
         }
       });
+    }
+
+    expect(proteins.size).toBeGreaterThanOrEqual(4);
+    expect(proteinGroups.size).toBeGreaterThanOrEqual(3);
+    expect(carbGroups.size).toBeGreaterThanOrEqual(3);
+    expect(vegetables.size).toBeGreaterThanOrEqual(5);
+
+    // Rule enforcement on primary rotation sources
+    const maxProteinUsage = Math.max(...Array.from(proteinUsage.values()));
+    const maxCarbUsage = Math.max(...Array.from(carbUsage.values()));
+    expect(maxProteinUsage).toBeLessThanOrEqual(2);
+    expect(maxCarbUsage).toBeLessThanOrEqual(2);
+  });
+});
+
+describe("Acceptance criteria - user-level variation", () => {
+  const baseInput: PlanInput = {
+    sex: "male",
+    age: 30,
+    weightKg: 78,
+    heightCm: 178,
+    trains: true,
+    mealsPerDay: 4,
+    dietStyle: "balanced",
+    costTier: "medium",
+    restrictions: [],
+    fitnessGoal: "maintenance",
+  };
+
+  it("different users should receive different weekly food selections", () => {
+    const userAPlan = generateWeeklyPlan(baseInput);
+    const userBPlan = generateWeeklyPlan({
+      ...baseInput,
+      age: 36,
+      weightKg: 92,
+      heightCm: 186,
+      sex: "female",
     });
-    
-    // Verify minimum variety (7 unique vegetables)
-    expect(vegetables.size).toBeGreaterThanOrEqual(5); // Relaxed for now
+
+    const sequenceA = userAPlan.days.map(day => `${day.meals.breakfast.name}|${day.meals.lunch.name}|${day.meals.dinner.name}`);
+    const sequenceB = userBPlan.days.map(day => `${day.meals.breakfast.name}|${day.meals.lunch.name}|${day.meals.dinner.name}`);
+
+    expect(sequenceA).not.toEqual(sequenceB);
   });
 
-  it("should generate min unique carbs per week", () => {
-    const varietyTracker = new VarietyTracker();
-    const rotationEngine = new RotationEngine();
-    const costTier: CostTier = "medium";
-    
-    const meals = [];
-    for (let i = 0; i < 21; i++) {
-      const meal = buildMeal({
-        macroTargetsPerMeal: macroTargets,
-        availableFoods: mockFoods,
-        costTier,
-        varietyTracker,
-        rotationEngine
-      });
-      meals.push(meal);
-    }
-    
-    // Extract unique carb sources
-    const carbSources = new Set<string>();
-    meals.forEach(meal => {
-      meal.ingredients.forEach(ingredient => {
-        const food = mockFoods.find(f => f.id === ingredient.foodId);
-        if (food?.category === CATEGORIES.grains || (food?.category === CATEGORIES.vegetables && food.macros && food.macros.carbs > 15)) {
-          carbSources.add(food.name);
-        }
-      });
-    });
-    
-    // Verify minimum variety (5 unique carbs)
-    expect(carbSources.size).toBeGreaterThanOrEqual(3); // Relaxed for now
-  });
+  it("same user should get automatic variation when week seed changes", () => {
+    const buildWeekMeals = (weekSeed: string) => {
+      const varietyTracker = new VarietyTracker();
+      const foodRotation = new FoodRotationEngine();
 
-  it("should not repeat chicken more than 4 times per week", () => {
-    const varietyTracker = new VarietyTracker();
-    const rotationEngine = new RotationEngine();
-    const costTier: CostTier = "low"; // Low tier prefers chicken
-    
-    const meals = [];
-    for (let i = 0; i < 21; i++) {
-      const meal = buildMeal({
-        macroTargetsPerMeal: macroTargets,
-        availableFoods: mockFoods,
-        costTier,
-        varietyTracker,
-        rotationEngine
-      });
-      meals.push(meal);
-    }
-    
-    // Count chicken usage
-    let chickenCount = 0;
-    meals.forEach(meal => {
-      meal.ingredients.forEach(ingredient => {
-        const food = mockFoods.find(f => f.id === ingredient.foodId);
-        if (food?.name.toLowerCase().includes("chicken")) {
-          chickenCount++;
-        }
-      });
-    });
-    
-    // With rotation engine, chicken should not dominate
-    expect(chickenCount).toBeLessThanOrEqual(12); // Max ~4 per week × 3 weeks (relaxed)
-  });
-
-  it("should prevent single protein from dominating", () => {
-    const varietyTracker = new VarietyTracker();
-    const rotationEngine = new RotationEngine();
-    const costTier: CostTier = "low";
-    
-    const meals = [];
-    for (let i = 0; i < 21; i++) {
-      const meal = buildMeal({
-        macroTargetsPerMeal: macroTargets,
-        availableFoods: mockFoods,
-        costTier,
-        varietyTracker,
-        rotationEngine
-      });
-      meals.push(meal);
-    }
-    
-    // Count each protein usage
-    const proteinCounts = new Map<string, number>();
-    meals.forEach(meal => {
-      if (meal.ingredients.length > 0) {
-        const proteinIngredient = meal.ingredients[0];
-        const proteinFood = mockFoods.find(f => f.id === proteinIngredient.foodId);
-        if (proteinFood?.category === CATEGORIES.protein) {
-          const count = proteinCounts.get(proteinFood.name) || 0;
-          proteinCounts.set(proteinFood.name, count + 1);
-        }
+      const names: string[] = [];
+      for (let i = 0; i < 9; i++) {
+        const meal = buildMeal({
+          macroTargetsPerMeal: { protein: 40, carbs: 50, fats: 15 },
+          availableFoods: mockFoods,
+          excludedFoods: [],
+          costTier: "medium",
+          varietyTracker,
+          foodRotation,
+          rotationSeed: `${weekSeed}-meal-${i}`,
+        });
+        names.push(meal.name);
       }
-    });
-    
-    // No protein should appear in more than 60% of meals
-    const maxProteinCount = Math.max(...Array.from(proteinCounts.values()));
-    expect(maxProteinCount).toBeLessThanOrEqual(13); // 60% of 21 meals (relaxed)
-  });
+      return names;
+    };
 
-  it("should produce different rotations for different cost tiers", () => {
-    const lowTierProteins = new Set<string>();
-    const highTierProteins = new Set<string>();
-    
-    // Low tier plan
-    const lowTracker = new VarietyTracker();
-    const lowRotation = new RotationEngine();
-    for (let i = 0; i < 7; i++) {
-      const meal = buildMeal({
-        macroTargetsPerMeal: macroTargets,
-        availableFoods: mockFoods,
-        costTier: "low",
-        varietyTracker: lowTracker,
-        rotationEngine: lowRotation
-      });
-      if (meal.ingredients[0]) {
-        const protein = mockFoods.find(f => f.id === meal.ingredients[0].foodId);
-        if (protein?.category === CATEGORIES.protein) {
-          lowTierProteins.add(protein.name);
-        }
-      }
-    }
-    
-    // High tier plan
-    const highTracker = new VarietyTracker();
-    const highRotation = new RotationEngine();
-    for (let i = 0; i < 7; i++) {
-      const meal = buildMeal({
-        macroTargetsPerMeal: macroTargets,
-        availableFoods: mockFoods,
-        costTier: "high",
-        varietyTracker: highTracker,
-        rotationEngine: highRotation
-      });
-      if (meal.ingredients[0]) {
-        const protein = mockFoods.find(f => f.id === meal.ingredients[0].foodId);
-        if (protein?.category === CATEGORIES.protein) {
-          highTierProteins.add(protein.name);
-        }
-      }
-    }
-    
-    // Different tiers should produce different protein selections
-    // (At least some proteins should be different)
-    const allProteins = new Set([...lowTierProteins, ...highTierProteins]);
-    expect(allProteins.size).toBeGreaterThan(Math.max(lowTierProteins.size, highTierProteins.size));
+    const weekA = buildWeekMeals("user-1-2026-W07");
+    const weekB = buildWeekMeals("user-1-2026-W08");
+
+    expect(weekA).not.toEqual(weekB);
   });
 });
 

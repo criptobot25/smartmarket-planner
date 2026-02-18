@@ -49,8 +49,12 @@ export function calculateMacroTargets(input: PlanInput): {
     calories = tdee * 1.1; // +10%
   }
 
-  // Protein: goal-based g/kg
-  const proteinTargetPerDay = Math.round(input.weightKg * PROTEIN_MULTIPLIERS[goal]);
+  // Protein: goal-based g/kg (can be overridden for adaptive loops)
+  const baselineProteinTarget = Math.round(input.weightKg * PROTEIN_MULTIPLIERS[goal]);
+  const proteinTargetPerDay = Math.max(
+    baselineProteinTarget,
+    input.proteinTargetPerDay || baselineProteinTarget
+  );
   
   // Fats: 25% of calories
   const caloriesFromFat = Math.round(calories * 0.25);

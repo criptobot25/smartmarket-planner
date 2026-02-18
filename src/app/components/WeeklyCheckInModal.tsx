@@ -21,57 +21,33 @@
 
 import { useState } from "react";
 import "./WeeklyCheckInModal.css";
-
-export interface AdherenceScore {
-  score: number; // 0-100
-  timestamp: string;
-  level: "high" | "good" | "low";
-}
+import { WeeklyFeedbackResponse } from "../../hooks/useWeeklyFeedback";
 
 interface WeeklyCheckInModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (adherence: AdherenceScore) => void;
+  onSubmit: (response: WeeklyFeedbackResponse) => void;
 }
 
 export function WeeklyCheckInModal({ isOpen, onClose, onSubmit }: WeeklyCheckInModalProps) {
-  const [selectedLevel, setSelectedLevel] = useState<"high" | "good" | "low" | null>(null);
+  const [selectedResponse, setSelectedResponse] = useState<WeeklyFeedbackResponse | null>(null);
 
   if (!isOpen) return null;
 
   const handleSubmit = () => {
-    if (!selectedLevel) {
-      alert("Please select how well you followed the plan");
+    if (!selectedResponse) {
+      alert("Please select an answer");
       return;
     }
 
-    let score: number;
-    switch (selectedLevel) {
-      case "high":
-        score = 95; // 90-100% average
-        break;
-      case "good":
-        score = 80; // 70-89% average
-        break;
-      case "low":
-        score = 50; // Below 70% average
-        break;
-    }
-
-    const adherence: AdherenceScore = {
-      score,
-      timestamp: new Date().toISOString(),
-      level: selectedLevel
-    };
-
-    onSubmit(adherence);
+    onSubmit(selectedResponse);
     onClose();
-    setSelectedLevel(null);
+    setSelectedResponse(null);
   };
 
   const handleSkip = () => {
     onClose();
-    setSelectedLevel(null);
+    setSelectedResponse(null);
   };
 
   return (
@@ -80,45 +56,45 @@ export function WeeklyCheckInModal({ isOpen, onClose, onSubmit }: WeeklyCheckInM
         <div className="modal-header">
           <h2 className="modal-title">📊 Weekly Check-In</h2>
           <p className="modal-subtitle">
-            Help us improve your next plan
+            Help us improve your next week automatically
           </p>
         </div>
 
         <div className="modal-body">
           <p className="check-in-question">
-            How well did you follow last week's plan?
+            Did you follow the plan this week?
           </p>
 
           <div className="adherence-options">
             <button
-              className={`adherence-option ${selectedLevel === "high" ? "selected" : ""}`}
-              onClick={() => setSelectedLevel("high")}
+              className={`adherence-option ${selectedResponse === "yes" ? "selected" : ""}`}
+              onClick={() => setSelectedResponse("yes")}
             >
               <span className="option-icon">✅</span>
-              <span className="option-label">Excellent</span>
-              <span className="option-range">90-100%</span>
+              <span className="option-label">Yes</span>
+              <span className="option-range">I followed it well</span>
             </button>
 
             <button
-              className={`adherence-option ${selectedLevel === "good" ? "selected" : ""}`}
-              onClick={() => setSelectedLevel("good")}
+              className={`adherence-option ${selectedResponse === "partially" ? "selected" : ""}`}
+              onClick={() => setSelectedResponse("partially")}
             >
               <span className="option-icon">👍</span>
-              <span className="option-label">Good</span>
-              <span className="option-range">70-89%</span>
+              <span className="option-label">Partially</span>
+              <span className="option-range">Some meals worked, some didn't</span>
             </button>
 
             <button
-              className={`adherence-option ${selectedLevel === "low" ? "selected" : ""}`}
-              onClick={() => setSelectedLevel("low")}
+              className={`adherence-option ${selectedResponse === "no" ? "selected" : ""}`}
+              onClick={() => setSelectedResponse("no")}
             >
               <span className="option-icon">⚠️</span>
-              <span className="option-label">Struggled</span>
-              <span className="option-range">Below 70%</span>
+              <span className="option-label">No</span>
+              <span className="option-range">Too hard to follow this week</span>
             </button>
           </div>
 
-          {selectedLevel === "low" && (
+          {selectedResponse === "no" && (
             <div className="adaptation-notice">
               <p>
                 💡 <strong>Next week will be optimized for easier adherence:</strong>
@@ -139,7 +115,7 @@ export function WeeklyCheckInModal({ isOpen, onClose, onSubmit }: WeeklyCheckInM
           <button 
             className="btn-primary" 
             onClick={handleSubmit}
-            disabled={!selectedLevel}
+            disabled={!selectedResponse}
           >
             Submit Feedback
           </button>

@@ -5,6 +5,7 @@ import { calculateMacroTargets } from "./MacroCalculator";
 import { MacroTargetPerMeal } from "./PortionCalculator";
 import { buildMeal, buildBreakfast } from "./MealBuilder";
 import { VarietyTracker, DEFAULT_VARIETY_CONSTRAINTS } from "./VarietyConstraints";
+import { FoodRotationEngine } from "./FoodRotation";
 import { mockFoods } from "../../data/mockFoods";
 import { userPreferencesStore } from "../stores/UserPreferencesStore";
 import { generateMealPrepSummary } from "./MealPrepSummary";
@@ -70,133 +71,51 @@ export function generateWeeklyPlan(input: PlanInput): WeeklyPlan {
   
   // PASSO 23: Create variety tracker
   const varietyTracker = new VarietyTracker(DEFAULT_VARIETY_CONSTRAINTS);
-  
-  // Build different meals for variety (not same meal all week)
-  // Strategy: Build meals for both rest days and training days
-  // Rest day breakfast
-  const breakfastMealRest = buildBreakfast({
-    macroTargetsPerMeal: restDayMacroTarget,
-    availableFoods: mockFoods,
-    excludedFoods: input.excludedFoods || [],
-    costTier,
-    varietyTracker
-  });
-  
-  // Training day breakfast (more carbs)
-  const breakfastMealTraining = buildBreakfast({
-    macroTargetsPerMeal: trainingDayMacroTarget,
-    availableFoods: mockFoods,
-    excludedFoods: input.excludedFoods || [],
-    costTier,
-    varietyTracker
-  });
-  
-  // Rest day lunches
-  const lunchMeal1Rest = buildMeal({
-    macroTargetsPerMeal: restDayMacroTarget,
-    availableFoods: mockFoods,
-    excludedFoods: input.excludedFoods || [],
-    costTier,
-    varietyTracker
-  });
-  
-  const lunchMeal2Rest = buildMeal({
-    macroTargetsPerMeal: restDayMacroTarget,
-    availableFoods: mockFoods,
-    excludedFoods: input.excludedFoods || [],
-    costTier,
-    varietyTracker
-  });
-  
-  // Training day lunches (more carbs)
-  const lunchMeal1Training = buildMeal({
-    macroTargetsPerMeal: trainingDayMacroTarget,
-    availableFoods: mockFoods,
-    excludedFoods: input.excludedFoods || [],
-    costTier,
-    varietyTracker
-  });
-  
-  const lunchMeal2Training = buildMeal({
-    macroTargetsPerMeal: trainingDayMacroTarget,
-    availableFoods: mockFoods,
-    excludedFoods: input.excludedFoods || [],
-    costTier,
-    varietyTracker
-  });
-  
-  // Rest day dinners
-  const dinnerMeal1Rest = buildMeal({
-    macroTargetsPerMeal: restDayMacroTarget,
-    availableFoods: mockFoods,
-    excludedFoods: input.excludedFoods || [],
-    costTier,
-    varietyTracker
-  });
-  
-  const dinnerMeal2Rest = buildMeal({
-    macroTargetsPerMeal: restDayMacroTarget,
-    availableFoods: mockFoods,
-    excludedFoods: input.excludedFoods || [],
-    costTier,
-    varietyTracker
-  });
-  
-  // Training day dinners (more carbs)
-  const dinnerMeal1Training = buildMeal({
-    macroTargetsPerMeal: trainingDayMacroTarget,
-    availableFoods: mockFoods,
-    excludedFoods: input.excludedFoods || [],
-    costTier,
-    varietyTracker
-  });
-  
-  const dinnerMeal2Training = buildMeal({
-    macroTargetsPerMeal: trainingDayMacroTarget,
-    availableFoods: mockFoods,
-    excludedFoods: input.excludedFoods || [],
-    costTier,
-    varietyTracker
-  });
+  const foodRotation = new FoodRotationEngine();
+  const rotationSeed = generateWeeklyRotationSeed(input);
   
   // Snack for 5+ meals per day (simple: yogurt + fruit)
   const includeSnack = input.mealsPerDay >= 5;
   const snackMeal = includeSnack ? buildSnack(mockFoods, input.excludedFoods || []) : null;
-  
-  // PASSO 25: Separate meal patterns for training and rest days
-  // Training days get higher carb versions
-  // Mon/Thu: Lunch1 + Dinner1
-  // Tue/Fri: Lunch2 + Dinner2  
-  // Wed: Lunch1 + Dinner2
-  // Sat/Sun: Lunch2 + Dinner1
-  const restDayPattern = [
-    { breakfast: breakfastMealRest, lunch: lunchMeal1Rest, dinner: dinnerMeal1Rest },
-    { breakfast: breakfastMealRest, lunch: lunchMeal2Rest, dinner: dinnerMeal2Rest },
-    { breakfast: breakfastMealRest, lunch: lunchMeal1Rest, dinner: dinnerMeal2Rest },
-    { breakfast: breakfastMealRest, lunch: lunchMeal1Rest, dinner: dinnerMeal1Rest },
-    { breakfast: breakfastMealRest, lunch: lunchMeal2Rest, dinner: dinnerMeal2Rest },
-    { breakfast: breakfastMealRest, lunch: lunchMeal2Rest, dinner: dinnerMeal1Rest },
-    { breakfast: breakfastMealRest, lunch: lunchMeal2Rest, dinner: dinnerMeal1Rest }
-  ];
-  
-  const trainingDayPattern = [
-    { breakfast: breakfastMealTraining, lunch: lunchMeal1Training, dinner: dinnerMeal1Training },
-    { breakfast: breakfastMealTraining, lunch: lunchMeal2Training, dinner: dinnerMeal2Training },
-    { breakfast: breakfastMealTraining, lunch: lunchMeal1Training, dinner: dinnerMeal2Training },
-    { breakfast: breakfastMealTraining, lunch: lunchMeal1Training, dinner: dinnerMeal1Training },
-    { breakfast: breakfastMealTraining, lunch: lunchMeal2Training, dinner: dinnerMeal2Training },
-    { breakfast: breakfastMealTraining, lunch: lunchMeal2Training, dinner: dinnerMeal1Training },
-    { breakfast: breakfastMealTraining, lunch: lunchMeal2Training, dinner: dinnerMeal1Training }
-  ];
-  
+
   // Generate daily meals with training day awareness
   const days: DayPlan[] = daysOfWeek.map((day, index) => {
     const isTrainingDay = trainingDays.includes(day);
-    const pattern = isTrainingDay ? trainingDayPattern : restDayPattern;
-    
-    const breakfast = convertBuiltMealToMeal(pattern[index].breakfast);
-    const lunch = convertBuiltMealToMeal(pattern[index].lunch);
-    const dinner = convertBuiltMealToMeal(pattern[index].dinner);
+    const macroTargetForDay = isTrainingDay ? trainingDayMacroTarget : restDayMacroTarget;
+
+    const breakfastBuilt = buildBreakfast({
+      macroTargetsPerMeal: macroTargetForDay,
+      availableFoods: mockFoods,
+      excludedFoods: input.excludedFoods || [],
+      costTier,
+      varietyTracker,
+      foodRotation,
+      rotationSeed: `${rotationSeed}-breakfast-${index}`
+    });
+
+    const lunchBuilt = buildMeal({
+      macroTargetsPerMeal: macroTargetForDay,
+      availableFoods: mockFoods,
+      excludedFoods: input.excludedFoods || [],
+      costTier,
+      varietyTracker,
+      foodRotation,
+      rotationSeed: `${rotationSeed}-lunch-${index}`
+    });
+
+    const dinnerBuilt = buildMeal({
+      macroTargetsPerMeal: macroTargetForDay,
+      availableFoods: mockFoods,
+      excludedFoods: input.excludedFoods || [],
+      costTier,
+      varietyTracker,
+      foodRotation,
+      rotationSeed: `${rotationSeed}-dinner-${index}`
+    });
+
+    const breakfast = convertBuiltMealToMeal(breakfastBuilt);
+    const lunch = convertBuiltMealToMeal(lunchBuilt);
+    const dinner = convertBuiltMealToMeal(dinnerBuilt);
     const snack = snackMeal ? convertBuiltMealToMeal(snackMeal) : null;
 
     const meals: DayMeals = {
@@ -232,6 +151,15 @@ export function generateWeeklyPlan(input: PlanInput): WeeklyPlan {
   weeklyPlan.mealPrepSummary = mealPrepSummary;
 
   return weeklyPlan;
+}
+
+function generateWeeklyRotationSeed(input: PlanInput): string {
+  const today = new Date();
+  const startOfYear = new Date(today.getFullYear(), 0, 1);
+  const daysSinceStart = Math.floor((today.getTime() - startOfYear.getTime()) / (24 * 60 * 60 * 1000));
+  const weekOfYear = Math.ceil((daysSinceStart + startOfYear.getDay() + 1) / 7);
+
+  return `${today.getFullYear()}-W${weekOfYear}-${input.sex}-${input.age}-${input.weightKg}-${input.heightCm}-${input.mealsPerDay}-${input.dietStyle}-${input.costTier}-${input.fitnessGoal || "maintenance"}`;
 }
 
 /**

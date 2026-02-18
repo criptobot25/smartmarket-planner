@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useShoppingPlan } from "../../contexts/ShoppingPlanContext";
@@ -9,6 +9,8 @@ import { canExportPdf, getRemainingOptimizations } from "../../core/premium/feat
 import { PremiumModal } from "../components/PremiumModal";
 import { ShareCard } from "../components/ShareCard";
 import { PrepChecklist } from "../components/PrepChecklist"; // PASSO 33.5
+import { WeeklyCheckInModal } from "../components/WeeklyCheckInModal";
+import { detectRepetitionRisk, useWeeklyFeedback, type WeeklyFeedbackResponse } from "../../hooks/useWeeklyFeedback";
 import "./ShoppingListPage.css";
 
 // Extensão do FoodItem para incluir purchased
@@ -19,10 +21,26 @@ interface ShoppingItem extends FoodItem {
 export function ShoppingListPage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { shoppingList, toggleItemPurchased, weeklyPlan } = useShoppingPlan();
+  const { shoppingList, toggleItemPurchased, weeklyPlan, history, saveAdherenceScore } = useShoppingPlan();
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [premiumFeature, setPremiumFeature] = useState<'savings' | 'pdf'>('pdf');
   const [showShareCard, setShowShareCard] = useState(false);
+  const [showCheckInModal, setShowCheckInModal] = useState(false);
+  const { hasFeedbackForPlan, submitWeeklyFeedback } = useWeeklyFeedback();
+
+  useEffect(() => {
+    if (!weeklyPlan) return;
+    setShowCheckInModal(!hasFeedbackForPlan(weeklyPlan.id));
+  }, [weeklyPlan, hasFeedbackForPlan]);
+
+  const handleWeeklyFeedbackSubmit = async (response: WeeklyFeedbackResponse) => {
+    if (!weeklyPlan) return;
+
+    const repeatedTooMuch = detectRepetitionRisk(history.slice(0, 2));
+    const { adherence } = await submitWeeklyFeedback(weeklyPlan.id, response, repeatedTooMuch);
+    saveAdherenceScore(adherence);
+    setShowCheckInModal(false);
+  };
 
   // Handler for PDF export
   const handlePdfExport = () => {
@@ -314,6 +332,12 @@ export function ShoppingListPage() {
           onClose={() => setShowShareCard(false)}
         />
       )}
+
+      <WeeklyCheckInModal
+        isOpen={showCheckInModal}
+        onClose={() => setShowCheckInModal(false)}
+        onSubmit={handleWeeklyFeedbackSubmit}
+      />
     </div>
   );
 }

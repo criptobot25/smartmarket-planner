@@ -42,6 +42,12 @@ import {
 import { VarietyTracker } from "./VarietyConstraints";
 import { userPreferencesStore } from "../stores/UserPreferencesStore";
 import { RotationEngine } from "./RotationEngine";
+import {
+  FoodRotationEngine,
+  classifyProteinRotationGroup,
+  classifyCarbRotationGroup,
+  getRotationNoise
+} from "./FoodRotation";
 
 export interface MealIngredient {
   foodId: string;
@@ -66,6 +72,8 @@ export interface MealBuilderInput {
   costTier: CostTier;
   varietyTracker?: VarietyTracker; // PASSO 23: Track variety constraints
   rotationEngine?: RotationEngine; // PASSO 32: Track rotation penalties
+  foodRotation?: FoodRotationEngine; // Food Rotation Engine: max 2x and group alternation
+  rotationSeed?: string; // deterministic variation per user/week
 }
 
 /**
@@ -203,21 +211,44 @@ function selectProteinSource(
   costTier: CostTier,
   excludedFoods: string[] = [],
   varietyTracker?: VarietyTracker,
-  rotationEngine?: RotationEngine
+  rotationEngine?: RotationEngine,
+  foodRotation?: FoodRotationEngine,
+  rotationSeed: string = "default"
 ): FoodItem | null {
   let proteinFoods = filterExcludedFoods(availableFoods, excludedFoods)
     .filter(f => 
       f.category === CATEGORIES.protein && 
       f.macros && 
-      f.macros.protein > 15 // At least 15g protein per 100g
+      f.macros.protein > 10 // At least 10g protein per 100g
     );
   
   // PASSO 24: Filter by cost tier
   proteinFoods = filterByCostTier(proteinFoods, costTier);
+  const baseProteinFoods = [...proteinFoods];
+
+  // Food Rotation: no food more than 2x/week
+  const underLimitProteins = proteinFoods.filter(f => !foodRotation || foodRotation.canUseFood(f.name));
+  if (underLimitProteins.length > 0) {
+    proteinFoods = underLimitProteins;
+  }
+
+  // Food Rotation: alternate protein groups chicken/beef/fish/eggs/vegetarian
+  if (foodRotation && proteinFoods.length > 0) {
+    const preferredGroup = foodRotation.getPreferredProteinGroup();
+    const preferredCandidates = proteinFoods.filter(f => classifyProteinRotationGroup(f.name) === preferredGroup);
+    if (preferredCandidates.length > 0) {
+      proteinFoods = preferredCandidates;
+    }
+  }
   
   // PASSO 23: Filter by variety constraints
   if (varietyTracker) {
     proteinFoods = proteinFoods.filter(f => varietyTracker.canUseProteinSource(f));
+  }
+
+  // Fallback: relax constraints progressively without immediately allowing unlimited repetition
+  if (proteinFoods.length === 0) {
+    proteinFoods = underLimitProteins.length > 0 ? underLimitProteins : baseProteinFoods;
   }
   
   if (proteinFoods.length === 0) return null;
@@ -227,8 +258,8 @@ function selectProteinSource(
   if (costTier === "low") {
     // Maximize protein per euro with variety consideration
     sorted = proteinFoods.sort((a, b) => 
-      calculateFoodScore(b, costTier, varietyTracker, true, rotationEngine) - 
-      calculateFoodScore(a, costTier, varietyTracker, true, rotationEngine)
+      (calculateFoodScore(b, costTier, varietyTracker, true, rotationEngine) + getRotationNoise(b.name, rotationSeed) * 12) - 
+      (calculateFoodScore(a, costTier, varietyTracker, true, rotationEngine) + getRotationNoise(a.name, rotationSeed) * 12)
     );
   } else if (costTier === "high") {
     // Maximize protein content (quality) with variety consideration
@@ -242,7 +273,7 @@ function selectProteinSource(
     sorted = proteinFoods.sort((a, b) => {
       const scoreA = calculateFoodScore(a, costTier, varietyTracker, true, rotationEngine) * (a.macros?.protein || 0);
       const scoreB = calculateFoodScore(b, costTier, varietyTracker, true, rotationEngine) * (b.macros?.protein || 0);
-      return scoreB - scoreA;
+      return (scoreB + getRotationNoise(b.name, rotationSeed) * 12) - (scoreA + getRotationNoise(a.name, rotationSeed) * 12);
     });
   }
   
@@ -266,19 +297,40 @@ function selectCarbSource(
   costTier: CostTier,
   excludedFoods: string[] = [],
   varietyTracker?: VarietyTracker,
-  rotationEngine?: RotationEngine
+  rotationEngine?: RotationEngine,
+  foodRotation?: FoodRotationEngine,
+  rotationSeed: string = "default"
 ): FoodItem | null {
   let carbFoods = filterExcludedFoods(availableFoods, excludedFoods)
     .filter(f => 
       (f.category === CATEGORIES.grains || f.category === CATEGORIES.vegetables) &&
       f.macros && 
       f.macros.carbs > 15 && // At least 15g carbs per 100g
-      f.macros.carbs > f.macros.protein && // More carbs than protein
-      !f.name.toLowerCase().includes("oat") // Exclude oats (breakfast only)
+      f.macros.carbs > f.macros.protein // More carbs than protein
     );
   
   // PASSO 24: Filter by cost tier
   carbFoods = filterByCostTier(carbFoods, costTier);
+  const baseCarbFoods = [...carbFoods];
+
+  // Food Rotation: no food more than 2x/week
+  const underLimitCarbs = carbFoods.filter(f => !foodRotation || foodRotation.canUseFood(f.name));
+  if (underLimitCarbs.length > 0) {
+    carbFoods = underLimitCarbs;
+  }
+
+  // Food Rotation: alternate carbs between rice/pasta/oats/potatoes groups
+  if (foodRotation && carbFoods.length > 0) {
+    const preferredGroup = foodRotation.getPreferredCarbGroup();
+    const preferredCandidates = carbFoods.filter(f => classifyCarbRotationGroup(f.name) === preferredGroup);
+    if (preferredCandidates.length > 0) {
+      carbFoods = preferredCandidates;
+    }
+  }
+
+  if (carbFoods.length === 0) {
+    carbFoods = underLimitCarbs.length > 0 ? underLimitCarbs : baseCarbFoods;
+  }
   
   if (carbFoods.length === 0) return null;
   
@@ -287,8 +339,8 @@ function selectCarbSource(
   if (costTier === "low") {
     // Maximize carbs per euro with variety consideration
     sorted = carbFoods.sort((a, b) => 
-      calculateFoodScore(b, costTier, varietyTracker, false, rotationEngine) - 
-      calculateFoodScore(a, costTier, varietyTracker, false, rotationEngine)
+      (calculateFoodScore(b, costTier, varietyTracker, false, rotationEngine) + getRotationNoise(b.name, rotationSeed) * 12) - 
+      (calculateFoodScore(a, costTier, varietyTracker, false, rotationEngine) + getRotationNoise(a.name, rotationSeed) * 12)
     );
   } else if (costTier === "high") {
     // Prefer quinoa, sweet potato with variety consideration
@@ -309,7 +361,7 @@ function selectCarbSource(
     sorted = carbFoods.sort((a, b) => {
       const scoreA = calculateFoodScore(a, costTier, varietyTracker, false, rotationEngine);
       const scoreB = calculateFoodScore(b, costTier, varietyTracker, false, rotationEngine);
-      return scoreB - scoreA;
+      return (scoreB + getRotationNoise(b.name, rotationSeed) * 12) - (scoreA + getRotationNoise(a.name, rotationSeed) * 12);
     });
   }
   
@@ -328,7 +380,8 @@ function selectVegetable(
   availableFoods: FoodItem[],
   costTier: CostTier,
   excludedFoods: string[] = [],
-  varietyTracker?: VarietyTracker
+  varietyTracker?: VarietyTracker,
+  foodRotation?: FoodRotationEngine
 ): FoodItem | null {
   let vegetables = filterExcludedFoods(availableFoods, excludedFoods)
     .filter(f => 
@@ -339,8 +392,23 @@ function selectVegetable(
   
   // PASSO 24: Filter by cost tier
   vegetables = filterByCostTier(vegetables, costTier);
+
+  // Food Rotation: no vegetable more than 2x/week (fallback if needed)
+  const underLimitVegetables = vegetables.filter(v => !foodRotation || foodRotation.canUseFood(v.name));
+  if (underLimitVegetables.length > 0) {
+    vegetables = underLimitVegetables;
+  }
   
   if (vegetables.length === 0) return null;
+
+  // Food Rotation: prioritize new vegetables until minimum diversity is reached
+  if (foodRotation?.shouldPrioritizeNewVegetables()) {
+    const stats = foodRotation.getStats();
+    const neverUsedVegetables = vegetables.filter(v => !stats.foodUsage.has(v.name));
+    if (neverUsedVegetables.length > 0) {
+      vegetables = neverUsedVegetables;
+    }
+  }
   
   // PASSO 23: Try to use a new vegetable first (for variety)
   if (varietyTracker) {
@@ -375,7 +443,8 @@ function selectVegetable(
 function selectFatSource(
   availableFoods: FoodItem[],
   costTier: CostTier,
-  excludedFoods: string[] = []
+  excludedFoods: string[] = [],
+  foodRotation?: FoodRotationEngine
 ): FoodItem | null {
   let fatFoods = filterExcludedFoods(availableFoods, excludedFoods)
     .filter(f => 
@@ -386,6 +455,12 @@ function selectFatSource(
   
   // PASSO 24: Filter by cost tier
   fatFoods = filterByCostTier(fatFoods, costTier);
+
+  // Food Rotation: no food more than 2x/week (fallback if needed)
+  const underLimitFats = fatFoods.filter(f => !foodRotation || foodRotation.canUseFood(f.name));
+  if (underLimitFats.length > 0) {
+    fatFoods = underLimitFats;
+  }
   
   if (fatFoods.length === 0) return null;
   
@@ -446,13 +521,22 @@ function generateMealName(
  * Output: Chicken + Rice + Broccoli (130g chicken, 179g rice, 150g broccoli)
  */
 export function buildMeal(input: MealBuilderInput): BuiltMeal {
-  const { macroTargetsPerMeal, availableFoods, excludedFoods = [], costTier, varietyTracker, rotationEngine } = input;
+  const {
+    macroTargetsPerMeal,
+    availableFoods,
+    excludedFoods = [],
+    costTier,
+    varietyTracker,
+    rotationEngine,
+    foodRotation,
+    rotationSeed = "default"
+  } = input;
   
   // 1. Select food sources (with variety and cost tier constraints)
-  const proteinSource = selectProteinSource(availableFoods, costTier, excludedFoods, varietyTracker, rotationEngine);
-  const carbSource = selectCarbSource(availableFoods, costTier, excludedFoods, varietyTracker, rotationEngine);
-  const vegetable = selectVegetable(availableFoods, costTier, excludedFoods, varietyTracker);
-  const fatSource = selectFatSource(availableFoods, costTier, excludedFoods);
+  const proteinSource = selectProteinSource(availableFoods, costTier, excludedFoods, varietyTracker, rotationEngine, foodRotation, rotationSeed);
+  const carbSource = selectCarbSource(availableFoods, costTier, excludedFoods, varietyTracker, rotationEngine, foodRotation, rotationSeed);
+  const vegetable = selectVegetable(availableFoods, costTier, excludedFoods, varietyTracker, foodRotation);
+  const fatSource = selectFatSource(availableFoods, costTier, excludedFoods, foodRotation);
   
   // 2. Validate we have at least protein and carbs
   if (!proteinSource || !carbSource) {
@@ -474,6 +558,18 @@ export function buildMeal(input: MealBuilderInput): BuiltMeal {
     
     if (fatSource) {
       varietyTracker.recordFoodUsage(fatSource.name);
+    }
+  }
+
+  // Food Rotation tracking
+  if (foodRotation) {
+    foodRotation.recordFood(proteinSource);
+    foodRotation.recordFood(carbSource);
+    if (vegetable) {
+      foodRotation.recordFood(vegetable);
+    }
+    if (fatSource) {
+      foodRotation.recordFood(fatSource);
     }
   }
   
@@ -521,7 +617,7 @@ export function buildMeal(input: MealBuilderInput): BuiltMeal {
  * PASSO 24: Filters breakfast foods by cost tier
  */
 export function buildBreakfast(input: MealBuilderInput): BuiltMeal {
-  const { availableFoods, excludedFoods = [], costTier } = input;
+  const { availableFoods, excludedFoods = [], costTier, foodRotation } = input;
   
   // PASSO 24: Filter by cost tier first
   const tierFoods = filterByCostTier(availableFoods, costTier);
@@ -539,9 +635,14 @@ export function buildBreakfast(input: MealBuilderInput): BuiltMeal {
   
   const fruit = filterExcludedFoods(tierFoods, excludedFoods)
     .find(f => f.category === CATEGORIES.fruits);
+
+  // Food Rotation: if core breakfast foods already exceeded weekly limit, fallback to fully dynamic meal
+  const breakfastLockedByRotation =
+    (oats && foodRotation && !foodRotation.canUseFood(oats.name)) ||
+    (dairy && foodRotation && !foodRotation.canUseFood(dairy.name));
   
   // Fallback to regular meal builder if breakfast-specific foods not available
-  if (!oats || !dairy) {
+  if (!oats || !dairy || breakfastLockedByRotation) {
     return buildMeal(input);
   }
   
@@ -574,6 +675,14 @@ export function buildBreakfast(input: MealBuilderInput): BuiltMeal {
     .filter(Boolean)
     .map(n => n!.replace(/ \(.*\)/, ""))
     .join(" + ");
+
+  if (foodRotation) {
+    foodRotation.recordFood(oats);
+    foodRotation.recordFood(dairy);
+    if (fruit) {
+      foodRotation.recordFood(fruit);
+    }
+  }
   
   return {
     name,

@@ -11,6 +11,7 @@ import { loadHistory as loadHistoryFromStorage, loadLatestPlan } from "../core/s
 import { clearHistory as clearHistoryFromStorage } from "../core/storage/clearHistory";
 import { userPreferencesStore } from "../core/stores/UserPreferencesStore";
 import { isPlanValidForInput } from "../core/utils/planFingerprint";
+import { detectRepetitionRisk, getLatestWeeklyFeedback, getMostRepeatedFoods } from "../hooks/useWeeklyFeedback";
 
 const PURCHASED_ITEMS_KEY = "smartmarket_purchased_items";
 const LAST_WEEKLY_PLAN_KEY = "lastWeeklyPlan"; // PASSO 33.1
@@ -111,27 +112,41 @@ function loadAdherenceScoreFromStorage(): { score: number; timestamp: string; le
  */
 function applyAdaptiveAdjustments(
   input: PlanInput, 
-  adherence: { score: number; level: "high" | "good" | "low" } | null
+  adherence: { score: number; level: "high" | "good" | "low" } | null,
+  recentPlans: WeeklyPlan[]
 ): PlanInput {
-  if (!adherence || adherence.level === "high" || adherence.level === "good") {
-    // No adjustments needed for high/good adherence
-    return input;
-  }
-
-  // Low adherence (<70%) - simplify next week
-  console.log("⚠️ Low adherence detected - applying adaptive adjustments");
-  console.log("📉 Adherence score:", adherence.score + "%");
-  console.log("🔧 Adjustments: Simpler foods, reduced variety, budget-friendly");
-
+  const latestFeedback = getLatestWeeklyFeedback();
   const adjustedInput: PlanInput = {
     ...input,
-    // Force low cost tier for easier adherence
-    costTier: "low",
-    // Reduce meal complexity by using fewer meals per day
-    mealsPerDay: Math.max(3, input.mealsPerDay - 1),
-    // Prefer balanced diet style (simpler than others)
-    dietStyle: "balanced"
+    excludedFoods: [...(input.excludedFoods || [])]
   };
+
+  const lowAdherence = adherence?.level === "low" || latestFeedback?.response === "no";
+
+  if (lowAdherence) {
+    console.log("⚠️ Low adherence detected - applying simplification adjustments");
+    adjustedInput.costTier = "low";
+    adjustedInput.mealsPerDay = Math.max(3, input.mealsPerDay - 1);
+    adjustedInput.dietStyle = "balanced";
+  }
+
+  const repetitionRisk = detectRepetitionRisk(recentPlans) || latestFeedback?.repeatedTooMuch === true;
+  if (repetitionRisk) {
+    const repeatedFoods = getMostRepeatedFoods(recentPlans, 2);
+    adjustedInput.excludedFoods = [...new Set([...(adjustedInput.excludedFoods || []), ...repeatedFoods])];
+    if (adjustedInput.costTier === "low") {
+      adjustedInput.costTier = "medium";
+    }
+    console.log("🔄 Repetition detected - increasing variety by avoiding repeated foods:", repeatedFoods);
+  }
+
+  const isBulkingGoal = adjustedInput.fitnessGoal === "bulking" || adjustedInput.dietStyle === "comfort";
+  if (isBulkingGoal) {
+    adjustedInput.fitnessGoal = "bulking";
+    const baseProteinTarget = adjustedInput.proteinTargetPerDay || Math.round(adjustedInput.weightKg * 2);
+    adjustedInput.proteinTargetPerDay = Math.round(baseProteinTarget * 1.1);
+    console.log("💪 Bulking goal detected - increasing protein target by 10% for next week");
+  }
 
   return adjustedInput;
 }
@@ -386,7 +401,8 @@ export function ShoppingPlanProvider({ children }: ShoppingPlanProviderProps) {
 
       // PASSO 33.2: Load last adherence score and apply adaptive adjustments
       const lastAdherence = loadAdherenceScoreFromStorage();
-      const adjustedInput = applyAdaptiveAdjustments(input, lastAdherence);
+      const recentPlans = loadHistoryFromStorage().slice(0, 2);
+      const adjustedInput = applyAdaptiveAdjustments(input, lastAdherence, recentPlans);
       
       if (lastAdherence?.level === "low") {
         console.log("🎯 Adaptive adjustments applied for easier adherence");
