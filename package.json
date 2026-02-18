@@ -13,9 +13,11 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@sentry/react": "^10.39.0",
     "html-to-image": "^1.11.13",
     "i18next": "^25.8.7",
     "jspdf": "^4.1.0",
+    "posthog-js": "^1.350.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^16.5.4",

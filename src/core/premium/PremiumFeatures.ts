@@ -1,3 +1,5 @@
+import { isFeatureEnabled } from "../config/featureFlags";
+
 export type PremiumFeatureId =
   | "unlimitedFoodRotation"
   | "weeklyCoachAdjustments"
@@ -82,6 +84,10 @@ export function isPremiumUser(): boolean {
 }
 
 export function hasPremiumFeature(feature: PremiumFeatureId): boolean {
+  if (!isFeatureEnabled("premiumMonetizationV2")) {
+    return true;
+  }
+
   void feature;
   return isPremiumUser();
 }

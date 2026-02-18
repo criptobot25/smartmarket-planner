@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Card } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
+import { AppTelemetry } from "../components/AppTelemetry";
+import { WaitlistEmailCapture } from "../components/WaitlistEmailCapture";
 import { useShoppingPlan } from "../../contexts/ShoppingPlanContext";
 import "./LandingPage.css";
 
@@ -22,6 +24,7 @@ export function LandingPage() {
 
   return (
     <div className="landing-page">
+      <AppTelemetry />
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-content">
@@ -320,6 +323,12 @@ export function LandingPage() {
           <p className="cta-note">
             {t("landing.ctaNote")}
           </p>
+
+          <WaitlistEmailCapture
+            source="landing"
+            title="Join the paid beta waitlist"
+            subtitle="Get priority access when SmartMarket opens paid beta cohorts."
+          />
         </div>
       </section>
 
@@ -333,7 +342,7 @@ export function LandingPage() {
           
           <div className="footer-links">
             <Link to="/app">{t("landing.footerPlanner")}</Link>
-            <Link to="/app/premium">{t("landing.footerPremium")}</Link>
+            <Link to="/pricing">{t("landing.footerPremium")}</Link>
           </div>
           
           <p className="footer-copy">

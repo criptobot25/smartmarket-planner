@@ -1,4 +1,6 @@
 import { useNavigate } from "react-router-dom";
+import { AppTelemetry } from "../components/AppTelemetry";
+import { WaitlistEmailCapture } from "../components/WaitlistEmailCapture";
 import "./PremiumPage.css";
 
 export function PremiumPage() {
@@ -6,6 +8,7 @@ export function PremiumPage() {
 
   return (
     <div className="premium-page">
+      <AppTelemetry />
       <header className="premium-header">
         <button className="btn-back" onClick={() => navigate("/app/list")}>
           ← Back
@@ -86,6 +89,12 @@ export function PremiumPage() {
           <button className="btn-start" onClick={() => navigate("/app")}>
             🧭 Go to Planner
           </button>
+
+          <WaitlistEmailCapture
+            source="pricing"
+            title="Reserve your paid beta spot"
+            subtitle="We'll email launch access and early adopter pricing first."
+          />
         </section>
       </main>
     </div>

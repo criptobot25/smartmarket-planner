@@ -1,5 +1,6 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
+import { captureAppError } from '../../core/monitoring/errorMonitoring';
 
 interface Props {
   children: ReactNode;
@@ -38,9 +39,7 @@ export class ErrorBoundary extends Component<Props, State> {
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     // Log to console for debugging
     console.error('ErrorBoundary caught error:', error, errorInfo);
-    
-    // In production, you could send to error tracking service
-    // Example: Sentry.captureException(error, { extra: errorInfo });
+    captureAppError(error, { componentStack: errorInfo.componentStack });
   }
 
   handleReset = () => {

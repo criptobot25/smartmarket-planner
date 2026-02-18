@@ -13,6 +13,7 @@ import { userPreferencesStore } from "../core/stores/UserPreferencesStore";
 import { isPlanValidForInput } from "../core/utils/planFingerprint";
 import { detectRepetitionRisk, getLatestWeeklyFeedback, getMostRepeatedFoods } from "../hooks/useWeeklyFeedback";
 import { canUseWeeklyCoachAdjustments } from "../core/premium/PremiumFeatures";
+import { isFeatureEnabled } from "../core/config/featureFlags";
 
 const PURCHASED_ITEMS_KEY = "smartmarket_purchased_items";
 const LAST_WEEKLY_PLAN_KEY = "lastWeeklyPlan"; // PASSO 33.1
@@ -403,11 +404,15 @@ export function ShoppingPlanProvider({ children }: ShoppingPlanProviderProps) {
       // PASSO 33.2: Load last adherence score and apply adaptive adjustments
       const lastAdherence = loadAdherenceScoreFromStorage();
       const recentPlans = loadHistoryFromStorage().slice(0, 2);
-      const adjustedInput = canUseWeeklyCoachAdjustments()
+      const weeklyCoachEnabled = isFeatureEnabled("weeklyCoachAdjustmentsPremiumOnly")
+        ? canUseWeeklyCoachAdjustments()
+        : true;
+
+      const adjustedInput = weeklyCoachEnabled
         ? applyAdaptiveAdjustments(input, lastAdherence, recentPlans)
         : { ...input };
 
-      if (!canUseWeeklyCoachAdjustments()) {
+      if (!weeklyCoachEnabled) {
         console.log("🔒 Weekly Coach Adjustments are Premium-only");
       }
       
