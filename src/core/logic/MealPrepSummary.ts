@@ -264,14 +264,49 @@ function getCookingTime(foodName: string): string {
  * Calculate total prep time from all steps
  */
 function calculateTotalPrepTime(steps: PrepStep[]): string {
-  let totalMinutes = 0;
-  
-  steps.forEach(step => {
-    const timeMatch = step.estimatedTime.match(/(\d+)/);
-    if (timeMatch) {
-      totalMinutes += parseInt(timeMatch[1]);
+  const parseMinutes = (value: string): number => {
+    const lower = value.toLowerCase();
+    const hourMatch = lower.match(/(\d+)\s*h/);
+    const minuteMatch = lower.match(/(\d+)\s*(min|minute)/);
+
+    let minutes = 0;
+    if (hourMatch) {
+      minutes += parseInt(hourMatch[1], 10) * 60;
     }
-  });
+    if (minuteMatch) {
+      minutes += parseInt(minuteMatch[1], 10);
+    }
+
+    if (minutes === 0) {
+      const fallback = lower.match(/(\d+)/);
+      if (fallback) {
+        minutes = parseInt(fallback[1], 10);
+      }
+    }
+
+    return minutes;
+  };
+
+  const cookDurations = steps
+    .filter(step => step.action === "Cook")
+    .map(step => parseMinutes(step.estimatedTime));
+
+  const prepDurations = steps
+    .filter(step => step.action === "Prepare")
+    .map(step => parseMinutes(step.estimatedTime));
+
+  const portionDurations = steps
+    .filter(step => step.action === "Portion")
+    .map(step => parseMinutes(step.estimatedTime));
+
+  // Cooking tasks can run mostly in parallel (oven + stovetop), so use longest single cook block.
+  const cookBlock = cookDurations.length > 0 ? Math.max(...cookDurations) : 0;
+
+  // Prep tasks are partially batchable; cap cumulative overhead to avoid unrealistic inflation.
+  const prepBlock = Math.min(prepDurations.reduce((sum, value) => sum + value, 0), 90);
+
+  const portionBlock = portionDurations.reduce((sum, value) => sum + value, 0);
+  const totalMinutes = cookBlock + prepBlock + portionBlock;
   
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
