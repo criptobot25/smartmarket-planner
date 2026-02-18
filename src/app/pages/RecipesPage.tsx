@@ -1,20 +1,22 @@
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useShoppingPlan } from "../../contexts/ShoppingPlanContext";
 import { Recipe } from "../../core/models/Recipe";
 import "./RecipesPage.css";
 
 export function RecipesPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { recipeSuggestions } = useShoppingPlan();
 
   if (recipeSuggestions.length === 0) {
     return (
       <div className="recipes-page">
         <div className="empty-state">
-          <h2>🍳 Nenhuma sugestão disponível</h2>
-          <p>Gere um plano primeiro para ver receitas!</p>
+          <h2>🍳 {t("recipes.emptyTitle")}</h2>
+          <p>{t("recipes.emptySubtitle")}</p>
           <button className="btn-primary" onClick={() => navigate("/")}>
-            Voltar ao Início
+            {t("recipes.emptyButton")}
           </button>
         </div>
       </div>
@@ -22,20 +24,20 @@ export function RecipesPage() {
   }
 
   const mealTypeLabels = {
-    breakfast: "☀️ Café da Manhã",
-    lunch: "🍽️ Almoço",
-    dinner: "🌙 Jantar",
-    snack: "🍪 Lanche"
+    breakfast: `☀️ ${t("recipes.mealType.breakfast")}`,
+    lunch: `🍽️ ${t("recipes.mealType.lunch")}`,
+    dinner: `🌙 ${t("recipes.mealType.dinner")}`,
+    snack: `🍪 ${t("recipes.mealType.snack")}`
   };
 
   return (
     <div className="recipes-page">
       <header className="recipes-header">
         <button className="btn-back" onClick={() => navigate("/list")}>
-          ← Voltar
+          ← {t("recipes.back")}
         </button>
-        <h1>🍳 Receitas Sugeridas</h1>
-        <p>Baseadas nos ingredientes da sua lista</p>
+        <h1>🍳 {t("recipes.title")}</h1>
+        <p>{t("recipes.subtitle")}</p>
       </header>
 
       <main className="recipes-main">
@@ -55,6 +57,8 @@ interface RecipeCardProps {
 }
 
 function RecipeCard({ recipe, mealTypeLabels }: RecipeCardProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="recipe-card">
       <div className="recipe-card-header">
@@ -71,7 +75,7 @@ function RecipeCard({ recipe, mealTypeLabels }: RecipeCardProps) {
         </div>
         <div className="recipe-info">
           <span className="recipe-icon">👥</span>
-          <span>{recipe.servings} porções</span>
+          <span>{t("recipes.servings", { count: recipe.servings })}</span>
         </div>
       </div>
 
@@ -84,7 +88,7 @@ function RecipeCard({ recipe, mealTypeLabels }: RecipeCardProps) {
       </div>
 
       <div className="recipe-ingredients">
-        <h4>Ingredientes:</h4>
+        <h4>{t("recipes.ingredientsTitle")}</h4>
         <ul>
           {recipe.ingredients.slice(0, 5).map((ingredient, index) => (
             <li key={index}>
@@ -93,21 +97,21 @@ function RecipeCard({ recipe, mealTypeLabels }: RecipeCardProps) {
           ))}
           {recipe.ingredients.length > 5 && (
             <li className="more-ingredients">
-              +{recipe.ingredients.length - 5} ingredientes
+              {t("recipes.moreIngredients", { count: recipe.ingredients.length - 5 })}
             </li>
           )}
         </ul>
       </div>
 
       <div className="recipe-instructions">
-        <h4>Como preparar:</h4>
+        <h4>{t("recipes.instructionsTitle")}</h4>
         <ol>
           {recipe.instructions.slice(0, 3).map((instruction, index) => (
             <li key={index}>{instruction}</li>
           ))}
           {recipe.instructions.length > 3 && (
             <li className="more-steps">
-              +{recipe.instructions.length - 3} passos
+              {t("recipes.moreSteps", { count: recipe.instructions.length - 3 })}
             </li>
           )}
         </ol>

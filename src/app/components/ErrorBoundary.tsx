@@ -1,6 +1,7 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { captureAppError } from '../../core/monitoring/errorMonitoring';
+import i18n from '../../i18n';
 
 interface Props {
   children: ReactNode;
@@ -72,7 +73,7 @@ export class ErrorBoundary extends Component<Props, State> {
             color: '#111827',
             margin: '0 0 1rem 0'
           }}>
-            Oops! Something went wrong
+            {i18n.t('errorBoundary.title')}
           </h1>
           
           <p style={{
@@ -81,7 +82,7 @@ export class ErrorBoundary extends Component<Props, State> {
             marginBottom: '0.5rem',
             maxWidth: '500px'
           }}>
-            We encountered an unexpected error while loading this page.
+            {i18n.t('errorBoundary.subtitle')}
           </p>
           
           <p style={{
@@ -90,7 +91,7 @@ export class ErrorBoundary extends Component<Props, State> {
             marginBottom: '2rem',
             maxWidth: '500px'
           }}>
-            Don't worry - your meal plans and data are safe. Try returning to the planner or reloading the page.
+            {i18n.t('errorBoundary.description')}
           </p>
           
           {this.state.error && (
@@ -107,7 +108,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 fontWeight: '600',
                 color: '#991b1b'
               }}>
-                Error details
+                {i18n.t('errorBoundary.details')}
               </summary>
               <pre style={{
                 marginTop: '1rem',
@@ -139,7 +140,7 @@ export class ErrorBoundary extends Component<Props, State> {
               onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
               onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
             >
-              🏠 Return to Planner
+              🏠 {i18n.t('errorBoundary.backToPlanner')}
             </Link>
             
             <button
@@ -157,7 +158,7 @@ export class ErrorBoundary extends Component<Props, State> {
               onMouseOver={(e) => e.currentTarget.style.borderColor = '#4f46e5'}
               onMouseOut={(e) => e.currentTarget.style.borderColor = '#e5e7eb'}
             >
-              🔄 Reload Page
+              🔄 {i18n.t('errorBoundary.reload')}
             </button>
           </div>
         </div>

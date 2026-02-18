@@ -1,10 +1,12 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useShoppingPlan } from "../../contexts/ShoppingPlanContext";
 import "./HistoryPage.css";
 
 export function HistoryPage() {
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   const { history, loadHistory, clearHistory } = useShoppingPlan();
 
   // Carrega o histórico ao montar o componente
@@ -14,7 +16,7 @@ export function HistoryPage() {
 
   const handleClearHistory = () => {
     const confirmed = window.confirm(
-      "Tem certeza que deseja limpar todo o histórico? Esta ação não pode ser desfeita."
+      t("history.confirmClear")
     );
 
     if (confirmed) {
@@ -29,7 +31,9 @@ export function HistoryPage() {
   };
 
   const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString("pt-BR", {
+    const locale = i18n.language === "pt" ? "pt-BR" : "en-US";
+
+    return new Date(date).toLocaleDateString(locale, {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
@@ -39,35 +43,35 @@ export function HistoryPage() {
   };
 
   const dietStyleLabels = {
-    healthy: "Saudável",
-    balanced: "Balanceado",
-    comfort: "Conforto"
+    healthy: t("history.dietStyle.healthy"),
+    balanced: t("history.dietStyle.balanced"),
+    comfort: t("history.dietStyle.comfort")
   };
 
   const costTierLabels = {
-    low: "Low cost",
-    medium: "Medium cost",
-    high: "High cost"
+    low: t("shoppingList.costLevel.low"),
+    medium: t("shoppingList.costLevel.medium"),
+    high: t("shoppingList.costLevel.high")
   } as const;
 
   return (
     <div className="history-page">
       <header className="history-header">
         <button className="btn-back" onClick={() => navigate("/")}>
-          ← Voltar
+          ← {t("history.back")}
         </button>
-        <h1>📚 Histórico de Planos</h1>
-        <p>Seus últimos 3 planejamentos</p>
+        <h1>📚 {t("history.title")}</h1>
+        <p>{t("history.subtitle")}</p>
       </header>
 
       <main className="history-main">
         {history.length === 0 ? (
           <div className="empty-history">
             <div className="empty-icon">📭</div>
-            <h2>Nenhum histórico ainda</h2>
-            <p>Seus planos gerados aparecerão aqui</p>
+            <h2>{t("history.emptyTitle")}</h2>
+            <p>{t("history.emptySubtitle")}</p>
             <button className="btn-primary" onClick={() => navigate("/")}>
-              Criar Primeiro Plano
+              {t("history.emptyButton")}
             </button>
           </div>
         ) : (
@@ -77,7 +81,7 @@ export function HistoryPage() {
                 className="btn-clear-history"
                 onClick={handleClearHistory}
               >
-                🗑️ Limpar Histórico
+                🗑️ {t("history.clear")}
               </button>
             </div>
 
@@ -85,12 +89,12 @@ export function HistoryPage() {
               {history.map((plan, index) => (
                 <div key={plan.id} className="plan-card">
                   <div className="plan-badge">
-                    {index === 0 ? "Mais recente" : `#${index + 1}`}
+                    {index === 0 ? t("history.mostRecent") : `#${index + 1}`}
                   </div>
 
                   <div className="plan-info">
                     <h3 className="plan-title">
-                      Plano Semanal - {dietStyleLabels[plan.planInput.dietStyle]}
+                      {t("history.weeklyPlanTitle", { dietStyle: dietStyleLabels[plan.planInput.dietStyle] })}
                     </h3>
                     <p className="plan-date">
                       📅 {formatDate(plan.createdAt)}
@@ -100,7 +104,7 @@ export function HistoryPage() {
                   <div className="plan-details">
                     <div className="plan-detail-item">
                       <span className="detail-icon">🧍</span>
-                      <span>{plan.planInput.age} anos · {plan.planInput.heightCm} cm</span>
+                      <span>{t("history.ageHeight", { age: plan.planInput.age, height: plan.planInput.heightCm })}</span>
                     </div>
                     <div className="plan-detail-item">
                       <span className="detail-icon">💰</span>
@@ -108,13 +112,13 @@ export function HistoryPage() {
                     </div>
                     <div className="plan-detail-item">
                       <span className="detail-icon">🛒</span>
-                      <span>{plan.shoppingList.length} itens</span>
+                      <span>{t("history.items", { count: plan.shoppingList.length })}</span>
                     </div>
                   </div>
 
                   {plan.planInput.restrictions.length > 0 && (
                     <div className="plan-restrictions">
-                      <span className="restriction-label">Restrições:</span>
+                      <span className="restriction-label">{t("history.restrictionsLabel")}</span>
                       {plan.planInput.restrictions.map((restriction, idx) => (
                         <span key={idx} className="restriction-tag">
                           {restriction}
@@ -128,7 +132,7 @@ export function HistoryPage() {
                       className="btn-load-plan"
                       onClick={handleLoadPlan}
                     >
-                      Carregar Plano
+                      {t("history.loadPlan")}
                     </button>
                   </div>
                 </div>
@@ -137,8 +141,7 @@ export function HistoryPage() {
 
             <div className="history-info">
               <p>
-                ℹ️ O histórico guarda automaticamente os últimos 3 planos gerados.
-                Planos mais antigos são removidos automaticamente.
+                {t("history.info")}
               </p>
             </div>
           </>

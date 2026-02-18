@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { AppTelemetry } from "../components/AppTelemetry";
@@ -7,47 +8,49 @@ import logoNutriPilot from "../../assets/logo-nutripilot.svg";
 import "./LandingPage.css";
 
 export function LandingPage() {
+  const { t } = useTranslation();
+
   return (
     <div className="landing-page">
       <AppTelemetry />
 
       <section className="hero">
         <div className="hero-content">
-          <img src={logoNutriPilot} alt="NutriPilot" className="hero-logo-image" />
+          <img src={logoNutriPilot} alt={t("app.name")} className="hero-logo-image" />
 
-          <h1 className="hero-title">Your weekly nutrition plan, automated.</h1>
+          <h1 className="hero-title">{t("landingV2.heroTitle")}</h1>
           <p className="hero-subtitle">
-            NutriPilot builds your grocery list based on your body, goals, and training.
+            {t("landingV2.heroSubtitle")}
           </p>
 
           <div className="hero-cta">
             <Link to="/app" className="hero-link">
-              <Button variant="primary">Generate My Plan</Button>
+              <Button variant="primary">{t("landingV2.generatePlan")}</Button>
             </Link>
             <Link to="/pricing" className="hero-link">
-              <Button variant="secondary">Upgrade to Premium</Button>
+              <Button variant="secondary">{t("landingV2.upgradePremium")}</Button>
             </Link>
           </div>
 
-          <p className="hero-tagline">Navigate Your Nutrition</p>
+          <p className="hero-tagline">{t("landingV2.heroTagline")}</p>
         </div>
       </section>
 
       <section className="feature-highlights">
         <div className="section-wrap">
-          <h2>Built like a real fitness coach</h2>
+          <h2>{t("landingV2.featuresTitle")}</h2>
           <div className="cards-grid">
             <Card>
-              <h3>Body-Driven Planning</h3>
-              <p>Plans adapt to sex, age, weight, height, training, and fitness goal.</p>
+              <h3>{t("landingV2.feature1Title")}</h3>
+              <p>{t("landingV2.feature1Desc")}</p>
             </Card>
             <Card>
-              <h3>Grocery Mission Automation</h3>
-              <p>You get consolidated quantities and practical shopping instructions in seconds.</p>
+              <h3>{t("landingV2.feature2Title")}</h3>
+              <p>{t("landingV2.feature2Desc")}</p>
             </Card>
             <Card>
-              <h3>Premium Execution Layer</h3>
-              <p>Unlock adaptive coaching, food rotation, and prep guide PDF exports.</p>
+              <h3>{t("landingV2.feature3Title")}</h3>
+              <p>{t("landingV2.feature3Desc")}</p>
             </Card>
           </div>
         </div>
@@ -55,30 +58,30 @@ export function LandingPage() {
 
       <section className="mockup-section">
         <div className="section-wrap">
-          <h2>Product Preview</h2>
+          <h2>{t("landingV2.previewTitle")}</h2>
           <div className="mockup-grid">
-            <div className="mockup-card">Onboarding Coach Wizard</div>
-            <div className="mockup-card">Nutrition Plan Dashboard</div>
-            <div className="mockup-card">Grocery Mission + Prep Guide</div>
+            <div className="mockup-card">{t("landingV2.preview1")}</div>
+            <div className="mockup-card">{t("landingV2.preview2")}</div>
+            <div className="mockup-card">{t("landingV2.preview3")}</div>
           </div>
         </div>
       </section>
 
       <section className="proof-section">
         <div className="section-wrap">
-          <h2>Trusted by early fitness users</h2>
+          <h2>{t("landingV2.proofTitle")}</h2>
           <div className="proof-grid">
             <Card>
-              <p>“Finally feels like a coach, not just another calorie app.”</p>
-              <span>— Beta User Placeholder</span>
+              <p>{t("landingV2.quote1")}</p>
+              <span>{t("landingV2.quoteAuthor")}</span>
             </Card>
             <Card>
-              <p>“I open it once and my week is organized.”</p>
-              <span>— Beta User Placeholder</span>
+              <p>{t("landingV2.quote2")}</p>
+              <span>{t("landingV2.quoteAuthor")}</span>
             </Card>
             <Card>
-              <p>“The premium flow made me understand exactly why to upgrade.”</p>
-              <span>— Beta User Placeholder</span>
+              <p>{t("landingV2.quote3")}</p>
+              <span>{t("landingV2.quoteAuthor")}</span>
             </Card>
           </div>
         </div>
@@ -86,43 +89,43 @@ export function LandingPage() {
 
       <section className="pricing-preview">
         <div className="section-wrap pricing-wrap">
-          <h2>Simple pricing, premium outcomes</h2>
+          <h2>{t("landingV2.pricingTitle")}</h2>
           <div className="pricing-cards">
             <Card className="pricing-card">
-              <h3>Free</h3>
+              <h3>{t("landingV2.pricingFreeTitle")}</h3>
               <p className="price">€0</p>
               <ul>
-                <li>Nutrition Plan generation</li>
-                <li>Basic Grocery Mission</li>
-                <li>Core meal suggestions</li>
+                <li>{t("landingV2.pricingFreeFeature1")}</li>
+                <li>{t("landingV2.pricingFreeFeature2")}</li>
+                <li>{t("landingV2.pricingFreeFeature3")}</li>
               </ul>
             </Card>
 
             <Card className="pricing-card featured">
-              <h3>NutriPilot Pro</h3>
-              <p className="price">€9.99/month</p>
+              <h3>{t("landingV2.pricingProTitle")}</h3>
+              <p className="price">{t("landingV2.pricingProPrice")}</p>
               <ul>
-                <li>Unlimited Food Rotation</li>
-                <li>Weekly Coach Adjustments</li>
-                <li>Recipe Packs + Meal Prep Guide PDF</li>
+                <li>{t("landingV2.pricingProFeature1")}</li>
+                <li>{t("landingV2.pricingProFeature2")}</li>
+                <li>{t("landingV2.pricingProFeature3")}</li>
               </ul>
             </Card>
           </div>
 
           <WaitlistEmailCapture
             source="landing"
-            title="Join NutriPilot paid beta"
-            subtitle="Get premium early-access invites and launch pricing first."
+            title={t("landingV2.waitlistTitle")}
+            subtitle={t("landingV2.waitlistSubtitle")}
           />
         </div>
       </section>
 
       <footer className="landing-footer">
-        <img src={logoNutriPilot} alt="NutriPilot" className="footer-logo-image" />
+        <img src={logoNutriPilot} alt={t("app.name")} className="footer-logo-image" />
         <div className="footer-links">
-          <Link to="/app">Nutrition Plan</Link>
-          <Link to="/app/list">Grocery Mission</Link>
-          <Link to="/pricing">Premium</Link>
+          <Link to="/app">{t("nav.nutritionPlan")}</Link>
+          <Link to="/app/list">{t("nav.groceryMission")}</Link>
+          <Link to="/pricing">{t("nav.premium")}</Link>
         </div>
       </footer>
     </div>

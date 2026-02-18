@@ -16,6 +16,7 @@
  */
 
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { MealPrepSummary } from "../../core/logic/MealPrepSummary";
 import "./PrepChecklist.css";
 
@@ -29,6 +30,7 @@ interface CheckedState {
 }
 
 export function PrepChecklist({ mealPrepSummary, weekId }: PrepChecklistProps) {
+  const { t } = useTranslation();
   const [checkedSteps, setCheckedSteps] = useState<CheckedState>({});
   const [isExpanded, setIsExpanded] = useState(true);
 
@@ -69,16 +71,19 @@ export function PrepChecklist({ mealPrepSummary, weekId }: PrepChecklistProps) {
           <div className="prep-title-section">
             <span className="prep-icon">🍳</span>
             <div className="prep-titles">
-              <h3 className="prep-main-title">Your Sunday Prep Checklist</h3>
+              <h3 className="prep-main-title">{t("prepChecklist.title")}</h3>
               <p className="prep-subtitle">
                 {isComplete 
-                  ? "✨ You're all set! Week prep complete." 
-                  : `${totalSteps - completedSteps} steps remaining · ${mealPrepSummary.totalPrepTime}`
+                  ? t("prepChecklist.completeSubtitle")
+                  : t("prepChecklist.remainingSubtitle", {
+                      remaining: totalSteps - completedSteps,
+                      time: mealPrepSummary.totalPrepTime
+                    })
                 }
               </p>
             </div>
           </div>
-          <button className="expand-toggle" aria-label="Toggle checklist">
+          <button className="expand-toggle" aria-label={t("prepChecklist.toggleAria")}>
             {isExpanded ? '▼' : '▶'}
           </button>
         </div>
@@ -101,10 +106,12 @@ export function PrepChecklist({ mealPrepSummary, weekId }: PrepChecklistProps) {
               <div className="batch-quick">
                 <span className="batch-icon">🍗</span>
                 <div className="batch-text">
-                  <strong>Proteins</strong>
+                  <strong>{t("prepChecklist.batch.proteins")}</strong>
                   <span>{mealPrepSummary.proteinBatches[0]}</span>
                   {mealPrepSummary.proteinBatches.length > 1 && (
-                    <span className="batch-more">+{mealPrepSummary.proteinBatches.length - 1} more</span>
+                    <span className="batch-more">
+                      {t("prepChecklist.batch.more", { count: mealPrepSummary.proteinBatches.length - 1 })}
+                    </span>
                   )}
                 </div>
               </div>
@@ -114,10 +121,12 @@ export function PrepChecklist({ mealPrepSummary, weekId }: PrepChecklistProps) {
               <div className="batch-quick">
                 <span className="batch-icon">🌾</span>
                 <div className="batch-text">
-                  <strong>Carbs</strong>
+                  <strong>{t("prepChecklist.batch.carbs")}</strong>
                   <span>{mealPrepSummary.grainBatches[0]}</span>
                   {mealPrepSummary.grainBatches.length > 1 && (
-                    <span className="batch-more">+{mealPrepSummary.grainBatches.length - 1} more</span>
+                    <span className="batch-more">
+                      {t("prepChecklist.batch.more", { count: mealPrepSummary.grainBatches.length - 1 })}
+                    </span>
                   )}
                 </div>
               </div>
@@ -127,10 +136,12 @@ export function PrepChecklist({ mealPrepSummary, weekId }: PrepChecklistProps) {
               <div className="batch-quick">
                 <span className="batch-icon">🥬</span>
                 <div className="batch-text">
-                  <strong>Vegetables</strong>
+                  <strong>{t("prepChecklist.batch.vegetables")}</strong>
                   <span>{mealPrepSummary.vegetableBatches[0]}</span>
                   {mealPrepSummary.vegetableBatches.length > 1 && (
-                    <span className="batch-more">+{mealPrepSummary.vegetableBatches.length - 1} more</span>
+                    <span className="batch-more">
+                      {t("prepChecklist.batch.more", { count: mealPrepSummary.vegetableBatches.length - 1 })}
+                    </span>
                   )}
                 </div>
               </div>
@@ -139,7 +150,7 @@ export function PrepChecklist({ mealPrepSummary, weekId }: PrepChecklistProps) {
 
           {/* Step-by-step checklist */}
           <div className="prep-steps-checklist">
-            <h4 className="steps-title">📋 Prep Steps</h4>
+            <h4 className="steps-title">📋 {t("prepChecklist.stepsTitle")}</h4>
             <div className="steps-list">
               {mealPrepSummary.sundayPrepList.map((step) => (
                 <label 
@@ -173,8 +184,8 @@ export function PrepChecklist({ mealPrepSummary, weekId }: PrepChecklistProps) {
             <div className="prep-complete-message">
               <span className="complete-icon">🎉</span>
               <div className="complete-text">
-                <strong>Week prep complete!</strong>
-                <p>Your meals are ready. Now relax and enjoy your week stress-free.</p>
+                <strong>{t("prepChecklist.completionTitle")}</strong>
+                <p>{t("prepChecklist.completionSubtitle")}</p>
               </div>
             </div>
           )}
@@ -182,7 +193,7 @@ export function PrepChecklist({ mealPrepSummary, weekId }: PrepChecklistProps) {
           {/* Meal prep tips */}
           {mealPrepSummary.tips.length > 0 && (
             <div className="prep-tips-section">
-              <h4 className="tips-title">💡 Pro Tips</h4>
+              <h4 className="tips-title">💡 {t("prepChecklist.tipsTitle")}</h4>
               <ul className="tips-list">
                 {mealPrepSummary.tips.slice(0, 3).map((tip, i) => (
                   <li key={i} className="tip-item">{tip}</li>

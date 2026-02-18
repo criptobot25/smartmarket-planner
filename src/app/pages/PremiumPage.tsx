@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { AppTelemetry } from "../components/AppTelemetry";
 import { WaitlistEmailCapture } from "../components/WaitlistEmailCapture";
 import logoNutriPilot from "../../assets/logo-nutripilot.svg";
@@ -6,96 +7,97 @@ import "./PremiumPage.css";
 
 export function PremiumPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <div className="premium-page">
       <AppTelemetry />
       <header className="premium-header">
         <button className="btn-back" onClick={() => navigate("/app/list")}>
-          ← Back
+          ← {t("premiumPage.back")}
         </button>
-        <img src={logoNutriPilot} alt="NutriPilot" className="premium-logo" />
-        <h1>✨ NutriPilot Pro</h1>
-        <p className="subtitle">Know in 5 seconds why people pay: less repetition, better adherence, printable execution.</p>
+        <img src={logoNutriPilot} alt={t("app.name")} className="premium-logo" />
+        <h1>{t("premiumPage.title")}</h1>
+        <p className="subtitle">{t("premiumPage.subtitle")}</p>
       </header>
 
       <main className="premium-main">
         <section className="value-intro">
-          <h2>3 features impossible in Free</h2>
-          <p>Free gives a solid base. Premium gives the execution system.</p>
+          <h2>{t("premiumPage.valueIntroTitle")}</h2>
+          <p>{t("premiumPage.valueIntroSubtitle")}</p>
         </section>
 
         <section className="comparison-section">
           <div className="plan-card free-plan">
             <div className="plan-header">
-              <h2>Free</h2>
+              <h2>{t("premiumPage.free.title")}</h2>
               <div className="price">
                 <span className="amount">€0</span>
-                <span className="period">/month</span>
+                <span className="period">{t("premiumPage.periodMonth")}</span>
               </div>
             </div>
             <ul className="features-list">
-              <li className="included">✓ Weekly nutrition plan + grocery mission</li>
-              <li className="included">✓ Macro-based nutrition targets</li>
-              <li className="included">✓ Basic recipe suggestions</li>
-              <li className="excluded">✗ Unlimited Food Rotation</li>
-              <li className="excluded">✗ Weekly Coach Adjustments</li>
-              <li className="excluded">✗ Recipe Packs + Meal Prep Guide PDF</li>
+              <li className="included">✓ {t("premiumPage.free.feature1")}</li>
+              <li className="included">✓ {t("premiumPage.free.feature2")}</li>
+              <li className="included">✓ {t("premiumPage.free.feature3")}</li>
+              <li className="excluded">✗ {t("premiumPage.free.feature4")}</li>
+              <li className="excluded">✗ {t("premiumPage.free.feature5")}</li>
+              <li className="excluded">✗ {t("premiumPage.free.feature6")}</li>
             </ul>
             <button className="btn-current" disabled>
-              Current Plan
+              {t("premiumPage.free.currentPlan")}
             </button>
           </div>
 
           <div className="plan-card premium-plan">
-            <div className="badge">🔥 Best Value</div>
+            <div className="badge">🔥 {t("premiumPage.premium.bestValue")}</div>
             <div className="plan-header">
-              <h2>Premium</h2>
+              <h2>{t("premiumPage.premium.title")}</h2>
               <div className="price">
                 <span className="amount">€9.99</span>
-                <span className="period">/month</span>
+                <span className="period">{t("premiumPage.periodMonth")}</span>
               </div>
             </div>
             <ul className="features-list">
-              <li className="included">✓ Everything in Free</li>
-              <li className="included">✓ Unlimited Food Rotation</li>
-              <li className="included">✓ Weekly Coach Adjustments</li>
-              <li className="included">✓ Recipe Packs + Meal Prep Guide PDF</li>
-              <li className="included">✓ Faster weekly execution with less decision fatigue</li>
+              <li className="included">✓ {t("premiumPage.premium.feature1")}</li>
+              <li className="included">✓ {t("premiumPage.premium.feature2")}</li>
+              <li className="included">✓ {t("premiumPage.premium.feature3")}</li>
+              <li className="included">✓ {t("premiumPage.premium.feature4")}</li>
+              <li className="included">✓ {t("premiumPage.premium.feature5")}</li>
             </ul>
             <button className="btn-waitlist" onClick={() => navigate("/app") }>
-              🚀 Upgrade Now
+              🚀 {t("premiumPage.premium.upgradeNow")}
             </button>
           </div>
         </section>
 
         <section className="faq-section">
-          <h2>What each premium feature changes</h2>
+          <h2>{t("premiumPage.faqTitle")}</h2>
           <div className="faq-item">
-            <h3>Unlimited Food Rotation</h3>
-            <p>Prevents repeating the same proteins week after week while preserving your targets and budget constraints.</p>
+            <h3>{t("premiumPage.faq.rotationTitle")}</h3>
+            <p>{t("premiumPage.faq.rotationBody")}</p>
           </div>
           <div className="faq-item">
-            <h3>Weekly Coach Adjustments</h3>
-            <p>Reads your adherence and repetition signals, then adapts next week automatically for consistency.</p>
+            <h3>{t("premiumPage.faq.coachTitle")}</h3>
+            <p>{t("premiumPage.faq.coachBody")}</p>
           </div>
           <div className="faq-item">
-            <h3>Recipe Packs + Meal Prep Guide PDF</h3>
-            <p>Turns planning into execution with structured recipe packs and printable prep workflow.</p>
+            <h3>{t("premiumPage.faq.recipeTitle")}</h3>
+            <p>{t("premiumPage.faq.recipeBody")}</p>
           </div>
         </section>
 
         <section className="cta-section">
-          <h2>Start free, upgrade when repetition starts costing results.</h2>
-          <p>If you want less friction and better weekly adherence, Premium pays for itself in consistency.</p>
+          <h2>{t("premiumPage.ctaTitle")}</h2>
+          <p>{t("premiumPage.ctaSubtitle")}</p>
           <button className="btn-start" onClick={() => navigate("/app")}>
-            🧭 Go to Nutrition Plan
+            🧭 {t("premiumPage.ctaButton")}
           </button>
 
           <WaitlistEmailCapture
             source="pricing"
-            title="Reserve your NutriPilot paid beta spot"
-            subtitle="We'll email launch access and early adopter pricing first."
+            title={t("premiumPage.waitlistTitle")}
+            subtitle={t("premiumPage.waitlistSubtitle")}
           />
         </section>
       </main>

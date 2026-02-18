@@ -5,6 +5,9 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { MemoryRouter } from "react-router-dom";
 import { Navbar } from "../app/layout/Navbar";
 import { PremiumModal } from "../app/components/PremiumModal";
+import { LandingPage } from "../app/pages/LandingPage";
+import { PremiumPage } from "../app/pages/PremiumPage";
+import { WeeklyCheckInModal } from "../app/components/WeeklyCheckInModal";
 import en from "../i18n/en.json";
 import pt from "../i18n/pt.json";
 
@@ -48,7 +51,20 @@ const REQUIRED_KEYS = [
   "shoppingList.categories.legumes",
   "shoppingList.categories.carbs",
   "shoppingList.categories.snacks",
-  "shoppingList.categories.supplements"
+  "shoppingList.categories.supplements",
+  "premiumPage.title",
+  "premiumPage.subtitle",
+  "landingV2.heroTitle",
+  "landingV2.generatePlan",
+  "landingV2.upgradePremium",
+  "weeklyCheckin.title",
+  "weeklyCheckin.option.yes.label",
+  "waitlist.join",
+  "shareCard.title",
+  "prepChecklist.title",
+  "history.title",
+  "recipes.title",
+  "errorBoundary.title"
 ] as const;
 
 async function createTestI18n() {
@@ -93,6 +109,13 @@ describe("Language consistency (PASSO 3)", () => {
               feature="unlimitedFoodRotation"
               remainingOptimizations={0}
             />
+            <LandingPage />
+            <PremiumPage />
+            <WeeklyCheckInModal
+              isOpen
+              onClose={() => undefined}
+              onSubmit={() => undefined}
+            />
           </MemoryRouter>
         </I18nextProvider>
       );
@@ -104,6 +127,10 @@ describe("Language consistency (PASSO 3)", () => {
     expect(enHtml).toContain("Grocery Mission");
     expect(enHtml).toContain("Monday Prep");
     expect(enHtml).toContain("Unlock your NutriPilot Pro Experience");
+    expect(enHtml).toContain("Your weekly nutrition plan, automated.");
+    expect(enHtml).toContain("Generate My Plan");
+    expect(enHtml).toContain("Know in 5 seconds why people pay");
+    expect(enHtml).toContain("Weekly Check-In");
     expect(i18n.t("planner.repeatLastWeek")).toBe("Repeat Last Week");
     expect(i18n.t("planner.premiumStackTitle")).toBe("Premium performance stack");
 
@@ -114,11 +141,17 @@ describe("Language consistency (PASSO 3)", () => {
     expect(ptHtml).toContain("Missão de Compras");
     expect(ptHtml).toContain("Preparo de Segunda");
     expect(ptHtml).toContain("Desbloqueie sua experiência NutriPilot Pro");
+    expect(ptHtml).toContain("Seu plano nutricional semanal, automatizado.");
+    expect(ptHtml).toContain("Gerar meu plano");
+    expect(ptHtml).toContain("Entenda em 5 segundos por que as pessoas pagam");
+    expect(ptHtml).toContain("Check-in semanal");
     expect(i18n.t("planner.repeatLastWeek")).toBe("Repetir Semana Passada");
     expect(i18n.t("planner.premiumStackTitle")).toBe("Stack de performance Premium");
 
     expect(ptHtml).not.toContain("Nutrition Plan");
     expect(ptHtml).not.toContain("Grocery Mission");
     expect(ptHtml).not.toContain("Unlock your NutriPilot Pro Experience");
+    expect(ptHtml).not.toContain("Generate My Plan");
+    expect(ptHtml).not.toContain("Weekly Check-In");
   });
 });

@@ -24,6 +24,7 @@
  */
 
 import { useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { CATEGORIES } from "../../core/constants/categories";
 import { toPng } from "html-to-image";
 import { WeeklyPlan } from "../../core/models/WeeklyPlan";
@@ -38,6 +39,7 @@ interface ShareCardProps {
 
 export function ShareCard({ weeklyPlan, planInput, onClose }: ShareCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
+  const { t, i18n } = useTranslation();
 
   if (!weeklyPlan || !planInput) {
     return null;
@@ -64,9 +66,9 @@ export function ShareCard({ weeklyPlan, planInput, onClose }: ShareCardProps) {
 
   // Determine goal label
   const getGoalLabel = (): string => {
-    if (planInput.dietStyle === "healthy") return "🎯 Muscle Gain";
-    if (planInput.dietStyle === "comfort") return "💪 Bulking";
-    return "⚖️ Balanced";
+    if (planInput.dietStyle === "healthy") return t("shareCard.goal.healthy");
+    if (planInput.dietStyle === "comfort") return t("shareCard.goal.comfort");
+    return t("shareCard.goal.balanced");
   };
 
   // Get protein per day
@@ -98,10 +100,10 @@ export function ShareCard({ weeklyPlan, planInput, onClose }: ShareCardProps) {
       link.href = dataUrl;
       link.click();
 
-      console.log("✅ Share card downloaded successfully");
+      console.log("✅", t("shareCard.console.downloadSuccess"));
     } catch (error) {
       console.error("❌ Error generating share card:", error);
-      alert("Failed to generate share card. Please try again.");
+      alert(t("shareCard.alert.generateError"));
     }
   };
 
@@ -123,14 +125,20 @@ export function ShareCard({ weeklyPlan, planInput, onClose }: ShareCardProps) {
         })
       ]);
 
-      alert("✅ Share card copied to clipboard! Paste it in Instagram.");
-      console.log("✅ Share card copied to clipboard");
+      alert(t("shareCard.alert.copySuccess"));
+      console.log("✅", t("shareCard.console.copySuccess"));
     } catch (error) {
       console.error("❌ Error copying share card:", error);
-      alert("Copy failed. Image has been downloaded instead.");
+      alert(t("shareCard.alert.copyFailed"));
       handleDownload();
     }
   };
+
+  const locale = i18n.language === "pt" ? "pt-BR" : "en-US";
+  const weekOfDate = new Date().toLocaleDateString(locale, { month: "short", day: "numeric" });
+  const goalLabel = getGoalLabel();
+  const [goalEmoji, ...goalTextParts] = goalLabel.split(" ");
+  const goalText = goalTextParts.join(" ");
 
   return (
     <div className="share-card-overlay" onClick={onClose}>
@@ -144,33 +152,33 @@ export function ShareCard({ weeklyPlan, planInput, onClose }: ShareCardProps) {
           <div className="share-card-content">
             {/* Header */}
             <div className="share-card-header">
-              <h1 className="share-card-title">My Fitness Plan</h1>
-              <p className="share-card-subtitle">Week of {new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" })}</p>
+              <h1 className="share-card-title">{t("shareCard.title")}</h1>
+              <p className="share-card-subtitle">{t("shareCard.weekOf", { date: weekOfDate })}</p>
             </div>
 
             {/* Metrics Grid */}
             <div className="share-card-metrics">
               <div className="metric-card">
-                <div className="metric-icon">{getGoalLabel().split(" ")[0]}</div>
-                <div className="metric-label">Goal</div>
-                <div className="metric-value">{getGoalLabel().split(" ").slice(1).join(" ")}</div>
+                <div className="metric-icon">{goalEmoji}</div>
+                <div className="metric-label">{t("shareCard.metric.goal")}</div>
+                <div className="metric-value">{goalText}</div>
               </div>
 
               <div className="metric-card">
                 <div className="metric-icon">💪</div>
-                <div className="metric-label">Protein/Day</div>
+                <div className="metric-label">{t("shareCard.metric.proteinPerDay")}</div>
                 <div className="metric-value">{proteinPerDay}g</div>
               </div>
 
               <div className="metric-card">
                 <div className="metric-icon">{getCostTierEmoji()}</div>
-                <div className="metric-label">Budget</div>
-                <div className="metric-value">{weeklyPlan.costTier}</div>
+                <div className="metric-label">{t("shareCard.metric.budget")}</div>
+                <div className="metric-value">{t(`shareCard.costTier.${weeklyPlan.costTier}`)}</div>
               </div>
 
               <div className="metric-card">
                 <div className="metric-icon">🌈</div>
-                <div className="metric-label">Variety</div>
+                <div className="metric-label">{t("shareCard.metric.variety")}</div>
                 <div className="metric-value">{varietyScore}/100</div>
               </div>
             </div>
@@ -178,17 +186,17 @@ export function ShareCard({ weeklyPlan, planInput, onClose }: ShareCardProps) {
             {/* Stats Bar */}
             <div className="share-card-stats">
               <div className="stat-item">
-                <span className="stat-label">Calories</span>
+                <span className="stat-label">{t("shareCard.stat.calories")}</span>
                 <span className="stat-value">{Math.round(weeklyPlan.caloriesTargetPerDay || 0)}/day</span>
               </div>
               <div className="stat-divider"></div>
               <div className="stat-item">
-                <span className="stat-label">Items</span>
+                <span className="stat-label">{t("shareCard.stat.items")}</span>
                 <span className="stat-value">{weeklyPlan.shoppingList?.length || 0}</span>
               </div>
               <div className="stat-divider"></div>
               <div className="stat-item">
-                <span className="stat-label">Meals</span>
+                <span className="stat-label">{t("shareCard.stat.meals")}</span>
                 <span className="stat-value">{planInput.mealsPerDay}/day</span>
               </div>
             </div>
@@ -204,13 +212,13 @@ export function ShareCard({ weeklyPlan, planInput, onClose }: ShareCardProps) {
         {/* Action Buttons */}
         <div className="share-card-actions">
           <button className="btn-share" onClick={handleCopyImage}>
-            📋 Copy to Clipboard
+            📋 {t("shareCard.copy")}
           </button>
           <button className="btn-share" onClick={handleDownload}>
-            📥 Download Image
+            📥 {t("shareCard.download")}
           </button>
           <button className="btn-close" onClick={onClose}>
-            Close
+            {t("shareCard.close")}
           </button>
         </div>
       </div>

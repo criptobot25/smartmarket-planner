@@ -1,4 +1,5 @@
 import { FormEvent, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { isFeatureEnabled } from "../../core/config/featureFlags";
 import { trackEvent } from "../../core/monitoring/analytics";
 import "./WaitlistEmailCapture.css";
@@ -17,6 +18,7 @@ function isValidEmail(email: string): boolean {
 }
 
 export function WaitlistEmailCapture({ source, title, subtitle }: WaitlistEmailCaptureProps) {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
@@ -69,7 +71,7 @@ export function WaitlistEmailCapture({ source, title, subtitle }: WaitlistEmailC
     const sanitizedEmail = email.trim().toLowerCase();
     if (!isValidEmail(sanitizedEmail)) {
       setStatus("error");
-      setMessage("Please enter a valid email address.");
+      setMessage(t("waitlist.validationEmail"));
       return;
     }
 
@@ -82,32 +84,32 @@ export function WaitlistEmailCapture({ source, title, subtitle }: WaitlistEmailC
 
       trackEvent("waitlist_email_captured", { source });
       setStatus("success");
-      setMessage("You're in! We'll send beta-paid access details soon.");
+      setMessage(t("waitlist.success"));
       setEmail("");
     } catch (error) {
       console.error("Waitlist capture failed:", error);
       trackEvent("waitlist_email_capture_failed", { source });
       setStatus("error");
-      setMessage("Could not save your email right now. Please try again.");
+      setMessage(t("waitlist.error"));
     }
   };
 
   return (
     <section className="waitlist-capture">
       <div className="waitlist-content">
-        <h3>{title || "Join the paid beta waitlist"}</h3>
-        <p>{subtitle || "Get early access and launch pricing before public release."}</p>
+        <h3>{title || t("waitlist.title")}</h3>
+        <p>{subtitle || t("waitlist.subtitle")}</p>
 
         <form className="waitlist-form" onSubmit={handleSubmit}>
           <input
             type="email"
-            placeholder="you@example.com"
+            placeholder={t("waitlist.placeholder")}
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            aria-label="Email"
+            aria-label={t("waitlist.ariaEmail")}
           />
           <button type="submit" disabled={status === "loading"}>
-            {status === "loading" ? "Saving..." : "Join Waitlist"}
+            {status === "loading" ? t("waitlist.saving") : t("waitlist.join")}
           </button>
         </form>
 

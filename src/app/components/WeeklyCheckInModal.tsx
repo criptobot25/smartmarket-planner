@@ -20,6 +20,7 @@
  */
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import "./WeeklyCheckInModal.css";
 import { WeeklyFeedbackResponse } from "../../hooks/useWeeklyFeedback";
 
@@ -30,13 +31,14 @@ interface WeeklyCheckInModalProps {
 }
 
 export function WeeklyCheckInModal({ isOpen, onClose, onSubmit }: WeeklyCheckInModalProps) {
+  const { t } = useTranslation();
   const [selectedResponse, setSelectedResponse] = useState<WeeklyFeedbackResponse | null>(null);
 
   if (!isOpen) return null;
 
   const handleSubmit = () => {
     if (!selectedResponse) {
-      alert("Please select an answer");
+      alert(t("weeklyCheckin.selectAnswer"));
       return;
     }
 
@@ -54,15 +56,15 @@ export function WeeklyCheckInModal({ isOpen, onClose, onSubmit }: WeeklyCheckInM
     <div className="modal-overlay" onClick={handleSkip}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2 className="modal-title">📊 Weekly Check-In</h2>
+          <h2 className="modal-title">📊 {t("weeklyCheckin.title")}</h2>
           <p className="modal-subtitle">
-            Help us improve your next week automatically
+            {t("weeklyCheckin.subtitle")}
           </p>
         </div>
 
         <div className="modal-body">
           <p className="check-in-question">
-            Did you follow the plan this week?
+            {t("weeklyCheckin.question")}
           </p>
 
           <div className="adherence-options">
@@ -71,8 +73,8 @@ export function WeeklyCheckInModal({ isOpen, onClose, onSubmit }: WeeklyCheckInM
               onClick={() => setSelectedResponse("yes")}
             >
               <span className="option-icon">✅</span>
-              <span className="option-label">Yes</span>
-              <span className="option-range">I followed it well</span>
+              <span className="option-label">{t("weeklyCheckin.option.yes.label")}</span>
+              <span className="option-range">{t("weeklyCheckin.option.yes.desc")}</span>
             </button>
 
             <button
@@ -80,8 +82,8 @@ export function WeeklyCheckInModal({ isOpen, onClose, onSubmit }: WeeklyCheckInM
               onClick={() => setSelectedResponse("partially")}
             >
               <span className="option-icon">👍</span>
-              <span className="option-label">Partially</span>
-              <span className="option-range">Some meals worked, some didn't</span>
+              <span className="option-label">{t("weeklyCheckin.option.partially.label")}</span>
+              <span className="option-range">{t("weeklyCheckin.option.partially.desc")}</span>
             </button>
 
             <button
@@ -89,20 +91,20 @@ export function WeeklyCheckInModal({ isOpen, onClose, onSubmit }: WeeklyCheckInM
               onClick={() => setSelectedResponse("no")}
             >
               <span className="option-icon">⚠️</span>
-              <span className="option-label">No</span>
-              <span className="option-range">Too hard to follow this week</span>
+              <span className="option-label">{t("weeklyCheckin.option.no.label")}</span>
+              <span className="option-range">{t("weeklyCheckin.option.no.desc")}</span>
             </button>
           </div>
 
           {selectedResponse === "no" && (
             <div className="adaptation-notice">
               <p>
-                💡 <strong>Next week will be optimized for easier adherence:</strong>
+                💡 <strong>{t("weeklyCheckin.adaptationTitle")}</strong>
               </p>
               <ul>
-                <li>Simpler, more familiar foods</li>
-                <li>Reduced variety requirements</li>
-                <li>Budget-friendly options prioritized</li>
+                <li>{t("weeklyCheckin.adaptation1")}</li>
+                <li>{t("weeklyCheckin.adaptation2")}</li>
+                <li>{t("weeklyCheckin.adaptation3")}</li>
               </ul>
             </div>
           )}
@@ -110,14 +112,14 @@ export function WeeklyCheckInModal({ isOpen, onClose, onSubmit }: WeeklyCheckInM
 
         <div className="modal-footer">
           <button className="btn-secondary" onClick={handleSkip}>
-            Skip for now
+            {t("weeklyCheckin.skip")}
           </button>
           <button 
             className="btn-primary" 
             onClick={handleSubmit}
             disabled={!selectedResponse}
           >
-            Submit Feedback
+            {t("weeklyCheckin.submit")}
           </button>
         </div>
       </div>
