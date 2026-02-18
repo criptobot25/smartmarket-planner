@@ -106,6 +106,28 @@
   font-weight: 600;
 }
 
+.mockup-image-card {
+  min-height: 220px;
+  border: 1px solid var(--color-border);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  align-items: flex-end;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+
+.mockup-label {
+  margin: 0.75rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 10px;
+  background: rgba(2, 6, 23, 0.72);
+  border: 1px solid rgba(153, 246, 228, 0.25);
+  color: #f8fafc;
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
 .proof-grid .ui-card span {
   margin-top: 0.6rem;
   display: block;

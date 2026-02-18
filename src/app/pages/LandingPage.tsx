@@ -10,6 +10,12 @@ import "./LandingPage.css";
 export function LandingPage() {
   const { t } = useTranslation();
 
+  const previewCards = [
+    { titleKey: "landingV2.preview1", imageSrc: "/previews/preview-1.png" },
+    { titleKey: "landingV2.preview2", imageSrc: "/previews/preview-2.png" },
+    { titleKey: "landingV2.preview3", imageSrc: "/previews/preview-3.png" }
+  ];
+
   return (
     <div className="landing-page">
       <AppTelemetry />
@@ -60,9 +66,17 @@ export function LandingPage() {
         <div className="section-wrap">
           <h2>{t("landingV2.previewTitle")}</h2>
           <div className="mockup-grid">
-            <div className="mockup-card">{t("landingV2.preview1")}</div>
-            <div className="mockup-card">{t("landingV2.preview2")}</div>
-            <div className="mockup-card">{t("landingV2.preview3")}</div>
+            {previewCards.map((card) => (
+              <div
+                key={card.titleKey}
+                className="mockup-card mockup-image-card"
+                style={{ backgroundImage: `linear-gradient(180deg, rgba(2, 6, 23, 0.1), rgba(2, 6, 23, 0.75)), url(${card.imageSrc})` }}
+                role="img"
+                aria-label={t(card.titleKey)}
+              >
+                <span className="mockup-label">{t(card.titleKey)}</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
