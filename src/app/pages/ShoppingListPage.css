@@ -1,5 +1,6 @@
 .shopping-list-page {
   min-height: calc(100vh - 5rem);
+  --color-card-bg: rgba(255, 255, 255, 0.14);
 }
 
 /* Sticky Header */
@@ -347,7 +348,9 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   gap: 1.125rem;
   margin-bottom: 0.5rem;
-  background: transparent;
+  background: var(--color-card-bg, var(--color-surface));
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
 }
 
 .item:last-child {
@@ -355,8 +358,9 @@
 }
 
 .item:hover {
-  background: var(--color-bg);
+  background: var(--color-card-bg, var(--color-surface));
   transform: translateX(4px);
+  border-color: rgba(255, 255, 255, 0.28);
 }
 
 .item:active {
@@ -364,12 +368,12 @@
 }
 
 .item.purchased {
-  opacity: 0.45;
+  opacity: 0.72;
 }
 
 .item.purchased .item-name {
   text-decoration: line-through;
-  color: var(--color-muted);
+  color: rgba(255, 255, 255, 0.86);
 }
 
 .item-checkbox {
@@ -416,23 +420,32 @@
 
 .item-quantity {
   font-size: 0.875rem;
-  color: var(--color-muted);
+  color: rgba(255, 255, 255, 0.9);
   font-weight: 500;
 }
 
 .item-reason {
   font-size: 0.8125rem;
-  color: #9ca3af;
+  color: rgba(255, 255, 255, 0.82);
   font-style: italic;
   margin-top: 0.25rem;
 }
 
 .item-price {
   font-weight: 700;
-  color: var(--color-success);
+  color: #6ee7b7;
   font-size: 1rem;
   flex-shrink: 0;
   letter-spacing: -0.01em;
+}
+
+/* Accessibility: keep grocery row text above WCAG AA contrast at rest and hover */
+.item,
+.item-name,
+.item-quantity,
+.item-reason,
+.item-price {
+  text-shadow: none;
 }
 
 /* Actions */

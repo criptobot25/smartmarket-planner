@@ -9,6 +9,7 @@ import { canExportPdf, getRemainingOptimizations } from "../../core/premium/feat
 import { PremiumModal } from "../components/PremiumModal";
 import { isPremiumUser } from "../../core/premium/PremiumFeatures";
 import { ShareCard } from "../components/ShareCard";
+import { GroceryItemRow } from "../components/GroceryItemRow";
 import { WeeklyCheckInModal } from "../components/WeeklyCheckInModal";
 import { detectRepetitionRisk, useWeeklyFeedback, type WeeklyFeedbackResponse } from "../../hooks/useWeeklyFeedback";
 import "./ShoppingListPage.css";
@@ -262,29 +263,11 @@ export function ShoppingListPage() {
               <ul className="items-list">
                 {items.map((item) => {
                   return (
-                  <li
+                  <GroceryItemRow
                     key={item.id}
-                    className={`item ${item.purchased ? "purchased" : ""}`}
-                    onClick={() => item.sourceIds.forEach((sourceId: string) => toggleItemPurchased(sourceId))}
-                  >
-                    <div className="item-checkbox">
-                      {item.purchased ? "✓" : "○"}
-                    </div>
-                    <div className="item-info">
-                      <span className="item-name">{item.name} — {item.normalizedDisplayText}</span>
-                      <span className="item-quantity">
-                        {item.coverageText}
-                      </span>
-                      {item.reason && (
-                        <span className="item-reason">{item.reason}</span>
-                      )}
-                    </div>
-                    {item.estimatedPrice && (
-                      <div className="item-price">
-                        {item.estimatedPrice.toFixed(2)}
-                      </div>
-                    )}
-                  </li>
+                    item={item}
+                    onTogglePurchased={(sourceIds) => sourceIds.forEach((sourceId: string) => toggleItemPurchased(sourceId))}
+                  />
                   );
                 })}
               </ul>
