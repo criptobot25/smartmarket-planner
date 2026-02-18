@@ -6,7 +6,7 @@
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
 ![React](https://img.shields.io/badge/React-18.0-61dafb)
-![Vite](https://img.shields.io/badge/Vite-5.0-646cff)
+![Next.js](https://img.shields.io/badge/Next.js-14-black)
 
 > **📸 [View Screenshots](#-screenshots) | 💰 [Pricing](#-pricing) | 🚀 [Try it Now](https://nutripilot.app)**
 
@@ -86,7 +86,7 @@ npm install
 npm run dev
 
 # Abra no navegador
-# http://localhost:5173
+# http://localhost:3000
 ```
 
 ### Scripts Disponíveis
@@ -94,7 +94,7 @@ npm run dev
 ```bash
 npm run dev          # Servidor de desenvolvimento
 npm run build        # Build de produção
-npm run preview      # Preview do build
+npm run start        # Start do build de produção
 npm run lint         # Linter ESLint
 npm run type-check   # Verificação de tipos TypeScript
 ```
@@ -142,7 +142,7 @@ src/
 │   │   └── Navbar.tsx
 │   └── routes.tsx          # React Router config
 │
-└── main.tsx                # Entry point
+└── ...
 ```
 
 ### Princípios Arquiteturais
@@ -226,7 +226,7 @@ export const FEATURES = {
 ## 🛠️ Tech Stack
 
 - **Frontend**: React 18 + TypeScript
-- **Build**: Vite 5
+- **Build**: Next.js App Router
 - **Routing**: React Router v6
 - **Styling**: CSS Modules (mobile-first)
 - **State**: Custom Hooks (useShoppingPlan)
