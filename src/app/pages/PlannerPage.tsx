@@ -1,11 +1,10 @@
-import { useMemo, useState, FormEvent } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useShoppingPlan } from "../../contexts/ShoppingPlanContext";
-import { DietStyle, FitnessGoal, Sex, CostTier } from "../../core/models/PlanInput";
-import { validatePlanInput } from "../../core/validation/PlanInputSchema"; // PASSO 34
-import { calculateMacroPlan } from "../../core/logic/MacroPlanner";
+import { PlanInput } from "../../core/models/PlanInput";
 import { isPremiumUser } from "../../core/premium/PremiumFeatures";
+import { OnboardingWizard } from "../components/OnboardingWizard";
 import "./PlannerPage.css";
 
 export function PlannerPage() {
@@ -13,40 +12,7 @@ export function PlannerPage() {
   const { generatePlan, repeatLastWeek, streak } = useShoppingPlan(); // PASSO 33.1 & 33.4
   const { t } = useTranslation();
   const isPremium = isPremiumUser();
-
-  const [sex, setSex] = useState<Sex>("male");
-  const [age, setAge] = useState<number>(30);
-  const [weightKg, setWeightKg] = useState<number>(70);
-  const [heightCm, setHeightCm] = useState<number>(175);
-  const [trains, setTrains] = useState<boolean>(true);
-  const [mealsPerDay, setMealsPerDay] = useState<number>(3);
-  const [fitnessGoal, setFitnessGoal] = useState<FitnessGoal>("maintenance");
-  const [costTier, setCostTier] = useState<CostTier>("medium");
-  const [restrictions, setRestrictions] = useState<string>("");
-  
-  // PASSO 34: Validation errors state
-  const [validationErrors, setValidationErrors] = useState<string[]>([]);
-
-  const dietStyle: DietStyle = fitnessGoal === "cutting"
-    ? "healthy"
-    : fitnessGoal === "bulking"
-      ? "comfort"
-      : "balanced";
-
-  const macroPreview = useMemo(() => {
-    return calculateMacroPlan({
-      sex,
-      age,
-      weightKg,
-      heightCm,
-      trains,
-      mealsPerDay,
-      dietStyle,
-      costTier,
-      restrictions: [],
-      fitnessGoal,
-    });
-  }, [sex, age, weightKg, heightCm, trains, mealsPerDay, dietStyle, costTier, fitnessGoal]);
+  const [wizardErrors, setWizardErrors] = useState<string[]>([]);
 
   // PASSO 33.1: Handler for Repeat Last Week button
   const handleRepeatLastWeek = () => {
@@ -61,49 +27,14 @@ export function PlannerPage() {
     }
   };
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    
-    // Clear previous validation errors
-    setValidationErrors([]);
-
-    // Converte restrições de string para array
-    const restrictionsArray = restrictions
-      .split(",")
-      .map(r => r.trim())
-      .filter(r => r.length > 0);
-
-    // PASSO 34: Validate input with Zod schema
-    const planInput = {
-      sex,
-      age,
-      weightKg,
-      heightCm,
-      trains,
-      mealsPerDay,
-      dietStyle,
-      costTier,
-      restrictions: restrictionsArray,
-      fitnessGoal,
-    };
-    
-    const validation = validatePlanInput(planInput);
-    
-    if (!validation.success) {
-      // Show validation errors inline (not alert)
-      setValidationErrors(validation.errors || []);
-      return;
-    }
-
-    // Gera o plano com validated data
+  const handleWizardComplete = (planInput: PlanInput) => {
+    setWizardErrors([]);
     try {
-      generatePlan(validation.data!);
-
-      // Navega para a página da lista
+      generatePlan(planInput);
       navigate("/app/list");
     } catch (error) {
       console.error("Erro ao gerar plano:", error);
-      setValidationErrors([t("planner.alertError", "An unexpected error occurred. Please try again.")]);
+      setWizardErrors([t("planner.alertError", "An unexpected error occurred. Please try again.")]);
     }
   };
 
@@ -154,187 +85,21 @@ export function PlannerPage() {
         )}
 
         <div className="planner-card">
-          {/* PASSO 34: Validation Errors Display */}
-          {validationErrors.length > 0 && (
+          {wizardErrors.length > 0 && (
             <div className="validation-errors">
               <div className="error-header">
                 <span className="error-icon">⚠️</span>
-                <strong>Please fix the following errors:</strong>
+                <strong>{t("onboarding.errors.generic")}</strong>
               </div>
               <ul className="error-list">
-                {validationErrors.map((error, index) => (
+                {wizardErrors.map((error, index) => (
                   <li key={index}>{error}</li>
                 ))}
               </ul>
             </div>
           )}
-          
-          <form className="planner-form" onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="sex" className="form-label">
-                {t("planner.sexLabel")}
-              </label>
-              <select
-                id="sex"
-                value={sex}
-                onChange={(e) => setSex(e.target.value as Sex)}
-                className="form-input"
-                required
-              >
-                <option value="male">{t("planner.sexOption.male")}</option>
-                <option value="female">{t("planner.sexOption.female")}</option>
-              </select>
-            </div>
 
-            <div className="form-group">
-              <label htmlFor="age" className="form-label">
-                {t("planner.ageLabel")}
-              </label>
-              <input
-                type="number"
-                id="age"
-                min="12"
-                max="90"
-                value={age}
-                onChange={(e) => setAge(Number(e.target.value))}
-                className="form-input"
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="weight" className="form-label">
-                {t("planner.weightLabel")}
-              </label>
-              <input
-                type="number"
-                id="weight"
-                min="30"
-                max="200"
-                step="0.5"
-                value={weightKg}
-                onChange={(e) => setWeightKg(Number(e.target.value))}
-                className="form-input"
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="height" className="form-label">
-                {t("planner.heightLabel")}
-              </label>
-              <input
-                type="number"
-                id="height"
-                min="120"
-                max="220"
-                value={heightCm}
-                onChange={(e) => setHeightCm(Number(e.target.value))}
-                className="form-input"
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="trains" className="form-label">
-                {t("planner.trainsLabel")}
-              </label>
-              <select
-                id="trains"
-                value={trains ? "yes" : "no"}
-                onChange={(e) => setTrains(e.target.value === "yes")}
-                className="form-input"
-                required
-              >
-                <option value="yes">{t("planner.trainsOption.yes")}</option>
-                <option value="no">{t("planner.trainsOption.no")}</option>
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="meals" className="form-label">
-                {t("planner.mealsLabel")}
-              </label>
-              <select
-                id="meals"
-                value={mealsPerDay}
-                onChange={(e) => setMealsPerDay(Number(e.target.value))}
-                className="form-input"
-                required
-              >
-                {[3, 4, 5, 6].map((count) => (
-                  <option key={count} value={count}>
-                    {t("planner.mealsOption", { count })}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="diet-style" className="form-label">
-                {t("planner.goalLabel")}
-              </label>
-              <select
-                id="diet-style"
-                value={fitnessGoal}
-                onChange={(e) => setFitnessGoal(e.target.value as FitnessGoal)}
-                className="form-input"
-                required
-              >
-                <option value="cutting">{t("planner.goalOption.healthy")}</option>
-                <option value="maintenance">{t("planner.goalOption.balanced")}</option>
-                <option value="bulking">{t("planner.goalOption.comfort")}</option>
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="cost-tier" className="form-label">
-                {t("planner.costTierLabel")}
-              </label>
-              <select
-                id="cost-tier"
-                value={costTier}
-                onChange={(e) => setCostTier(e.target.value as CostTier)}
-                className="form-input"
-                required
-              >
-                <option value="low">{t("planner.costTierOption.low")}</option>
-                <option value="medium">{t("planner.costTierOption.medium")}</option>
-                <option value="high">{t("planner.costTierOption.high")}</option>
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="restrictions" className="form-label">
-                {t("planner.restrictionsLabel")}
-              </label>
-              <input
-                type="text"
-                id="restrictions"
-                placeholder={t("planner.restrictionsPlaceholder")}
-                value={restrictions}
-                onChange={(e) => setRestrictions(e.target.value)}
-                className="form-input"
-              />
-              <small className="form-hint">{t("planner.restrictionsHint")}</small>
-            </div>
-
-            <button type="submit" className="btn-generate">
-              {t("planner.submit")}
-            </button>
-          </form>
-
-          <div className="planner-preview">
-            <p className="preview-label">{t("planner.previewLabel")}</p>
-            <div className="preview-grid">
-              <p className="preview-value">TDEE: {macroPreview.tdee} kcal</p>
-              <p className="preview-value">Target: {macroPreview.calorieTargetPerDay} kcal/day</p>
-              <p className="preview-value">Protein: {macroPreview.proteinTargetPerDay}g/day</p>
-              <p className="preview-value">Carbs: {macroPreview.carbsTargetPerDay}g/day</p>
-              <p className="preview-value">Fats: {macroPreview.fatsTargetPerDay}g/day</p>
-              <p className="preview-value">Per meal: {macroPreview.proteinPerMeal}P / {macroPreview.carbsPerMeal}C / {macroPreview.fatsPerMeal}F</p>
-            </div>
-          </div>
+          <OnboardingWizard onComplete={handleWizardComplete} />
         </div>
       </div>
     </div>
