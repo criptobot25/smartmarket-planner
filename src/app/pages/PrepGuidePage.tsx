@@ -83,10 +83,10 @@ export function PrepGuidePage() {
     return (
       <div className="prep-guide-page">
         <div className="empty-state">
-          <h2>🔒 Prep Guide locked</h2>
-          <p>Complete your Grocery Mission to unlock Monday Prep.</p>
-          <p>Progress: {shoppingProgress}%</p>
-          <button className="btn-primary" onClick={() => navigate("/app/list")}>Back to Grocery Mission</button>
+          <h2>🔒 {t("prepGuide.lockedTitle")}</h2>
+          <p>{t("prepGuide.lockedSubtitle")}</p>
+          <p>{t("prepGuide.lockedProgress", { progress: shoppingProgress })}</p>
+          <button className="btn-primary" onClick={() => navigate("/app/list")}>{t("prepGuide.lockedBackButton")}</button>
         </div>
       </div>
     );
@@ -244,9 +244,9 @@ export function PrepGuidePage() {
 
         {!isPremium && (
           <div className="prep-upgrade-callout">
-            <h4>🔒 Unlock Recipe Packs + Prep Guide PDF</h4>
-            <p>Premium gives full recipe packs plus printable prep flow for your Sunday ritual.</p>
-            <button className="btn-secondary" onClick={() => navigate("/pricing")}>View premium pricing</button>
+            <h4>🔒 {t("prepGuide.upgradeTitle")}</h4>
+            <p>{t("prepGuide.upgradeSubtitle")}</p>
+            <button className="btn-secondary" onClick={() => navigate("/pricing")}>{t("prepGuide.upgradeButton")}</button>
           </div>
         )}
 
@@ -284,6 +284,8 @@ interface TaskCardProps {
 }
 
 function TaskCard({ task, completed, onToggle }: TaskCardProps) {
+  const { t } = useTranslation();
+
   const methodEmoji: Record<string, string> = {
     oven: "🔥",
     boil: "🫕",
@@ -304,6 +306,26 @@ function TaskCard({ task, completed, onToggle }: TaskCardProps) {
     portion: "#a8dadc"
   };
 
+  const actionLabelByValue: Record<string, string> = {
+    Cook: t("prepGuide.action.cook"),
+    Prepare: t("prepGuide.action.prepare"),
+    Portion: t("prepGuide.action.portion"),
+    Buy: t("prepGuide.action.buy")
+  };
+
+  const methodLabelByValue: Record<string, string> = {
+    oven: t("prepGuide.method.oven"),
+    boil: t("prepGuide.method.boil"),
+    steam: t("prepGuide.method.steam"),
+    stovetop: t("prepGuide.method.stovetop"),
+    chop: t("prepGuide.method.chop"),
+    raw: t("prepGuide.method.raw"),
+    portion: t("prepGuide.method.portion")
+  };
+
+  const localizedAction = actionLabelByValue[task.action] || task.action;
+  const localizedMethod = methodLabelByValue[task.method] || task.method.toUpperCase();
+
   return (
     <div className={`task-card ${completed ? "completed" : ""}`}>
       <div className="task-checkbox-container">
@@ -317,24 +339,24 @@ function TaskCard({ task, completed, onToggle }: TaskCardProps) {
 
       <div className="task-content">
         <div className="task-header">
-          <span className="task-order">Step {task.order}</span>
+          <span className="task-order">{t("prepGuide.taskStep", { order: task.order })}</span>
           <span 
             className="task-method-badge"
             style={{ backgroundColor: methodColor[task.method] }}
           >
-            {methodEmoji[task.method]} {task.method.toUpperCase()}
+            {methodEmoji[task.method]} {localizedMethod}
           </span>
           {task.parallel && (
-            <span className="task-parallel-badge">⚡ Can multitask</span>
+            <span className="task-parallel-badge">⚡ {t("prepGuide.taskParallel")}</span>
           )}
         </div>
 
         <div className="task-main">
           <div className="task-action">
-            {task.action} {task.quantity} {task.ingredient}
+            {localizedAction} {task.quantity} {task.ingredient}
           </div>
           {task.duration > 0 && (
-            <div className="task-duration">⏱️ {task.duration} min</div>
+            <div className="task-duration">⏱️ {t("prepGuide.taskDurationMinutes", { minutes: task.duration })}</div>
           )}
         </div>
 

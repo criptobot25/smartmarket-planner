@@ -211,7 +211,7 @@ export function ShoppingListPage() {
               <span className="metric-icon">✅</span>
               <div className="metric-content">
                 <span className="metric-label">{t("shoppingList.metricSubstitutions")}</span>
-                <span className="metric-value">{substitutionsApplied.length} swaps</span>
+                <span className="metric-value">{t("shoppingList.metricSwapsValue", { count: substitutionsApplied.length })}</span>
               </div>
             </div>
           </div>
@@ -227,7 +227,10 @@ export function ShoppingListPage() {
                   <span className="substitution-impact">
                     {sub.proteinImpact !== 0 && (
                       <span className={sub.proteinImpact > 0 ? "protein-gain" : "protein-loss"}>
-                        {sub.proteinImpact > 0 ? '+' : ''}{sub.proteinImpact.toFixed(0)}g protein
+                        {t("shoppingList.proteinImpact", {
+                          sign: sub.proteinImpact > 0 ? "+" : "",
+                          value: sub.proteinImpact.toFixed(0)
+                        })}
                       </span>
                     )}
                   </span>
@@ -240,9 +243,9 @@ export function ShoppingListPage() {
 
       {!isPremium && (
         <section className="premium-upgrade-strip" role="complementary">
-          <p className="upgrade-strip-title">🔒 Premium unlocks all monetization drivers</p>
-          <p className="upgrade-strip-subtitle">Unlimited Food Rotation • Weekly Coach Adjustments • Recipe Packs + Meal Prep PDF</p>
-          <button className="upgrade-strip-btn" onClick={() => navigate("/pricing")}>See pricing</button>
+          <p className="upgrade-strip-title">🔒 {t("shoppingList.upgradeTitle")}</p>
+          <p className="upgrade-strip-subtitle">{t("shoppingList.upgradeSubtitle")}</p>
+          <button className="upgrade-strip-btn" onClick={() => navigate("/pricing")}>{t("shoppingList.upgradeButton")}</button>
         </section>
       )}
 
@@ -282,17 +285,17 @@ export function ShoppingListPage() {
             <button
               className="btn-prep-guide"
               onClick={() => navigate("/app/prep-guide")}
-              title="Start Monday Prep"
+              title={t("shoppingList.startMondayPrep")}
             >
-              🍳 Start Monday Prep
+              🍳 {t("shoppingList.startMondayPrep")}
             </button>
           )}
           <button 
             className="btn-share-card"
             onClick={() => setShowShareCard(true)}
-            title="Share your meal plan on social media"
+            title={t("shoppingList.shareTitle")}
           >
-            📤 Share My Plan
+            📤 {t("shoppingList.shareButton")}
           </button>
           <button 
             className={`btn-premium ${!canExportPdf() ? 'btn-locked' : ''}`}

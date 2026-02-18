@@ -37,31 +37,31 @@ export function PremiumModal({
 
   const benefitsByFeature: Record<PremiumFeatureId, string[]> = {
     unlimitedFoodRotation: [
-      "Rotate proteins every week without repeating the same base foods",
-      "Keep macro targets stable while swapping ingredients",
-      "Reduce adherence drop from menu fatigue"
+      t("premium.modal.benefits.unlimitedFoodRotation.1"),
+      t("premium.modal.benefits.unlimitedFoodRotation.2"),
+      t("premium.modal.benefits.unlimitedFoodRotation.3")
     ],
     weeklyCoachAdjustments: [
-      "Adjust next week based on Yes / Partial / No adherence",
-      "Automatically simplify plan when consistency drops",
-      "Increase variety when repetition risk is detected"
+      t("premium.modal.benefits.weeklyCoachAdjustments.1"),
+      t("premium.modal.benefits.weeklyCoachAdjustments.2"),
+      t("premium.modal.benefits.weeklyCoachAdjustments.3")
     ],
     recipePacksPrepPdf: [
-      "Unlock premium recipe packs built for meal prep",
-      "Export shopping list and prep workflow as PDF",
-      "Share or print complete prep instructions"
+      t("premium.modal.benefits.recipePacksPrepPdf.1"),
+      t("premium.modal.benefits.recipePacksPrepPdf.2"),
+      t("premium.modal.benefits.recipePacksPrepPdf.3")
     ]
   };
 
   const content = {
     icon: selectedFeature.icon,
-    title: "Unlock your NutriPilot Pro Experience",
-    headline: selectedFeature.valueProp,
-    description: selectedFeature.freeLimit,
+    title: t("premium.modal.title"),
+    headline: t(`premium.modal.headline.${feature}`),
+    description: t(`premium.modal.description.${feature}`),
     benefits: benefitsByFeature[feature],
     cta: remainingOptimizations > 0
       ? t("premium.savings.cta", { count: remainingOptimizations })
-      : "NutriPilot Pro unlocks this instantly",
+      : t("premium.modal.ctaFallback"),
     price: t("premium.price")
   };
 

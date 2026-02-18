@@ -41,28 +41,28 @@ export function Navbar() {
             className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
             end
           >
-            Nutrition Plan
+            {t("nav.nutritionPlan")}
           </NavLink>
           
           <NavLink 
             to="/app/list" 
             className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
           >
-            Grocery Mission
+            {t("nav.groceryMission")}
           </NavLink>
 
           <NavLink
             to="/app/prep-guide"
             className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
           >
-            Monday Prep
+            {t("nav.mondayPrep")}
           </NavLink>
         </div>
 
         {/* CTA */}
         <div className="navbar-cta">
           <NavLink to="/pricing" className="btn-premium-nav">
-            Premium
+            {t("nav.premium")}
           </NavLink>
         </div>
 
