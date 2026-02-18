@@ -82,7 +82,7 @@ export const PremiumCard: React.FC<PremiumCardProps> = ({ userId, onCheckout }) 
   return (
     <div className="premium-card">
       <div className="premium-header">
-        <h2>🌟 SmartMarket Premium</h2>
+        <h2>🌟 NutriPilot Premium</h2>
         <p className="premium-price">{price.displayPrice}</p>
       </div>
 

@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { AppTelemetry } from "../components/AppTelemetry";
 import { WaitlistEmailCapture } from "../components/WaitlistEmailCapture";
+import logoNutriPilot from "../../assets/logo-nutripilot.svg";
 import "./PremiumPage.css";
 
 export function PremiumPage() {
@@ -13,7 +14,8 @@ export function PremiumPage() {
         <button className="btn-back" onClick={() => navigate("/app/list")}>
           ← Back
         </button>
-        <h1>✨ SmartMarket Premium</h1>
+        <img src={logoNutriPilot} alt="NutriPilot" className="premium-logo" />
+        <h1>✨ NutriPilot Pro</h1>
         <p className="subtitle">Know in 5 seconds why people pay: less repetition, better adherence, printable execution.</p>
       </header>
 
@@ -33,7 +35,7 @@ export function PremiumPage() {
               </div>
             </div>
             <ul className="features-list">
-              <li className="included">✓ Weekly plan + shopping list</li>
+              <li className="included">✓ Weekly nutrition plan + grocery mission</li>
               <li className="included">✓ Macro-based nutrition targets</li>
               <li className="included">✓ Basic recipe suggestions</li>
               <li className="excluded">✗ Unlimited Food Rotation</li>
@@ -87,12 +89,12 @@ export function PremiumPage() {
           <h2>Start free, upgrade when repetition starts costing results.</h2>
           <p>If you want less friction and better weekly adherence, Premium pays for itself in consistency.</p>
           <button className="btn-start" onClick={() => navigate("/app")}>
-            🧭 Go to Planner
+            🧭 Go to Nutrition Plan
           </button>
 
           <WaitlistEmailCapture
             source="pricing"
-            title="Reserve your paid beta spot"
+            title="Reserve your NutriPilot paid beta spot"
             subtitle="We'll email launch access and early adopter pricing first."
           />
         </section>

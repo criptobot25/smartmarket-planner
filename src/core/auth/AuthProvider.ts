@@ -49,8 +49,14 @@ export interface IAuthProvider {
 
 export class LocalAuthProvider implements IAuthProvider {
   private static readonly STORAGE_KEYS = {
-    SESSION: "smartmarket_auth_session",
-    USERS: "smartmarket_users"
+    SESSION: "nutripilot_auth_session",
+    USERS: "nutripilot_users",
+    MAGIC_LINKS: "nutripilot_magic_links",
+    LEGACY_SESSION: "smartmarket_auth_session",
+    LEGACY_USERS: "smartmarket_users",
+    LEGACY_MAGIC_LINKS: "smartmarket_magic_links",
+    PASSWORD_PREFIX: "nutripilot_pwd_",
+    LEGACY_PASSWORD_PREFIX: "smartmarket_pwd_"
   };
 
   private currentSession: AuthSession | null = null;
@@ -143,6 +149,7 @@ export class LocalAuthProvider implements IAuthProvider {
   async logout(): Promise<void> {
     this.currentSession = null;
     localStorage.removeItem(LocalAuthProvider.STORAGE_KEYS.SESSION);
+    localStorage.removeItem(LocalAuthProvider.STORAGE_KEYS.LEGACY_SESSION);
   }
 
   // ========================================================================
@@ -294,7 +301,8 @@ export class LocalAuthProvider implements IAuthProvider {
 
   private loadSession(): void {
     try {
-      const sessionData = localStorage.getItem(LocalAuthProvider.STORAGE_KEYS.SESSION);
+      const sessionData = localStorage.getItem(LocalAuthProvider.STORAGE_KEYS.SESSION)
+        ?? localStorage.getItem(LocalAuthProvider.STORAGE_KEYS.LEGACY_SESSION);
       if (sessionData) {
         const session = JSON.parse(sessionData);
         // Restore Date objects
@@ -315,11 +323,13 @@ export class LocalAuthProvider implements IAuthProvider {
   private saveSession(session: AuthSession): void {
     this.currentSession = session;
     localStorage.setItem(LocalAuthProvider.STORAGE_KEYS.SESSION, JSON.stringify(session));
+    localStorage.removeItem(LocalAuthProvider.STORAGE_KEYS.LEGACY_SESSION);
   }
 
   private getStoredUsers(): User[] {
     try {
-      const data = localStorage.getItem(LocalAuthProvider.STORAGE_KEYS.USERS);
+      const data = localStorage.getItem(LocalAuthProvider.STORAGE_KEYS.USERS)
+        ?? localStorage.getItem(LocalAuthProvider.STORAGE_KEYS.LEGACY_USERS);
       if (data) {
         const users = JSON.parse(data);
         // Restore Date objects
@@ -337,6 +347,7 @@ export class LocalAuthProvider implements IAuthProvider {
 
   private saveUsers(users: User[]): void {
     localStorage.setItem(LocalAuthProvider.STORAGE_KEYS.USERS, JSON.stringify(users));
+    localStorage.removeItem(LocalAuthProvider.STORAGE_KEYS.LEGACY_USERS);
   }
 
   private updateStoredUser(user: User): void {
@@ -350,16 +361,18 @@ export class LocalAuthProvider implements IAuthProvider {
 
   private savePassword(userId: string, password: string): void {
     // In production, this would hash the password
-    localStorage.setItem(`smartmarket_pwd_${userId}`, password);
+    localStorage.setItem(`${LocalAuthProvider.STORAGE_KEYS.PASSWORD_PREFIX}${userId}`, password);
   }
 
   private getStoredPassword(userId: string): string | null {
-    return localStorage.getItem(`smartmarket_pwd_${userId}`);
+    return localStorage.getItem(`${LocalAuthProvider.STORAGE_KEYS.PASSWORD_PREFIX}${userId}`)
+      ?? localStorage.getItem(`${LocalAuthProvider.STORAGE_KEYS.LEGACY_PASSWORD_PREFIX}${userId}`);
   }
 
   private getMagicLinks(): Record<string, { token: string; expiresAt: string }> {
     try {
-      const data = localStorage.getItem("smartmarket_magic_links");
+      const data = localStorage.getItem(LocalAuthProvider.STORAGE_KEYS.MAGIC_LINKS)
+        ?? localStorage.getItem(LocalAuthProvider.STORAGE_KEYS.LEGACY_MAGIC_LINKS);
       return data ? JSON.parse(data) : {};
     } catch {
       return {};
@@ -367,7 +380,8 @@ export class LocalAuthProvider implements IAuthProvider {
   }
 
   private saveMagicLinks(links: Record<string, { token: string; expiresAt: string }>): void {
-    localStorage.setItem("smartmarket_magic_links", JSON.stringify(links));
+    localStorage.setItem(LocalAuthProvider.STORAGE_KEYS.MAGIC_LINKS, JSON.stringify(links));
+    localStorage.removeItem(LocalAuthProvider.STORAGE_KEYS.LEGACY_MAGIC_LINKS);
   }
 
   private generateUserId(): string {
@@ -385,11 +399,17 @@ export class LocalAuthProvider implements IAuthProvider {
   // For testing
   clearAllData(): void {
     localStorage.removeItem(LocalAuthProvider.STORAGE_KEYS.SESSION);
+    localStorage.removeItem(LocalAuthProvider.STORAGE_KEYS.LEGACY_SESSION);
     localStorage.removeItem(LocalAuthProvider.STORAGE_KEYS.USERS);
-    localStorage.removeItem("smartmarket_magic_links");
+    localStorage.removeItem(LocalAuthProvider.STORAGE_KEYS.LEGACY_USERS);
+    localStorage.removeItem(LocalAuthProvider.STORAGE_KEYS.MAGIC_LINKS);
+    localStorage.removeItem(LocalAuthProvider.STORAGE_KEYS.LEGACY_MAGIC_LINKS);
     // Clear all passwords
     Object.keys(localStorage).forEach(key => {
-      if (key.startsWith("smartmarket_pwd_")) {
+      if (
+        key.startsWith(LocalAuthProvider.STORAGE_KEYS.PASSWORD_PREFIX) ||
+        key.startsWith(LocalAuthProvider.STORAGE_KEYS.LEGACY_PASSWORD_PREFIX)
+      ) {
         localStorage.removeItem(key);
       }
     });
@@ -405,7 +425,7 @@ export class RemoteAuthProvider implements IAuthProvider {
   private _apiUrl: string; // Reserved for future API implementation
   private localFallback: LocalAuthProvider;
 
-  constructor(apiUrl: string = "https://api.smartmarket.com") {
+  constructor(apiUrl: string = "https://api.nutripilot.app") {
     this._apiUrl = apiUrl;
     this.localFallback = new LocalAuthProvider();
   }

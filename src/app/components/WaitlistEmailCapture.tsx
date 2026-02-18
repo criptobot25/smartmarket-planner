@@ -9,7 +9,8 @@ interface WaitlistEmailCaptureProps {
   subtitle?: string;
 }
 
-const STORAGE_KEY = "smartmarket_waitlist_emails";
+const STORAGE_KEY = "nutripilot_waitlist_emails";
+const LEGACY_STORAGE_KEY = "smartmarket_waitlist_emails";
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
@@ -25,7 +26,7 @@ export function WaitlistEmailCapture({ source, title, subtitle }: WaitlistEmailC
   }
 
   const submitToLocalQueue = (value: string) => {
-    const currentRaw = localStorage.getItem(STORAGE_KEY);
+    const currentRaw = localStorage.getItem(STORAGE_KEY) ?? localStorage.getItem(LEGACY_STORAGE_KEY);
     let current: Array<{ email: string; source: string; createdAt: string }> = [];
 
     if (currentRaw) {
@@ -41,6 +42,7 @@ export function WaitlistEmailCapture({ source, title, subtitle }: WaitlistEmailC
     if (!exists) {
       current.push({ email: value, source, createdAt: new Date().toISOString() });
       localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+      localStorage.removeItem(LEGACY_STORAGE_KEY);
     }
   };
 

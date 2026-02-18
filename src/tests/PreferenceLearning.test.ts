@@ -153,7 +153,7 @@ describe("PASSO 26 - Preference Learning System", () => {
       userPreferencesStore.trackFoodSelection("Broccoli");
       
       // Simulate app restart by loading from storage
-      const savedData = localStorage.getItem("smartmarket_user_preferences");
+      const savedData = localStorage.getItem("nutripilot_user_preferences");
       expect(savedData).not.toBeNull();
       
       const parsed = JSON.parse(savedData!);
@@ -173,10 +173,10 @@ describe("PASSO 26 - Preference Learning System", () => {
         dislikedFoods: [],
         selectionHistory: { "Broccoli": 1 }
       };
-      localStorage.setItem("smartmarket_user_preferences", JSON.stringify(testPrefs));
+      localStorage.setItem("nutripilot_user_preferences", JSON.stringify(testPrefs));
       
       // Load should retrieve saved data
-      const savedData = localStorage.getItem("smartmarket_user_preferences");
+      const savedData = localStorage.getItem("nutripilot_user_preferences");
       const parsed = JSON.parse(savedData!);
       
       expect(parsed.likedFoods).toContain("Chicken Breast");
@@ -184,7 +184,7 @@ describe("PASSO 26 - Preference Learning System", () => {
     });
 
     it("should handle missing localStorage gracefully", () => {
-      localStorage.removeItem("smartmarket_user_preferences");
+      localStorage.removeItem("nutripilot_user_preferences");
       
       // Should not crash, should return empty preferences
       const prefs = userPreferencesStore.exportPreferences();
@@ -483,7 +483,7 @@ describe("PASSO 26 - Preference Learning System", () => {
       userPreferencesStore.trackFoodSelection("Broccoli");
       
       // Simulate app restart by reading from localStorage
-      const saved = localStorage.getItem("smartmarket_user_preferences");
+      const saved = localStorage.getItem("nutripilot_user_preferences");
       expect(saved).not.toBeNull();
       
       const parsed = JSON.parse(saved!);

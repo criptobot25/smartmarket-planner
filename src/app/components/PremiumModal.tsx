@@ -55,13 +55,13 @@ export function PremiumModal({
 
   const content = {
     icon: selectedFeature.icon,
-    title: selectedFeature.title,
+    title: "Unlock your NutriPilot Pro Experience",
     headline: selectedFeature.valueProp,
     description: selectedFeature.freeLimit,
     benefits: benefitsByFeature[feature],
     cta: remainingOptimizations > 0
       ? t("premium.savings.cta", { count: remainingOptimizations })
-      : "Premium unlocks this instantly",
+      : "NutriPilot Pro unlocks this instantly",
     price: t("premium.price")
   };
 

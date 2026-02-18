@@ -13,7 +13,8 @@ export interface PremiumFeatureDefinition {
   freeLimit: string;
 }
 
-const PREMIUM_STORAGE_PREFIX = "smartmarket_premium_";
+const PREMIUM_STORAGE_PREFIX = "nutripilot_premium_";
+const LEGACY_PREMIUM_STORAGE_PREFIX = "smartmarket_premium_";
 
 export const PREMIUM_FEATURE_DEFINITIONS: PremiumFeatureDefinition[] = [
   {
@@ -50,7 +51,10 @@ function hasActivePremiumSubscription(): boolean {
 
   for (let index = 0; index < localStorage.length; index += 1) {
     const key = localStorage.key(index);
-    if (!key || !key.startsWith(PREMIUM_STORAGE_PREFIX)) {
+    if (
+      !key ||
+      (!key.startsWith(PREMIUM_STORAGE_PREFIX) && !key.startsWith(LEGACY_PREMIUM_STORAGE_PREFIX))
+    ) {
       continue;
     }
 

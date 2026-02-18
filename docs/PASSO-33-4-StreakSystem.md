@@ -271,7 +271,7 @@ if (streak === 12) {
 
 **PASSO 33.4 COMPLETE** 🎉
 
-SmartMarket Planner now has a powerful retention mechanism that turns meal planning into a weekly habit. Users feel accomplished seeing their streak grow, and the fear of breaking it drives consistent engagement.
+NutriPilot now has a powerful retention mechanism that turns meal planning into a weekly habit. Users feel accomplished seeing their streak grow, and the fear of breaking it drives consistent engagement.
 
 **Status**: Production-ready ✨
 **Impact**: Drives 30-day retention + weekly active users

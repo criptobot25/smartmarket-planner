@@ -85,7 +85,8 @@ export interface IStorageProvider {
 // ============================================================================
 
 export class LocalStorageProvider implements IStorageProvider {
-  private static readonly PREFIX = "smartmarket_data_";
+  private static readonly PREFIX = "nutripilot_data_";
+  private static readonly LEGACY_PREFIX = "smartmarket_data_";
 
   // ========================================================================
   // Weekly Plans
@@ -205,7 +206,7 @@ export class LocalStorageProvider implements IStorageProvider {
     };
 
     // Check if existing
-    const existing = this.getFromLocalStorage<T>(storageKey);
+    const existing = this.getFromLocalStorageWithFallback<T>(storageKey);
     if (existing) {
       storedData.metadata.createdAt = existing.metadata.createdAt;
       storedData.metadata.version = existing.metadata.version + 1;
@@ -216,7 +217,7 @@ export class LocalStorageProvider implements IStorageProvider {
 
   async get<T>(key: StorageKey): Promise<T | null> {
     const storageKey = this.buildStorageKey(key);
-    const stored = this.getFromLocalStorage<T>(storageKey);
+    const stored = this.getFromLocalStorageWithFallback<T>(storageKey);
     if (!stored) return null;
     
     // Restore Date objects for WeeklyPlan
@@ -231,25 +232,28 @@ export class LocalStorageProvider implements IStorageProvider {
   async delete(key: StorageKey): Promise<void> {
     const storageKey = this.buildStorageKey(key);
     localStorage.removeItem(storageKey);
+    const legacyStorageKey = this.buildLegacyStorageKey(key);
+    localStorage.removeItem(legacyStorageKey);
   }
 
   async list(userId: string, dataType: string): Promise<string[]> {
-    const prefix = this.buildStorageKey({ userId, dataType: dataType as any });
-    const ids: string[] = [];
+    const currentPrefix = this.buildStorageKey({ userId, dataType: dataType as any });
+    const legacyPrefix = this.buildLegacyStorageKey({ userId, dataType: dataType as any });
+    const ids = new Set<string>();
 
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      if (key && key.startsWith(prefix)) {
+      if (key && (key.startsWith(currentPrefix) || key.startsWith(legacyPrefix))) {
         // Extract ID from key
         const parts = key.split("_");
         const id = parts[parts.length - 1];
         if (id && id !== dataType) {
-          ids.push(id);
+          ids.add(id);
         }
       }
     }
 
-    return ids;
+    return Array.from(ids);
   }
 
   // ========================================================================
@@ -272,11 +276,12 @@ export class LocalStorageProvider implements IStorageProvider {
 
   async clear(userId: string): Promise<void> {
     const prefix = `${LocalStorageProvider.PREFIX}${userId}_`;
+    const legacyPrefix = `${LocalStorageProvider.LEGACY_PREFIX}${userId}_`;
     const keysToRemove: string[] = [];
 
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      if (key && key.startsWith(prefix)) {
+      if (key && (key.startsWith(prefix) || key.startsWith(legacyPrefix))) {
         keysToRemove.push(key);
       }
     }
@@ -286,11 +291,12 @@ export class LocalStorageProvider implements IStorageProvider {
 
   async getUserDataSize(userId: string): Promise<number> {
     const prefix = `${LocalStorageProvider.PREFIX}${userId}_`;
+    const legacyPrefix = `${LocalStorageProvider.LEGACY_PREFIX}${userId}_`;
     let totalSize = 0;
 
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      if (key && key.startsWith(prefix)) {
+      if (key && (key.startsWith(prefix) || key.startsWith(legacyPrefix))) {
         const value = localStorage.getItem(key);
         if (value) {
           totalSize += new Blob([value]).size;
@@ -307,6 +313,14 @@ export class LocalStorageProvider implements IStorageProvider {
 
   private buildStorageKey(key: StorageKey): string {
     let storageKey = `${LocalStorageProvider.PREFIX}${key.userId}_${key.dataType}`;
+    if (key.id) {
+      storageKey += `_${key.id}`;
+    }
+    return storageKey;
+  }
+
+  private buildLegacyStorageKey(key: StorageKey): string {
+    let storageKey = `${LocalStorageProvider.LEGACY_PREFIX}${key.userId}_${key.dataType}`;
     if (key.id) {
       storageKey += `_${key.id}`;
     }
@@ -345,6 +359,16 @@ export class LocalStorageProvider implements IStorageProvider {
     }
   }
 
+  private getFromLocalStorageWithFallback<T>(key: string): StoredData<T> | null {
+    const current = this.getFromLocalStorage<T>(key);
+    if (current) {
+      return current;
+    }
+
+    const legacyKey = key.replace(LocalStorageProvider.PREFIX, LocalStorageProvider.LEGACY_PREFIX);
+    return this.getFromLocalStorage<T>(legacyKey);
+  }
+
   private async getUserOrThrow(options?: StorageOptions): Promise<User> {
     let user: User | null = null;
 
@@ -376,7 +400,7 @@ export class LocalStorageProvider implements IStorageProvider {
     const keysToRemove: string[] = [];
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      if (key && key.startsWith(LocalStorageProvider.PREFIX)) {
+      if (key && (key.startsWith(LocalStorageProvider.PREFIX) || key.startsWith(LocalStorageProvider.LEGACY_PREFIX))) {
         keysToRemove.push(key);
       }
     }

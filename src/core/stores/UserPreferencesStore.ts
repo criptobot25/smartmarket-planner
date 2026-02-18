@@ -19,7 +19,8 @@ export interface UserPreferences {
   selectionHistory: Record<string, number>; // Food name → selection count
 }
 
-const STORAGE_KEY = "smartmarket_user_preferences";
+const STORAGE_KEY = "nutripilot_user_preferences";
+const LEGACY_STORAGE_KEY = "smartmarket_user_preferences";
 const DEFAULT_PREFERENCES: UserPreferences = {
   likedFoods: [],
   dislikedFoods: [],
@@ -41,7 +42,7 @@ class UserPreferencesStore {
    */
   private loadFromStorage(): UserPreferences {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
+      const stored = localStorage.getItem(STORAGE_KEY) ?? localStorage.getItem(LEGACY_STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
         return {
@@ -62,6 +63,7 @@ class UserPreferencesStore {
   private saveToStorage(): void {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(this.preferences));
+      localStorage.removeItem(LEGACY_STORAGE_KEY);
     } catch (error) {
       console.error("Failed to save user preferences:", error);
     }

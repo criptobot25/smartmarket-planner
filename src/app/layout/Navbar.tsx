@@ -1,14 +1,15 @@
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import logoNutriPilot from "../../assets/logo-nutripilot.svg";
 import "./Navbar.css";
 
 /**
  * Clean Navbar - Only 3 core links
  * 
  * Structure:
- * - Logo → /app (Planner)
- * - Planner → /app
- * - Shopping List → /app/list
+ * - Logo → /app (Nutrition Plan)
+ * - Nutrition Plan → /app
+ * - Grocery Mission → /app/list
  * - Upgrade (CTA) → /app/premium
  * 
  * Removed: Weekly Plan, History, Recipes (redundant/not core)
@@ -30,39 +31,38 @@ export function Navbar() {
       <div className="navbar-container">
         {/* Logo */}
         <NavLink to="/app" className="navbar-logo">
-          <span className="logo-icon">🎯</span>
-          <span className="logo-text">{t("app.name")}</span>
+          <img src={logoNutriPilot} alt="NutriPilot" className="navbar-logo-image" />
         </NavLink>
 
         {/* Navigation Links */}
         <div className="navbar-links">
           <NavLink 
-            to="/" 
-            className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
-          >
-            🏠 Home
-          </NavLink>
-          
-          <NavLink 
             to="/app" 
             className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
             end
           >
-            {t("landing.footerPlanner")}
+            Nutrition Plan
           </NavLink>
           
           <NavLink 
             to="/app/list" 
             className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
           >
-            {t("shoppingList.pageTitle")}
+            Grocery Mission
+          </NavLink>
+
+          <NavLink
+            to="/app/prep-guide"
+            className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+          >
+            Prep Guide
           </NavLink>
         </div>
 
         {/* CTA */}
         <div className="navbar-cta">
           <NavLink to="/pricing" className="btn-premium-nav">
-            {t("landing.footerPremium")}
+            Premium
           </NavLink>
         </div>
 

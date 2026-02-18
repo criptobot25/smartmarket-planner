@@ -17,7 +17,7 @@ export function initializeErrorMonitoring(): void {
   Sentry.init({
     dsn,
     environment: import.meta.env.MODE,
-    release: import.meta.env.VITE_APP_VERSION || "smartmarket-beta",
+    release: import.meta.env.VITE_APP_VERSION || "nutripilot-beta",
     tracesSampleRate: Number(import.meta.env.VITE_SENTRY_TRACES_SAMPLE_RATE || 0.1),
   });
 

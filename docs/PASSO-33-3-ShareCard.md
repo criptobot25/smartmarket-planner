@@ -43,7 +43,7 @@ varietyScore = proteinScore + vegetableScore
 - Premium gradient button styling
 
 ### 6. **Watermark**
-- "📊 SmartMarket Planner" branding at bottom
+- "📊 NutriPilot" branding at bottom
 - Subtle opacity for professional look
 - Drives brand awareness in social shares
 
@@ -137,7 +137,7 @@ const [showShareCard, setShowShareCard] = useState(false);
 2. Clicks "Share My Plan"
 3. Copies/downloads premium share card
 4. Posts on Instagram/Stories
-5. Followers see "SmartMarket Planner" watermark
+5. Followers see "NutriPilot" watermark
 6. New users discover app
 7. Repeat cycle → **Exponential organic growth**
 
@@ -184,7 +184,7 @@ const [showShareCard, setShowShareCard] = useState(false);
 
 **PASSO 33.3 COMPLETE** 🎉
 
-SmartMarket Planner now has a viral growth engine that turns satisfied users into brand ambassadors. Every share is a billboard driving organic acquisition at zero cost.
+NutriPilot now has a viral growth engine that turns satisfied users into brand ambassadors. Every share is a billboard driving organic acquisition at zero cost.
 
 **Status**: Production-ready ✨
 **Impact**: Viral growth mechanism + premium brand positioning

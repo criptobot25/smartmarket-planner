@@ -515,7 +515,7 @@ Tips:
 
 ## 🎉 PASSO 27 Complete!
 
-**The SmartMarket Planner is now a complete meal prep tool.**
+**NutriPilot is now a complete meal prep tool.**
 
 Users can now:
 - Generate personalized weekly meal plans ✅

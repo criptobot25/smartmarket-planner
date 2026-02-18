@@ -15,10 +15,12 @@ import { detectRepetitionRisk, getLatestWeeklyFeedback, getMostRepeatedFoods } f
 import { canUseWeeklyCoachAdjustments } from "../core/premium/PremiumFeatures";
 import { isFeatureEnabled } from "../core/config/featureFlags";
 
-const PURCHASED_ITEMS_KEY = "smartmarket_purchased_items";
+const PURCHASED_ITEMS_KEY = "nutripilot_purchased_items";
+const LEGACY_PURCHASED_ITEMS_KEY = "smartmarket_purchased_items";
 const LAST_WEEKLY_PLAN_KEY = "lastWeeklyPlan"; // PASSO 33.1
 const LAST_ADHERENCE_KEY = "lastAdherenceScore"; // PASSO 33.2
-const STREAK_DATA_KEY = "smartmarket_streak"; // PASSO 33.4
+const STREAK_DATA_KEY = "nutripilot_streak"; // PASSO 33.4
+const LEGACY_STREAK_DATA_KEY = "smartmarket_streak"; // PASSO 33.4
 
 /**
  * LocalStorage helpers for purchased items
@@ -26,6 +28,7 @@ const STREAK_DATA_KEY = "smartmarket_streak"; // PASSO 33.4
 function savePurchasedItems(itemIds: string[]): void {
   try {
     localStorage.setItem(PURCHASED_ITEMS_KEY, JSON.stringify(itemIds));
+    localStorage.removeItem(LEGACY_PURCHASED_ITEMS_KEY);
   } catch (error) {
     console.error("❌ Error saving purchased items to localStorage:", error);
   }
@@ -33,7 +36,8 @@ function savePurchasedItems(itemIds: string[]): void {
 
 function loadPurchasedItems(): Set<string> {
   try {
-    const stored = localStorage.getItem(PURCHASED_ITEMS_KEY);
+    const stored = localStorage.getItem(PURCHASED_ITEMS_KEY)
+      ?? localStorage.getItem(LEGACY_PURCHASED_ITEMS_KEY);
     if (stored) {
       const parsed = JSON.parse(stored);
       return new Set(Array.isArray(parsed) ? parsed : []);
@@ -47,6 +51,7 @@ function loadPurchasedItems(): Set<string> {
 function clearPurchasedItems(): void {
   try {
     localStorage.removeItem(PURCHASED_ITEMS_KEY);
+    localStorage.removeItem(LEGACY_PURCHASED_ITEMS_KEY);
   } catch (error) {
     console.error("❌ Error clearing purchased items from localStorage:", error);
   }
@@ -166,6 +171,7 @@ interface StreakData {
 function saveStreakData(data: StreakData): void {
   try {
     localStorage.setItem(STREAK_DATA_KEY, JSON.stringify(data));
+    localStorage.removeItem(LEGACY_STREAK_DATA_KEY);
     console.log("🔥 Streak data saved:", data.currentStreak, "weeks");
   } catch (error) {
     console.error("❌ Error saving streak data to localStorage:", error);
@@ -174,7 +180,8 @@ function saveStreakData(data: StreakData): void {
 
 function loadStreakData(): StreakData {
   try {
-    const stored = localStorage.getItem(STREAK_DATA_KEY);
+    const stored = localStorage.getItem(STREAK_DATA_KEY)
+      ?? localStorage.getItem(LEGACY_STREAK_DATA_KEY);
     if (stored) {
       const parsed = JSON.parse(stored);
       console.log("✅ Streak data loaded:", parsed.currentStreak, "weeks");

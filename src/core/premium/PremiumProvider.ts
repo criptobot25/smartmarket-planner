@@ -45,12 +45,15 @@ export interface IPremiumProvider {
 // ============================================================================
 
 export class LocalPremiumProvider implements IPremiumProvider {
-  private readonly STORAGE_KEY_PREFIX = "smartmarket_premium_";
-  private readonly SESSION_KEY_PREFIX = "smartmarket_checkout_";
+  private readonly STORAGE_KEY_PREFIX = "nutripilot_premium_";
+  private readonly LEGACY_STORAGE_KEY_PREFIX = "smartmarket_premium_";
+  private readonly SESSION_KEY_PREFIX = "nutripilot_checkout_";
+  private readonly LEGACY_SESSION_KEY_PREFIX = "smartmarket_checkout_";
   
   async getSubscription(userId: string): Promise<PremiumSubscription> {
     const key = `${this.STORAGE_KEY_PREFIX}${userId}`;
-    const stored = localStorage.getItem(key);
+    const legacyKey = `${this.LEGACY_STORAGE_KEY_PREFIX}${userId}`;
+    const stored = localStorage.getItem(key) ?? localStorage.getItem(legacyKey);
     
     if (stored) {
       const parsed = JSON.parse(stored);
@@ -108,7 +111,8 @@ export class LocalPremiumProvider implements IPremiumProvider {
   
   async verifyCheckoutSession(sessionId: string): Promise<PremiumSubscription> {
     const sessionKey = `${this.SESSION_KEY_PREFIX}${sessionId}`;
-    const stored = localStorage.getItem(sessionKey);
+    const legacySessionKey = `${this.LEGACY_SESSION_KEY_PREFIX}${sessionId}`;
+    const stored = localStorage.getItem(sessionKey) ?? localStorage.getItem(legacySessionKey);
     
     if (!stored) {
       throw new Error("Checkout session not found");
@@ -204,7 +208,8 @@ export class LocalPremiumProvider implements IPremiumProvider {
   
   async getBillingHistory(userId: string): Promise<BillingHistory[]> {
     const key = `${this.STORAGE_KEY_PREFIX}billing_${userId}`;
-    const stored = localStorage.getItem(key);
+    const legacyKey = `${this.LEGACY_STORAGE_KEY_PREFIX}billing_${userId}`;
+    const stored = localStorage.getItem(key) ?? localStorage.getItem(legacyKey);
     
     if (!stored) return [];
     
@@ -249,14 +254,17 @@ export class LocalPremiumProvider implements IPremiumProvider {
   private saveSubscription(subscription: PremiumSubscription): void {
     const key = `${this.STORAGE_KEY_PREFIX}${subscription.userId}`;
     localStorage.setItem(key, JSON.stringify(subscription));
+    localStorage.removeItem(`${this.LEGACY_STORAGE_KEY_PREFIX}${subscription.userId}`);
   }
   
   private addBillingRecord(record: BillingHistory): void {
     const key = `${this.STORAGE_KEY_PREFIX}billing_${record.userId}`;
-    const stored = localStorage.getItem(key);
+    const legacyKey = `${this.LEGACY_STORAGE_KEY_PREFIX}billing_${record.userId}`;
+    const stored = localStorage.getItem(key) ?? localStorage.getItem(legacyKey);
     const records: BillingHistory[] = stored ? JSON.parse(stored) : [];
     records.unshift(record); // Add to beginning
     localStorage.setItem(key, JSON.stringify(records));
+    localStorage.removeItem(legacyKey);
   }
   
   // Test helpers

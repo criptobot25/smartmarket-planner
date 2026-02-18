@@ -415,7 +415,7 @@ User: "It knows what I like! 😊"
 
 ## 🎉 PASSO 26 Complete!
 
-**The SmartMarket Planner now learns from you.**
+**NutriPilot now learns from you.**
 
 Every meal plan you generate teaches the system.  
 Every food you exclude refines your preferences.  

@@ -2,7 +2,7 @@ import { CATEGORIES } from "../core/constants/categories";
 /**
  * STABILIZATION: Central Enums - Single Source of Truth
  * 
- * All enums used across the SmartMarket Planner application
+ * All enums used across the NutriPilot application
  */
 
 // Fitness Goals

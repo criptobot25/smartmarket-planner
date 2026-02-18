@@ -1,4 +1,4 @@
-# SmartMarket Planner — Deploy Checklist (Paid Beta)
+# NutriPilot — Deploy Checklist (Paid Beta)
 
 ## 1) Environment
 - [ ] Set `VITE_APP_VERSION` (semantic release tag)

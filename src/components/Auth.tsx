@@ -73,7 +73,7 @@ export function LoginForm({ onLoginSuccess, onSwitchToSignup }: LoginProps) {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h2>Welcome to SmartMarket Planner</h2>
+        <h2>Welcome to NutriPilot</h2>
         <p className="auth-subtitle">
           {useMagicLink 
             ? "Enter your email to receive a magic login link" 
@@ -208,7 +208,7 @@ export function SignupForm({ onSignupSuccess, onSwitchToLogin }: SignupProps) {
     <div className="auth-container">
       <div className="auth-card">
         <h2>Create Your Account</h2>
-        <p className="auth-subtitle">Join SmartMarket Planner and start meal planning</p>
+        <p className="auth-subtitle">Join NutriPilot and start meal planning</p>
 
         <form onSubmit={handleSignup}>
           <div className="form-group">

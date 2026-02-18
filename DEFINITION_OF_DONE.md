@@ -1,4 +1,4 @@
-# ✅ Definition of Done - MVP SmartMarket Planner
+# ✅ Definition of Done - MVP NutriPilot
 
 ## 🎯 Checklist de Qualidade (Obrigatório)
 

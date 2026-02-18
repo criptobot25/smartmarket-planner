@@ -12,7 +12,7 @@ Transform meal prep from a chore into an indispensable Sunday ritual that users 
 
 **Psychology**: Ritual framing enhances perceived value (Norton & Gino, 2014). Gamification increases engagement (Deterding et al., 2011). Checklists reduce cognitive load (Gawande, 2009).
 
-**Goal**: Make SmartMarket Planner feel **indispensable** by positioning meal prep as a peaceful 2-hour weekly routine.
+**Goal**: Make NutriPilot feel **indispensable** by positioning meal prep as a peaceful 2-hour weekly routine.
 
 ---
 
@@ -421,4 +421,4 @@ interface PrepStep {
 
 **PASSO 33.5 Status**: ✅ COMPLETE  
 **Test Results**: 26/26 passing (317 total)  
-**Impact**: Makes SmartMarket Planner feel indispensable through Sunday ritual framing
+**Impact**: Makes NutriPilot feel indispensable through Sunday ritual framing

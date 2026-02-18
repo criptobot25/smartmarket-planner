@@ -42,7 +42,7 @@ interface StreakData {
 }
 
 // Helper functions (extracted from context for testing)
-const STREAK_DATA_KEY = "smartmarket_streak";
+const STREAK_DATA_KEY = "nutripilot_streak";
 
 function saveStreakData(data: StreakData): void {
   localStorage.setItem(STREAK_DATA_KEY, JSON.stringify(data));

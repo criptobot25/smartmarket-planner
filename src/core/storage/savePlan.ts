@@ -1,6 +1,7 @@
 import { WeeklyPlan } from "../models/WeeklyPlan";
 
-const STORAGE_KEY = "smartmarket_plans";
+const STORAGE_KEY = "nutripilot_history";
+const LEGACY_STORAGE_KEYS = ["smartmarket_history", "smartmarket_plans"];
 const MAX_HISTORY = 3;
 
 /**
@@ -39,7 +40,9 @@ export function savePlan(plan: WeeklyPlan): boolean {
  */
 function loadPlansFromStorage(): WeeklyPlan[] {
   try {
-    const data = localStorage.getItem(STORAGE_KEY);
+    const data = localStorage.getItem(STORAGE_KEY)
+      ?? LEGACY_STORAGE_KEYS.map((key) => localStorage.getItem(key)).find(Boolean)
+      ?? null;
     
     if (!data) {
       return [];

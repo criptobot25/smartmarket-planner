@@ -1,4 +1,5 @@
-const STORAGE_KEY = "smartmarket_plans";
+const STORAGE_KEY = "nutripilot_history";
+const LEGACY_STORAGE_KEYS = ["smartmarket_history", "smartmarket_plans"];
 
 /**
  * Limpa todo o histórico de planos do LocalStorage
@@ -8,6 +9,7 @@ const STORAGE_KEY = "smartmarket_plans";
 export function clearHistory(): boolean {
   try {
     localStorage.removeItem(STORAGE_KEY);
+    LEGACY_STORAGE_KEYS.forEach((key) => localStorage.removeItem(key));
     return true;
   } catch (error) {
     console.error("Erro ao limpar histórico:", error);
@@ -23,7 +25,9 @@ export function clearHistory(): boolean {
  */
 export function deletePlanById(planId: string): boolean {
   try {
-    const data = localStorage.getItem(STORAGE_KEY);
+    const data = localStorage.getItem(STORAGE_KEY)
+      ?? LEGACY_STORAGE_KEYS.map((key) => localStorage.getItem(key)).find(Boolean)
+      ?? null;
     
     if (!data) {
       return false;
@@ -65,7 +69,9 @@ export function trimHistory(keepCount: number): boolean {
       throw new Error("keepCount deve ser um número positivo");
     }
 
-    const data = localStorage.getItem(STORAGE_KEY);
+    const data = localStorage.getItem(STORAGE_KEY)
+      ?? LEGACY_STORAGE_KEYS.map((key) => localStorage.getItem(key)).find(Boolean)
+      ?? null;
     
     if (!data) {
       return true; // Nada para fazer
@@ -90,7 +96,7 @@ export function trimHistory(keepCount: number): boolean {
 }
 
 /**
- * Limpa todos os dados do SmartMarket do LocalStorage
+ * Limpa todos os dados do NutriPilot do LocalStorage
  * Útil para reset completo da aplicação
  * 
  * @returns boolean indicando sucesso da operação
@@ -100,9 +106,9 @@ export function clearAllData(): boolean {
     // Remove a chave principal
     localStorage.removeItem(STORAGE_KEY);
     
-    // Remove outras chaves relacionadas ao SmartMarket, se houver
+    // Remove outras chaves relacionadas ao NutriPilot, se houver
     const keysToRemove = Object.keys(localStorage).filter(key =>
-      key.startsWith("smartmarket_")
+      key.startsWith("nutripilot_") || key.startsWith("smartmarket_")
     );
     
     keysToRemove.forEach(key => localStorage.removeItem(key));

@@ -94,7 +94,7 @@ export function ShareCard({ weeklyPlan, planInput, onClose }: ShareCardProps) {
 
       // Create download link
       const link = document.createElement("a");
-      link.download = `smartmarket-plan-${new Date().getTime()}.png`;
+      link.download = `nutripilot-plan-${new Date().getTime()}.png`;
       link.href = dataUrl;
       link.click();
 
@@ -196,7 +196,7 @@ export function ShareCard({ weeklyPlan, planInput, onClose }: ShareCardProps) {
             {/* Watermark */}
             <div className="share-card-watermark">
               <span className="watermark-logo">📊</span>
-              <span className="watermark-text">SmartMarket Planner</span>
+              <span className="watermark-text">NutriPilot</span>
             </div>
           </div>
         </div>

@@ -181,7 +181,7 @@ describe("PASSO 38 - Cloud-Ready Storage", () => {
       const plan = createMockPlan();
       await storage.saveWeeklyPlan(plan, { userId: mockUserId });
 
-      const key = `smartmarket_data_${mockUserId}_weeklyPlan_${plan.id}`;
+      const key = `nutripilot_data_${mockUserId}_weeklyPlan_${plan.id}`;
       const stored = localStorage.getItem(key);
 
       expect(stored).toBeTruthy();
@@ -203,7 +203,7 @@ describe("PASSO 38 - Cloud-Ready Storage", () => {
       const plan = createMockPlan();
       await storage.saveWeeklyPlan(plan, { userId: mockUserId });
 
-      const key = `smartmarket_data_${mockUserId}_weeklyPlan_${plan.id}`;
+      const key = `nutripilot_data_${mockUserId}_weeklyPlan_${plan.id}`;
       const stored = JSON.parse(localStorage.getItem(key)!);
 
       expect(stored.metadata).toBeDefined();
@@ -217,7 +217,7 @@ describe("PASSO 38 - Cloud-Ready Storage", () => {
 
       // Save first time
       await storage.saveWeeklyPlan(plan, { userId: mockUserId });
-      const key = `smartmarket_data_${mockUserId}_weeklyPlan_${plan.id}`;
+      const key = `nutripilot_data_${mockUserId}_weeklyPlan_${plan.id}`;
       let stored = JSON.parse(localStorage.getItem(key)!);
       expect(stored.metadata.version).toBe(1);
 

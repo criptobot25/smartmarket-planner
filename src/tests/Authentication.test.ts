@@ -140,7 +140,7 @@ describe("PASSO 38 - Authentication & Cloud Sync", () => {
       await provider.sendMagicLink({ email: "magic@example.com" });
 
       // Get the token from localStorage (in prod, this comes from email)
-      const magicLinks = JSON.parse(localStorage.getItem("smartmarket_magic_links") || "{}");
+      const magicLinks = JSON.parse(localStorage.getItem("nutripilot_magic_links") || "{}");
       const token = magicLinks["magic@example.com"]?.token;
 
       expect(token).toBeTruthy();
@@ -156,7 +156,7 @@ describe("PASSO 38 - Authentication & Cloud Sync", () => {
     it("should auto-create user with magic link", async () => {
       await provider.sendMagicLink({ email: "newuser@example.com" });
 
-      const magicLinks = JSON.parse(localStorage.getItem("smartmarket_magic_links") || "{}");
+      const magicLinks = JSON.parse(localStorage.getItem("nutripilot_magic_links") || "{}");
       const token = magicLinks["newuser@example.com"]?.token;
 
       const response = await provider.verifyMagicLink(token);
@@ -170,10 +170,10 @@ describe("PASSO 38 - Authentication & Cloud Sync", () => {
       await provider.sendMagicLink({ email: "test@example.com" });
 
       // Manually expire the link
-      const magicLinks = JSON.parse(localStorage.getItem("smartmarket_magic_links") || "{}");
+      const magicLinks = JSON.parse(localStorage.getItem("nutripilot_magic_links") || "{}");
       const token = magicLinks["test@example.com"]?.token;
       magicLinks["test@example.com"].expiresAt = new Date(Date.now() - 1000).toISOString();
-      localStorage.setItem("smartmarket_magic_links", JSON.stringify(magicLinks));
+      localStorage.setItem("nutripilot_magic_links", JSON.stringify(magicLinks));
 
       const response = await provider.verifyMagicLink(token);
 
@@ -264,11 +264,11 @@ describe("PASSO 38 - Authentication & Cloud Sync", () => {
       });
 
       // Manually expire session
-      const sessionData = localStorage.getItem("smartmarket_auth_session");
+      const sessionData = localStorage.getItem("nutripilot_auth_session");
       if (sessionData) {
         const session = JSON.parse(sessionData);
         session.expiresAt = new Date(Date.now() - 1000).toISOString();
-        localStorage.setItem("smartmarket_auth_session", JSON.stringify(session));
+        localStorage.setItem("nutripilot_auth_session", JSON.stringify(session));
       }
 
       // Create new provider to reload session
@@ -344,7 +344,7 @@ describe("PASSO 38 - Authentication & Cloud Sync", () => {
         password: "password123"
       });
 
-      const usersData = localStorage.getItem("smartmarket_users");
+      const usersData = localStorage.getItem("nutripilot_users");
       expect(usersData).toBeTruthy();
 
       const users = JSON.parse(usersData!);
@@ -361,7 +361,7 @@ describe("PASSO 38 - Authentication & Cloud Sync", () => {
       provider.clearAllData();
 
       const session = await provider.getSession();
-      const users = localStorage.getItem("smartmarket_users");
+      const users = localStorage.getItem("nutripilot_users");
 
       expect(session).toBeNull();
       expect(users).toBeNull();
@@ -439,7 +439,7 @@ describe("PASSO 38 - Authentication & Cloud Sync", () => {
 
       // Login with magic link
       await provider.sendMagicLink({ email: "both@example.com" });
-      const magicLinks = JSON.parse(localStorage.getItem("smartmarket_magic_links") || "{}");
+      const magicLinks = JSON.parse(localStorage.getItem("nutripilot_magic_links") || "{}");
       const token = magicLinks["both@example.com"]?.token;
 
       const response = await provider.verifyMagicLink(token);

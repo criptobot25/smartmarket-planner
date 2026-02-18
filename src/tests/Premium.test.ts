@@ -166,7 +166,7 @@ describe("PASSO 39 - Premium Subscription System", () => {
     it("should persist subscription to localStorage", async () => {
       await provider.getSubscription(testUserId);
       
-      const key = `smartmarket_premium_${testUserId}`;
+      const key = `nutripilot_premium_${testUserId}`;
       const stored = localStorage.getItem(key);
       expect(stored).toBeTruthy();
       

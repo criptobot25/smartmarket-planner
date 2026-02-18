@@ -8,7 +8,7 @@
 
 ## 📋 Overview
 
-PASSO 36 transforms SmartMarket from a shopping list generator to a complete meal prep companion. Users now get actionable cooking instructions for their Sunday meal prep ritual, knowing exactly what to cook and how.
+PASSO 36 transforms NutriPilot from a shopping list generator to a complete meal prep companion. Users now get actionable cooking instructions for their Sunday meal prep ritual, knowing exactly what to cook and how.
 
 ### Before PASSO 36:
 - ❌ Shopping list only - "now what?"
@@ -330,7 +330,7 @@ COOKING TASKS:
 ## 🚀 User Journey
 
 ### 1. Generate Weekly Plan
-User fills form → SmartMarket generates personalized plan
+User fills form → NutriPilot generates personalized plan
 
 ### 2. View Shopping List
 Shopping list with normalized units ("2 tomatoes", "6 tubs")

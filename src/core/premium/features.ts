@@ -54,13 +54,14 @@ interface OptimizationUsage {
   lastResetDate: string; // ISO date string
 }
 
-const STORAGE_KEY = 'smartmarket_savings_usage';
+const STORAGE_KEY = 'nutripilot_savings_usage';
+const LEGACY_STORAGE_KEY = 'smartmarket_savings_usage';
 
 /**
  * Get current optimization usage for the week
  */
 export function getOptimizationUsage(): OptimizationUsage {
-  const stored = localStorage.getItem(STORAGE_KEY);
+  const stored = localStorage.getItem(STORAGE_KEY) ?? localStorage.getItem(LEGACY_STORAGE_KEY);
   
   if (!stored) {
     return { count: 0, lastResetDate: new Date().toISOString() };
@@ -88,6 +89,7 @@ export function incrementOptimizationUsage(): void {
   const usage = getOptimizationUsage();
   usage.count += 1;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(usage));
+  localStorage.removeItem(LEGACY_STORAGE_KEY);
 }
 
 /**

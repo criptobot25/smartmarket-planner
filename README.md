@@ -1,14 +1,14 @@
-# 🛒 SmartMarket Planner
+# 🧭 NutriPilot
 
-**SmartMarket Planner helps busy people eat healthier and spend less by generating weekly grocery plans automatically.**
+**NutriPilot helps busy people eat healthier and spend less by generating weekly grocery missions automatically.**
 
-[![Live Demo](https://img.shields.io/badge/🚀-Live%20Demo-success)](https://smartmarket-planner.vercel.app)
+[![Live Demo](https://img.shields.io/badge/🚀-Live%20Demo-success)](https://nutripilot.app)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
 ![React](https://img.shields.io/badge/React-18.0-61dafb)
 ![Vite](https://img.shields.io/badge/Vite-5.0-646cff)
 
-> **📸 [View Screenshots](#-screenshots) | 💰 [Pricing](#-pricing) | 🚀 [Try it Now](https://smartmarket-planner.vercel.app)**
+> **📸 [View Screenshots](#-screenshots) | 💰 [Pricing](#-pricing) | 🚀 [Try it Now](https://nutripilot.app)**
 
 ---
 
@@ -22,7 +22,7 @@
 
 ## 💡 A Solução
 
-O **SmartMarket Planner** automatiza completamente o planejamento semanal de refeições:
+O **NutriPilot** automatiza completamente o planejamento semanal de refeições:
 
 1. **Input rápido**: Pessoas, estilo alimentar, orçamento (30 segundos)
 2. **Geração automática**: Plano semanal completo em segundos
@@ -76,8 +76,8 @@ O **SmartMarket Planner** automatiza completamente o planejamento semanal de ref
 
 ```bash
 # Clone o repositório
-git clone https://github.com/seu-usuario/smartmarket-planner.git
-cd smartmarket-planner
+git clone https://github.com/seu-usuario/nutripilot.git
+cd nutripilot
 
 # Instale as dependências
 npm install
@@ -172,7 +172,7 @@ src/
 - ✅ Unlimited history
 - ✅ Priority support
 
-**🔥 Coming Soon** - Join the waitlist at [/premium](https://smartmarket-planner.vercel.app/premium)
+**🔥 Coming Soon** - Join the waitlist at [/pricing](https://nutripilot.app/pricing)
 
 ### Premium Features (Technical Details)
 
@@ -237,7 +237,7 @@ export const FEATURES = {
 
 ## 🎯 Diferenciais Competitivos
 
-| Feature | SmartMarket | Concorrente A | Concorrente B |
+| Feature | NutriPilot | Concorrente A | Concorrente B |
 |---------|-------------|---------------|---------------|
 | Plano Semanal Automático | ✅ | ❌ | ✅ |
 | Modo Mercado | ✅ | ❌ | ❌ |
@@ -294,9 +294,9 @@ Desenvolvido com ❤️ por [Seu Nome]
 
 ## 📞 Contato
 
-- Email: contato@smartmarketplanner.com
-- Twitter: [@smartmarket](https://twitter.com/smartmarket)
-- LinkedIn: [SmartMarket Planner](https://linkedin.com/company/smartmarket)
+- Email: contact@nutripilot.app
+- Twitter: [@nutripilot](https://twitter.com/nutripilot)
+- LinkedIn: [NutriPilot](https://linkedin.com/company/nutripilot)
 
 ---
 

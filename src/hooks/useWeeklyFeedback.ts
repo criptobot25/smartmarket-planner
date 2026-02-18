@@ -2,7 +2,8 @@ import { useCallback, useMemo, useState } from "react";
 import { WeeklyPlan } from "../core/models/WeeklyPlan";
 import { getStorageProvider } from "../core/storage/StorageProvider";
 
-const USER_HISTORY_KEY = "smartmarket_user_history";
+const USER_HISTORY_KEY = "nutripilot_user_history";
+const LEGACY_USER_HISTORY_KEY = "smartmarket_user_history";
 const MAX_HISTORY_ENTRIES = 24;
 const STORAGE_USER_ID = "local-user";
 const CLOUD_HISTORY_ID = "weeklyFitnessLoopHistory";
@@ -39,7 +40,7 @@ function mapResponseToAdherence(response: WeeklyFeedbackResponse): WeeklyFeedbac
 
 export function loadWeeklyFeedbackHistory(): WeeklyFeedbackEntry[] {
   try {
-    const raw = localStorage.getItem(USER_HISTORY_KEY);
+    const raw = localStorage.getItem(USER_HISTORY_KEY) ?? localStorage.getItem(LEGACY_USER_HISTORY_KEY);
     if (!raw) return [];
 
     const parsed = JSON.parse(raw);
@@ -64,6 +65,7 @@ export function getLatestWeeklyFeedback(): WeeklyFeedbackEntry | null {
 function saveWeeklyFeedbackHistory(history: WeeklyFeedbackEntry[]): void {
   try {
     localStorage.setItem(USER_HISTORY_KEY, JSON.stringify(history.slice(0, MAX_HISTORY_ENTRIES)));
+    localStorage.removeItem(LEGACY_USER_HISTORY_KEY);
   } catch (error) {
     console.error("❌ Failed to save weekly feedback history:", error);
   }
