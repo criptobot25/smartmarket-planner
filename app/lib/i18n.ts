@@ -7,7 +7,12 @@ import i18n from "../../src/i18n";
 type SupportedLanguage = "en" | "pt";
 
 function normalizeLanguage(value: string | null | undefined): SupportedLanguage {
-  return value === "pt" ? "pt" : "en";
+  if (!value) {
+    return "en";
+  }
+
+  const lowered = value.toLowerCase();
+  return lowered.startsWith("pt") ? "pt" : "en";
 }
 
 export function useAppTranslation() {
@@ -15,7 +20,13 @@ export function useAppTranslation() {
 
   useEffect(() => {
     const stored = typeof window !== "undefined" ? window.localStorage.getItem("lang") : null;
-    const normalizedLanguage = normalizeLanguage(stored);
+    const browserLang = typeof window !== "undefined" ? window.navigator.language : null;
+    const sourceLanguage = stored ?? browserLang;
+    const normalizedLanguage = normalizeLanguage(sourceLanguage);
+
+    if (typeof document !== "undefined") {
+      document.documentElement.lang = normalizedLanguage;
+    }
 
     if (i18nInstance.language !== normalizedLanguage) {
       void i18nInstance.changeLanguage(normalizedLanguage);
@@ -27,6 +38,10 @@ export function useAppTranslation() {
 
     if (typeof window !== "undefined") {
       window.localStorage.setItem("lang", nextLanguage);
+    }
+
+    if (typeof document !== "undefined") {
+      document.documentElement.lang = nextLanguage;
     }
   }, []);
 

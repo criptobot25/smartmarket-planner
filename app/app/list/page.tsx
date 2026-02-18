@@ -165,7 +165,7 @@ export default function ShoppingListRoute() {
           </section>
         )}
 
-        <main className="shopping-main">
+        <section className="shopping-main">
           <div className="categories-grid">
             {sortedCategories.map(([category, items]) => {
               const meta = CATEGORY_META[category as FoodCategory] ?? { emoji: "🛒", label: category };
@@ -200,7 +200,7 @@ export default function ShoppingListRoute() {
             <PDFExportButton onStatus={setStatusMessage} />
             <Link href="/app" className="btn-share-card">{t("nav.nutritionPlan")}</Link>
           </div>
-        </main>
+        </section>
 
         {statusMessage ? (
           <p className="np-inline-note">{statusMessage}</p>
