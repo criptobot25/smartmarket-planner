@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AuthSessionProvider } from "./components/AuthSessionProvider";
 import { ClientStoreBootstrap } from "./components/ClientStoreBootstrap";
 import en from "../src/i18n/en.json";
 import "./globals.css";
@@ -12,8 +13,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        <ClientStoreBootstrap />
-        {children}
+        <AuthSessionProvider>
+          <ClientStoreBootstrap />
+          {children}
+        </AuthSessionProvider>
       </body>
     </html>
   );

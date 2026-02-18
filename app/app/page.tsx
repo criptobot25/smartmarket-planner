@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { AppNav } from "../components/AppNav";
 import { useAppTranslation } from "../lib/i18n";
 import { usePlannerStore } from "../stores/plannerStore";
@@ -9,6 +10,7 @@ import { useShoppingProgressStore } from "../stores/shoppingProgressStore";
 
 export default function PlannerRoute() {
   const { t } = useAppTranslation();
+  const { data: session, status } = useSession();
   const plannerIsHydrated = usePlannerStore((state) => state.isHydrated);
   const activePlanId = usePlannerStore((state) => state.activePlanId);
   const setActivePlanId = usePlannerStore((state) => state.setActivePlanId);
@@ -33,6 +35,10 @@ export default function PlannerRoute() {
           <h2>{t("planner.title")}</h2>
           <p>{t("planner.subtitle")}</p>
 
+          {status === "authenticated" && session?.user?.email && (
+            <p className="np-muted">Signed in as {session.user.email}</p>
+          )}
+
           {plannerIsHydrated && (
             <p className="np-muted">{t("shoppingList.progress")}: {progressPercent}%</p>
           )}
@@ -44,6 +50,16 @@ export default function PlannerRoute() {
             <Link href="/app/prep-guide" className="np-btn np-btn-secondary">
               {t("nav.mondayPrep")}
             </Link>
+
+            {status === "authenticated" ? (
+              <button type="button" className="np-btn np-btn-secondary" onClick={() => signOut({ callbackUrl: "/" })}>
+                Logout
+              </button>
+            ) : (
+              <button type="button" className="np-btn np-btn-secondary" onClick={() => signIn(undefined, { callbackUrl: "/app" })}>
+                Login
+              </button>
+            )}
           </div>
         </section>
       </main>
