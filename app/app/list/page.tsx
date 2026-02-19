@@ -191,7 +191,7 @@ export default function ShoppingListRoute() {
 
           <div className="shopping-actions">
             {prepUnlocked && (
-              <Link href="/app/prep-guide" className="btn-prep-guide" title={t("shoppingList.startMondayPrep")}>
+              <Link href="/app/prep" className="btn-prep-guide" title={t("shoppingList.startMondayPrep")}>
                 🍳 {t("shoppingList.startMondayPrep")}
               </Link>
             )}

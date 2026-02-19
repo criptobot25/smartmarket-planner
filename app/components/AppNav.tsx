@@ -30,7 +30,7 @@ export function AppNav() {
         <Link href="/app/list" className={`np-tab ${isRouteActive(pathname, "/app/list") ? "active" : ""}`}>
           {t("nav.groceryMission")}
         </Link>
-        <Link href="/app/prep-guide" className={`np-tab ${isRouteActive(pathname, "/app/prep-guide") ? "active" : ""}`}>
+        <Link href="/app/prep" className={`np-tab ${isRouteActive(pathname, "/app/prep") ? "active" : ""}`}>
           {t("nav.mondayPrep")}
         </Link>
       </nav>

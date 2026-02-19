@@ -112,7 +112,7 @@ export default function PlannerDashboard() {
             <Link href="/app/list" className="np-btn np-btn-primary">
               {t("shoppingList.pageTitle")}
             </Link>
-            <Link href="/app/prep-guide" className="np-btn np-btn-secondary">
+            <Link href="/app/prep" className="np-btn np-btn-secondary">
               {t("nav.mondayPrep")}
             </Link>
             <Link href="/pricing" className="np-btn np-btn-secondary">

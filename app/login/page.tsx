@@ -1,5 +1,4 @@
-import { MarketingNav } from "../components/MarketingNav";
-import { LoginForm } from "./LoginForm";
+import { redirect } from "next/navigation";
 
 type LoginPageProps = {
   searchParams?: {
@@ -8,19 +7,10 @@ type LoginPageProps = {
 };
 
 export default function LoginPage({ searchParams }: LoginPageProps) {
-  const callbackUrl = searchParams?.callbackUrl ?? "/app";
+  const callbackUrl = searchParams?.callbackUrl;
+  const target = callbackUrl
+    ? `/auth/login?callbackUrl=${encodeURIComponent(callbackUrl)}`
+    : "/auth/login";
 
-  return (
-    <div className="np-shell">
-      <MarketingNav />
-
-      <main className="np-main">
-        <section className="np-card">
-          <h2>Login</h2>
-          <p>Use Google or magic link to access your planner.</p>
-          <LoginForm callbackUrl={callbackUrl} />
-        </section>
-      </main>
-    </div>
-  );
+  redirect(target);
 }
