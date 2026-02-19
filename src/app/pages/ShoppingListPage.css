@@ -1,6 +1,7 @@
 .shopping-list-page {
   min-height: calc(100vh - 5rem);
-  --color-card-bg: var(--color-background);
+  --color-card-bg: rgba(255, 255, 255, 0.08);
+  --color-card-bg-hover: rgba(255, 255, 255, 0.14);
   padding-bottom: calc(1rem + env(safe-area-inset-bottom));
 }
 
@@ -310,13 +311,13 @@
 }
 
 .category-card {
-  background: var(--color-card-bg);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.06) 100%);
   backdrop-filter: blur(12px);
   border-radius: var(--radius-xl);
   padding: 1.75rem;
   box-shadow: var(--shadow-md);
   transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.24);
 }
 
 .category-card:hover {
@@ -350,9 +351,9 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   gap: 1.125rem;
   margin-bottom: 0.5rem;
-  background: var(--color-card-bg, var(--color-surface));
+  background: var(--color-card-bg, rgba(255, 255, 255, 0.08));
   color: var(--color-text);
-  border: 1px solid var(--color-border);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   min-height: 3.5rem;
 }
 
@@ -361,9 +362,10 @@
 }
 
 .item:hover {
-  background: var(--color-card-bg, var(--color-background));
+  background: var(--color-card-bg-hover, rgba(255, 255, 255, 0.14));
   transform: translateX(4px);
-  border-color: rgba(20, 184, 166, 0.45);
+  border-color: rgba(20, 184, 166, 0.65);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
 }
 
 .item:active {
@@ -371,7 +373,7 @@
 }
 
 .item.purchased {
-  opacity: 0.86;
+  opacity: 0.92;
 }
 
 .item.purchased .item-name {
@@ -423,13 +425,13 @@
 
 .item-quantity {
   font-size: 0.875rem;
-  color: var(--color-text-muted);
+  color: rgba(255, 255, 255, 0.82);
   font-weight: 500;
 }
 
 .item-reason {
   font-size: 0.8125rem;
-  color: var(--color-text-muted);
+  color: rgba(255, 255, 255, 0.78);
   font-style: italic;
   margin-top: 0.25rem;
 }
