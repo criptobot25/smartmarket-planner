@@ -14,10 +14,13 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
     <div className="np-shell">
       <MarketingNav />
 
-      <main className="np-main">
-        <section className="np-card">
-          <h2>Login</h2>
-          <p>Use Google or magic link to access your planner.</p>
+      <main className="np-main np-main-narrow">
+        <section className="np-card np-card-hero">
+          <header className="np-page-header">
+            <h1>Login</h1>
+            <p className="np-page-subtitle">Use Google or magic link to access your planner.</p>
+          </header>
+
           <LoginForm callbackUrl={callbackUrl} />
         </section>
       </main>

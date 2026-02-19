@@ -138,6 +138,51 @@ a {
   margin: 0 auto;
   padding: 1.2rem 0 2rem;
 }
+.np-main-narrow {
+  width: min(680px, 94%);
+}
+.np-page-header {
+  margin-bottom: 1rem;
+}
+.np-page-header h1 {
+  margin: 0;
+  font-size: clamp(1.55rem, 3vw, 2.1rem);
+}
+.np-page-subtitle {
+  margin: 0.5rem 0 0;
+  color: var(--color-text-muted);
+}
+.np-card-hero {
+  padding: 1.15rem;
+}
+.np-list {
+  margin: 0.65rem 0 0;
+  padding-left: 1.2rem;
+  color: var(--color-text-muted);
+}
+.np-page-actions {
+  margin-top: 1.1rem;
+}
+.np-pricing-header {
+  text-align: center;
+  margin-bottom: 1.2rem;
+}
+.np-pricing-grid {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+.np-pricing-card {
+  min-height: 100%;
+}
+.np-pricing-price {
+  margin: 0.35rem 0 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #5eead4;
+}
+.np-pricing-card-featured {
+  border-color: rgba(20, 184, 166, 0.5);
+  box-shadow: 0 15px 35px rgba(20, 184, 166, 0.24);
+}
 
 .np-hero {
   text-align: center;
@@ -518,6 +563,9 @@ a {
   }
 
   .landing-page .hero {
+  .np-main-narrow {
+    width: min(720px, 94%);
+  }
     padding: 6rem 0.95rem 2.4rem;
   }
 

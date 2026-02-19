@@ -20,7 +20,7 @@ export function AppNav() {
   return (
     <header className="np-nav np-nav-app">
       <Link href="/" className="np-brand">
-        {t("app.name")}
+        <img src="/logo-nutripilot.svg" alt={t("app.name")} className="np-brand-logo" />
       </Link>
 
       <nav className="np-tabs" aria-label={t("nav.nutritionPlan")}>
