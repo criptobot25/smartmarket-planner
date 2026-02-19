@@ -1,17 +1,5 @@
 import { FitnessGoal, PlanInput } from "../models/PlanInput";
-import { calculateTDEE } from "./calculateTDEE";
-
-const GOAL_CALORIE_MULTIPLIER: Record<FitnessGoal, number> = {
-  cutting: 0.85,
-  maintenance: 1,
-  bulking: 1.1,
-};
-
-const GOAL_PROTEIN_PER_KG: Record<FitnessGoal, number> = {
-  cutting: 2.2,
-  maintenance: 1.8,
-  bulking: 2.0,
-};
+import { calculateNutritionTargets, resolveFitnessGoal as resolveGoalFromNutrition } from "./calculateNutritionTargets";
 
 export interface MacroPlan {
   tdee: number;
@@ -27,29 +15,13 @@ export interface MacroPlan {
 }
 
 export function resolveFitnessGoal(input: PlanInput): FitnessGoal {
-  if (input.fitnessGoal) {
-    return input.fitnessGoal;
-  }
-
-  if (input.dietStyle === "healthy") {
-    return "cutting";
-  }
-
-  if (input.dietStyle === "comfort") {
-    return "bulking";
-  }
-
-  return "maintenance";
+  return resolveGoalFromNutrition(input);
 }
 
 export function calculateMacroPlan(input: PlanInput): MacroPlan {
-  const { tdee } = calculateTDEE(input);
-  const goal = resolveFitnessGoal(input);
-
-  const calorieTargetPerDay = Math.round(tdee * GOAL_CALORIE_MULTIPLIER[goal]);
-
-  const baselineProtein = Math.round(input.weightKg * GOAL_PROTEIN_PER_KG[goal]);
-  const proteinTargetPerDay = Math.max(baselineProtein, input.proteinTargetPerDay || baselineProtein);
+  const nutritionTargets = calculateNutritionTargets(input);
+  const calorieTargetPerDay = nutritionTargets.caloriesPerDay;
+  const proteinTargetPerDay = nutritionTargets.proteinPerDay;
 
   const fatsTargetPerDay = Math.round((calorieTargetPerDay * 0.25) / 9);
   const caloriesFromProtein = proteinTargetPerDay * 4;
@@ -63,7 +35,7 @@ export function calculateMacroPlan(input: PlanInput): MacroPlan {
   const fatsPerMeal = Math.round(fatsTargetPerDay / mealsPerDay);
 
   return {
-    tdee: Math.round(tdee),
+    tdee: Math.round(nutritionTargets.tdee),
     calorieTargetPerDay,
     caloriesTargetPerDay: calorieTargetPerDay,
     proteinTargetPerDay,
