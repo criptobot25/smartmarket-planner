@@ -3,13 +3,12 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useShoppingPlan } from "../../../src/contexts/ShoppingPlanContext";
-import { aggregateShoppingList } from "../../../src/core/logic/aggregateShoppingList";
 import type { AggregatedShoppingItem } from "../../../src/core/logic/aggregateShoppingList";
-import type { FoodItem } from "../../../src/core/models/FoodItem";
 import type { FoodCategory } from "../../../src/core/models/FoodItem";
 import { GroceryItemRow } from "../../../src/app/components/GroceryItemRow";
 import { WeeklyCheckInModal } from "../../../src/app/components/WeeklyCheckInModal";
 import { detectRepetitionRisk, type WeeklyFeedbackResponse, useWeeklyFeedback } from "../../../src/hooks/useWeeklyFeedback";
+import { useShoppingListState } from "../../../src/hooks/useShoppingListState";
 import { isPremiumUser } from "../../../src/core/premium/PremiumFeatures";
 import { AppNav } from "../../components/AppNav";
 import PDFExportButton from "../../components/PDFExportButton";
@@ -32,10 +31,18 @@ export default function ShoppingListRoute() {
   const setProgressCounts = useShoppingProgressStore((state) => state.setProgressCounts);
 
   const planDays = weeklyPlan?.days.length || 7;
-  const aggregatedShoppingList = useMemo(
-    () => aggregateShoppingList(shoppingList as (FoodItem & { purchased?: boolean })[], planDays),
-    [shoppingList, planDays],
-  );
+  const {
+    aggregatedShoppingList,
+    purchasedCount,
+    totalCount,
+    shoppingProgress,
+    toggleAggregatedItemPurchased,
+    getAggregatedItemKey,
+  } = useShoppingListState({
+    shoppingList,
+    planDays,
+    toggleItemPurchased,
+  });
   const groupedItems = aggregatedShoppingList.reduce<Record<string, AggregatedShoppingItem[]>>((accumulator, item) => {
     if (!accumulator[item.category]) {
       accumulator[item.category] = [];
@@ -44,10 +51,6 @@ export default function ShoppingListRoute() {
     accumulator[item.category].push(item);
     return accumulator;
   }, {});
-
-  const purchasedCount = aggregatedShoppingList.filter((item) => item.purchased).length;
-  const totalCount = aggregatedShoppingList.length;
-  const shoppingProgress = totalCount > 0 ? Math.round((purchasedCount / totalCount) * 100) : 0;
   const prepUnlocked = shoppingProgress === 100;
 
   const CATEGORY_META: Record<FoodCategory, { emoji: string; label: string }> = {
@@ -176,10 +179,10 @@ export default function ShoppingListRoute() {
                   <ul className="items-list">
                     {items.map((item) => (
                       <GroceryItemRow
-                        key={item.id}
+                        key={getAggregatedItemKey(item)}
                         item={item}
-                        onTogglePurchased={(sourceIds) => {
-                          sourceIds.forEach((sourceId) => toggleItemPurchased(sourceId));
+                        onTogglePurchased={() => {
+                          toggleAggregatedItemPurchased(item);
                         }}
                       />
                     ))}

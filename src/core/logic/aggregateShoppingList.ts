@@ -135,7 +135,9 @@ export function aggregateShoppingList(
 
     if (existing) {
       existing.quantityInBaseUnit += converted.value;
-      existing.sourceIds.push(item.id);
+      if (!existing.sourceIds.includes(item.id)) {
+        existing.sourceIds.push(item.id);
+      }
       existing.estimatedPrice += item.estimatedPrice || 0;
       existing.purchased = existing.purchased || Boolean(item.purchased);
       if (item.reason) {
@@ -167,7 +169,7 @@ export function aggregateShoppingList(
         unit: normalized.unit,
         estimatedPrice: bucket.estimatedPrice,
         purchased: bucket.purchased,
-        sourceIds: bucket.sourceIds,
+        sourceIds: Array.from(new Set(bucket.sourceIds)),
         normalizedDisplayText: normalized.displayText,
         coverageText: buildCoverageText(bucket.base.category, reasons, planDays),
         reason: reasons.length > 0 ? reasons.map(capitalize).join(" · ") : undefined
