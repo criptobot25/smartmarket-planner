@@ -1,58 +1,11 @@
 import { FoodCategory, FoodItem } from "../models/FoodItem";
-import { normalizeQuantity } from "./normalizeQuantity";
-
-interface RawShoppingItem extends FoodItem {
-  purchased?: boolean;
-}
-
-interface AggregationBucket {
-  base: RawShoppingItem;
-  quantityInBaseUnit: number;
-  baseUnit: string;
-  sourceIds: string[];
-  reasons: Set<string>;
-  estimatedPrice: number;
-  purchased: boolean;
-}
+import { aggregateShoppingItems, type RawShoppingItem } from "./aggregateShoppingItems";
 
 export interface AggregatedShoppingItem extends FoodItem {
   purchased?: boolean;
   sourceIds: string[];
   normalizedDisplayText: string;
   coverageText: string;
-}
-
-interface ConvertedQuantity {
-  value: number;
-  baseUnit: string;
-}
-
-function toBaseUnit(quantity: number, unit: string): ConvertedQuantity {
-  const normalizedUnit = unit.trim().toLowerCase();
-
-  if (normalizedUnit === "kg") {
-    return { value: quantity * 1000, baseUnit: "g" };
-  }
-
-  if (normalizedUnit === "g") {
-    return { value: quantity, baseUnit: "g" };
-  }
-
-  if (normalizedUnit === "l") {
-    return { value: quantity * 1000, baseUnit: "ml" };
-  }
-
-  if (normalizedUnit === "ml") {
-    return { value: quantity, baseUnit: "ml" };
-  }
-
-  return { value: quantity, baseUnit: unit };
-}
-
-function keyForItem(item: FoodItem): string {
-  const normalizedName = item.name.trim().toLowerCase();
-  const converted = toBaseUnit(item.quantity, item.unit);
-  return `${normalizedName}::${item.category}::${converted.baseUnit}`;
 }
 
 function capitalize(text: string): string {
@@ -126,51 +79,19 @@ export function aggregateShoppingList(
   items: RawShoppingItem[],
   planDays = 7
 ): AggregatedShoppingItem[] {
-  const buckets = new Map<string, AggregationBucket>();
-
-  items.forEach((item) => {
-    const key = keyForItem(item);
-    const converted = toBaseUnit(item.quantity, item.unit);
-    const existing = buckets.get(key);
-
-    if (existing) {
-      existing.quantityInBaseUnit += converted.value;
-      if (!existing.sourceIds.includes(item.id)) {
-        existing.sourceIds.push(item.id);
-      }
-      existing.estimatedPrice += item.estimatedPrice || 0;
-      existing.purchased = existing.purchased || Boolean(item.purchased);
-      if (item.reason) {
-        existing.reasons.add(item.reason);
-      }
-      return;
-    }
-
-    buckets.set(key, {
-      base: item,
-      quantityInBaseUnit: converted.value,
-      baseUnit: converted.baseUnit,
-      sourceIds: [item.id],
-      reasons: new Set(item.reason ? [item.reason] : []),
-      estimatedPrice: item.estimatedPrice || 0,
-      purchased: Boolean(item.purchased)
-    });
-  });
-
-  return Array.from(buckets.values())
+  return aggregateShoppingItems(items)
     .map((bucket) => {
-      const normalized = normalizeQuantity(bucket.quantityInBaseUnit, bucket.baseUnit);
-      const reasons = Array.from(bucket.reasons);
+      const reasons = bucket.reasons;
 
       return {
         ...bucket.base,
         id: bucket.sourceIds[0],
-        quantity: normalized.value,
-        unit: normalized.unit,
+        quantity: bucket.normalizedValue,
+        unit: bucket.normalizedUnit,
         estimatedPrice: bucket.estimatedPrice,
         purchased: bucket.purchased,
-        sourceIds: Array.from(new Set(bucket.sourceIds)),
-        normalizedDisplayText: normalized.displayText,
+        sourceIds: bucket.sourceIds,
+        normalizedDisplayText: bucket.normalizedDisplayText,
         coverageText: buildCoverageText(bucket.base.category, reasons, planDays),
         reason: reasons.length > 0 ? reasons.map(capitalize).join(" · ") : undefined
       };
