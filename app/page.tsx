@@ -17,6 +17,21 @@ const trustPills = [
   "Monday Prep desbloqueado por execução",
 ];
 
+const goalCopyCards = [
+  {
+    goal: "Cutting",
+    promise: "Defina déficit com segurança e mantenha proteína alta para preservar massa magra.",
+  },
+  {
+    goal: "Maintenance",
+    promise: "Estabilize rotina e composição corporal com metas realistas e execução semanal simples.",
+  },
+  {
+    goal: "Bulking",
+    promise: "Aplique superávit estratégico para crescer com controle, sem exagero de gordura.",
+  },
+];
+
 const objectionBreakers = [
   {
     title: "Sem dieta genérica",
@@ -83,6 +98,15 @@ export default function LandingRoute() {
             <p className="hero-note">
               Mais de planejamento, menos fricção: transforme intenção em execução semanal.
             </p>
+
+            <div className="goal-copy-grid">
+              {goalCopyCards.map((card) => (
+                <article key={card.goal} className="goal-copy-card">
+                  <h3>{card.goal}</h3>
+                  <p>{card.promise}</p>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 
