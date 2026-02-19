@@ -1,11 +1,11 @@
 .prep-guide-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: transparent;
   padding-bottom: 3rem;
 }
 
 /* Empty State */
-.empty-state {
+.prep-guide-page .empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -15,27 +15,29 @@
   padding: 2rem;
 }
 
-.empty-state h2 {
+.prep-guide-page .empty-state h2 {
   font-size: 2rem;
-  color: #2d3748;
+  color: var(--color-text);
   margin-bottom: 1rem;
 }
 
-.empty-state p {
+.prep-guide-page .empty-state p {
   font-size: 1.1rem;
-  color: #718096;
+  color: var(--color-text-muted);
   margin-bottom: 2rem;
 }
 
 /* Header */
 .prep-guide-header {
-  background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
   padding: 2rem;
   margin-bottom: 2rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
 }
 
-.header-top {
+.prep-guide-header .header-top {
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -43,8 +45,9 @@
 }
 
 .btn-back {
-  background: #f7fafc;
-  border: 1px solid #e2e8f0;
+  background: rgba(8, 30, 49, 0.55);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
   padding: 0.5rem 1rem;
   border-radius: 8px;
   cursor: pointer;
@@ -53,13 +56,13 @@
 }
 
 .btn-back:hover {
-  background: #edf2f7;
+  background: rgba(8, 30, 49, 0.75);
   transform: translateX(-2px);
 }
 
 .prep-guide-header h1 {
   font-size: 2.5rem;
-  color: #2d3748;
+  color: var(--color-text);
   margin: 0;
 }
 
@@ -133,7 +136,7 @@
 .progress-bar {
   width: 100%;
   height: 12px;
-  background: #e2e8f0;
+  background: rgba(15, 23, 42, 0.35);
   border-radius: 6px;
   overflow: hidden;
 }
@@ -153,18 +156,18 @@
 }
 
 /* Section Headers */
-.section-header {
+.prep-guide-content .section-header {
   margin-bottom: 1.5rem;
 }
 
-.section-header h2 {
+.prep-guide-content .section-header h2 {
   font-size: 1.8rem;
-  color: #2d3748;
+  color: var(--color-text);
   margin-bottom: 0.5rem;
 }
 
 .section-subtitle {
-  color: #718096;
+  color: var(--color-text-muted);
   font-size: 1rem;
 }
 
@@ -181,7 +184,7 @@
 
 /* Task Card */
 .task-card {
-  background: white;
+  background: var(--color-surface);
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -264,7 +267,7 @@
 .task-action {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #2d3748;
+  color: var(--color-text);
 }
 
 .task-duration {
@@ -280,7 +283,7 @@
 }
 
 .task-instructions {
-  color: #4a5568;
+  color: var(--color-text-muted);
   line-height: 1.6;
   margin-bottom: 0.5rem;
   font-size: 0.95rem;
@@ -298,7 +301,7 @@
 
 /* Tips Section */
 .tips-section {
-  background: white;
+  background: var(--color-surface);
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -307,7 +310,7 @@
 
 .tips-section h3 {
   font-size: 1.5rem;
-  color: #2d3748;
+  color: var(--color-text);
   margin-bottom: 1.5rem;
 }
 
@@ -334,14 +337,14 @@
 }
 
 .tip-text {
-  color: #4a5568;
+  color: var(--color-text-muted);
   line-height: 1.6;
   flex: 1;
 }
 
 /* Ingredients Section */
 .ingredients-section {
-  background: white;
+  background: var(--color-surface);
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -350,7 +353,7 @@
 
 .ingredients-section h3 {
   font-size: 1.5rem;
-  color: #2d3748;
+  color: var(--color-text);
   margin-bottom: 1.5rem;
 }
 
@@ -396,7 +399,7 @@
 }
 
 /* Action Buttons */
-.action-buttons {
+.prep-guide-page .action-buttons {
   display: flex;
   gap: 1rem;
   margin-top: 2rem;
@@ -405,7 +408,7 @@
 
 .prep-upgrade-callout {
   margin-top: 1.25rem;
-  background: #ffffff;
+  background: var(--color-surface);
   border: 1px solid #c7d2fe;
   border-left: 4px solid #6366f1;
   border-radius: 10px;

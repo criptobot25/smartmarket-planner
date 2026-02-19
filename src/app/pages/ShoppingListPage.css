@@ -19,14 +19,14 @@
   border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
-.header-top {
+.shopping-header .header-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
 }
 
-.page-title {
+.shopping-header .page-title {
   font-size: 2rem;
   font-weight: 700;
   color: var(--color-text);
@@ -34,11 +34,11 @@
   letter-spacing: -0.02em;
 }
 
-.items-count {
+.shopping-header .items-count {
   font-size: 0.875rem;
-  color: var(--color-muted);
+  color: var(--color-text-muted);
   font-weight: 600;
-  background: #f3f4f6;
+  background: rgba(15, 23, 42, 0.25);
   padding: 0.5rem 1rem;
   border-radius: 2rem;
 }
@@ -50,19 +50,19 @@
   gap: 1rem;
 }
 
-.metric {
+.shopping-header .metric {
   display: flex;
   flex-direction: column;
   gap: 0.375rem;
   padding: 1rem;
-  background: var(--color-bg);
+  background: rgba(8, 30, 49, 0.55);
   border-radius: var(--radius-lg);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border);
 }
 
-.metric-label {
+.shopping-header .metric-label {
   font-size: 0.75rem;
-  color: var(--color-muted);
+  color: var(--color-text-muted);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -109,7 +109,7 @@
 .cost-disclaimer {
   margin: 1rem 0 0;
   font-size: 0.8125rem;
-  color: var(--color-muted);
+  color: var(--color-text-muted);
 }
 
 .premium-upgrade-strip {
@@ -538,23 +538,23 @@
 }
 
 /* Empty State */
-.empty-state {
+.shopping-list-page .empty-state {
   text-align: center;
   padding: 4rem 2rem;
 }
 
-.empty-state h2 {
+.shopping-list-page .empty-state h2 {
   font-size: 1.5rem;
   color: #111827;
   margin-bottom: 0.5rem;
 }
 
-.empty-state p {
+.shopping-list-page .empty-state p {
   color: #6b7280;
   margin-bottom: 2rem;
 }
 
-.empty-state .btn-primary {
+.shopping-list-page .empty-state .btn-primary {
   padding: 1rem 2rem;
   background: var(--color-primary);
   color: white;
@@ -567,7 +567,7 @@
   box-shadow: var(--shadow-md);
 }
 
-.empty-state .btn-primary:hover {
+.shopping-list-page .empty-state .btn-primary:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
 }
