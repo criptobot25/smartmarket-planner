@@ -2,12 +2,14 @@
 
 import { FormEvent, useState } from "react";
 import { signIn } from "next-auth/react";
+import { useAppTranslation } from "../lib/i18n";
 
 type LoginFormProps = {
   callbackUrl: string;
 };
 
 export function LoginForm({ callbackUrl }: LoginFormProps) {
+  const { t } = useAppTranslation();
   const [email, setEmail] = useState("");
   const [isSending, setIsSending] = useState(false);
 
@@ -31,23 +33,23 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
           className="np-btn np-btn-primary"
           onClick={() => signIn("google", { callbackUrl })}
         >
-          Continue with Google
+          {t("auth.continueGoogle")}
         </button>
       </div>
 
       <form onSubmit={handleEmailLogin} className="np-actions" style={{ marginTop: "0.75rem" }}>
-        <label htmlFor="email">Email</label>
+        <label htmlFor="email">{t("auth.emailLabel")}</label>
         <input
           id="email"
           type="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          placeholder="you@example.com"
+          placeholder={t("auth.emailPlaceholder")}
           required
           className="np-input"
         />
         <button type="submit" className="np-btn np-btn-secondary" disabled={isSending}>
-          {isSending ? "Sending..." : "Send magic link"}
+          {isSending ? t("auth.sending") : t("auth.sendMagicLink")}
         </button>
       </form>
     </>

@@ -122,7 +122,7 @@ export default function PrepGuidePageClient() {
             <h2>🔒 {t("prepGuide.lockedTitle")}</h2>
             <p>{t("prepGuide.lockedSubtitle")}</p>
             <p>{t("prepGuide.lockedProgress", { progress: prepFlow.progressPercent })}</p>
-            <p>{`Unlock target: ${prepFlow.unlockThreshold}%`}</p>
+            <p>{t("prepGuide.unlockTarget", { threshold: prepFlow.unlockThreshold })}</p>
             <Link href="/app/list" className="btn-primary">{t("prepGuide.lockedBackButton")}</Link>
           </div>
         </main>

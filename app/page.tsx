@@ -11,54 +11,54 @@ const previewCards = [
 ];
 
 const trustPills = [
-  "Baseado em Mifflin-St Jeor + TDEE",
-  "Plano semanal em menos de 2 minutos",
-  "Grocery Mission com progresso real",
-  "Monday Prep desbloqueado por execução",
+  "landingV2.sales.trust1",
+  "landingV2.sales.trust2",
+  "landingV2.sales.trust3",
+  "landingV2.sales.trust4",
 ];
 
 const goalCopyCards = [
   {
-    goal: "Cutting",
-    promise: "Defina déficit com segurança e mantenha proteína alta para preservar massa magra.",
+    goal: "landingV2.sales.goalCuttingTitle",
+    promise: "landingV2.sales.goalCuttingBody",
   },
   {
-    goal: "Maintenance",
-    promise: "Estabilize rotina e composição corporal com metas realistas e execução semanal simples.",
+    goal: "landingV2.sales.goalMaintenanceTitle",
+    promise: "landingV2.sales.goalMaintenanceBody",
   },
   {
-    goal: "Bulking",
-    promise: "Aplique superávit estratégico para crescer com controle, sem exagero de gordura.",
+    goal: "landingV2.sales.goalBulkingTitle",
+    promise: "landingV2.sales.goalBulkingBody",
   },
 ];
 
 const objectionBreakers = [
   {
-    title: "Sem dieta genérica",
-    body: "Seu plano é calculado por objetivo (cutting, manutenção ou bulking), treino e rotina alimentar.",
+    title: "landingV2.sales.objection1Title",
+    body: "landingV2.sales.objection1Body",
   },
   {
-    title: "Sem perder tempo no mercado",
-    body: "Lista agregada inteligente com foco em execução: compra certa, quantidade certa, semana organizada.",
+    title: "landingV2.sales.objection2Title",
+    body: "landingV2.sales.objection2Body",
   },
   {
-    title: "Sem complicação",
-    body: "Fluxo simples: gerar plano, completar Grocery Mission, iniciar Monday Prep com checklist prático.",
+    title: "landingV2.sales.objection3Title",
+    body: "landingV2.sales.objection3Body",
   },
 ];
 
 const faqItems = [
   {
-    q: "Em quanto tempo recebo meu plano?",
-    a: "Normalmente em menos de 2 minutos, já com metas diárias e lista de compras pronta.",
+    q: "landingV2.sales.faq1Q",
+    a: "landingV2.sales.faq1A",
   },
   {
-    q: "Serve para quem quer emagrecer e para quem quer ganhar massa?",
-    a: "Sim. O cálculo ajusta calorias e proteína conforme seu objetivo fitness.",
+    q: "landingV2.sales.faq2Q",
+    a: "landingV2.sales.faq2A",
   },
   {
-    q: "Preciso assinar para testar?",
-    a: "Não. Você pode começar no plano gratuito e evoluir para Premium quando quiser.",
+    q: "landingV2.sales.faq3Q",
+    a: "landingV2.sales.faq3A",
   },
 ];
 
@@ -90,20 +90,20 @@ export default function LandingRoute() {
             <div className="hero-trust-grid">
               {trustPills.map((pill) => (
                 <div key={pill} className="hero-trust-pill">
-                  ✅ {pill}
+                  ✅ {t(pill)}
                 </div>
               ))}
             </div>
 
             <p className="hero-note">
-              Mais de planejamento, menos fricção: transforme intenção em execução semanal.
+              {t("landingV2.sales.heroNote")}
             </p>
 
             <div className="goal-copy-grid">
               {goalCopyCards.map((card) => (
                 <article key={card.goal} className="goal-copy-card">
-                  <h3>{card.goal}</h3>
-                  <p>{card.promise}</p>
+                  <h3>{t(card.goal)}</h3>
+                  <p>{t(card.promise)}</p>
                 </article>
               ))}
             </div>
@@ -112,16 +112,16 @@ export default function LandingRoute() {
 
         <section className="sales-strip">
           <div className="section-wrap sales-strip-wrap">
-            <p className="sales-strip-title">🔥 Oferta de entrada para acelerar resultados</p>
+            <p className="sales-strip-title">🔥 {t("landingV2.sales.offerTitle")}</p>
             <p className="sales-strip-subtitle">
-              Comece grátis hoje e desbloqueie Premium quando quiser — sem contrato, sem risco.
+              {t("landingV2.sales.offerSubtitle")}
             </p>
             <div className="np-actions">
               <Link href="/app" className="np-btn np-btn-primary">
-                Quero meu plano agora
+                {t("landingV2.sales.offerCtaPrimary")}
               </Link>
               <Link href="/pricing" className="np-btn np-btn-secondary">
-                Ver plano Premium
+                {t("landingV2.sales.offerCtaSecondary")}
               </Link>
             </div>
           </div>
@@ -149,12 +149,12 @@ export default function LandingRoute() {
 
         <section className="objection-section">
           <div className="section-wrap">
-            <h2>Por que essa landing converte em resultado?</h2>
+            <h2>{t("landingV2.sales.objectionTitle")}</h2>
             <div className="cards-grid">
               {objectionBreakers.map((item) => (
                 <div key={item.title} className="np-card objection-card">
-                  <h3>{item.title}</h3>
-                  <p>{item.body}</p>
+                  <h3>{t(item.title)}</h3>
+                  <p>{t(item.body)}</p>
                 </div>
               ))}
             </div>
@@ -206,7 +206,7 @@ export default function LandingRoute() {
           <div className="section-wrap pricing-wrap">
             <h2>{t("landingV2.pricingTitle")}</h2>
             <p className="pricing-intro">
-              Escolha o ritmo: comece com o gratuito e evolua para o Premium quando quiser escalar consistência.
+              {t("landingV2.sales.pricingIntro")}
             </p>
             <div className="pricing-cards">
               <div className="np-card pricing-card">
@@ -239,18 +239,18 @@ export default function LandingRoute() {
               </Link>
             </div>
 
-            <p className="pricing-risk-reversal">🛡️ Sem compromisso de longo prazo. Cancele quando quiser.</p>
+            <p className="pricing-risk-reversal">🛡️ {t("landingV2.sales.riskReversal")}</p>
           </div>
         </section>
 
         <section className="faq-section">
           <div className="section-wrap">
-            <h2>Perguntas frequentes</h2>
+            <h2>{t("landingV2.sales.faqTitle")}</h2>
             <div className="faq-grid">
               {faqItems.map((item) => (
                 <article key={item.q} className="np-card faq-card">
-                  <h3>{item.q}</h3>
-                  <p>{item.a}</p>
+                  <h3>{t(item.q)}</h3>
+                  <p>{t(item.a)}</p>
                 </article>
               ))}
             </div>
@@ -259,16 +259,16 @@ export default function LandingRoute() {
 
         <section className="final-cta-section">
           <div className="section-wrap final-cta-wrap">
-            <h2>Seu próximo resultado começa nesta semana</h2>
+            <h2>{t("landingV2.sales.finalCtaTitle")}</h2>
             <p>
-              Gere seu plano, compre com foco e execute o prep com checklist. Esse é o atalho para consistência real.
+              {t("landingV2.sales.finalCtaBody")}
             </p>
             <div className="np-actions">
               <Link href="/app" className="np-btn np-btn-primary">
-                Começar agora
+                {t("landingV2.sales.finalCtaPrimary")}
               </Link>
               <Link href="/pricing" className="np-btn np-btn-secondary">
-                Comparar planos
+                {t("landingV2.sales.finalCtaSecondary")}
               </Link>
             </div>
           </div>

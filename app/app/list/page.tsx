@@ -204,8 +204,8 @@ export default function ShoppingListRoute() {
                 type="button"
                 className="btn-prep-guide"
                 disabled
-                title={`Unlocks at ${prepFlow.unlockThreshold}%`}
-                aria-label={`Start Prep locked until ${prepFlow.unlockThreshold}%`}
+                title={t("shoppingList.prepUnlockAt", { threshold: prepFlow.unlockThreshold })}
+                aria-label={t("shoppingList.prepLockedAria", { threshold: prepFlow.unlockThreshold })}
               >
                 🔒 {t("shoppingList.startMondayPrep")} ({prepFlow.progressPercent}%/{prepFlow.unlockThreshold}%)
               </button>

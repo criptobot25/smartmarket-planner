@@ -1,4 +1,5 @@
 import { MarketingNav } from "../../components/MarketingNav";
+import { LoginHeader } from "./LoginHeader";
 import { LoginForm } from "../../login/LoginForm";
 
 type LoginPageProps = {
@@ -16,10 +17,7 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
 
       <main className="np-main np-main-narrow">
         <section className="np-card np-card-hero">
-          <header className="np-page-header">
-            <h1>Login</h1>
-            <p className="np-page-subtitle">Use Google or magic link to access your planner.</p>
-          </header>
+          <LoginHeader />
 
           <LoginForm callbackUrl={callbackUrl} />
         </section>
