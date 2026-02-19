@@ -3,18 +3,17 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { signIn, signOut, useSession } from "next-auth/react";
 import { useShoppingPlan } from "../../src/contexts/ShoppingPlanContext";
 import { isPremiumUser } from "../../src/core/premium/PremiumFeatures";
 import { OnboardingWizard } from "../../src/app/components/OnboardingWizard";
 import type { PlanInput } from "../../src/core/models/PlanInput";
 import { AppNav } from "./AppNav";
+import { PlannerAuthControls } from "./PlannerAuthControls";
 import { useAppTranslation } from "../lib/i18n";
 
 export default function PlannerDashboard() {
   const router = useRouter();
   const { t } = useAppTranslation();
-  const { data: session, status } = useSession();
   const { generatePlan, repeatLastWeek, weeklyPlan, streak } = useShoppingPlan();
   const isPremium = isPremiumUser();
   const [wizardErrors, setWizardErrors] = useState<string[]>([]);
@@ -120,20 +119,8 @@ export default function PlannerDashboard() {
               {t("nav.premium")}
             </Link>
 
-            {status === "authenticated" ? (
-              <button type="button" className="np-btn np-btn-secondary" onClick={() => signOut({ callbackUrl: "/" })}>
-                {t("planner.dashboard.logout")}
-              </button>
-            ) : (
-              <button type="button" className="np-btn np-btn-secondary" onClick={() => signIn(undefined, { callbackUrl: "/app" })}>
-                {t("planner.dashboard.login")}
-              </button>
-            )}
+            <PlannerAuthControls />
           </div>
-
-          {status === "authenticated" && session?.user?.email && (
-            <p className="np-muted">{t("planner.dashboard.signedInAs", { email: session.user.email })}</p>
-          )}
 
           {weeklyPlan ? <p className="np-inline-note">{t("planner.previewValue")}</p> : null}
         </div>
