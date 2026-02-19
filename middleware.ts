@@ -3,8 +3,13 @@ import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 const STRIPE_ACTIVE_STATUSES = new Set(["active", "trialing"]);
+const ENFORCE_PREP_AUTH = process.env.ENFORCE_PREP_AUTH === "true";
 
 export async function middleware(request: NextRequest) {
+  if (!ENFORCE_PREP_AUTH) {
+    return NextResponse.next();
+  }
+
   const token = await getToken({
     req: request,
     secret: process.env.NEXTAUTH_SECRET,
