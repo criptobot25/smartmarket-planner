@@ -14,43 +14,135 @@ export default function LandingRoute() {
   const { t } = useAppTranslation();
 
   return (
-    <div className="np-shell">
+    <div className="np-shell landing-page">
       <MarketingNav />
 
-      <main className="np-main">
-        <section className="np-hero">
-          <h1>{t("landingV2.heroTitle")}</h1>
-          <p>{t("landingV2.heroSubtitle")}</p>
+      <main>
+        <section className="hero">
+          <div className="hero-content">
+            <img src="/logo-nutripilot.svg" alt={t("app.name")} className="hero-logo-image" />
+            <h1 className="hero-title">{t("landingV2.heroTitle")}</h1>
+            <p className="hero-subtitle">{t("landingV2.heroSubtitle")}</p>
 
-          <div className="np-actions">
-            <Link href="/app" className="np-btn np-btn-primary">
-              {t("landingV2.generatePlan")}
-            </Link>
-            <Link href="/pricing" className="np-btn np-btn-secondary">
-              {t("landingV2.upgradePremium")}
-            </Link>
+            <div className="hero-cta">
+              <Link href="/app" className="np-btn np-btn-primary hero-link">
+                {t("landingV2.generatePlan")}
+              </Link>
+              <Link href="/pricing" className="np-btn np-btn-secondary hero-link">
+                {t("landingV2.upgradePremium")}
+              </Link>
+            </div>
+
+            <p className="hero-tagline">{t("landingV2.heroTagline")}</p>
           </div>
         </section>
 
-        <section>
-          <h2>{t("landingV2.previewTitle")}</h2>
-          <div className="np-grid">
-            {previewCards.map((card) => (
-              <div
-                key={card.titleKey}
-                className="np-preview"
-                style={{
-                  backgroundImage: `linear-gradient(180deg, rgba(2, 6, 23, 0.08), rgba(2, 6, 23, 0.78)), url(${card.imageSrc})`,
-                }}
-                role="img"
-                aria-label={t(card.titleKey)}
-              >
-                <span>{t(card.titleKey)}</span>
+        <section className="feature-highlights">
+          <div className="section-wrap">
+            <h2>{t("landingV2.featuresTitle")}</h2>
+            <div className="cards-grid">
+              <div className="np-card">
+                <h3>{t("landingV2.feature1Title")}</h3>
+                <p>{t("landingV2.feature1Desc")}</p>
               </div>
-            ))}
+              <div className="np-card">
+                <h3>{t("landingV2.feature2Title")}</h3>
+                <p>{t("landingV2.feature2Desc")}</p>
+              </div>
+              <div className="np-card">
+                <h3>{t("landingV2.feature3Title")}</h3>
+                <p>{t("landingV2.feature3Desc")}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="mockup-section">
+          <div className="section-wrap">
+            <h2>{t("landingV2.previewTitle")}</h2>
+            <div className="mockup-grid">
+              {previewCards.map((card) => (
+                <div
+                  key={card.titleKey}
+                  className="mockup-card mockup-image-card"
+                  style={{
+                    backgroundImage: `linear-gradient(180deg, rgba(2, 6, 23, 0.1), rgba(2, 6, 23, 0.75)), url(${card.imageSrc})`,
+                  }}
+                  role="img"
+                  aria-label={t(card.titleKey)}
+                >
+                  <span className="mockup-label">{t(card.titleKey)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="proof-section">
+          <div className="section-wrap">
+            <h2>{t("landingV2.proofTitle")}</h2>
+            <div className="proof-grid">
+              <div className="np-card">
+                <p>{t("landingV2.quote1")}</p>
+                <span>{t("landingV2.quoteAuthor")}</span>
+              </div>
+              <div className="np-card">
+                <p>{t("landingV2.quote2")}</p>
+                <span>{t("landingV2.quoteAuthor")}</span>
+              </div>
+              <div className="np-card">
+                <p>{t("landingV2.quote3")}</p>
+                <span>{t("landingV2.quoteAuthor")}</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="pricing-preview">
+          <div className="section-wrap pricing-wrap">
+            <h2>{t("landingV2.pricingTitle")}</h2>
+            <div className="pricing-cards">
+              <div className="np-card pricing-card">
+                <h3>{t("landingV2.pricingFreeTitle")}</h3>
+                <p className="price">€0</p>
+                <ul>
+                  <li>{t("landingV2.pricingFreeFeature1")}</li>
+                  <li>{t("landingV2.pricingFreeFeature2")}</li>
+                  <li>{t("landingV2.pricingFreeFeature3")}</li>
+                </ul>
+              </div>
+
+              <div className="np-card pricing-card featured">
+                <h3>{t("landingV2.pricingProTitle")}</h3>
+                <p className="price">{t("landingV2.pricingProPrice")}</p>
+                <ul>
+                  <li>{t("landingV2.pricingProFeature1")}</li>
+                  <li>{t("landingV2.pricingProFeature2")}</li>
+                  <li>{t("landingV2.pricingProFeature3")}</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="np-actions">
+              <Link href="/app" className="np-btn np-btn-primary">
+                {t("landingV2.generatePlan")}
+              </Link>
+              <Link href="/pricing" className="np-btn np-btn-secondary">
+                {t("landingV2.upgradePremium")}
+              </Link>
+            </div>
           </div>
         </section>
       </main>
+
+      <footer className="landing-footer">
+        <img src="/logo-nutripilot.svg" alt={t("app.name")} className="footer-logo-image" />
+        <div className="footer-links">
+          <Link href="/app">{t("nav.nutritionPlan")}</Link>
+          <Link href="/app/list">{t("nav.groceryMission")}</Link>
+          <Link href="/pricing">{t("nav.premium")}</Link>
+        </div>
+      </footer>
     </div>
   );
 }

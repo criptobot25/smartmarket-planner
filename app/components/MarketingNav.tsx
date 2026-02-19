@@ -10,7 +10,7 @@ export function MarketingNav() {
   return (
     <header className="np-nav">
       <Link href="/" className="np-brand">
-        {t("app.name")}
+        <img src="/logo-nutripilot.svg" alt={t("app.name")} className="np-brand-logo" />
       </Link>
 
       <div className="np-nav-right">
