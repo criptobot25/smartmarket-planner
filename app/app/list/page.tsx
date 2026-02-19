@@ -10,6 +10,7 @@ import { WeeklyCheckInModal } from "../../../src/app/components/WeeklyCheckInMod
 import { detectRepetitionRisk, type WeeklyFeedbackResponse, useWeeklyFeedback } from "../../../src/hooks/useWeeklyFeedback";
 import { useShoppingListState } from "../../../src/hooks/useShoppingListState";
 import { isPremiumUser } from "../../../src/core/premium/PremiumFeatures";
+import { getPrepFlowStatus } from "../../../src/core/logic/PrepFlowController";
 import { AppNav } from "../../components/AppNav";
 import PDFExportButton from "../../components/PDFExportButton";
 import ShareCardExportButton from "../../components/ShareCardExportButton";
@@ -51,7 +52,8 @@ export default function ShoppingListRoute() {
     accumulator[item.category].push(item);
     return accumulator;
   }, {});
-  const prepUnlocked = shoppingProgress === 100;
+  const prepFlow = getPrepFlowStatus(shoppingProgress);
+  const prepUnlocked = prepFlow.unlocked;
 
   const CATEGORY_META: Record<FoodCategory, { emoji: string; label: string }> = {
     vegetables: { emoji: "🥬", label: t("shoppingList.categories.vegetables") },
@@ -193,10 +195,20 @@ export default function ShoppingListRoute() {
           </div>
 
           <div className="shopping-actions">
-            {prepUnlocked && (
+            {prepUnlocked ? (
               <Link href="/app/prep" className="btn-prep-guide" title={t("shoppingList.startMondayPrep")}>
                 🍳 {t("shoppingList.startMondayPrep")}
               </Link>
+            ) : (
+              <button
+                type="button"
+                className="btn-prep-guide"
+                disabled
+                title={`Unlocks at ${prepFlow.unlockThreshold}%`}
+                aria-label={`Start Prep locked until ${prepFlow.unlockThreshold}%`}
+              >
+                🔒 {t("shoppingList.startMondayPrep")} ({prepFlow.progressPercent}%/{prepFlow.unlockThreshold}%)
+              </button>
             )}
 
             <ShareCardExportButton targetRef={cardRef} onStatus={setStatusMessage} />

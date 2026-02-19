@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useShoppingPlan } from "../../../src/contexts/ShoppingPlanContext";
 import { aggregateShoppingList } from "../../../src/core/logic/aggregateShoppingList";
+import { computeShoppingProgress, getPrepFlowStatus } from "../../../src/core/logic/PrepFlowController";
 import { generateMealPrepGuide, type CookingTask } from "../../../src/core/logic/MealPrepGuide";
 import { canExportPdf } from "../../../src/core/premium/features";
 import { isPremiumUser } from "../../../src/core/premium/PremiumFeatures";
@@ -27,10 +28,10 @@ export default function PrepGuidePageClient() {
 
   const purchasedCount = aggregatedList.filter((item) => item.purchased).length;
   const totalCount = aggregatedList.length;
-  const computedProgress = totalCount > 0 ? Math.round((purchasedCount / totalCount) * 100) : 0;
+  const computedProgress = computeShoppingProgress(purchasedCount, totalCount);
   const progressPercent = useShoppingProgressStore((state) => state.progressPercent);
-  const effectiveProgress = Math.max(progressPercent, computedProgress);
-  const prepUnlocked = effectiveProgress >= 100;
+  const prepFlow = getPrepFlowStatus(Math.max(progressPercent, computedProgress));
+  const prepUnlocked = prepFlow.unlocked;
 
   const prepGuide = weeklyPlan ? generateMealPrepGuide(weeklyPlan) : null;
 
@@ -120,7 +121,8 @@ export default function PrepGuidePageClient() {
           <div className="empty-state">
             <h2>🔒 {t("prepGuide.lockedTitle")}</h2>
             <p>{t("prepGuide.lockedSubtitle")}</p>
-            <p>{t("prepGuide.lockedProgress", { progress: effectiveProgress })}</p>
+            <p>{t("prepGuide.lockedProgress", { progress: prepFlow.progressPercent })}</p>
+            <p>{`Unlock target: ${prepFlow.unlockThreshold}%`}</p>
             <Link href="/app/list" className="btn-primary">{t("prepGuide.lockedBackButton")}</Link>
           </div>
         </main>
