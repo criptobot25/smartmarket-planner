@@ -426,6 +426,12 @@ a {
   font-weight: 600;
 }
 
+.landing-page .hero-cta-note {
+  margin: 0.55rem 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.84rem;
+}
+
 .landing-page .hero-trust-grid {
   margin-top: 1.1rem;
   display: grid;
@@ -533,6 +539,19 @@ a {
 .landing-page .sales-strip-subtitle {
   margin: 0.5rem 0 0;
   color: var(--color-text-muted);
+}
+
+.landing-page .sales-strip-note {
+  margin: 0.75rem 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.landing-page .sales-strip-note a {
+  color: #99f6e4;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .landing-page .objection-card {

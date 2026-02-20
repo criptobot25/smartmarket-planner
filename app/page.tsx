@@ -149,6 +149,8 @@ export default function LandingRoute() {
               </Link>
             </div>
 
+            <p className="hero-cta-note">{t("landingV2.heroCtaNote")}</p>
+
             <p className="hero-tagline">{t("landingV2.heroTagline")}</p>
 
             <div className="hero-trust-grid">
@@ -180,14 +182,9 @@ export default function LandingRoute() {
             <p className="sales-strip-subtitle">
               {t("landingV2.sales.offerSubtitle")}
             </p>
-            <div className={ctaGroupClass}>
-              <Link href="/app" className={primaryCtaClass} onClick={() => trackCtaClick("offer_primary", "sales_strip", "/app")}>
-                {t("landingV2.sales.offerCtaPrimary")}
-              </Link>
-              <Link href="/pricing" className={secondaryCtaClass} onClick={() => trackCtaClick("offer_secondary", "sales_strip", "/pricing")}>
-                {t("landingV2.sales.offerCtaSecondary")}
-              </Link>
-            </div>
+            <p className="sales-strip-note">
+              {t("landingV2.sales.offerNote")} <Link href="/pricing">{t("landingV2.sales.offerCtaSecondary")}</Link>
+            </p>
           </div>
         </section>
 
@@ -233,15 +230,15 @@ export default function LandingRoute() {
             <div className="proof-grid">
               <div className="np-card">
                 <p>{t("landingV2.quote1")}</p>
-                <span>{t("landingV2.quoteAuthor")}</span>
+                <span>{t("landingV2.quoteAuthor1")}</span>
               </div>
               <div className="np-card">
                 <p>{t("landingV2.quote2")}</p>
-                <span>{t("landingV2.quoteAuthor")}</span>
+                <span>{t("landingV2.quoteAuthor2")}</span>
               </div>
               <div className="np-card">
                 <p>{t("landingV2.quote3")}</p>
-                <span>{t("landingV2.quoteAuthor")}</span>
+                <span>{t("landingV2.quoteAuthor3")}</span>
               </div>
             </div>
           </div>
