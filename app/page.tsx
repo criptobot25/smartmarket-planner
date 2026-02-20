@@ -62,6 +62,10 @@ const faqItems = [
   },
 ];
 
+const primaryCtaClass = "inline-flex items-center justify-center rounded-xl h-12 px-6 text-base font-semibold text-white bg-blue-700 hover:bg-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 shadow-sm transition-colors";
+const secondaryCtaClass = "inline-flex items-center justify-center rounded-xl h-11 px-5 text-sm font-medium text-slate-900 bg-white border border-slate-300 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 transition-colors";
+const ctaGroupClass = "mt-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3";
+
 export default function LandingRoute() {
   const { t } = useAppTranslation();
 
@@ -76,11 +80,11 @@ export default function LandingRoute() {
             <h1 className="hero-title">{t("landingV2.heroTitle")}</h1>
             <p className="hero-subtitle">{t("landingV2.heroSubtitle")}</p>
 
-            <div className="hero-cta">
-              <Link href="/app" className="np-btn np-btn-primary hero-link">
+            <div className={ctaGroupClass}>
+              <Link href="/app" className={`${primaryCtaClass} hero-link`}>
                 {t("landingV2.generatePlan")}
               </Link>
-              <Link href="/pricing" className="np-btn np-btn-secondary hero-link">
+              <Link href="/pricing" className={`${secondaryCtaClass} hero-link`}>
                 {t("landingV2.upgradePremium")}
               </Link>
             </div>
@@ -116,11 +120,11 @@ export default function LandingRoute() {
             <p className="sales-strip-subtitle">
               {t("landingV2.sales.offerSubtitle")}
             </p>
-            <div className="np-actions">
-              <Link href="/app" className="np-btn np-btn-primary">
+            <div className={ctaGroupClass}>
+              <Link href="/app" className={primaryCtaClass}>
                 {t("landingV2.sales.offerCtaPrimary")}
               </Link>
-              <Link href="/pricing" className="np-btn np-btn-secondary">
+              <Link href="/pricing" className={secondaryCtaClass}>
                 {t("landingV2.sales.offerCtaSecondary")}
               </Link>
             </div>
@@ -230,11 +234,11 @@ export default function LandingRoute() {
               </div>
             </div>
 
-            <div className="np-actions">
-              <Link href="/app" className="np-btn np-btn-primary">
+            <div className={ctaGroupClass}>
+              <Link href="/app" className={primaryCtaClass}>
                 {t("landingV2.generatePlan")}
               </Link>
-              <Link href="/pricing" className="np-btn np-btn-secondary">
+              <Link href="/pricing" className={secondaryCtaClass}>
                 {t("landingV2.upgradePremium")}
               </Link>
             </div>
@@ -263,11 +267,11 @@ export default function LandingRoute() {
             <p>
               {t("landingV2.sales.finalCtaBody")}
             </p>
-            <div className="np-actions">
-              <Link href="/app" className="np-btn np-btn-primary">
+            <div className={ctaGroupClass}>
+              <Link href="/app" className={primaryCtaClass}>
                 {t("landingV2.sales.finalCtaPrimary")}
               </Link>
-              <Link href="/pricing" className="np-btn np-btn-secondary">
+              <Link href="/pricing" className={secondaryCtaClass}>
                 {t("landingV2.sales.finalCtaSecondary")}
               </Link>
             </div>
