@@ -420,6 +420,50 @@ a {
   width: min(260px, 92vw);
 }
 
+.landing-page .landing-cta-group {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.landing-page .landing-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.85rem;
+  padding: 0.65rem 1.05rem;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border: 1px solid transparent;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.landing-page .landing-cta-primary {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  color: #f8fafc;
+}
+
+.landing-page .landing-cta-primary:hover {
+  background: #1e40af;
+  border-color: #1e40af;
+}
+
+.landing-page .landing-cta-secondary {
+  background: rgba(248, 250, 252, 0.95);
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+.landing-page .landing-cta-secondary:hover {
+  background: #e2e8f0;
+}
+
 .landing-page .hero-tagline {
   margin-top: 1rem;
   color: #5eead4;
@@ -630,6 +674,178 @@ a {
   padding: 1.4rem;
 }
 
+.landing-page .pricing-heading {
+  text-align: center;
+}
+
+.landing-page .pricing-table-desktop {
+  margin-top: 1.1rem;
+  display: none;
+  overflow-x: auto;
+  border-radius: 16px;
+  border: 1px solid var(--color-border);
+}
+
+.landing-page .pricing-compare-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.landing-page .pricing-compare-table thead tr {
+  border-bottom: 1px solid var(--color-border);
+  background: rgba(8, 30, 49, 0.55);
+}
+
+.landing-page .pricing-compare-table th,
+.landing-page .pricing-compare-table td {
+  padding: 0.8rem 0.9rem;
+  vertical-align: top;
+}
+
+.landing-page .pricing-col-feature {
+  text-align: left;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.landing-page .pricing-col-free,
+.landing-page .pricing-col-pro {
+  text-align: center;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.landing-page .pricing-col-pro {
+  background: rgba(20, 184, 166, 0.12);
+}
+
+.landing-page .pricing-popular-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: rgba(20, 184, 166, 0.2);
+  color: #99f6e4;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.landing-page .pricing-col-title {
+  margin-top: 0.35rem;
+}
+
+.landing-page .pricing-col-price {
+  margin-top: 0.25rem;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.landing-page .pricing-compare-table tbody tr {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.landing-page .pricing-compare-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.landing-page .pricing-cell-title {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.landing-page .pricing-cell-description {
+  margin: 0.3rem 0 0;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+.landing-page .pricing-cell-free,
+.landing-page .pricing-cell-pro {
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--color-text);
+}
+
+.landing-page .pricing-cell-pro {
+  font-weight: 700;
+  background: rgba(20, 184, 166, 0.06);
+}
+
+.landing-page .pricing-cards-mobile {
+  margin-top: 1.1rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.landing-page .pricing-mobile-card {
+  border-radius: 14px;
+  border: 1px solid var(--color-border);
+  background: rgba(8, 30, 49, 0.45);
+  padding: 0.75rem;
+}
+
+.landing-page .pricing-mobile-card h3 {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.landing-page .pricing-mobile-card > p {
+  margin: 0.35rem 0 0;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+.landing-page .pricing-mobile-values {
+  margin-top: 0.55rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.landing-page .pricing-mobile-value {
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  background: rgba(8, 30, 49, 0.5);
+  padding: 0.45rem 0.55rem;
+}
+
+.landing-page .pricing-mobile-value.pro {
+  border-color: rgba(20, 184, 166, 0.35);
+  background: rgba(20, 184, 166, 0.1);
+}
+
+.landing-page .pricing-mobile-value p {
+  margin: 0;
+  font-size: 0.76rem;
+  color: var(--color-text-muted);
+}
+
+.landing-page .pricing-mobile-value p:last-child {
+  margin-top: 0.2rem;
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.landing-page .pricing-trust-grid {
+  margin-top: 0.95rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.55rem;
+}
+
+.landing-page .pricing-trust-item {
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  background: rgba(8, 30, 49, 0.45);
+  padding: 0.55rem 0.65rem;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 0.88rem;
+}
+
 .landing-page .pricing-card .price {
   margin-top: 0.35rem;
   font-size: 1.8rem;
@@ -731,6 +947,10 @@ a {
     max-width: none;
   }
 
+  .landing-page .landing-cta {
+    width: 100%;
+  }
+
   .landing-page .cards-grid,
   .landing-page .proof-grid,
   .landing-page .pricing-cards,
@@ -740,6 +960,20 @@ a {
   .landing-page .goal-copy-grid {
     grid-template-columns: 1fr;
     gap: 0.85rem;
+  }
+}
+
+@media (min-width: 640px) {
+  .landing-page .pricing-table-desktop {
+    display: block;
+  }
+
+  .landing-page .pricing-cards-mobile {
+    display: none;
+  }
+
+  .landing-page .pricing-trust-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 

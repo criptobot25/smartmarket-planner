@@ -185,7 +185,7 @@ function updateAdherenceSmoothingState(adherence: { score: number; timestamp: st
  */
 function applyAdaptiveAdjustments(
   input: PlanInput, 
-  adherence: { score: number; level: "high" | "good" | "low" } | null,
+  adherence: { score: number; timestamp: string; level: "high" | "good" | "low" } | null,
   recentPlans: WeeklyPlan[]
 ): PlanInput {
   const latestFeedback = getLatestWeeklyFeedback();
