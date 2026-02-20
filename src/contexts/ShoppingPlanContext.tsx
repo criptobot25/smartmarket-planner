@@ -19,8 +19,19 @@ const PURCHASED_ITEMS_KEY = "nutripilot_purchased_items";
 const LEGACY_PURCHASED_ITEMS_KEY = "smartmarket_purchased_items";
 const LAST_WEEKLY_PLAN_KEY = "lastWeeklyPlan"; // PASSO 33.1
 const LAST_ADHERENCE_KEY = "lastAdherenceScore"; // PASSO 33.2
+const ADHERENCE_SMOOTHING_KEY = "adherenceSmoothingState";
 const STREAK_DATA_KEY = "nutripilot_streak"; // PASSO 33.4
 const LEGACY_STREAK_DATA_KEY = "smartmarket_streak"; // PASSO 33.4
+const ADHERENCE_EWMA_ALPHA = 0.35;
+const LOW_ADHERENCE_THRESHOLD = 65;
+const HIGH_ADHERENCE_THRESHOLD = 85;
+
+interface AdherenceSmoothingState {
+  smoothedScore: number;
+  lowStreak: number;
+  highStreak: number;
+  timestamp: string;
+}
 
 /**
  * LocalStorage helpers for purchased items
@@ -114,6 +125,61 @@ function loadAdherenceScoreFromStorage(): { score: number; timestamp: string; le
   return null;
 }
 
+function saveAdherenceSmoothingState(state: AdherenceSmoothingState): void {
+  try {
+    localStorage.setItem(ADHERENCE_SMOOTHING_KEY, JSON.stringify(state));
+  } catch (error) {
+    console.error("❌ Error saving adherence smoothing state:", error);
+  }
+}
+
+function loadAdherenceSmoothingState(): AdherenceSmoothingState | null {
+  try {
+    const stored = localStorage.getItem(ADHERENCE_SMOOTHING_KEY);
+    if (!stored) {
+      return null;
+    }
+
+    const parsed = JSON.parse(stored);
+    if (
+      typeof parsed?.smoothedScore === "number" &&
+      typeof parsed?.lowStreak === "number" &&
+      typeof parsed?.highStreak === "number"
+    ) {
+      return parsed as AdherenceSmoothingState;
+    }
+  } catch (error) {
+    console.error("❌ Error loading adherence smoothing state:", error);
+  }
+
+  return null;
+}
+
+function updateAdherenceSmoothingState(adherence: { score: number; timestamp: string; level: "high" | "good" | "low" }): AdherenceSmoothingState {
+  const previous = loadAdherenceSmoothingState();
+  const smoothedScore = previous
+    ? Math.round((ADHERENCE_EWMA_ALPHA * adherence.score + (1 - ADHERENCE_EWMA_ALPHA) * previous.smoothedScore) * 100) / 100
+    : adherence.score;
+
+  const lowStreak = smoothedScore <= LOW_ADHERENCE_THRESHOLD
+    ? (previous?.lowStreak ?? 0) + 1
+    : 0;
+
+  const highStreak = smoothedScore >= HIGH_ADHERENCE_THRESHOLD
+    ? (previous?.highStreak ?? 0) + 1
+    : 0;
+
+  const nextState: AdherenceSmoothingState = {
+    smoothedScore,
+    lowStreak,
+    highStreak,
+    timestamp: adherence.timestamp,
+  };
+
+  saveAdherenceSmoothingState(nextState);
+  return nextState;
+}
+
 /**
  * PASSO 33.2: Apply adaptive adjustments based on adherence score
  */
@@ -123,18 +189,22 @@ function applyAdaptiveAdjustments(
   recentPlans: WeeklyPlan[]
 ): PlanInput {
   const latestFeedback = getLatestWeeklyFeedback();
+  const smoothingState = adherence ? updateAdherenceSmoothingState(adherence) : loadAdherenceSmoothingState();
   const adjustedInput: PlanInput = {
     ...input,
     excludedFoods: [...(input.excludedFoods || [])]
   };
 
-  const lowAdherence = adherence?.level === "low" || latestFeedback?.response === "no";
+  const lowAdherence =
+    latestFeedback?.response === "no" ||
+    ((smoothingState?.lowStreak ?? 0) >= 2);
 
   if (lowAdherence) {
     console.log("⚠️ Low adherence detected - applying simplification adjustments");
     adjustedInput.costTier = "low";
     adjustedInput.mealsPerDay = Math.max(3, input.mealsPerDay - 1);
     adjustedInput.dietStyle = "balanced";
+    adjustedInput.fitnessGoal = "maintenance";
   }
 
   const repetitionRisk = detectRepetitionRisk(recentPlans) || latestFeedback?.repeatedTooMuch === true;
@@ -697,3 +767,9 @@ export function useShoppingPlan(): ShoppingPlanContextData {
 
 // PASSO 33.4: Export StreakData type for components
 export type { StreakData };
+
+export const __adaptiveTestables = {
+  applyAdaptiveAdjustments,
+  updateAdherenceSmoothingState,
+  loadAdherenceSmoothingState,
+};
