@@ -564,12 +564,24 @@ a {
 .landing-page .mockup-image-card {
   min-height: 220px;
   border: 1px solid var(--color-border);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
   align-items: flex-end;
   justify-content: flex-start;
   overflow: hidden;
+  position: relative;
+}
+
+.landing-page .mockup-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  inset: 0;
+}
+
+.landing-page .mockup-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(2, 6, 23, 0.12), rgba(2, 6, 23, 0.74));
 }
 
 .landing-page .mockup-label {
@@ -581,6 +593,7 @@ a {
   color: #f8fafc;
   font-size: 0.9rem;
   line-height: 1.2;
+  z-index: 1;
 }
 
 .landing-page .proof-grid .np-card span {

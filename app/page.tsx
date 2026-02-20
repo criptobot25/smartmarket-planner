@@ -1,14 +1,24 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+import dynamic from "next/dynamic";
 import { MarketingNav } from "./components/MarketingNav";
 import { trackEvent, useScrollDepthTracking } from "./lib/analytics";
 import { useAppTranslation } from "./lib/i18n";
 
+const LandingPreviewSection = dynamic(
+  () => import("./components/LandingPreviewSection").then((module) => module.LandingPreviewSection),
+  {
+    ssr: false,
+    loading: () => <section className="mockup-section" aria-hidden="true" />,
+  },
+);
+
 const previewCards = [
-  { titleKey: "landingV2.preview1", imageSrc: "/previews/preview-1.png" },
-  { titleKey: "landingV2.preview2", imageSrc: "/previews/preview-2.png" },
-  { titleKey: "landingV2.preview3", imageSrc: "/previews/preview-3.png" },
+  { titleKey: "landingV2.preview1", imageSrc: "/previews/preview-1.png", width: 1200, height: 700 },
+  { titleKey: "landingV2.preview2", imageSrc: "/previews/preview-2.png", width: 1200, height: 700 },
+  { titleKey: "landingV2.preview3", imageSrc: "/previews/preview-3.png", width: 1200, height: 700 },
 ];
 
 const trustPills = [
@@ -119,7 +129,14 @@ export default function LandingRoute() {
       <main>
         <section className="hero">
           <div className="hero-content">
-            <img src="/logo-nutripilot.svg" alt={t("app.name")} className="hero-logo-image" />
+            <Image
+              src="/logo-nutripilot.svg"
+              alt={t("app.name")}
+              className="hero-logo-image"
+              width={520}
+              height={140}
+              priority
+            />
             <h1 className="hero-title">{t("landingV2.heroTitle")}</h1>
             <p className="hero-subtitle">{t("landingV2.heroSubtitle")}</p>
 
@@ -208,26 +225,7 @@ export default function LandingRoute() {
           </div>
         </section>
 
-        <section className="mockup-section">
-          <div className="section-wrap">
-            <h2>{t("landingV2.previewTitle")}</h2>
-            <div className="mockup-grid">
-              {previewCards.map((card) => (
-                <div
-                  key={card.titleKey}
-                  className="mockup-card mockup-image-card"
-                  style={{
-                    backgroundImage: `linear-gradient(180deg, rgba(2, 6, 23, 0.1), rgba(2, 6, 23, 0.75)), url(${card.imageSrc})`,
-                  }}
-                  role="img"
-                  aria-label={t(card.titleKey)}
-                >
-                  <span className="mockup-label">{t(card.titleKey)}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        <LandingPreviewSection previewCards={previewCards} t={t} />
 
         <section className="proof-section">
           <div className="section-wrap">
@@ -256,8 +254,8 @@ export default function LandingRoute() {
               <p className="pricing-intro">{t("landingV2.sales.pricingIntro")}</p>
             </div>
 
-            <div className="mt-5 overflow-x-auto rounded-2xl border border-[var(--color-border)]">
-              <table className="w-full min-w-[680px] border-collapse">
+            <div className="mt-5 hidden overflow-x-auto rounded-2xl border border-[var(--color-border)] sm:block">
+              <table className="w-full border-collapse">
                 <thead>
                   <tr className="border-b border-[var(--color-border)] bg-[rgba(8,30,49,0.55)]">
                     <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--color-text)]">
@@ -290,6 +288,25 @@ export default function LandingRoute() {
                   ))}
                 </tbody>
               </table>
+            </div>
+
+            <div className="mt-5 grid grid-cols-1 gap-3 sm:hidden">
+              {pricingComparisonRows.map((row) => (
+                <article key={row.title} className="rounded-xl border border-[var(--color-border)] bg-[rgba(8,30,49,0.45)] p-3">
+                  <h3 className="m-0 text-sm font-semibold text-[var(--color-text)]">{t(row.title)}</h3>
+                  <p className="m-0 mt-1 text-xs text-[var(--color-text-muted)]">{t(row.description)}</p>
+                  <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
+                    <div className="rounded-lg border border-[var(--color-border)] bg-[rgba(8,30,49,0.45)] px-2 py-1">
+                      <p className="m-0 text-[var(--color-text-muted)]">{t("landingV2.pricingFreeTitle")}</p>
+                      <p className="m-0 mt-0.5 text-[var(--color-text)]">{t(row.freeValue)}</p>
+                    </div>
+                    <div className="rounded-lg border border-[rgba(20,184,166,0.35)] bg-[rgba(20,184,166,0.1)] px-2 py-1">
+                      <p className="m-0 text-[var(--color-text-muted)]">{t("landingV2.pricingProTitle")}</p>
+                      <p className="m-0 mt-0.5 font-semibold text-[var(--color-text)]">{t(row.premiumValue)}</p>
+                    </div>
+                  </div>
+                </article>
+              ))}
             </div>
 
             <div className="mt-4 grid grid-cols-1 gap-2 text-sm text-[var(--color-text-muted)] sm:grid-cols-3">
@@ -344,7 +361,7 @@ export default function LandingRoute() {
       </main>
 
       <footer className="landing-footer">
-        <img src="/logo-nutripilot.svg" alt={t("app.name")} className="footer-logo-image" />
+        <Image src="/logo-nutripilot.svg" alt={t("app.name")} className="footer-logo-image" width={260} height={72} />
         <div className="footer-links">
           <Link href="/app">{t("nav.nutritionPlan")}</Link>
           <Link href="/app/list">{t("nav.groceryMission")}</Link>

@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect } from "react";
-import posthog from "posthog-js";
+import type { PostHog } from "posthog-js";
 
 const CONSENT_KEY = "np_analytics_consent";
 
 type AnalyticsConsent = "granted" | "denied" | "unknown";
 
 let initialized = false;
+let posthogInstance: PostHog | null = null;
 
 function getPostHogKey(): string {
   return process.env.NEXT_PUBLIC_POSTHOG_KEY || "";
@@ -38,17 +39,17 @@ export function setAnalyticsConsent(consent: Exclude<AnalyticsConsent, "unknown"
   window.localStorage.setItem(CONSENT_KEY, consent);
 
   if (consent === "granted") {
-    initAnalytics();
+    void initAnalytics();
     return;
   }
 
-  if (initialized) {
-    posthog.opt_out_capturing();
-    posthog.reset();
+  if (initialized && posthogInstance) {
+    posthogInstance.opt_out_capturing();
+    posthogInstance.reset();
   }
 }
 
-export function initAnalytics(): void {
+export async function initAnalytics(): Promise<void> {
   if (typeof window === "undefined" || initialized) {
     return;
   }
@@ -62,6 +63,9 @@ export function initAnalytics(): void {
     return;
   }
 
+  const posthogModule = await import("posthog-js");
+  const posthog = posthogModule.default;
+
   posthog.init(key, {
     api_host: getPostHogHost(),
     capture_pageview: true,
@@ -70,15 +74,16 @@ export function initAnalytics(): void {
     person_profiles: "identified_only",
   });
 
+  posthogInstance = posthog;
   initialized = true;
 }
 
 export function trackEvent(event: string, properties?: Record<string, unknown>): void {
-  if (!initialized || getAnalyticsConsent() !== "granted") {
+  if (!initialized || !posthogInstance || getAnalyticsConsent() !== "granted") {
     return;
   }
 
-  posthog.capture(event, properties);
+  posthogInstance.capture(event, properties);
 }
 
 export function useScrollDepthTracking(pageName: string): void {
