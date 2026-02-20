@@ -6,6 +6,27 @@ import { getCostTier } from '../core/utils/getCostTier';
 import { mockFoods } from '../data/mockFoods';
 
 describe('generateShoppingList', () => {
+  it('should aggregate ingredients without duplicate name/category entries', () => {
+    const input: PlanInput = {
+      sex: "male",
+      age: 30,
+      weightKg: 80,
+      heightCm: 175,
+      trains: true,
+      mealsPerDay: 5,
+      dietStyle: 'balanced',
+      costTier: 'medium',
+      restrictions: [],
+      fitnessGoal: 'maintenance'
+    };
+
+    const weeklyPlan = generateWeeklyPlan(input);
+    const result = generateShoppingList(input, weeklyPlan);
+    const normalizedKeys = result.items.map((item) => `${item.name.trim().toLowerCase()}::${item.category}`);
+
+    expect(new Set(normalizedKeys).size).toBe(result.items.length);
+  });
+
   it('should generate shopping list with categorized items', () => {
     const input: PlanInput = {
       sex: "male",
@@ -160,6 +181,28 @@ describe('generateShoppingList', () => {
     } finally {
       mockFoods[10].category = originalCategory;
     }
+  });
+
+  it('should generate valid shopping list for edge profile (extreme weight, low height, active training)', () => {
+    const input: PlanInput = {
+      sex: "female",
+      age: 19,
+      weightKg: 160,
+      heightCm: 145,
+      trains: true,
+      mealsPerDay: 6,
+      dietStyle: 'comfort',
+      costTier: 'low',
+      restrictions: [],
+      fitnessGoal: 'bulking'
+    };
+
+    const weeklyPlan = generateWeeklyPlan(input);
+    const result = generateShoppingList(input, weeklyPlan);
+
+    expect(result.items.length).toBeGreaterThan(0);
+    expect(result.totalProtein).toBeGreaterThan(0);
+    expect(result.efficiencyScore).toBeGreaterThan(0);
   });
 });
 

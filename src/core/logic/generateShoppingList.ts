@@ -575,3 +575,12 @@ function consolidateItemsByName(items: FoodItem[]): FoodItem[] {
     };
   });
 }
+
+export const __shoppingListTestables = {
+  calculateRealisticQuantity,
+  generateReasonFromMealTypes,
+  _generateReason,
+  toBaseQuantity,
+  fromBaseQuantity,
+  consolidateItemsByName,
+};
