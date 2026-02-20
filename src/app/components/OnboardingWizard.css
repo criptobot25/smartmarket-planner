@@ -3,11 +3,11 @@
   border-radius: 1.25rem;
   border: 1px solid rgba(229, 231, 235, 0.8);
   box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
-  padding: 1.25rem;
+  padding: 1rem;
 }
 
 .wizard-progress-header {
-  margin-bottom: 1rem;
+  margin-bottom: 0.9rem;
 }
 
 .wizard-progress-label {
@@ -19,9 +19,15 @@
   text-transform: uppercase;
 }
 
+.wizard-progress-helper {
+  margin: 0 0 0.55rem;
+  color: #6b7280;
+  font-size: 0.84rem;
+}
+
 .wizard-progress-track {
   width: 100%;
-  height: 9px;
+  height: 8px;
   border-radius: 999px;
   background: #e5e7eb;
   overflow: hidden;
@@ -34,28 +40,16 @@
 }
 
 .wizard-step-card {
-  border-radius: 1rem;
+  border-radius: 0.95rem;
   background: #ffffff;
   border: 1px solid #eef2ff;
-  padding: 1rem;
-  animation: wizardStepIn 260ms ease;
-}
-
-@keyframes wizardStepIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  padding: 0.9rem;
 }
 
 .wizard-step-content h2 {
   margin: 0;
   color: #111827;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 }
 
 .wizard-step-content p {
@@ -66,7 +60,7 @@
 
 .wizard-grid-two {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 0.75rem;
 }
 
@@ -102,7 +96,7 @@
 }
 
 .wizard-choice-grid {
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
 }
 
 .wizard-choice {
@@ -127,10 +121,55 @@
   color: #3730a3;
 }
 
+.wizard-field-block {
+  margin-top: 0.9rem;
+}
+
+.wizard-microcopy {
+  margin: 0.75rem 0 0;
+  color: #374151;
+  font-size: 0.9rem;
+}
+
 .wizard-helper {
   display: block;
   margin-top: 0.35rem;
   color: #6b7280;
+}
+
+.wizard-hint {
+  margin-top: 0.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.65rem;
+  padding: 0.4rem 0.55rem;
+  background: #f8fafc;
+}
+
+.wizard-hint summary {
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.85rem;
+  color: #4b5563;
+  font-weight: 600;
+}
+
+.wizard-hint summary::-webkit-details-marker {
+  display: none;
+}
+
+.wizard-hint p {
+  margin: 0.4rem 0 0;
+  color: #6b7280;
+  font-size: 0.84rem;
+}
+
+.wizard-review-list {
+  margin: 0;
+  padding-left: 1rem;
+  color: #374151;
+  display: grid;
+  gap: 0.45rem;
+  font-size: 0.92rem;
 }
 
 .wizard-coach-summary {
@@ -167,7 +206,7 @@
 .wizard-actions {
   margin-top: 1rem;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column-reverse;
   gap: 0.65rem;
 }
 
@@ -178,6 +217,7 @@
   font-weight: 700;
   cursor: pointer;
   min-height: 2.8rem;
+  width: 100%;
 }
 
 .wizard-btn.primary {
@@ -195,18 +235,23 @@
   cursor: not-allowed;
 }
 
-@media (max-width: 640px) {
+@media (min-width: 640px) {
+  .onboarding-wizard {
+    padding: 1.25rem;
+  }
+
   .wizard-grid-two,
   .wizard-choice-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
   }
 
   .wizard-actions {
-    flex-direction: column-reverse;
-    gap: 0.55rem;
+    flex-direction: row;
+    justify-content: space-between;
   }
 
   .wizard-btn {
-    width: 100%;
+    width: auto;
+    min-width: 9rem;
   }
 }
