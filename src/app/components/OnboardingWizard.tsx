@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { trackEvent } from "../../../app/lib/analytics";
 import { CostTier, DietStyle, FitnessGoal, PlanInput, Sex } from "../../core/models/PlanInput";
 import { validatePlanInput } from "../../core/validation/PlanInputSchema";
 
@@ -30,8 +31,29 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
 
   const [stepError, setStepError] = useState<string | null>(null);
   const [formErrors, setFormErrors] = useState<string[]>([]);
+  const hasCompletedRef = useRef(false);
+  const latestStepRef = useRef(currentStep);
 
   const progress = useMemo(() => Math.round((currentStep / TOTAL_STEPS) * 100), [currentStep]);
+
+  useEffect(() => {
+    latestStepRef.current = currentStep;
+    trackEvent("onboarding_step_viewed", {
+      step: currentStep,
+      total_steps: TOTAL_STEPS,
+    });
+  }, [currentStep]);
+
+  useEffect(() => {
+    return () => {
+      if (!hasCompletedRef.current) {
+        trackEvent("onboarding_dropoff", {
+          step: latestStepRef.current,
+          total_steps: TOTAL_STEPS,
+        });
+      }
+    };
+  }, []);
 
   const validateStep = (step: number): string | null => {
     if (step === 1) {
@@ -103,6 +125,8 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
 
     setStepError(null);
     setFormErrors([]);
+    hasCompletedRef.current = true;
+    trackEvent("onboarding_completed", { total_steps: TOTAL_STEPS });
     onComplete(validation.data);
   };
 

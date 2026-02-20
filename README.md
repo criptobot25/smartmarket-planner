@@ -99,6 +99,24 @@ npm run lint         # Linter ESLint
 npm run type-check   # Verificação de tipos TypeScript
 ```
 
+### Analytics de Usabilidade (PostHog)
+
+Para habilitar tracking básico de usabilidade:
+
+```bash
+NEXT_PUBLIC_POSTHOG_KEY=phc_your_project_key
+NEXT_PUBLIC_POSTHOG_HOST=https://eu.i.posthog.com
+```
+
+Eventos instrumentados:
+- `landing_scroll_depth`
+- `landing_cta_clicked`
+- `onboarding_step_viewed`
+- `onboarding_dropoff`
+
+GDPR (EU): analytics só inicia após consentimento explícito no banner.
+Mais detalhes em `docs/analytics-setup.md`.
+
 ---
 
 ## 📁 Estrutura do Projeto

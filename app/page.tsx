@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { MarketingNav } from "./components/MarketingNav";
+import { trackEvent, useScrollDepthTracking } from "./lib/analytics";
 import { useAppTranslation } from "./lib/i18n";
 
 const previewCards = [
@@ -101,6 +102,15 @@ const ctaGroupClass = "mt-6 flex flex-col sm:flex-row items-stretch sm:items-cen
 
 export default function LandingRoute() {
   const { t } = useAppTranslation();
+  useScrollDepthTracking("landing");
+
+  const trackCtaClick = (ctaId: string, placement: string, targetPath: string) => {
+    trackEvent("landing_cta_clicked", {
+      cta_id: ctaId,
+      placement,
+      target_path: targetPath,
+    });
+  };
 
   return (
     <div className="np-shell landing-page">
@@ -114,10 +124,10 @@ export default function LandingRoute() {
             <p className="hero-subtitle">{t("landingV2.heroSubtitle")}</p>
 
             <div className={ctaGroupClass}>
-              <Link href="/app" className={`${primaryCtaClass} hero-link`}>
+              <Link href="/app" className={`${primaryCtaClass} hero-link`} onClick={() => trackCtaClick("hero_primary", "hero", "/app")}>
                 {t("landingV2.generatePlan")}
               </Link>
-              <Link href="/pricing" className={`${secondaryCtaClass} hero-link`}>
+              <Link href="/pricing" className={`${secondaryCtaClass} hero-link`} onClick={() => trackCtaClick("hero_secondary", "hero", "/pricing")}>
                 {t("landingV2.upgradePremium")}
               </Link>
             </div>
@@ -154,10 +164,10 @@ export default function LandingRoute() {
               {t("landingV2.sales.offerSubtitle")}
             </p>
             <div className={ctaGroupClass}>
-              <Link href="/app" className={primaryCtaClass}>
+              <Link href="/app" className={primaryCtaClass} onClick={() => trackCtaClick("offer_primary", "sales_strip", "/app")}>
                 {t("landingV2.sales.offerCtaPrimary")}
               </Link>
-              <Link href="/pricing" className={secondaryCtaClass}>
+              <Link href="/pricing" className={secondaryCtaClass} onClick={() => trackCtaClick("offer_secondary", "sales_strip", "/pricing")}>
                 {t("landingV2.sales.offerCtaSecondary")}
               </Link>
             </div>
@@ -289,10 +299,10 @@ export default function LandingRoute() {
             </div>
 
             <div className={ctaGroupClass}>
-              <Link href="/app" className={primaryCtaClass}>
+              <Link href="/app" className={primaryCtaClass} onClick={() => trackCtaClick("pricing_primary", "pricing", "/app")}>
                 {t("landingV2.generatePlan")}
               </Link>
-              <Link href="/pricing" className={secondaryCtaClass}>
+              <Link href="/pricing" className={secondaryCtaClass} onClick={() => trackCtaClick("pricing_secondary", "pricing", "/pricing")}>
                 {t("landingV2.upgradePremium")}
               </Link>
             </div>
@@ -322,10 +332,10 @@ export default function LandingRoute() {
               {t("landingV2.sales.finalCtaBody")}
             </p>
             <div className={ctaGroupClass}>
-              <Link href="/app" className={primaryCtaClass}>
+              <Link href="/app" className={primaryCtaClass} onClick={() => trackCtaClick("final_primary", "final_cta", "/app")}>
                 {t("landingV2.sales.finalCtaPrimary")}
               </Link>
-              <Link href="/pricing" className={secondaryCtaClass}>
+              <Link href="/pricing" className={secondaryCtaClass} onClick={() => trackCtaClick("final_secondary", "final_cta", "/pricing")}>
                 {t("landingV2.sales.finalCtaSecondary")}
               </Link>
             </div>
