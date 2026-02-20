@@ -62,6 +62,39 @@ const faqItems = [
   },
 ];
 
+const pricingComparisonRows = [
+  {
+    title: "landingV2.pricingCompare.row1Title",
+    description: "landingV2.pricingCompare.row1Desc",
+    freeValue: "landingV2.pricingCompare.row1Free",
+    premiumValue: "landingV2.pricingCompare.row1Premium",
+  },
+  {
+    title: "landingV2.pricingCompare.row2Title",
+    description: "landingV2.pricingCompare.row2Desc",
+    freeValue: "landingV2.pricingCompare.row2Free",
+    premiumValue: "landingV2.pricingCompare.row2Premium",
+  },
+  {
+    title: "landingV2.pricingCompare.row3Title",
+    description: "landingV2.pricingCompare.row3Desc",
+    freeValue: "landingV2.pricingCompare.row3Free",
+    premiumValue: "landingV2.pricingCompare.row3Premium",
+  },
+  {
+    title: "landingV2.pricingCompare.row4Title",
+    description: "landingV2.pricingCompare.row4Desc",
+    freeValue: "landingV2.pricingCompare.row4Free",
+    premiumValue: "landingV2.pricingCompare.row4Premium",
+  },
+  {
+    title: "landingV2.pricingCompare.row5Title",
+    description: "landingV2.pricingCompare.row5Desc",
+    freeValue: "landingV2.pricingCompare.row5Free",
+    premiumValue: "landingV2.pricingCompare.row5Premium",
+  },
+];
+
 const primaryCtaClass = "inline-flex items-center justify-center rounded-xl h-12 px-6 text-base font-semibold text-white bg-blue-700 hover:bg-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 shadow-sm transition-colors";
 const secondaryCtaClass = "inline-flex items-center justify-center rounded-xl h-11 px-5 text-sm font-medium text-slate-900 bg-white border border-slate-300 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 transition-colors";
 const ctaGroupClass = "mt-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3";
@@ -208,30 +241,51 @@ export default function LandingRoute() {
 
         <section className="pricing-preview">
           <div className="section-wrap pricing-wrap">
-            <h2>{t("landingV2.pricingTitle")}</h2>
-            <p className="pricing-intro">
-              {t("landingV2.sales.pricingIntro")}
-            </p>
-            <div className="pricing-cards">
-              <div className="np-card pricing-card">
-                <h3>{t("landingV2.pricingFreeTitle")}</h3>
-                <p className="price">€0</p>
-                <ul>
-                  <li>{t("landingV2.pricingFreeFeature1")}</li>
-                  <li>{t("landingV2.pricingFreeFeature2")}</li>
-                  <li>{t("landingV2.pricingFreeFeature3")}</li>
-                </ul>
-              </div>
+            <div className="text-center">
+              <h2>{t("landingV2.pricingTitle")}</h2>
+              <p className="pricing-intro">{t("landingV2.sales.pricingIntro")}</p>
+            </div>
 
-              <div className="np-card pricing-card featured">
-                <h3>{t("landingV2.pricingProTitle")}</h3>
-                <p className="price">{t("landingV2.pricingProPrice")}</p>
-                <ul>
-                  <li>{t("landingV2.pricingProFeature1")}</li>
-                  <li>{t("landingV2.pricingProFeature2")}</li>
-                  <li>{t("landingV2.pricingProFeature3")}</li>
-                </ul>
-              </div>
+            <div className="mt-5 overflow-x-auto rounded-2xl border border-[var(--color-border)]">
+              <table className="w-full min-w-[680px] border-collapse">
+                <thead>
+                  <tr className="border-b border-[var(--color-border)] bg-[rgba(8,30,49,0.55)]">
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-[var(--color-text)]">
+                      {t("landingV2.pricingCompare.featureColumn")}
+                    </th>
+                    <th className="px-4 py-3 text-center text-sm font-semibold text-[var(--color-text)]">
+                      <div>{t("landingV2.pricingFreeTitle")}</div>
+                      <div className="mt-1 text-base font-bold">€0</div>
+                    </th>
+                    <th className="px-4 py-3 text-center text-sm font-semibold text-[var(--color-text)] bg-[rgba(20,184,166,0.12)]">
+                      <div className="inline-flex items-center rounded-full bg-[rgba(20,184,166,0.2)] px-2 py-0.5 text-xs font-bold text-[#99f6e4]">
+                        {t("landingV2.pricingCompare.popular")}
+                      </div>
+                      <div className="mt-1">{t("landingV2.pricingProTitle")}</div>
+                      <div className="mt-1 text-base font-bold">{t("landingV2.pricingProPrice")}</div>
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {pricingComparisonRows.map((row) => (
+                    <tr key={row.title} className="border-b border-[var(--color-border)] last:border-b-0">
+                      <td className="px-4 py-3 align-top">
+                        <p className="m-0 text-sm font-semibold text-[var(--color-text)]">{t(row.title)}</p>
+                        <p className="m-0 mt-1 text-xs text-[var(--color-text-muted)]">{t(row.description)}</p>
+                      </td>
+                      <td className="px-4 py-3 text-center text-sm text-[var(--color-text)]">{t(row.freeValue)}</td>
+                      <td className="px-4 py-3 text-center text-sm font-semibold text-[var(--color-text)] bg-[rgba(20,184,166,0.06)]">{t(row.premiumValue)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 gap-2 text-sm text-[var(--color-text-muted)] sm:grid-cols-3">
+              <div className="rounded-xl border border-[var(--color-border)] bg-[rgba(8,30,49,0.45)] px-3 py-2 text-center">🛡️ {t("landingV2.pricingCompare.trust1")}</div>
+              <div className="rounded-xl border border-[var(--color-border)] bg-[rgba(8,30,49,0.45)] px-3 py-2 text-center">🔓 {t("landingV2.pricingCompare.trust2")}</div>
+              <div className="rounded-xl border border-[var(--color-border)] bg-[rgba(8,30,49,0.45)] px-3 py-2 text-center">💳 {t("landingV2.pricingCompare.trust3")}</div>
             </div>
 
             <div className={ctaGroupClass}>
