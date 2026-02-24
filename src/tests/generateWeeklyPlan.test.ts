@@ -56,7 +56,7 @@ describe("generateWeeklyPlan - meals per day", () => {
     const plan = generateWeeklyPlan(buildInput(4));
     const macroCalories = plan.proteinTargetPerDay * 4 + plan.carbsTargetPerDay * 4 + plan.fatTargetPerDay * 9;
 
-    expect(Math.abs(macroCalories - plan.caloriesTargetPerDay)).toBeLessThanOrEqual(10);
+    expect(macroCalories).toBe(plan.caloriesTargetPerDay);
   });
 
   it("should mark 4 training days when trains=true", () => {

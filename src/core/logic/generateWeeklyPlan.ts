@@ -64,11 +64,19 @@ export function generateWeeklyPlan(input: PlanInput): WeeklyPlan {
     fats: macroTargets.fatsPerMeal
   };
   
-  // PASSO 25: Training day macro targets (+15% carbs, +10% calories via fats)
+  // PASSO 25: Training day macro targets (+15% carbs, protein constant, ~+10% calories)
+  const restMealCalories = (restDayMacroTarget.protein * 4) + (restDayMacroTarget.carbs * 4) + (restDayMacroTarget.fats * 9);
+  const trainingMealCaloriesTarget = Math.round(restMealCalories * 1.1);
+  const trainingCarbs = Math.round(macroTargets.carbsPerMeal * 1.15);
+  const trainingFats = Math.max(
+    0,
+    Math.round((trainingMealCaloriesTarget - (restDayMacroTarget.protein * 4) - (trainingCarbs * 4)) / 9),
+  );
+
   const trainingDayMacroTarget: MacroTargetPerMeal = {
     protein: macroTargets.proteinPerMeal, // Stays constant
-    carbs: Math.round(macroTargets.carbsPerMeal * 1.15), // +15% carbs
-    fats: Math.round(macroTargets.fatsPerMeal * 1.05) // +5% fats for +10% total calories
+    carbs: trainingCarbs,
+    fats: trainingFats
   };
   
   // PASSO 23: Create variety tracker

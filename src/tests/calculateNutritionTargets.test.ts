@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { calculateNutritionTargets, resolveFitnessGoal } from "../core/logic/calculateNutritionTargets";
 import { calculateMacroPlan } from "../core/logic/MacroPlanner";
+import { calculateTDEE } from "../core/logic/calculateTDEE";
 import type { PlanInput } from "../core/models/PlanInput";
 
 function buildInput(overrides: Partial<PlanInput> = {}): PlanInput {
@@ -53,7 +54,17 @@ describe("calculateNutritionTargets", () => {
     const macroPlan = calculateMacroPlan(buildInput({ fitnessGoal: "maintenance", mealsPerDay: 5 }));
     const macroCalories = macroPlan.proteinTargetPerDay * 4 + macroPlan.carbsTargetPerDay * 4 + macroPlan.fatTargetPerDay * 9;
 
-    expect(Math.abs(macroCalories - macroPlan.caloriesTargetPerDay)).toBeLessThanOrEqual(10);
+    expect(macroCalories).toBe(macroPlan.caloriesTargetPerDay);
+  });
+
+  it("uses the same TDEE baseline as calculateTDEE", () => {
+    const input = buildInput({ fitnessGoal: "maintenance", trains: true });
+    const nutritionTargets = calculateNutritionTargets(input);
+    const tdeeData = calculateTDEE(input);
+
+    expect(nutritionTargets.bmr).toBe(tdeeData.bmr);
+    expect(nutritionTargets.activityMultiplier).toBe(tdeeData.activityMultiplier);
+    expect(nutritionTargets.tdee).toBe(tdeeData.tdee);
   });
 
   it("handles edge profile (extreme weight, low height, active training)", () => {
@@ -73,10 +84,6 @@ describe("calculateNutritionTargets", () => {
     expect(targets.proteinPerDay).toBeGreaterThan(0);
   });
 });
-import { describe, expect, it } from "vitest";
-import { calculateNutritionTargets } from "../core/logic/calculateNutritionTargets";
-import type { PlanInput } from "../core/models/PlanInput";
-
 describe("calculateNutritionTargets", () => {
   it("uses Mifflin-St Jeor with training multiplier for cutting", () => {
     const input: PlanInput = {

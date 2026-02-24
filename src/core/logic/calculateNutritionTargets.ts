@@ -1,4 +1,5 @@
 import { FitnessGoal, PlanInput } from "../models/PlanInput";
+import { calculateTDEE } from "./calculateTDEE";
 
 export const ACTIVITY_MULTIPLIER = {
   nonTraining: 1.2,
@@ -53,9 +54,10 @@ export function getActivityMultiplier(trains: boolean): number {
 
 export function calculateNutritionTargets(input: PlanInput): NutritionTargets {
   const goal = resolveFitnessGoal(input);
-  const bmr = calculateBmrMifflinStJeor(input);
-  const activityMultiplier = getActivityMultiplier(input.trains);
-  const tdee = bmr * activityMultiplier;
+  const tdeeData = calculateTDEE(input);
+  const bmr = tdeeData.bmr;
+  const activityMultiplier = tdeeData.activityMultiplier;
+  const tdee = tdeeData.tdee;
 
   const caloriesPerDay = Math.round(tdee * GOAL_CALORIE_MULTIPLIER[goal]);
 

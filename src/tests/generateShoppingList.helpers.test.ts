@@ -14,6 +14,7 @@ describe("generateShoppingList helpers", () => {
       unit: "kg",
       pricePerUnit: 10,
       quantity: 0,
+      costLevel: "medium",
       macros: { protein: 31, carbs: 0, fat: 3.6 },
     };
 
@@ -24,6 +25,7 @@ describe("generateShoppingList helpers", () => {
       unit: "pack",
       pricePerUnit: 3,
       quantity: 0,
+      costLevel: "medium",
       macros: { protein: 13, carbs: 1, fat: 11 },
     };
 
@@ -34,6 +36,7 @@ describe("generateShoppingList helpers", () => {
       unit: "can",
       pricePerUnit: 1.5,
       quantity: 0,
+      costLevel: "medium",
       macros: { protein: 25, carbs: 0, fat: 1 },
     };
 
@@ -44,6 +47,7 @@ describe("generateShoppingList helpers", () => {
       unit: "kg",
       pricePerUnit: 2,
       quantity: 0,
+      costLevel: "medium",
       macros: { protein: 2.6, carbs: 23, fat: 0.9 },
     };
 
@@ -54,6 +58,7 @@ describe("generateShoppingList helpers", () => {
       unit: "pack",
       pricePerUnit: 4,
       quantity: 0,
+      costLevel: "medium",
       macros: { protein: 1, carbs: 14, fat: 0.3 },
     };
 
@@ -64,6 +69,7 @@ describe("generateShoppingList helpers", () => {
       unit: "L",
       pricePerUnit: 1.2,
       quantity: 0,
+      costLevel: "medium",
       macros: { protein: 3.4, carbs: 5, fat: 1.5 },
     };
 
@@ -74,6 +80,7 @@ describe("generateShoppingList helpers", () => {
       unit: "L",
       pricePerUnit: 8,
       quantity: 0,
+      costLevel: "medium",
       macros: { protein: 0, carbs: 0, fat: 100 },
     };
 
@@ -84,6 +91,7 @@ describe("generateShoppingList helpers", () => {
       unit: "jar",
       pricePerUnit: 5,
       quantity: 0,
+      costLevel: "medium",
       macros: { protein: 25, carbs: 20, fat: 50 },
     };
 
@@ -94,6 +102,7 @@ describe("generateShoppingList helpers", () => {
       unit: "g",
       pricePerUnit: 0.01,
       quantity: 0,
+      costLevel: "medium",
       macros: { protein: 0, carbs: 0, fat: 0 },
     };
 
@@ -116,6 +125,7 @@ describe("generateShoppingList helpers", () => {
       unit: "kg",
       pricePerUnit: 10,
       quantity: 1,
+      costLevel: "medium",
       macros: { protein: 31, carbs: 0, fat: 3.6 },
     };
 
@@ -140,6 +150,7 @@ describe("generateShoppingList helpers", () => {
       unit: "kg",
       pricePerUnit: 10,
       quantity: 1,
+      costLevel: "medium",
       macros: { protein: 31, carbs: 0, fat: 3.6 },
     };
 
@@ -150,6 +161,7 @@ describe("generateShoppingList helpers", () => {
       unit: "g",
       pricePerUnit: 0.05,
       quantity: 20,
+      costLevel: "medium",
       macros: { protein: 0, carbs: 0, fat: 0 },
     };
 
@@ -177,6 +189,7 @@ describe("generateShoppingList helpers", () => {
         unit: "kg",
         pricePerUnit: 10,
         quantity: 1,
+        costLevel: "medium",
         estimatedPrice: 10,
         reason: "Lunch protein for 3 meals",
         macros: { protein: 31, carbs: 0, fat: 3.6 },
@@ -188,6 +201,7 @@ describe("generateShoppingList helpers", () => {
         unit: "kg",
         pricePerUnit: 10,
         quantity: 0.5,
+        costLevel: "medium",
         estimatedPrice: 5,
         reason: "Dinner protein for 2 meals",
         macros: { protein: 31, carbs: 0, fat: 3.6 },
@@ -199,6 +213,7 @@ describe("generateShoppingList helpers", () => {
         unit: "L",
         pricePerUnit: 1.2,
         quantity: 0.5,
+        costLevel: "medium",
         estimatedPrice: 0.6,
         reason: "Breakfast dairy for 2 meals",
         macros: { protein: 3.4, carbs: 5, fat: 1.5 },
@@ -210,6 +225,7 @@ describe("generateShoppingList helpers", () => {
         unit: "L",
         pricePerUnit: 1.2,
         quantity: 0.75,
+        costLevel: "medium",
         estimatedPrice: 0.9,
         reason: "Snack dairy for 3 meals",
         macros: { protein: 3.4, carbs: 5, fat: 1.5 },
