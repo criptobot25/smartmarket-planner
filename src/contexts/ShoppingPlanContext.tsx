@@ -14,14 +14,23 @@ import { isPlanValidForInput } from "../core/utils/planFingerprint";
 import { detectRepetitionRisk, getLatestWeeklyFeedback, getMostRepeatedFoods } from "../hooks/useWeeklyFeedback";
 import { canUseWeeklyCoachAdjustments } from "../core/premium/PremiumFeatures";
 import { isFeatureEnabled } from "../core/config/featureFlags";
+import {
+  LEGACY_PERSISTENCE_KEYS,
+  PERSISTENCE_KEYS,
+  clearPurchasedItemsState,
+  loadAdherenceScoreState,
+  loadAdherenceSmoothingState as loadAdherenceSmoothingStateFromPersistence,
+  loadLastWeeklyPlanState,
+  loadPurchasedItemsState,
+  loadStreakDataState,
+  logStateRecoveryEvent,
+  saveAdherenceScoreState,
+  saveAdherenceSmoothingState as saveAdherenceSmoothingStateToPersistence,
+  saveLastWeeklyPlanState,
+  savePurchasedItemsState,
+  saveStreakDataState,
+} from "./shoppingPlanPersistence";
 
-const PURCHASED_ITEMS_KEY = "nutripilot_purchased_items";
-const LEGACY_PURCHASED_ITEMS_KEY = "smartmarket_purchased_items";
-const LAST_WEEKLY_PLAN_KEY = "lastWeeklyPlan"; // PASSO 33.1
-const LAST_ADHERENCE_KEY = "lastAdherenceScore"; // PASSO 33.2
-const ADHERENCE_SMOOTHING_KEY = "adherenceSmoothingState";
-const STREAK_DATA_KEY = "nutripilot_streak"; // PASSO 33.4
-const LEGACY_STREAK_DATA_KEY = "smartmarket_streak"; // PASSO 33.4
 const ADHERENCE_EWMA_ALPHA = 0.35;
 const LOW_ADHERENCE_THRESHOLD = 65;
 const HIGH_ADHERENCE_THRESHOLD = 85;
@@ -38,8 +47,7 @@ interface AdherenceSmoothingState {
  */
 function savePurchasedItems(itemIds: string[]): void {
   try {
-    localStorage.setItem(PURCHASED_ITEMS_KEY, JSON.stringify(itemIds));
-    localStorage.removeItem(LEGACY_PURCHASED_ITEMS_KEY);
+    savePurchasedItemsState(itemIds);
   } catch (error) {
     console.error("❌ Error saving purchased items to localStorage:", error);
   }
@@ -47,12 +55,7 @@ function savePurchasedItems(itemIds: string[]): void {
 
 function loadPurchasedItems(): Set<string> {
   try {
-    const stored = localStorage.getItem(PURCHASED_ITEMS_KEY)
-      ?? localStorage.getItem(LEGACY_PURCHASED_ITEMS_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      return new Set(Array.isArray(parsed) ? parsed : []);
-    }
+    return loadPurchasedItemsState();
   } catch (error) {
     console.error("❌ Error loading purchased items from localStorage:", error);
   }
@@ -61,8 +64,7 @@ function loadPurchasedItems(): Set<string> {
 
 function clearPurchasedItems(): void {
   try {
-    localStorage.removeItem(PURCHASED_ITEMS_KEY);
-    localStorage.removeItem(LEGACY_PURCHASED_ITEMS_KEY);
+    clearPurchasedItemsState();
   } catch (error) {
     console.error("❌ Error clearing purchased items from localStorage:", error);
   }
@@ -73,8 +75,7 @@ function clearPurchasedItems(): void {
  */
 function saveLastWeeklyPlan(plan: WeeklyPlan, input: PlanInput): void {
   try {
-    const data = { plan, input };
-    localStorage.setItem(LAST_WEEKLY_PLAN_KEY, JSON.stringify(data));
+    saveLastWeeklyPlanState(plan, input);
     console.log("💾 Last weekly plan saved for Repeat feature");
   } catch (error) {
     console.error("❌ Error saving last weekly plan to localStorage:", error);
@@ -83,14 +84,11 @@ function saveLastWeeklyPlan(plan: WeeklyPlan, input: PlanInput): void {
 
 function loadLastWeeklyPlan(): { plan: WeeklyPlan; input: PlanInput } | null {
   try {
-    const stored = localStorage.getItem(LAST_WEEKLY_PLAN_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      if (parsed.plan && parsed.input) {
-        console.log("✅ Last weekly plan loaded from localStorage");
-        return parsed;
-      }
+    const loaded = loadLastWeeklyPlanState();
+    if (loaded) {
+      console.log("✅ Last weekly plan loaded from localStorage");
     }
+    return loaded;
   } catch (error) {
     console.error("❌ Error loading last weekly plan from localStorage:", error);
   }
@@ -102,7 +100,7 @@ function loadLastWeeklyPlan(): { plan: WeeklyPlan; input: PlanInput } | null {
  */
 function saveAdherenceScoreToStorage(score: { score: number; timestamp: string; level: "high" | "good" | "low" }): void {
   try {
-    localStorage.setItem(LAST_ADHERENCE_KEY, JSON.stringify(score));
+    saveAdherenceScoreState(score);
     console.log("💾 Adherence score saved:", score.level, `(${score.score}%)`);
   } catch (error) {
     console.error("❌ Error saving adherence score to localStorage:", error);
@@ -111,14 +109,11 @@ function saveAdherenceScoreToStorage(score: { score: number; timestamp: string; 
 
 function loadAdherenceScoreFromStorage(): { score: number; timestamp: string; level: "high" | "good" | "low" } | null {
   try {
-    const stored = localStorage.getItem(LAST_ADHERENCE_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      if (parsed.score !== undefined && parsed.level) {
-        console.log("✅ Adherence score loaded:", parsed.level, `(${parsed.score}%)`);
-        return parsed;
-      }
+    const loaded = loadAdherenceScoreState();
+    if (loaded) {
+      console.log("✅ Adherence score loaded:", loaded.level, `(${loaded.score}%)`);
     }
+    return loaded;
   } catch (error) {
     console.error("❌ Error loading adherence score from localStorage:", error);
   }
@@ -127,7 +122,7 @@ function loadAdherenceScoreFromStorage(): { score: number; timestamp: string; le
 
 function saveAdherenceSmoothingState(state: AdherenceSmoothingState): void {
   try {
-    localStorage.setItem(ADHERENCE_SMOOTHING_KEY, JSON.stringify(state));
+    saveAdherenceSmoothingStateToPersistence(state);
   } catch (error) {
     console.error("❌ Error saving adherence smoothing state:", error);
   }
@@ -135,19 +130,7 @@ function saveAdherenceSmoothingState(state: AdherenceSmoothingState): void {
 
 function loadAdherenceSmoothingState(): AdherenceSmoothingState | null {
   try {
-    const stored = localStorage.getItem(ADHERENCE_SMOOTHING_KEY);
-    if (!stored) {
-      return null;
-    }
-
-    const parsed = JSON.parse(stored);
-    if (
-      typeof parsed?.smoothedScore === "number" &&
-      typeof parsed?.lowStreak === "number" &&
-      typeof parsed?.highStreak === "number"
-    ) {
-      return parsed as AdherenceSmoothingState;
-    }
+    return loadAdherenceSmoothingStateFromPersistence();
   } catch (error) {
     console.error("❌ Error loading adherence smoothing state:", error);
   }
@@ -240,8 +223,7 @@ interface StreakData {
 
 function saveStreakData(data: StreakData): void {
   try {
-    localStorage.setItem(STREAK_DATA_KEY, JSON.stringify(data));
-    localStorage.removeItem(LEGACY_STREAK_DATA_KEY);
+    saveStreakDataState(data);
     console.log("🔥 Streak data saved:", data.currentStreak, "weeks");
   } catch (error) {
     console.error("❌ Error saving streak data to localStorage:", error);
@@ -250,13 +232,9 @@ function saveStreakData(data: StreakData): void {
 
 function loadStreakData(): StreakData {
   try {
-    const stored = localStorage.getItem(STREAK_DATA_KEY)
-      ?? localStorage.getItem(LEGACY_STREAK_DATA_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      console.log("✅ Streak data loaded:", parsed.currentStreak, "weeks");
-      return parsed;
-    }
+    const loaded = loadStreakDataState();
+    console.log("✅ Streak data loaded:", loaded.currentStreak, "weeks");
+    return loaded;
   } catch (error) {
     console.error("❌ Error loading streak data from localStorage:", error);
   }
@@ -402,6 +380,42 @@ export function ShoppingPlanProvider({ children }: ShoppingPlanProviderProps) {
   useEffect(() => {
     const streakData = loadStreakData();
     setStreak(streakData.currentStreak);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const purchasedKeys = new Set<string>([PERSISTENCE_KEYS.purchasedItems, ...LEGACY_PERSISTENCE_KEYS.purchasedItems]);
+    const streakKeys = new Set<string>([PERSISTENCE_KEYS.streakData, ...LEGACY_PERSISTENCE_KEYS.streakData]);
+
+    const onStorageUpdate = (event: StorageEvent) => {
+      if (!event.key) {
+        return;
+      }
+
+      if (purchasedKeys.has(event.key)) {
+        const purchasedIds = loadPurchasedItems();
+        setShoppingList((previousList) => previousList.map((item) => ({
+          ...item,
+          purchased: purchasedIds.has(item.id),
+        })) as FoodItem[]);
+        logStateRecoveryEvent("cross_tab_sync_applied", { key: event.key, target: "shoppingList" });
+      }
+
+      if (streakKeys.has(event.key)) {
+        const syncedStreakData = loadStreakData();
+        setStreak(syncedStreakData.currentStreak);
+        logStateRecoveryEvent("cross_tab_sync_applied", { key: event.key, target: "streak" });
+      }
+    };
+
+    window.addEventListener("storage", onStorageUpdate);
+
+    return () => {
+      window.removeEventListener("storage", onStorageUpdate);
+    };
   }, []);
 
   /**
@@ -627,21 +641,21 @@ export function ShoppingPlanProvider({ children }: ShoppingPlanProviderProps) {
    */
   const toggleItemPurchased = useCallback((id: string) => {
     setShoppingList(prevList => {
-      const updatedList = prevList.map(item => {
-        if (item.id === id) {
-          return {
-            ...item,
-            purchased: !(item as FoodItem & { purchased?: boolean }).purchased
-          } as FoodItem & { purchased: boolean };
-        }
-        return item;
-      });
+      const persistedPurchasedIds = loadPurchasedItems();
+
+      if (persistedPurchasedIds.has(id)) {
+        persistedPurchasedIds.delete(id);
+      } else {
+        persistedPurchasedIds.add(id);
+      }
+
+      const updatedList = prevList.map(item => ({
+        ...item,
+        purchased: persistedPurchasedIds.has(item.id)
+      })) as FoodItem[];
       
       // Persist purchased items to localStorage
-      const purchasedIds = updatedList
-        .filter(item => (item as FoodItem & { purchased?: boolean }).purchased)
-        .map(item => item.id);
-      savePurchasedItems(purchasedIds);
+      savePurchasedItems(Array.from(persistedPurchasedIds));
       
       return updatedList;
     });

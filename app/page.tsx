@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
+import { JsonLdScript } from "./components/JsonLdScript";
 import { MarketingNav } from "./components/MarketingNav";
 import { trackEvent, useScrollDepthTracking } from "./lib/analytics";
 import { useAppTranslation } from "./lib/i18n";
@@ -110,6 +111,59 @@ const primaryCtaClass = "landing-cta landing-cta-primary";
 const secondaryCtaClass = "landing-cta landing-cta-secondary";
 const ctaGroupClass = "landing-cta-group";
 
+const landingSoftwareApplicationSchema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "NutriPilot",
+  applicationCategory: "HealthApplication",
+  operatingSystem: "Web",
+  description: "NutriPilot helps users generate weekly nutrition plans, organize grocery shopping, and execute meal prep efficiently.",
+  offers: {
+    "@type": "AggregateOffer",
+    lowPrice: "0",
+    highPrice: "19",
+    priceCurrency: "EUR",
+  },
+  url: "https://nutripilot.app/",
+  featureList: [
+    "Weekly nutrition plan generation",
+    "Smart grocery list aggregation",
+    "Prep flow guidance and checklist",
+    "Premium optimization and exports",
+  ],
+};
+
+const landingFaqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "How does NutriPilot build my weekly nutrition plan?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "NutriPilot uses your goal profile and nutrition targets to generate a practical weekly plan with meals and shopping guidance.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Can I use NutriPilot for meal prep and shopping execution?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes. NutriPilot provides a grouped grocery mission and a prep checklist workflow to help you execute your plan during the week.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What do I get with Premium?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Premium unlocks advanced weekly adjustments, recipe packs, and additional prep/export capabilities.",
+      },
+    },
+  ],
+};
+
 export default function LandingRoute() {
   const { t } = useAppTranslation();
   useScrollDepthTracking("landing");
@@ -124,6 +178,9 @@ export default function LandingRoute() {
 
   return (
     <div className="np-shell landing-page">
+      <JsonLdScript id="ld-software-application" data={landingSoftwareApplicationSchema} />
+      <JsonLdScript id="ld-faq-landing" data={landingFaqSchema} />
+
       <MarketingNav />
 
       <main>

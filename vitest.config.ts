@@ -8,5 +8,8 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "jsdom",
+    fileParallelism: false,
+    include: ["src/tests/**/*.test.{ts,tsx}"],
+    exclude: ["e2e/**"],
   },
 });

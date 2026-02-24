@@ -7,8 +7,153 @@ const CONSENT_KEY = "np_analytics_consent";
 
 type AnalyticsConsent = "granted" | "denied" | "unknown";
 
+type AnalyticsEventProperties = Record<string, unknown>;
+
+type GoogleConsentState = "granted" | "denied";
+
+type GtagCommand =
+  | ["js", Date]
+  | ["config", string, Record<string, unknown>?]
+  | ["event", string, Record<string, unknown>?]
+  | ["consent", "default" | "update", {
+    ad_storage: GoogleConsentState;
+    analytics_storage: GoogleConsentState;
+    ad_user_data: GoogleConsentState;
+    ad_personalization: GoogleConsentState;
+    wait_for_update?: number;
+  }];
+
+type GtagFunction = (...args: GtagCommand) => void;
+
+type AnalyticsWindow = Window & {
+  dataLayer?: unknown[];
+  gtag?: GtagFunction;
+};
+
 let initialized = false;
 let posthogInstance: PostHog | null = null;
+let gaInitialized = false;
+
+const GA4_EVENT_ALLOWLIST = new Set<string>([
+  "page_view",
+  "onboarding_completed",
+  "plan_generated",
+  "affiliate_click",
+]);
+
+const POSTHOG_SUPPRESSED_EVENTS = new Set<string>(GA4_EVENT_ALLOWLIST);
+
+function getGaMeasurementId(): string {
+  return process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID || "";
+}
+
+function scheduleNonBlocking(task: () => void): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.setTimeout(task, 0);
+}
+
+function ensureGtag(): GtagFunction | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  const analyticsWindow = window as AnalyticsWindow;
+
+  analyticsWindow.dataLayer = analyticsWindow.dataLayer || [];
+
+  if (!analyticsWindow.gtag) {
+    analyticsWindow.gtag = (...args: GtagCommand) => {
+      analyticsWindow.dataLayer?.push(args);
+    };
+  }
+
+  return analyticsWindow.gtag;
+}
+
+function updateGoogleConsentMode(consent: Exclude<AnalyticsConsent, "unknown">): void {
+  const gtag = ensureGtag();
+  if (!gtag) {
+    return;
+  }
+
+  const state: GoogleConsentState = consent === "granted" ? "granted" : "denied";
+
+  gtag("consent", "update", {
+    ad_storage: state,
+    analytics_storage: state,
+    ad_user_data: state,
+    ad_personalization: state,
+  });
+}
+
+async function initGa4(): Promise<void> {
+  if (typeof window === "undefined" || gaInitialized) {
+    return;
+  }
+
+  if (getAnalyticsConsent() !== "granted") {
+    return;
+  }
+
+  const measurementId = getGaMeasurementId();
+  if (!measurementId) {
+    return;
+  }
+
+  const gtag = ensureGtag();
+  if (!gtag) {
+    return;
+  }
+
+  gtag("consent", "default", {
+    ad_storage: "denied",
+    analytics_storage: "denied",
+    ad_user_data: "denied",
+    ad_personalization: "denied",
+    wait_for_update: 500,
+  });
+
+  const existingScript = document.querySelector<HTMLScriptElement>(`script[data-ga4="${measurementId}"]`);
+
+  if (!existingScript) {
+    await new Promise<void>((resolve, reject) => {
+      const script = document.createElement("script");
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+      script.dataset.ga4 = measurementId;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error("Failed to load GA4 gtag.js"));
+      document.head.appendChild(script);
+    });
+  }
+
+  gtag("js", new Date());
+  gtag("config", measurementId, {
+    send_page_view: false,
+    anonymize_ip: true,
+  });
+
+  updateGoogleConsentMode("granted");
+  gaInitialized = true;
+}
+
+function trackGa4Event(event: string, properties?: AnalyticsEventProperties): void {
+  if (getAnalyticsConsent() !== "granted") {
+    return;
+  }
+
+  const gtag = ensureGtag();
+  const measurementId = getGaMeasurementId();
+
+  if (!gtag || !measurementId || !gaInitialized) {
+    return;
+  }
+
+  gtag("event", event, properties);
+}
 
 function getPostHogKey(): string {
   return process.env.NEXT_PUBLIC_POSTHOG_KEY || "";
@@ -40,8 +185,12 @@ export function setAnalyticsConsent(consent: Exclude<AnalyticsConsent, "unknown"
 
   if (consent === "granted") {
     void initAnalytics();
+    void initGa4();
+    updateGoogleConsentMode("granted");
     return;
   }
+
+  updateGoogleConsentMode("denied");
 
   if (initialized && posthogInstance) {
     posthogInstance.opt_out_capturing();
@@ -68,7 +217,7 @@ export async function initAnalytics(): Promise<void> {
 
   posthog.init(key, {
     api_host: getPostHogHost(),
-    capture_pageview: true,
+    capture_pageview: false,
     autocapture: false,
     persistence: "localStorage+cookie",
     person_profiles: "identified_only",
@@ -76,14 +225,24 @@ export async function initAnalytics(): Promise<void> {
 
   posthogInstance = posthog;
   initialized = true;
+
+  await initGa4();
 }
 
 export function trackEvent(event: string, properties?: Record<string, unknown>): void {
-  if (!initialized || !posthogInstance || getAnalyticsConsent() !== "granted") {
+  if (getAnalyticsConsent() !== "granted") {
     return;
   }
 
-  posthogInstance.capture(event, properties);
+  scheduleNonBlocking(() => {
+    if (GA4_EVENT_ALLOWLIST.has(event)) {
+      trackGa4Event(event, properties);
+    }
+
+    if (initialized && posthogInstance && !POSTHOG_SUPPRESSED_EVENTS.has(event)) {
+      posthogInstance.capture(event, properties);
+    }
+  });
 }
 
 export function useScrollDepthTracking(pageName: string): void {

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { JsonLdScript } from "../../components/JsonLdScript";
 import { useShoppingPlan } from "../../../src/contexts/ShoppingPlanContext";
 import { aggregateShoppingList } from "../../../src/core/logic/aggregateShoppingList";
 import { computeShoppingProgress, getPrepFlowStatus } from "../../../src/core/logic/PrepFlowController";
@@ -66,6 +67,31 @@ export default function PrepGuidePageClient() {
   const totalTasks = prepGuide?.cookingTasks.length ?? 0;
   const completedCount = completedTasks.size;
   const taskProgress = totalTasks > 0 ? Math.round((completedCount / totalTasks) * 100) : 0;
+  const prepHowToSchema = useMemo(() => {
+    if (!prepGuide) {
+      return null;
+    }
+
+    return {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      name: "NutriPilot Weekly Meal Prep Flow",
+      description: "Step-by-step prep flow for executing a weekly nutrition plan.",
+      totalTime: prepGuide.totalPrepTime,
+      supply: prepGuide.ingredientSummary
+        .slice(0, 12)
+        .map((ingredient) => ({
+          "@type": "HowToSupply",
+          name: `${ingredient.ingredient} (${ingredient.totalGrams}g)`,
+        })),
+      step: prepGuide.cookingTasks.map((task) => ({
+        "@type": "HowToStep",
+        name: `Step ${task.order}: ${task.action} ${task.ingredient}`,
+        text: task.instructions,
+        url: "https://nutripilot.app/app/prep",
+      })),
+    };
+  }, [prepGuide]);
 
   const toggleTask = (taskOrder: number) => {
     setCompletedTasks((previous) => {
@@ -138,6 +164,8 @@ export default function PrepGuidePageClient() {
 
   return (
     <div className="np-shell prep-guide-page">
+      {prepHowToSchema ? <JsonLdScript id="ld-howto-prep-flow" data={prepHowToSchema} /> : null}
+
       <AppNav />
 
       <header className="prep-guide-header">

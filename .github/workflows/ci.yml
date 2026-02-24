@@ -2,17 +2,22 @@ name: CI
 
 on:
   push:
-    branches: [master]
+    branches: [master, main]
   pull_request:
-    branches: [master]
+    branches: [master, main]
 
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
-  build-and-test:
+  validate:
+    name: validate
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,11 +28,133 @@ jobs:
           node-version: 20
           cache: npm
 
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+
       - name: Install dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci
+
+      - name: Validate blog frontmatter
+        run: npm run validate:blog
+
+      - name: Type check
+        run: npm run type-check
+
+      - name: Print npm debug logs on failure
+        if: failure()
+        run: |
+          echo "Validation job failed. Dumping npm debug logs if available..."
+          if [ -d "$HOME/.npm/_logs" ]; then
+            ls -la "$HOME/.npm/_logs"
+            for log_file in "$HOME/.npm/_logs"/*; do
+              echo "----- ${log_file} -----"
+              cat "$log_file"
+            done
+          fi
+
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: validate
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+
+      - name: Install dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Run tests
+        run: npm run test -- --run
+
+      - name: Print npm debug logs on failure
+        if: failure()
+        run: |
+          echo "Test job failed. Dumping npm debug logs if available..."
+          if [ -d "$HOME/.npm/_logs" ]; then
+            ls -la "$HOME/.npm/_logs"
+            for log_file in "$HOME/.npm/_logs"/*; do
+              echo "----- ${log_file} -----"
+              cat "$log_file"
+            done
+          fi
+
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: validate
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+
+      - name: Install dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Cache Next.js build cache
+        uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-next-cache-${{ hashFiles('package-lock.json') }}-${{ hashFiles('app/**/*.{ts,tsx,mdx,md,css}', 'src/**/*.{ts,tsx,mdx,md,css}', 'content/blog/**/*.{md,mdx}', 'next.config.js', 'tsconfig.json') }}
+          restore-keys: |
+            ${{ runner.os }}-next-cache-${{ hashFiles('package-lock.json') }}-
 
       - name: Build
         run: npm run build
 
-      - name: Run tests
-        run: npm run test -- --run
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: next-build
+          path: |
+            .next
+            public
+            package.json
+            next.config.js
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Print npm debug logs on failure
+        if: failure()
+        run: |
+          echo "Build job failed. Dumping npm debug logs if available..."
+          if [ -d "$HOME/.npm/_logs" ]; then
+            ls -la "$HOME/.npm/_logs"
+            for log_file in "$HOME/.npm/_logs"/*; do
+              echo "----- ${log_file} -----"
+              cat "$log_file"
+            done
+          fi

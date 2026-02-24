@@ -1,10 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getAnalyticsConsent, initAnalytics, setAnalyticsConsent } from "../lib/analytics";
+import { useEffect, useRef, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { getAnalyticsConsent, initAnalytics, setAnalyticsConsent, trackEvent } from "../lib/analytics";
 
 export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
   const [consent, setConsent] = useState<"granted" | "denied" | "unknown">("unknown");
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const lastTrackedUrlRef = useRef<string>("");
 
   useEffect(() => {
     const currentConsent = getAnalyticsConsent();
@@ -14,6 +18,27 @@ export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
       initAnalytics();
     }
   }, []);
+
+  useEffect(() => {
+    if (consent !== "granted") {
+      return;
+    }
+
+    const query = searchParams.toString();
+    const pagePath = query ? `${pathname}?${query}` : pathname;
+
+    if (lastTrackedUrlRef.current === pagePath) {
+      return;
+    }
+
+    lastTrackedUrlRef.current = pagePath;
+
+    trackEvent("page_view", {
+      page_path: pathname,
+      page_location: pagePath,
+      page_title: document.title,
+    });
+  }, [consent, pathname, searchParams]);
 
   const analyticsEnabled = Boolean(process.env.NEXT_PUBLIC_POSTHOG_KEY);
 

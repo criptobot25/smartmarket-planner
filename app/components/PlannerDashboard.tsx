@@ -9,6 +9,7 @@ import { OnboardingWizard } from "../../src/app/components/OnboardingWizard";
 import type { PlanInput } from "../../src/core/models/PlanInput";
 import { AppNav } from "./AppNav";
 import { PlannerAuthControls } from "./PlannerAuthControls";
+import { trackEvent } from "../lib/analytics";
 import { useAppTranslation } from "../lib/i18n";
 
 export default function PlannerDashboard() {
@@ -23,6 +24,11 @@ export default function PlannerDashboard() {
 
     try {
       generatePlan(planInput);
+      trackEvent("plan_generated", {
+        fitness_goal: planInput.fitnessGoal,
+        meals_per_day: planInput.mealsPerDay,
+        has_restrictions: planInput.restrictions.length > 0,
+      });
       router.push("/app/list");
     } catch {
       setWizardErrors([t("planner.alertError")]);

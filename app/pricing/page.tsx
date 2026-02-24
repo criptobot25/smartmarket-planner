@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { MarketingNav } from "../components/MarketingNav";
+import { trackEvent } from "../lib/analytics";
 import { useAppTranslation } from "../lib/i18n";
 
 export default function PricingRoute() {
@@ -40,10 +41,30 @@ export default function PricingRoute() {
         </section>
 
         <section className="np-actions np-page-actions">
-          <Link href="/app" className="np-btn np-btn-primary">
+          <Link
+            href="/app"
+            className="np-btn np-btn-primary"
+            onClick={() => {
+              trackEvent("affiliate_click", {
+                source: "pricing",
+                placement: "primary_cta",
+                target: "/app",
+              });
+            }}
+          >
             {t("landingV2.generatePlan")}
           </Link>
-          <Link href="/" className="np-btn np-btn-secondary">
+          <Link
+            href="/"
+            className="np-btn np-btn-secondary"
+            onClick={() => {
+              trackEvent("affiliate_click", {
+                source: "pricing",
+                placement: "secondary_cta",
+                target: "/",
+              });
+            }}
+          >
             {t("nav.nutritionPlan")}
           </Link>
         </section>
