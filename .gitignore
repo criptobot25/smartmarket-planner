@@ -13,10 +13,6 @@ dist-ssr
 .next
 out
 *.local
-playwright-report/
-test-results/
-*.tsbuildinfo
-coverage/
 
 # Editor directories and files
 .vscode/*

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { CATEGORIES } from "../core/constants/categories";
 import { __shoppingListTestables } from "../core/logic/generateShoppingList";
 import type { FoodItem } from "../core/models/FoodItem";
+import { localizeFoodText } from "../app/utils/foodLocalization";
 
 const macroScale = { protein: 1, carbs: 1, fats: 1 };
 
@@ -247,5 +248,16 @@ describe("generateShoppingList helpers", () => {
     expect(milk?.quantity).toBe(1.25);
     expect(milk?.unit).toBe("L");
     expect(milk?.estimatedPrice).toBe(1.5);
+  });
+
+  it("rounds market-only units up to purchasable amounts", () => {
+    expect(__shoppingListTestables.normalizeMarketPurchaseQuantity(0.02, "pack")).toBe(1);
+    expect(__shoppingListTestables.normalizeMarketPurchaseQuantity(1.1, "can")).toBe(2);
+    expect(__shoppingListTestables.normalizeMarketPurchaseQuantity(0.49, "kg")).toBe(0.49);
+  });
+
+  it("localizes quantity units to portuguese in shopping text", () => {
+    expect(localizeFoodText("Butter (unsalted) — 1 pack", "pt-BR")).toContain("1 pacote");
+    expect(localizeFoodText("Chicken breast (~3 packs)", "pt-BR")).toContain("~3 pacotes");
   });
 });

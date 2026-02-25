@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import type { Route } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Breadcrumbs } from "../../../components/Breadcrumbs";
 import { BLOG_POSTS_PER_PAGE, getAllBlogPosts, getPaginatedBlogPosts } from "../../../lib/blog";
-import { getLanguageAlternates } from "../../../lib/seo";
+import { absoluteUrl, getLanguageAlternates } from "../../../lib/seo";
 
 export const dynamic = "force-static";
 
@@ -75,10 +76,57 @@ export default async function BlogPaginationPage({ params }: BlogPaginationPageP
 
   const previousHref = currentPage - 1 === 1 ? "/blog" : (`/blog/page/${currentPage - 1}` as Route);
   const nextHref = currentPage >= totalPages ? (`/blog/page/${currentPage}` as Route) : (`/blog/page/${currentPage + 1}` as Route);
+  const itemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: `NutriPilot Blog Articles - Page ${currentPage}`,
+    itemListOrder: "https://schema.org/ItemListOrderDescending",
+    numberOfItems: posts.length,
+    itemListElement: posts.map((post, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: absoluteUrl(`/blog/${post.slug}`),
+      name: post.title,
+    })),
+  };
+  const collectionPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: `NutriPilot Blog - Page ${currentPage}`,
+    description: `Page ${currentPage} of the NutriPilot blog with nutrition planning and meal prep content.`,
+    url: absoluteUrl(`/blog/page/${currentPage}`),
+    isPartOf: {
+      "@type": "CollectionPage",
+      name: "NutriPilot Blog",
+      url: absoluteUrl("/blog"),
+    },
+    hasPart: posts.map((post) => ({
+      "@type": "BlogPosting",
+      headline: post.title,
+      url: absoluteUrl(`/blog/${post.slug}`),
+      datePublished: post.publishedAt,
+      author: {
+        "@type": "Person",
+        name: post.author,
+      },
+    })),
+  };
 
   return (
     <div className="np-shell">
       <main className="np-main np-main-narrow">
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionPageSchema) }} />
+
+        <Breadcrumbs
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Blog", href: "/blog" },
+            { label: `Page ${currentPage}` },
+          ]}
+          currentPath={`/blog/page/${currentPage}`}
+        />
+
         <section className="np-page-header">
           <h1>NutriPilot Blog</h1>
           <p className="np-page-subtitle">Page {currentPage} of {totalPages}</p>

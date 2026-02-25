@@ -84,6 +84,10 @@ function hasActivePremiumSubscription(): boolean {
 }
 
 export function isPremiumUser(): boolean {
+  if (!isFeatureEnabled("premiumMonetizationV2")) {
+    return true;
+  }
+
   return hasActivePremiumSubscription();
 }
 

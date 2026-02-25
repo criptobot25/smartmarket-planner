@@ -3,7 +3,29 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Providers } from "./providers";
-import { getLanguageAlternates, getSiteUrl } from "./lib/seo";
+import { absoluteUrl, getLanguageAlternates, getSiteUrl } from "./lib/seo";
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "NutriPilot",
+  url: absoluteUrl("/"),
+  inLanguage: ["en-US", "pt-BR"],
+  potentialAction: {
+    "@type": "SearchAction",
+    target: `${absoluteUrl("/blog")}?q={search_term_string}`,
+    "query-input": "required name=search_term_string",
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "NutriPilot",
+    url: absoluteUrl("/"),
+    logo: {
+      "@type": "ImageObject",
+      url: absoluteUrl("/logo-nutripilot.svg"),
+    },
+  },
+};
 
 export const metadata: Metadata = {
   metadataBase: getSiteUrl(),
@@ -65,6 +87,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
+        <script
+          id="ld-website-global"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
         <Providers>{children}</Providers>
         <Analytics />
         <SpeedInsights />

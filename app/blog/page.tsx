@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import type { Route } from "next";
 import Link from "next/link";
-import { getLanguageAlternates } from "../lib/seo";
-import { BLOG_POSTS_PER_PAGE, getPaginatedBlogPosts } from "../lib/blog";
+import { Breadcrumbs } from "../components/Breadcrumbs";
+import { absoluteUrl, getLanguageAlternates } from "../lib/seo";
+import { BLOG_POSTS_PER_PAGE, getPaginatedBlogPosts, searchBlogPosts } from "../lib/blog";
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -21,6 +22,13 @@ export const metadata: Metadata = {
   },
 };
 
+type BlogIndexPageProps = {
+  searchParams?: {
+    q?: string;
+    search_term_string?: string;
+  };
+};
+
 function formatDate(dateString: string): string {
   return new Date(dateString).toLocaleDateString("en-US", {
     year: "numeric",
@@ -29,17 +37,87 @@ function formatDate(dateString: string): string {
   });
 }
 
-export default async function BlogIndexPage() {
-  const { posts, totalPages } = await getPaginatedBlogPosts(1, BLOG_POSTS_PER_PAGE);
+export default async function BlogIndexPage({ searchParams }: BlogIndexPageProps) {
+  const query = String(searchParams?.q || searchParams?.search_term_string || "").trim();
+  const hasQuery = query.length > 0;
+  const paginated = hasQuery ? null : await getPaginatedBlogPosts(1, BLOG_POSTS_PER_PAGE);
+
+  const posts = hasQuery
+    ? await searchBlogPosts(query)
+    : (paginated?.posts ?? []);
+  const totalPages = hasQuery
+    ? 1
+    : (paginated?.totalPages ?? 1);
+
+  const itemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: hasQuery ? `NutriPilot Blog Articles for "${query}"` : "NutriPilot Blog Articles",
+    itemListOrder: "https://schema.org/ItemListOrderDescending",
+    numberOfItems: posts.length,
+    itemListElement: posts.map((post, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: absoluteUrl(`/blog/${post.slug}`),
+      name: post.title,
+    })),
+  };
+  const collectionPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: hasQuery ? `NutriPilot Blog Search: ${query}` : "NutriPilot Blog",
+    description: hasQuery
+      ? `Search results for \"${query}\" on the NutriPilot blog.`
+      : "Nutrition planning, meal prep, and grocery optimization guides from NutriPilot.",
+    url: absoluteUrl(hasQuery ? `/blog?q=${encodeURIComponent(query)}` : "/blog"),
+    isPartOf: {
+      "@type": "WebSite",
+      name: "NutriPilot",
+      url: absoluteUrl("/"),
+    },
+    hasPart: posts.map((post) => ({
+      "@type": "BlogPosting",
+      headline: post.title,
+      url: absoluteUrl(`/blog/${post.slug}`),
+      datePublished: post.publishedAt,
+      author: {
+        "@type": "Person",
+        name: post.author,
+      },
+    })),
+  };
 
   return (
     <div className="np-shell">
       <main className="np-main np-main-narrow">
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionPageSchema) }} />
+
+        <Breadcrumbs
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Blog" },
+          ]}
+          currentPath="/blog"
+        />
+
         <section className="np-page-header">
           <h1>NutriPilot Blog</h1>
           <p className="np-page-subtitle">
             Practical guides on weekly nutrition systems, grocery execution, and sustainable meal prep workflows.
           </p>
+          <form action="/blog" method="get" className="np-actions" aria-label="Search blog posts">
+            <input
+              type="search"
+              name="q"
+              defaultValue={query}
+              placeholder="Search articles"
+              aria-label="Search articles"
+            />
+            <button type="submit" className="np-btn np-btn-secondary">Search</button>
+            {hasQuery ? <Link href="/blog" className="np-btn np-btn-secondary">Clear</Link> : null}
+          </form>
+          {hasQuery ? <p className="np-inline-note">Results for "{query}": {posts.length}</p> : null}
           <p className="np-inline-note">Subscribe via RSS: <a href="/rss.xml">/rss.xml</a></p>
         </section>
 
@@ -60,9 +138,15 @@ export default async function BlogIndexPage() {
               </div>
             </article>
           ))}
+          {posts.length === 0 ? (
+            <article className="np-card blog-card">
+              <h2>No posts found</h2>
+              <p>Try a different keyword or clear the search to browse all articles.</p>
+            </article>
+          ) : null}
         </section>
 
-        {totalPages > 1 ? (
+        {totalPages > 1 && !hasQuery ? (
           <nav className="np-actions" aria-label="Blog pagination">
             {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => {
               const href = pageNumber === 1 ? "/blog" : (`/blog/page/${pageNumber}` as Route);

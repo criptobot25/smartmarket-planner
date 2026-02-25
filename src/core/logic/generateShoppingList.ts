@@ -67,8 +67,31 @@ const BASELINE_MACROS = {
   fats: 70
 };
 
+const DISCRETE_MARKET_UNITS = new Set(["pack", "can", "jar", "bottle", "loaf"]);
+
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
+}
+
+function isDiscreteMarketUnit(unit: string): boolean {
+  return DISCRETE_MARKET_UNITS.has(unit.trim().toLowerCase());
+}
+
+function normalizeMarketPurchaseQuantity(quantity: number, unit: string): number {
+  if (quantity <= 0) {
+    return 0;
+  }
+
+  if (isDiscreteMarketUnit(unit)) {
+    return Math.max(1, Math.ceil(quantity));
+  }
+
+  const rounded = Math.round(quantity * 100) / 100;
+  if (rounded === 0 && quantity > 0) {
+    return 0.01;
+  }
+
+  return rounded;
 }
 
 function getMacroScale(weeklyPlan: WeeklyPlan): MacroScale {
@@ -361,8 +384,7 @@ function calculateRealisticQuantity(
   // Quantidade total = porção * ocorrências
   const totalQuantity = portionPerMeal * occurrences;
 
-  // Arredondar para 2 casas decimais
-  return Math.round(totalQuantity * 100) / 100;
+  return normalizeMarketPurchaseQuantity(totalQuantity, unit);
 }
 
 /**
@@ -565,12 +587,16 @@ function consolidateItemsByName(items: FoodItem[]): FoodItem[] {
 
   return Array.from(byName.values()).map(({ base, quantity, unit, estimatedPrice, reasons }) => {
     const converted = fromBaseQuantity(quantity, unit);
+    const normalizedQuantity = normalizeMarketPurchaseQuantity(converted.quantity, converted.unit);
+    const normalizedEstimatedPrice = isDiscreteMarketUnit(converted.unit)
+      ? Math.max(estimatedPrice, normalizedQuantity * base.pricePerUnit)
+      : estimatedPrice;
 
     return {
       ...base,
-      quantity: converted.quantity,
+      quantity: normalizedQuantity,
       unit: converted.unit,
-      estimatedPrice: Math.round(estimatedPrice * 100) / 100,
+      estimatedPrice: Math.round(normalizedEstimatedPrice * 100) / 100,
       reason: reasons.size > 0 ? Array.from(reasons).join(" · ") : base.reason
     };
   });
@@ -582,5 +608,6 @@ export const __shoppingListTestables = {
   _generateReason,
   toBaseQuantity,
   fromBaseQuantity,
+  normalizeMarketPurchaseQuantity,
   consolidateItemsByName,
 };

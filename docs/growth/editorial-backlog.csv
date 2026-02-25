@@ -1,0 +1,17 @@
+cluster,keyword,page_type,search_intent,priority,status
+cutting,meal plan cutting,programmatic,transactional,P0,planned
+cutting,cutting meal prep,blog,informational,P0,planned
+cutting,macro cutting calculator,blog,informational,P1,planned
+bulking,meal plan bulking,programmatic,transactional,P0,planned
+bulking,clean bulk grocery list,blog,informational,P0,planned
+bulking,how to bulk without fat gain,blog,informational,P1,planned
+maintenance,meal plan maintenance,programmatic,transactional,P0,planned
+maintenance,maintenance calories meal plan,blog,informational,P1,planned
+prep,weekly meal prep plan,blog,informational,P0,planned
+prep,high protein prep guide,blog,informational,P1,planned
+budget,cheap high protein grocery list,blog,transactional,P0,planned
+budget,weekly grocery budget meal plan,blog,informational,P1,planned
+recipes,high protein breakfast prep,blog,informational,P1,planned
+recipes,post workout meal prep ideas,blog,informational,P2,planned
+conversion,meal plan for beginners,blog,informational,P1,planned
+conversion,how to start meal planning,blog,informational,P1,planned

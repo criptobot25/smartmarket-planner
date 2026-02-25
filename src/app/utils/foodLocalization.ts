@@ -121,6 +121,25 @@ function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+function localizeQuantityUnits(text: string): string {
+  return text.replace(/(~?\s*\d+(?:[.,]\d+)?)\s*(pack|can|jar|bottle|loaf|serving)s?\b/gi, (_, amount, unit) => {
+    const numeric = Number.parseFloat(String(amount).replace("~", "").replace(",", "."));
+    const isSingular = !Number.isNaN(numeric) && Math.abs(numeric - 1) < 0.0001;
+    const normalizedUnit = String(unit).toLowerCase();
+
+    const translatedUnit = {
+      pack: isSingular ? "pacote" : "pacotes",
+      can: isSingular ? "lata" : "latas",
+      jar: isSingular ? "pote" : "potes",
+      bottle: isSingular ? "garrafa" : "garrafas",
+      loaf: isSingular ? "unidade" : "unidades",
+      serving: isSingular ? "porção" : "porções",
+    }[normalizedUnit] || normalizedUnit;
+
+    return `${amount} ${translatedUnit}`;
+  });
+}
+
 export function localizeFoodName(name: string, language: string): string {
   if (!language.startsWith("pt")) {
     return name;
@@ -142,6 +161,8 @@ export function localizeFoodText(text: string, language: string): string {
     const regex = new RegExp(escapeRegExp(english), "gi");
     localized = localized.replace(regex, portuguese);
   });
+
+  localized = localizeQuantityUnits(localized);
 
   return localized;
 }

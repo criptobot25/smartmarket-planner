@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { Route } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Breadcrumbs } from "../../components/Breadcrumbs";
 import { MdxArticle } from "../../components/MdxArticle";
 import { getAllBlogSlugs, getBlogPostBySlug, getRelatedBlogPosts } from "../../lib/blog";
 import { absoluteUrl, getLanguageAlternates } from "../../lib/seo";
@@ -108,6 +109,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+        />
+
+        <Breadcrumbs
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Blog", href: "/blog" },
+            { label: post.title },
+          ]}
+          currentPath={`/blog/${post.slug}`}
         />
 
         <article className="np-card blog-post-card">

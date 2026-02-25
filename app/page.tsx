@@ -7,6 +7,7 @@ import { JsonLdScript } from "./components/JsonLdScript";
 import { MarketingNav } from "./components/MarketingNav";
 import { trackEvent, useScrollDepthTracking } from "./lib/analytics";
 import { useAppTranslation } from "./lib/i18n";
+import { isFeatureEnabled } from "../src/core/config/featureFlags";
 
 const LandingPreviewSection = dynamic(
   () => import("./components/LandingPreviewSection").then((module) => module.LandingPreviewSection),
@@ -166,6 +167,7 @@ const landingFaqSchema = {
 
 export default function LandingRoute() {
   const { t } = useAppTranslation();
+  const monetizationEnabled = isFeatureEnabled("premiumMonetizationV2");
   useScrollDepthTracking("landing");
 
   const trackCtaClick = (ctaId: string, placement: string, targetPath: string) => {
@@ -201,9 +203,11 @@ export default function LandingRoute() {
               <Link href="/app" className={`${primaryCtaClass} hero-link`} onClick={() => trackCtaClick("hero_primary", "hero", "/app")}>
                 {t("landingV2.generatePlan")}
               </Link>
-              <Link href="/pricing" className={`${secondaryCtaClass} hero-link`} onClick={() => trackCtaClick("hero_secondary", "hero", "/pricing")}>
-                {t("landingV2.upgradePremium")}
-              </Link>
+              {monetizationEnabled ? (
+                <Link href="/pricing" className={`${secondaryCtaClass} hero-link`} onClick={() => trackCtaClick("hero_secondary", "hero", "/pricing")}>
+                  {t("landingV2.upgradePremium")}
+                </Link>
+              ) : null}
             </div>
 
             <p className="hero-cta-note">{t("landingV2.heroCtaNote")}</p>
@@ -240,7 +244,7 @@ export default function LandingRoute() {
               {t("landingV2.sales.offerSubtitle")}
             </p>
             <p className="sales-strip-note">
-              {t("landingV2.sales.offerNote")} <Link href="/pricing">{t("landingV2.sales.offerCtaSecondary")}</Link>
+              {t("landingV2.sales.offerNote")} {monetizationEnabled ? <Link href="/pricing">{t("landingV2.sales.offerCtaSecondary")}</Link> : null}
             </p>
           </div>
         </section>
@@ -373,9 +377,11 @@ export default function LandingRoute() {
               <Link href="/app" className={primaryCtaClass} onClick={() => trackCtaClick("pricing_primary", "pricing", "/app")}>
                 {t("landingV2.generatePlan")}
               </Link>
-              <Link href="/pricing" className={secondaryCtaClass} onClick={() => trackCtaClick("pricing_secondary", "pricing", "/pricing")}>
-                {t("landingV2.upgradePremium")}
-              </Link>
+              {monetizationEnabled ? (
+                <Link href="/pricing" className={secondaryCtaClass} onClick={() => trackCtaClick("pricing_secondary", "pricing", "/pricing")}>
+                  {t("landingV2.upgradePremium")}
+                </Link>
+              ) : null}
             </div>
 
             <p className="pricing-risk-reversal">🛡️ {t("landingV2.sales.riskReversal")}</p>
@@ -406,9 +412,11 @@ export default function LandingRoute() {
               <Link href="/app" className={primaryCtaClass} onClick={() => trackCtaClick("final_primary", "final_cta", "/app")}>
                 {t("landingV2.sales.finalCtaPrimary")}
               </Link>
-              <Link href="/pricing" className={secondaryCtaClass} onClick={() => trackCtaClick("final_secondary", "final_cta", "/pricing")}>
-                {t("landingV2.sales.finalCtaSecondary")}
-              </Link>
+              {monetizationEnabled ? (
+                <Link href="/pricing" className={secondaryCtaClass} onClick={() => trackCtaClick("final_secondary", "final_cta", "/pricing")}>
+                  {t("landingV2.sales.finalCtaSecondary")}
+                </Link>
+              ) : null}
             </div>
           </div>
         </section>
@@ -419,7 +427,7 @@ export default function LandingRoute() {
         <div className="footer-links">
           <Link href="/app">{t("nav.nutritionPlan")}</Link>
           <Link href="/app/list">{t("nav.groceryMission")}</Link>
-          <Link href="/pricing">{t("nav.premium")}</Link>
+          {monetizationEnabled ? <Link href="/pricing">{t("nav.premium")}</Link> : null}
         </div>
       </footer>
     </div>

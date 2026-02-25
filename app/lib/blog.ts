@@ -124,3 +124,73 @@ export async function getRelatedBlogPosts(slug: string, tags: string[], limit = 
     .slice(0, limit)
     .map(({ post }) => post);
 }
+
+const GOAL_KEYWORDS: Record<string, string[]> = {
+  cutting: ["cutting", "fat loss", "deficit", "macro"],
+  bulking: ["bulking", "bulk", "muscle", "surplus"],
+  maintenance: ["maintenance", "sustainable", "routine", "meal prep"],
+};
+
+export async function getRelatedBlogPostsForGoal(goal: string, limit = 3): Promise<BlogPostSummary[]> {
+  const allPosts = await getAllBlogPosts();
+  const normalizedGoal = goal.trim().toLowerCase();
+  const keywords = GOAL_KEYWORDS[normalizedGoal] || [normalizedGoal];
+
+  const scored = allPosts
+    .map((post) => {
+      const searchCorpus = `${post.title} ${post.description} ${post.tags.join(" ")}`.toLowerCase();
+      const score = keywords.reduce((total, keyword) => (searchCorpus.includes(keyword) ? total + 1 : total), 0);
+
+      return {
+        post,
+        score,
+      };
+    })
+    .sort((a, b) => {
+      if (b.score !== a.score) {
+        return b.score - a.score;
+      }
+
+      return new Date(b.post.publishedAt).getTime() - new Date(a.post.publishedAt).getTime();
+    });
+
+  const withScore = scored.filter((item) => item.score > 0).slice(0, limit).map((item) => item.post);
+
+  if (withScore.length >= limit) {
+    return withScore;
+  }
+
+  const used = new Set(withScore.map((post) => post.slug));
+  const fallback = scored
+    .map((item) => item.post)
+    .filter((post) => !used.has(post.slug))
+    .slice(0, limit - withScore.length);
+
+  return [...withScore, ...fallback];
+}
+
+function normalizeSearchTokens(query: string): string[] {
+  return query
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+export function filterBlogPostsByQuery(posts: BlogPostSummary[], query: string): BlogPostSummary[] {
+  const tokens = normalizeSearchTokens(query);
+
+  if (tokens.length === 0) {
+    return posts;
+  }
+
+  return posts.filter((post) => {
+    const corpus = `${post.title} ${post.description} ${post.tags.join(" ")}`.toLowerCase();
+    return tokens.every((token) => corpus.includes(token));
+  });
+}
+
+export async function searchBlogPosts(query: string): Promise<BlogPostSummary[]> {
+  const allPosts = await getAllBlogPosts();
+  return filterBlogPostsByQuery(allPosts, query);
+}

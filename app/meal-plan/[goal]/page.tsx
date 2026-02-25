@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import type { Route } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Breadcrumbs } from "../../components/Breadcrumbs";
 import { JsonLdScript } from "../../components/JsonLdScript";
+import { getRelatedBlogPostsForGoal } from "../../lib/blog";
 import { absoluteUrl, getLanguageAlternates } from "../../lib/seo";
 import { MEAL_PLAN_GOALS, getMealPlanGoalContent, type MealPlanGoal } from "../../lib/mealPlanGoals";
 
@@ -55,7 +57,7 @@ function getSiblingGoals(activeGoal: MealPlanGoal): MealPlanGoal[] {
   return MEAL_PLAN_GOALS.filter((goal) => goal !== activeGoal);
 }
 
-export default function MealPlanGoalPage({ params }: MealPlanGoalPageProps) {
+export default async function MealPlanGoalPage({ params }: MealPlanGoalPageProps) {
   const content = getMealPlanGoalContent(params.goal);
 
   if (!content) {
@@ -63,6 +65,7 @@ export default function MealPlanGoalPage({ params }: MealPlanGoalPageProps) {
   }
 
   const siblingGoals = getSiblingGoals(content.goal);
+  const relatedBlogPosts = await getRelatedBlogPostsForGoal(content.goal, 3);
   const pageUrl = absoluteUrl(`/meal-plan/${content.goal}`);
 
   const webPageSchema = {
@@ -102,6 +105,15 @@ export default function MealPlanGoalPage({ params }: MealPlanGoalPageProps) {
       <JsonLdScript id={`ld-faq-meal-plan-${content.goal}`} data={faqPageSchema} />
 
       <main className="np-main np-main-narrow">
+        <Breadcrumbs
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Meal plan", href: "/meal-plan" },
+            { label: content.shortLabel },
+          ]}
+          currentPath={`/meal-plan/${content.goal}`}
+        />
+
         <section className="np-page-header">
           <h1>{content.heroTitle}</h1>
           <p className="np-page-subtitle">{content.heroDescription}</p>
@@ -169,10 +181,25 @@ export default function MealPlanGoalPage({ params }: MealPlanGoalPageProps) {
                 </Link>
               );
             })}
-            <Link href="/pricing" className="np-btn np-btn-secondary">See Premium features</Link>
             <Link href="/app" className="np-btn np-btn-primary">Generate my plan</Link>
           </div>
         </section>
+
+        {relatedBlogPosts.length > 0 ? (
+          <section className="np-card" aria-labelledby="goal-blog-links">
+            <h2 id="goal-blog-links">Related blog articles</h2>
+            <div className="blog-grid">
+              {relatedBlogPosts.map((post) => (
+                <article key={post.slug} className="blog-card">
+                  <h3>
+                    <Link href={`/blog/${post.slug}` as Route}>{post.title}</Link>
+                  </h3>
+                  <p>{post.description}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+        ) : null}
       </main>
     </div>
   );

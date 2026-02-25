@@ -7,13 +7,44 @@ interface GroceryItemRowProps {
   onTogglePurchased: (sourceIds: string[]) => void;
 }
 
+function resolveEuropeanLocale(language: string): string {
+  if (language.startsWith("pt")) {
+    return "pt-PT";
+  }
+
+  return "en-IE";
+}
+
+function formatDisplayQuantity(displayText: string, locale: string): string {
+  return displayText.replace(
+    /(\d+(?:[.,]\d+)?)(\s?)(kg|g|L|ml|pack|packs|can|cans|jar|jars|bottle|bottles|loaf|loaves|serving|servings|pacote|pacotes|lata|latas|pote|potes|garrafa|garrafas|unidade|unidades|porção|porções)/gi,
+    (_, rawNumber: string, _spacer: string, unit: string) => {
+      const numeric = Number.parseFloat(rawNumber.replace(",", "."));
+      if (Number.isNaN(numeric)) {
+        return `${rawNumber} ${unit}`;
+      }
+
+      const formatted = new Intl.NumberFormat(locale, {
+        minimumFractionDigits: Number.isInteger(numeric) ? 0 : 2,
+        maximumFractionDigits: 2,
+      }).format(numeric);
+
+      return `${formatted} ${unit}`;
+    }
+  );
+}
+
 export function GroceryItemRow({ item, onTogglePurchased }: GroceryItemRowProps) {
   const { i18n } = useTranslation();
   const language = i18n.language;
+  const locale = resolveEuropeanLocale(language);
   const localizedName = localizeFoodText(item.name, language);
-  const localizedDisplayText = localizeFoodText(item.normalizedDisplayText, language);
+  const localizedDisplayText = formatDisplayQuantity(localizeFoodText(item.normalizedDisplayText, language), locale);
   const localizedCoverageText = localizeCoverageText(item.coverageText, language);
   const localizedReasonText = item.reason ? localizeReasonText(localizeFoodText(item.reason, language), language) : undefined;
+  const localizedPrice = item.estimatedPrice
+    ? new Intl.NumberFormat(locale, { style: "currency", currency: "EUR" }).format(item.estimatedPrice)
+    : null;
 
   return (
     <li
@@ -34,7 +65,7 @@ export function GroceryItemRow({ item, onTogglePurchased }: GroceryItemRowProps)
       </div>
       {item.estimatedPrice && (
         <div className="item-price">
-          {item.estimatedPrice.toFixed(2)}
+          {localizedPrice}
         </div>
       )}
     </li>

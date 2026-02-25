@@ -9,8 +9,8 @@ const DEFAULT_FLAGS: Record<FeatureFlagKey, boolean> = {
   analytics: true,
   errorMonitoring: true,
   waitlistCapture: true,
-  premiumMonetizationV2: true,
-  weeklyCoachAdjustmentsPremiumOnly: true,
+  premiumMonetizationV2: false,
+  weeklyCoachAdjustmentsPremiumOnly: false,
 };
 
 function parseBoolean(value: string | undefined): boolean | undefined {

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAppTranslation } from "../lib/i18n";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { isFeatureEnabled } from "../../src/core/config/featureFlags";
 
 function isRouteActive(pathname: string, href: string): boolean {
   if (href === "/app") {
@@ -16,6 +17,7 @@ function isRouteActive(pathname: string, href: string): boolean {
 export function AppNav() {
   const pathname = usePathname();
   const { t } = useAppTranslation();
+  const monetizationEnabled = isFeatureEnabled("premiumMonetizationV2");
 
   return (
     <header className="np-nav np-nav-app">
@@ -36,9 +38,11 @@ export function AppNav() {
       </nav>
 
       <div className="np-nav-right">
-        <Link href="/pricing" className="np-btn np-btn-primary np-btn-nav">
-          {t("nav.premium")}
-        </Link>
+        {monetizationEnabled ? (
+          <Link href="/pricing" className="np-btn np-btn-primary np-btn-nav">
+            {t("nav.premium")}
+          </Link>
+        ) : null}
         <LanguageSwitcher />
       </div>
     </header>
