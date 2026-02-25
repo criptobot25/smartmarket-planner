@@ -20,10 +20,12 @@
     "test:e2e:ui": "playwright test --ui",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "type-check": "tsc --noEmit",
-    "validate:blog": "node scripts/validate-blog-frontmatter.mjs"
+    "validate:blog": "node scripts/validate-blog-frontmatter.mjs",
+    "report:funnel:weekly": "node scripts/weekly-funnel-report.mjs"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
+    "@google-cloud/bigquery": "^8.1.1",
     "@prisma/client": "^6.16.3",
     "@sentry/react": "^10.39.0",
     "@vercel/analytics": "^1.6.1",

@@ -21,6 +21,27 @@ Objetivo: monitorar semanalmente o funil de aquisição orgânica até geração
 - Quarta: identificar páginas com muito clique e baixa geração de plano
 - Sexta: priorizar otimizações de CTA/copy/interlinking para top 3 gargalos
 
+## Automação (CSV semanal)
+
+Use o script abaixo para gerar relatório consolidado direto do export GA4 no BigQuery:
+
+```bash
+npm run report:funnel:weekly
+```
+
+Opções:
+
+```bash
+npm run report:funnel:weekly -- --weeks 12 --out reports/funnel-weekly-12w.csv
+```
+
+Pré-requisitos:
+
+- `GA4_BQ_PROJECT_ID`
+- `GA4_BQ_DATASET`
+- `GA4_BQ_LOCATION` (opcional, default `US`)
+- Credenciais Google válidas (`GOOGLE_APPLICATION_CREDENTIALS`)
+
 ## GA4 (via BigQuery export)
 
 > Ajuste `your_project.your_dataset` para o seu ambiente.
