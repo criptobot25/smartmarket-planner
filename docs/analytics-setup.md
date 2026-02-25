@@ -31,6 +31,8 @@ This implementation is opt-in by default:
   - Properties: `step`, `total_steps`
 - `onboarding_completed`
   - Properties: `total_steps`
+- `content_to_planner_cta`
+  - Properties: `source`, `slug`, `goal`
 
 ## 5) Verify quickly
 1. Start app and accept analytics in consent banner.
