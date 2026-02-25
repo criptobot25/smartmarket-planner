@@ -198,7 +198,7 @@ export default async function MealPlanGoalPage({ params }: MealPlanGoalPageProps
                 </Link>
               );
             })}
-            <Link href="/app" className="np-btn np-btn-primary">Generate my plan</Link>
+            <Link href={`/app?goal=${content.goal}` as Route} className="np-btn np-btn-primary">Generate my plan</Link>
           </div>
         </section>
 

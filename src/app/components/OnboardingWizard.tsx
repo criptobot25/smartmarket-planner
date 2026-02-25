@@ -6,6 +6,7 @@ import { validatePlanInput } from "../../core/validation/PlanInputSchema";
 
 interface OnboardingWizardProps {
   onComplete: (input: PlanInput) => void;
+  initialFitnessGoal?: FitnessGoal;
 }
 
 const TOTAL_STEPS = 4;
@@ -16,7 +17,7 @@ function getDietStyleFromGoal(goal: FitnessGoal): DietStyle {
   return "balanced";
 }
 
-export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
+export function OnboardingWizard({ onComplete, initialFitnessGoal = "maintenance" }: OnboardingWizardProps) {
   const { t } = useTranslation();
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -25,7 +26,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
   const [weightKg, setWeightKg] = useState<number>(70);
   const [heightCm, setHeightCm] = useState<number>(175);
   const [trains, setTrains] = useState<boolean>(true);
-  const [fitnessGoal, setFitnessGoal] = useState<FitnessGoal>("maintenance");
+  const [fitnessGoal, setFitnessGoal] = useState<FitnessGoal>(initialFitnessGoal);
   const [mealsPerDay, setMealsPerDay] = useState<number>(3);
   const [restrictions, setRestrictions] = useState<string>("");
 

@@ -151,7 +151,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   {goal.shortLabel} meal plan
                 </Link>
               ))}
-              <Link href="/app" className="np-btn np-btn-primary">Generate my plan</Link>
+              <Link href={`/app?goal=${relatedGoals[0]?.goal || "maintenance"}` as Route} className="np-btn np-btn-primary">Generate my plan</Link>
             </div>
           </section>
         ) : null}

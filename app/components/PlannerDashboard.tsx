@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useShoppingPlan } from "../../src/contexts/ShoppingPlanContext";
 import { isPremiumUser } from "../../src/core/premium/PremiumFeatures";
 import { OnboardingWizard } from "../../src/app/components/OnboardingWizard";
-import type { PlanInput } from "../../src/core/models/PlanInput";
+import type { FitnessGoal, PlanInput } from "../../src/core/models/PlanInput";
 import { AppNav } from "./AppNav";
 import { PlannerAuthControls } from "./PlannerAuthControls";
 import { trackEvent } from "../lib/analytics";
@@ -14,10 +14,16 @@ import { useAppTranslation } from "../lib/i18n";
 
 export default function PlannerDashboard() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { t } = useAppTranslation();
   const { generatePlan, repeatLastWeek, weeklyPlan, streak } = useShoppingPlan();
   const isPremium = isPremiumUser();
   const [wizardErrors, setWizardErrors] = useState<string[]>([]);
+
+  const requestedGoal = searchParams.get("goal");
+  const initialFitnessGoal: FitnessGoal = requestedGoal === "cutting" || requestedGoal === "bulking" || requestedGoal === "maintenance"
+    ? requestedGoal
+    : "maintenance";
 
   const handleWizardComplete = (planInput: PlanInput) => {
     setWizardErrors([]);
@@ -111,7 +117,7 @@ export default function PlannerDashboard() {
               </div>
             )}
 
-            <OnboardingWizard onComplete={handleWizardComplete} />
+            <OnboardingWizard onComplete={handleWizardComplete} initialFitnessGoal={initialFitnessGoal} />
           </div>
 
           <div className="np-actions">
