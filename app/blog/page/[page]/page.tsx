@@ -157,7 +157,7 @@ export default async function BlogPaginationPage({ params }: BlogPaginationPageP
 
                 return (
                   <p key={goal} className="np-inline-note">
-                    Related goal: <Link href={`/meal-plan/${goal}` as Route}>{goalContent.shortLabel} meal plan</Link> · <Link href={`/app?goal=${goal}` as Route}>Start plan</Link>
+                    Related goal: <Link href={`/meal-plan/${goal}` as Route}>{goalContent.shortLabel} meal plan</Link> · <Link href={`/app?goal=${goal}&source=blog_page_${currentPage}&slug=${post.slug}` as Route}>Start plan</Link>
                   </p>
                 );
               })}

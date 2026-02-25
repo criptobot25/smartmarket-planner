@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useShoppingPlan } from "../../src/contexts/ShoppingPlanContext";
 import { isPremiumUser } from "../../src/core/premium/PremiumFeatures";
 import { OnboardingWizard } from "../../src/app/components/OnboardingWizard";
@@ -19,11 +19,27 @@ export default function PlannerDashboard() {
   const { generatePlan, repeatLastWeek, weeklyPlan, streak } = useShoppingPlan();
   const isPremium = isPremiumUser();
   const [wizardErrors, setWizardErrors] = useState<string[]>([]);
+  const hasTrackedContentCtaRef = useRef(false);
 
   const requestedGoal = searchParams.get("goal");
+  const ctaSource = searchParams.get("source");
+  const ctaSlug = searchParams.get("slug");
   const initialFitnessGoal: FitnessGoal = requestedGoal === "cutting" || requestedGoal === "bulking" || requestedGoal === "maintenance"
     ? requestedGoal
     : "maintenance";
+
+  useEffect(() => {
+    if (hasTrackedContentCtaRef.current || !ctaSource) {
+      return;
+    }
+
+    hasTrackedContentCtaRef.current = true;
+    trackEvent("content_to_planner_cta", {
+      source: ctaSource,
+      slug: ctaSlug || "unknown",
+      goal: initialFitnessGoal,
+    });
+  }, [ctaSlug, ctaSource, initialFitnessGoal]);
 
   const handleWizardComplete = (planInput: PlanInput) => {
     setWizardErrors([]);
