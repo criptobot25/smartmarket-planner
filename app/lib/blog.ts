@@ -135,7 +135,9 @@ const GOAL_KEYWORDS: Record<MealPlanGoal, string[]> = {
 export async function getRelatedBlogPostsForGoal(goal: string, limit = 3): Promise<BlogPostSummary[]> {
   const allPosts = await getAllBlogPosts();
   const normalizedGoal = goal.trim().toLowerCase();
-  const keywords = GOAL_KEYWORDS[normalizedGoal] || [normalizedGoal];
+  const keywords = (MEAL_PLAN_GOALS as readonly string[]).includes(normalizedGoal)
+    ? GOAL_KEYWORDS[normalizedGoal as MealPlanGoal]
+    : [normalizedGoal];
 
   const scored = allPosts
     .map((post) => {

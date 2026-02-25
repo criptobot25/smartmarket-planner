@@ -1,14 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { getAnalyticsConsent, initAnalytics, setAnalyticsConsent, trackEvent } from "../lib/analytics";
 
 export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
   const [consent, setConsent] = useState<"granted" | "denied" | "unknown">("unknown");
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const lastTrackedUrlRef = useRef<string>("");
 
   useEffect(() => {
     const currentConsent = getAnalyticsConsent();
@@ -19,31 +16,14 @@ export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  useEffect(() => {
-    if (consent !== "granted") {
-      return;
-    }
-
-    const query = searchParams.toString();
-    const pagePath = query ? `${pathname}?${query}` : pathname;
-
-    if (lastTrackedUrlRef.current === pagePath) {
-      return;
-    }
-
-    lastTrackedUrlRef.current = pagePath;
-
-    trackEvent("page_view", {
-      page_path: pathname,
-      page_location: pagePath,
-      page_title: document.title,
-    });
-  }, [consent, pathname, searchParams]);
-
   const analyticsEnabled = Boolean(process.env.NEXT_PUBLIC_POSTHOG_KEY);
 
   return (
     <>
+      <Suspense fallback={null}>
+        <PageViewTracker consent={consent} />
+      </Suspense>
+
       {children}
 
       {analyticsEnabled && consent === "unknown" ? (
@@ -93,4 +73,33 @@ export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
       ) : null}
     </>
   );
+}
+
+function PageViewTracker({ consent }: { consent: "granted" | "denied" | "unknown" }) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const lastTrackedUrlRef = useRef<string>("");
+
+  useEffect(() => {
+    if (consent !== "granted") {
+      return;
+    }
+
+    const query = searchParams.toString();
+    const pagePath = query ? `${pathname}?${query}` : pathname;
+
+    if (lastTrackedUrlRef.current === pagePath) {
+      return;
+    }
+
+    lastTrackedUrlRef.current = pagePath;
+
+    trackEvent("page_view", {
+      page_path: pathname,
+      page_location: pagePath,
+      page_title: document.title,
+    });
+  }, [consent, pathname, searchParams]);
+
+  return null;
 }
