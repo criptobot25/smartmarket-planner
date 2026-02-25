@@ -2,6 +2,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import readingTime from "reading-time";
+import { MEAL_PLAN_GOALS, type MealPlanGoal } from "./mealPlanGoals";
 
 export const BLOG_POSTS_PER_PAGE = 6;
 
@@ -125,7 +126,7 @@ export async function getRelatedBlogPosts(slug: string, tags: string[], limit = 
     .map(({ post }) => post);
 }
 
-const GOAL_KEYWORDS: Record<string, string[]> = {
+const GOAL_KEYWORDS: Record<MealPlanGoal, string[]> = {
   cutting: ["cutting", "fat loss", "deficit", "macro"],
   bulking: ["bulking", "bulk", "muscle", "surplus"],
   maintenance: ["maintenance", "sustainable", "routine", "meal prep"],
@@ -167,6 +168,25 @@ export async function getRelatedBlogPostsForGoal(goal: string, limit = 3): Promi
     .slice(0, limit - withScore.length);
 
   return [...withScore, ...fallback];
+}
+
+export function getRelatedMealPlanGoalsForPost(post: Pick<BlogPostSummary, "title" | "description" | "tags">, limit = 2): MealPlanGoal[] {
+  const searchCorpus = `${post.title} ${post.description} ${post.tags.join(" ")}`.toLowerCase();
+
+  return MEAL_PLAN_GOALS
+    .map((goal) => {
+      const keywords = GOAL_KEYWORDS[goal];
+      const score = keywords.reduce((total, keyword) => (searchCorpus.includes(keyword) ? total + 1 : total), 0);
+
+      return {
+        goal,
+        score,
+      };
+    })
+    .filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map((item) => item.goal);
 }
 
 function normalizeSearchTokens(query: string): string[] {

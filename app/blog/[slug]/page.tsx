@@ -4,7 +4,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "../../components/Breadcrumbs";
 import { MdxArticle } from "../../components/MdxArticle";
-import { getAllBlogSlugs, getBlogPostBySlug, getRelatedBlogPosts } from "../../lib/blog";
+import { getAllBlogSlugs, getBlogPostBySlug, getRelatedBlogPosts, getRelatedMealPlanGoalsForPost } from "../../lib/blog";
+import { getMealPlanGoalContent } from "../../lib/mealPlanGoals";
 import { absoluteUrl, getLanguageAlternates } from "../../lib/seo";
 
 export const dynamic = "force-static";
@@ -80,6 +81,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   const relatedPosts = await getRelatedBlogPosts(post.slug, post.tags, 3);
+  const relatedGoals = getRelatedMealPlanGoalsForPost(post, 2)
+    .map((goal) => getMealPlanGoalContent(goal))
+    .filter((goal) => goal !== null);
   const articleUrl = absoluteUrl(`/blog/${post.slug}`);
 
   const articleSchema = {
@@ -136,6 +140,21 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
           <MdxArticle source={post.content} />
         </article>
+
+        {relatedGoals.length > 0 ? (
+          <section className="np-card" aria-labelledby="related-goals-title">
+            <h2 id="related-goals-title">Plan templates related to this article</h2>
+            <p className="np-inline-note">Use these goal pages to turn the strategy from this article into a weekly plan.</p>
+            <div className="np-actions">
+              {relatedGoals.map((goal) => (
+                <Link key={goal.goal} href={`/meal-plan/${goal.goal}` as Route} className="np-btn np-btn-secondary">
+                  {goal.shortLabel} meal plan
+                </Link>
+              ))}
+              <Link href="/app" className="np-btn np-btn-primary">Generate my plan</Link>
+            </div>
+          </section>
+        ) : null}
 
         {relatedPosts.length > 0 ? (
           <section className="np-card" aria-labelledby="related-articles-title">
