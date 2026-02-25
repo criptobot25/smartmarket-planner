@@ -3,7 +3,8 @@ import type { Route } from "next";
 import Link from "next/link";
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { absoluteUrl, getLanguageAlternates } from "../lib/seo";
-import { BLOG_POSTS_PER_PAGE, getPaginatedBlogPosts, searchBlogPosts } from "../lib/blog";
+import { BLOG_POSTS_PER_PAGE, getPaginatedBlogPosts, getRelatedMealPlanGoalsForPost, searchBlogPosts } from "../lib/blog";
+import { getMealPlanGoalContent } from "../lib/mealPlanGoals";
 
 export const dynamic = "force-dynamic";
 
@@ -136,6 +137,19 @@ export default async function BlogIndexPage({ searchParams }: BlogIndexPageProps
                   <span key={tag} className="blog-tag">{tag}</span>
                 ))}
               </div>
+              {getRelatedMealPlanGoalsForPost(post, 1).map((goal) => {
+                const goalContent = getMealPlanGoalContent(goal);
+
+                if (!goalContent) {
+                  return null;
+                }
+
+                return (
+                  <p key={goal} className="np-inline-note">
+                    Related goal: <Link href={`/meal-plan/${goal}` as Route}>{goalContent.shortLabel} meal plan</Link>
+                  </p>
+                );
+              })}
             </article>
           ))}
           {posts.length === 0 ? (

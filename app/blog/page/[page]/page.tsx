@@ -3,7 +3,8 @@ import type { Route } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "../../../components/Breadcrumbs";
-import { BLOG_POSTS_PER_PAGE, getAllBlogPosts, getPaginatedBlogPosts } from "../../../lib/blog";
+import { BLOG_POSTS_PER_PAGE, getAllBlogPosts, getPaginatedBlogPosts, getRelatedMealPlanGoalsForPost } from "../../../lib/blog";
+import { getMealPlanGoalContent } from "../../../lib/mealPlanGoals";
 import { absoluteUrl, getLanguageAlternates } from "../../../lib/seo";
 
 export const dynamic = "force-static";
@@ -147,6 +148,19 @@ export default async function BlogPaginationPage({ params }: BlogPaginationPageP
                   <span key={tag} className="blog-tag">{tag}</span>
                 ))}
               </div>
+              {getRelatedMealPlanGoalsForPost(post, 1).map((goal) => {
+                const goalContent = getMealPlanGoalContent(goal);
+
+                if (!goalContent) {
+                  return null;
+                }
+
+                return (
+                  <p key={goal} className="np-inline-note">
+                    Related goal: <Link href={`/meal-plan/${goal}` as Route}>{goalContent.shortLabel} meal plan</Link>
+                  </p>
+                );
+              })}
             </article>
           ))}
         </section>
