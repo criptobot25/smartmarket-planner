@@ -119,6 +119,23 @@ export default async function MealPlanGoalPage({ params }: MealPlanGoalPageProps
           <p className="np-page-subtitle">{content.heroDescription}</p>
         </section>
 
+        {relatedBlogPosts.length > 0 ? (
+          <section className="np-card" aria-labelledby="goal-intent-blog-links">
+            <h2 id="goal-intent-blog-links">Recommended posts for {content.shortLabel.toLowerCase()} intent</h2>
+            <p className="np-inline-note">Read these guides first, then generate your weekly plan with the same strategy.</p>
+            <div className="blog-grid">
+              {relatedBlogPosts.map((post) => (
+                <article key={post.slug} className="blog-card">
+                  <h3>
+                    <Link href={`/blog/${post.slug}` as Route}>{post.title}</Link>
+                  </h3>
+                  <p>{post.description}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
         <section className="np-card" aria-labelledby="goal-intent">
           <h2 id="goal-intent">Who this {content.shortLabel.toLowerCase()} meal plan is for</h2>
           <p>{content.intentSummary}</p>
@@ -185,21 +202,6 @@ export default async function MealPlanGoalPage({ params }: MealPlanGoalPageProps
           </div>
         </section>
 
-        {relatedBlogPosts.length > 0 ? (
-          <section className="np-card" aria-labelledby="goal-blog-links">
-            <h2 id="goal-blog-links">Related blog articles</h2>
-            <div className="blog-grid">
-              {relatedBlogPosts.map((post) => (
-                <article key={post.slug} className="blog-card">
-                  <h3>
-                    <Link href={`/blog/${post.slug}` as Route}>{post.title}</Link>
-                  </h3>
-                  <p>{post.description}</p>
-                </article>
-              ))}
-            </div>
-          </section>
-        ) : null}
       </main>
     </div>
   );
