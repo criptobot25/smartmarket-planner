@@ -375,7 +375,7 @@ describe("MealBuilder - Breakfast", () => {
     expect(hasFruit).toBe(true);
   });
   
-  it("should use traditional breakfast portions", () => {
+  it("should scale breakfast portions from macro targets", () => {
     const breakfast = buildBreakfast({
       macroTargetsPerMeal: { protein: 30, carbs: 60, fats: 12 },
       availableFoods: allMockFoods,
@@ -383,12 +383,20 @@ describe("MealBuilder - Breakfast", () => {
       costTier: "medium"
     });
     
-    // Breakfast uses fixed portions (80g oats, 150g yogurt, 100g fruit)
-    const oatsIng = breakfast.ingredients.find(i => i.foodName === "Oats");
-    const yogurtIng = breakfast.ingredients.find(i => i.foodName === "Greek Yogurt");
+    // Breakfast portions are now derived from macro targets instead of fixed values.
+    // Dairy (yogurt) grams are scaled to hit the protein target;
+    // Oats grams are scaled to hit the carbs target.
+    const oatsIng = breakfast.ingredients.find(i => i.foodName.toLowerCase().includes("oat"));
+    const yogurtIng = breakfast.ingredients.find(i => i.foodName.toLowerCase().includes("yogurt") || i.foodName.toLowerCase().includes("cottage"));
     
-    expect(oatsIng?.grams).toBe(80);
-    expect(yogurtIng?.grams).toBe(150);
+    expect(oatsIng).toBeDefined();
+    expect(yogurtIng).toBeDefined();
+    
+    // Portions must be positive and reasonable (not fixed 80/150)
+    expect(oatsIng!.grams).toBeGreaterThan(0);
+    expect(oatsIng!.grams).toBeLessThan(300);
+    expect(yogurtIng!.grams).toBeGreaterThan(0);
+    expect(yogurtIng!.grams).toBeLessThan(600);
   });
 });
 

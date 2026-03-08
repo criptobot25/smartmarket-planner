@@ -32,6 +32,7 @@ interface IngredientOccurrence {
   foodId: string;
   mealTypes: Set<"breakfast" | "lunch" | "dinner" | "snack">;
   occurrences: number;
+  totalGrams: number; // Actual grams summed from the plan's calculated portions
 }
 
 interface ShoppingListResult {
@@ -68,6 +69,29 @@ const BASELINE_MACROS = {
 };
 
 const DISCRETE_MARKET_UNITS = new Set(["pack", "can", "jar", "bottle", "loaf"]);
+
+/**
+ * Approximate grams per market unit for discrete items.
+ * Used to convert plan-calculated grams into purchasable quantities.
+ */
+const GRAMS_PER_MARKET_UNIT: Record<string, number> = {
+  kg: 1000,
+  L: 1000,
+  pack: 600,   // 12 eggs × ~50g each
+  can: 160,    // standard tuna/bean can
+  loaf: 500,   // standard bread loaf
+  jar: 400,    // peanut butter / jam
+  bottle: 500, // standard bottle
+};
+
+/**
+ * Convert total grams from the plan into the food's market unit.
+ * Falls back to kg if the unit isn't mapped.
+ */
+function gramsToMarketUnit(totalGrams: number, unit: string): number {
+  const divisor = GRAMS_PER_MARKET_UNIT[unit] || GRAMS_PER_MARKET_UNIT[unit.toLowerCase()] || 1000;
+  return totalGrams / divisor;
+}
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
@@ -201,7 +225,7 @@ function extractIngredientsFromPlan(
       countMealIngredients(dayPlan.meals.dinner, "dinner", occurrenceMap);
     }
 
-    // Processar snack (apenas bulking)
+    // Processar snack (included when mealsPerDay >= 5)
     if (dayPlan.meals.snack) {
       countMealIngredients(dayPlan.meals.snack, "snack", occurrenceMap);
     }
@@ -218,17 +242,26 @@ function countMealIngredients(
   mealType: "breakfast" | "lunch" | "dinner" | "snack",
   occurrenceMap: Map<string, IngredientOccurrence>
 ): void {
+  // Build a quick lookup of actual grams from the plan's portions
+  const portionGramsMap = new Map<string, number>();
+  if (meal.portions) {
+    meal.portions.forEach(p => portionGramsMap.set(p.foodId, p.gramsNeeded));
+  }
+
   meal.foodIds.forEach(foodId => {
+    const gramsFromPlan = portionGramsMap.get(foodId) || 0;
     const existing = occurrenceMap.get(foodId);
 
     if (existing) {
       existing.occurrences += 1;
       existing.mealTypes.add(mealType);
+      existing.totalGrams += gramsFromPlan;
     } else {
       occurrenceMap.set(foodId, {
         foodId,
         mealTypes: new Set([mealType]),
-        occurrences: 1
+        occurrences: 1,
+        totalGrams: gramsFromPlan,
       });
     }
   });
@@ -257,16 +290,21 @@ function convertToFoodItem(
     category: safeCategory
   };
 
-  // Heurísticas de quantidade baseadas em meal prep real
-  // Use the first meal type for quantity calculation (they're similar anyway)
-  const primaryMealType = Array.from(occurrence.mealTypes)[0];
-  const quantity = calculateRealisticQuantity(
-    safeFood,
-    primaryMealType,
-    occurrence.occurrences,
-    mealsPerDay,
-    macroScale
-  );
+  // Use actual portion grams from the plan when available (accurate).
+  // Fall back to heuristic quantities only when plan data is missing (legacy plans).
+  let quantity: number;
+  if (occurrence.totalGrams > 0) {
+    quantity = gramsToMarketUnit(occurrence.totalGrams, safeFood.unit);
+  } else {
+    const primaryMealType = Array.from(occurrence.mealTypes)[0];
+    quantity = calculateRealisticQuantity(
+      safeFood,
+      primaryMealType,
+      occurrence.occurrences,
+      mealsPerDay,
+      macroScale
+    );
+  }
 
   const estimatedPrice = quantity * food.pricePerUnit;
 

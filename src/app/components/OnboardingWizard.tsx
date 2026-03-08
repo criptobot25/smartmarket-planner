@@ -28,6 +28,7 @@ export function OnboardingWizard({ onComplete, initialFitnessGoal = "maintenance
   const [trains, setTrains] = useState<boolean>(true);
   const [fitnessGoal, setFitnessGoal] = useState<FitnessGoal>(initialFitnessGoal);
   const [mealsPerDay, setMealsPerDay] = useState<number>(3);
+  const [costTier, setCostTier] = useState<CostTier>("medium");
   const [restrictions, setRestrictions] = useState<string>("");
 
   const [stepError, setStepError] = useState<string | null>(null);
@@ -63,9 +64,9 @@ export function OnboardingWizard({ onComplete, initialFitnessGoal = "maintenance
 
     if (step === 2) {
       if (!sex) return t("onboarding.errors.sex");
-      if (!age || age < 12 || age > 90) return t("onboarding.errors.age");
-      if (!weightKg || weightKg < 30 || weightKg > 250) return t("onboarding.errors.weight");
-      if (!heightCm || heightCm < 120 || heightCm > 230) return t("onboarding.errors.height");
+      if (!age || age < 13 || age > 100) return t("onboarding.errors.age");
+      if (!weightKg || weightKg < 30 || weightKg > 300) return t("onboarding.errors.weight");
+      if (!heightCm || heightCm < 100 || heightCm > 250) return t("onboarding.errors.height");
       if (typeof trains !== "boolean") return t("onboarding.errors.trains");
     }
 
@@ -114,7 +115,7 @@ export function OnboardingWizard({ onComplete, initialFitnessGoal = "maintenance
       mealsPerDay,
       fitnessGoal,
       dietStyle: getDietStyleFromGoal(fitnessGoal),
-      costTier: "medium" as CostTier,
+      costTier,
       restrictions: restrictionsArray,
     };
 
@@ -202,8 +203,8 @@ export function OnboardingWizard({ onComplete, initialFitnessGoal = "maintenance
                   id="wizard-age"
                   className="wizard-input"
                   type="number"
-                  min={12}
-                  max={90}
+                  min={13}
+                  max={100}
                   value={age}
                   onChange={(event) => setAge(Number(event.target.value))}
                 />
@@ -215,7 +216,7 @@ export function OnboardingWizard({ onComplete, initialFitnessGoal = "maintenance
                   className="wizard-input"
                   type="number"
                   min={30}
-                  max={250}
+                  max={300}
                   step={0.5}
                   value={weightKg}
                   onChange={(event) => setWeightKg(Number(event.target.value))}
@@ -227,8 +228,8 @@ export function OnboardingWizard({ onComplete, initialFitnessGoal = "maintenance
                   id="wizard-height"
                   className="wizard-input"
                   type="number"
-                  min={120}
-                  max={230}
+                  min={100}
+                  max={250}
                   value={heightCm}
                   onChange={(event) => setHeightCm(Number(event.target.value))}
                 />
@@ -284,6 +285,23 @@ export function OnboardingWizard({ onComplete, initialFitnessGoal = "maintenance
               </div>
 
               <div>
+                <label className="wizard-label" htmlFor="wizard-cost">{t("planner.costTierLabel")}</label>
+                <select
+                  id="wizard-cost"
+                  className="wizard-input"
+                  value={costTier}
+                  onChange={(event) => setCostTier(event.target.value as CostTier)}
+                >
+                  <option value="low">{t("planner.costTierOption.low")}</option>
+                  <option value="medium">{t("planner.costTierOption.medium")}</option>
+                  <option value="high">{t("planner.costTierOption.high")}</option>
+                </select>
+                <Hint text={t("onboarding.tooltip.budget")} />
+              </div>
+            </div>
+
+            <div className="wizard-grid-two">
+              <div>
                 <label className="wizard-label" htmlFor="wizard-restrictions">{t("planner.restrictionsLabel")}</label>
                 <input
                   id="wizard-restrictions"
@@ -315,6 +333,7 @@ export function OnboardingWizard({ onComplete, initialFitnessGoal = "maintenance
               <li><strong>{t("planner.heightLabel")}:</strong> {heightCm}</li>
               <li><strong>{t("planner.trainsLabel")}:</strong> {trains ? t("planner.trainsOption.yes") : t("planner.trainsOption.no")}</li>
               <li><strong>{t("planner.mealsLabel")}:</strong> {t("planner.mealsOption", { count: mealsPerDay })}</li>
+              <li><strong>{t("planner.costTierLabel")}:</strong> {t(`planner.costTierOption.${costTier}`)}</li>
             </ul>
 
             <div className="wizard-coach-summary">

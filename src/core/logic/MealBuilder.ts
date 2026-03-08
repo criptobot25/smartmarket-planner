@@ -612,12 +612,16 @@ export function buildMeal(input: MealBuilderInput): BuiltMeal {
 }
 
 /**
- * Build breakfast meal (different strategy - carb-focused)
- * 
+ * Build breakfast meal (macro-aware, oats + dairy + fruit)
+ *
+ * Portions are now calculated from the user's macro targets via
+ * PortionCalculator instead of hardcoded values. This ensures the
+ * breakfast contributes proportionally to the daily calorie/macro goal.
+ *
  * PASSO 24: Filters breakfast foods by cost tier
  */
 export function buildBreakfast(input: MealBuilderInput): BuiltMeal {
-  const { availableFoods, excludedFoods = [], costTier, foodRotation } = input;
+  const { availableFoods, excludedFoods = [], costTier, macroTargetsPerMeal, foodRotation } = input;
   
   // PASSO 24: Filter by cost tier first
   const tierFoods = filterByCostTier(availableFoods, costTier);
@@ -646,32 +650,40 @@ export function buildBreakfast(input: MealBuilderInput): BuiltMeal {
     return buildMeal(input);
   }
   
-  // Simple breakfast portions (not macro-optimized, traditional portions)
-  const ingredients: MealIngredient[] = [
-    { foodId: oats.id, foodName: oats.name, grams: 80 },
-    { foodId: dairy.id, foodName: dairy.name, grams: 150 }
-  ];
-  
-  if (fruit) {
-    ingredients.push({ foodId: fruit.id, foodName: fruit.name, grams: 100 });
+  // Calculate macro-aware portions:
+  // Dairy handles protein, oats handle carbs. Portions scale with the user's targets.
+  const portions = calculateMealPortions(
+    macroTargetsPerMeal,
+    dairy,  // protein source (yogurt / cottage cheese)
+    oats,   // carb source
+    null,   // no added fat at breakfast
+    null    // no veg at breakfast
+  );
+
+  // Add fruit as supplementary (fixed 100g for micronutrients)
+  if (fruit && fruit.macros) {
+    const fruitFactor = 100 / 100;
+    portions.push({
+      foodId: fruit.id,
+      foodName: fruit.name,
+      gramsNeeded: 100,
+      macroContribution: {
+        protein: Math.round(fruit.macros.protein * fruitFactor),
+        carbs: Math.round(fruit.macros.carbs * fruitFactor),
+        fats: Math.round(fruit.macros.fat * fruitFactor),
+      },
+    });
   }
+
+  const ingredients: MealIngredient[] = portions.map(p => ({
+    foodId: p.foodId,
+    foodName: p.foodName,
+    grams: p.gramsNeeded,
+  }));
   
-  // Calculate macros from portions
-  let totalProtein = 0;
-  let totalCarbs = 0;
-  let totalFats = 0;
+  const totalMacros = calculateTotalMacros(portions);
   
-  ingredients.forEach(ing => {
-    const food = availableFoods.find(f => f.id === ing.foodId);
-    if (food?.macros) {
-      const factor = ing.grams / 100;
-      totalProtein += food.macros.protein * factor;
-      totalCarbs += food.macros.carbs * factor;
-      totalFats += food.macros.fat * factor;
-    }
-  });
-  
-  const name = [oats.name, dairy.name, fruit?.name]
+  const name = [dairy.name, oats.name, fruit?.name]
     .filter(Boolean)
     .map(n => n!.replace(/ \(.*\)/, ""))
     .join(" + ");
@@ -688,9 +700,9 @@ export function buildBreakfast(input: MealBuilderInput): BuiltMeal {
     name,
     ingredients,
     macros: {
-      protein: Math.round(totalProtein),
-      carbs: Math.round(totalCarbs),
-      fats: Math.round(totalFats)
+      protein: totalMacros.protein,
+      carbs: totalMacros.carbs,
+      fats: totalMacros.fats,
     }
   };
 }
