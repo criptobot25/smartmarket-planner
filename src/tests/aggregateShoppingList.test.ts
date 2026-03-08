@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { aggregateShoppingList } from "../core/logic/aggregateShoppingList";
 import { FoodItem } from "../core/models/FoodItem";
+import { CATEGORIES } from "../core/constants/categories";
 
 type TestShoppingItem = FoodItem & { purchased?: boolean };
 
@@ -10,7 +11,7 @@ describe("aggregateShoppingList", () => {
       {
         id: "chicken-1",
         name: "Chicken breast",
-        category: "protein",
+        category: CATEGORIES.protein,
         unit: "kg",
         quantity: 1.2,
         pricePerUnit: 8,
@@ -21,7 +22,7 @@ describe("aggregateShoppingList", () => {
       {
         id: "chicken-2",
         name: "Chicken breast",
-        category: "protein",
+        category: CATEGORIES.protein,
         unit: "g",
         quantity: 1100,
         pricePerUnit: 0.008,
@@ -43,7 +44,7 @@ describe("aggregateShoppingList", () => {
       {
         id: "milk-1",
         name: "Milk",
-        category: "dairy",
+        category: CATEGORIES.dairy,
         unit: "ml",
         quantity: 750,
         pricePerUnit: 0.002,
@@ -54,7 +55,7 @@ describe("aggregateShoppingList", () => {
       {
         id: "milk-2",
         name: "Milk",
-        category: "dairy",
+        category: CATEGORIES.dairy,
         unit: "ml",
         quantity: 1250,
         pricePerUnit: 0.002,

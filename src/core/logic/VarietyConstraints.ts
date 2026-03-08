@@ -248,12 +248,12 @@ export class VarietyTracker {
  * Helper to get list of proteins used (for UI display)
  */
 export function getProteinList(tracker: VarietyTracker): string[] {
-  return Array.from((tracker as any).proteinSourcesUsed);
+  return Array.from((tracker as unknown as { proteinSourcesUsed: Set<string> }).proteinSourcesUsed);
 }
 
 /**
  * Helper to get list of vegetables used (for UI display)
  */
 export function getVegetableList(tracker: VarietyTracker): string[] {
-  return Array.from((tracker as any).vegetablesUsed);
+  return Array.from((tracker as unknown as { vegetablesUsed: Set<string> }).vegetablesUsed);
 }

@@ -222,8 +222,8 @@ export class LocalStorageProvider implements IStorageProvider {
     
     // Restore Date objects for WeeklyPlan
     if (key.dataType === "weeklyPlan" && stored.data) {
-      const plan = stored.data as any;
-      if (plan.createdAt) plan.createdAt = new Date(plan.createdAt);
+      const plan = stored.data as Record<string, unknown>;
+      if (plan.createdAt) plan.createdAt = new Date(plan.createdAt as string);
     }
     
     return stored.data;
@@ -237,8 +237,8 @@ export class LocalStorageProvider implements IStorageProvider {
   }
 
   async list(userId: string, dataType: string): Promise<string[]> {
-    const currentPrefix = this.buildStorageKey({ userId, dataType: dataType as any });
-    const legacyPrefix = this.buildLegacyStorageKey({ userId, dataType: dataType as any });
+    const currentPrefix = this.buildStorageKey({ userId, dataType: dataType as StorageKey["dataType"] });
+    const legacyPrefix = this.buildLegacyStorageKey({ userId, dataType: dataType as StorageKey["dataType"] });
     const ids = new Set<string>();
 
     for (let i = 0; i < localStorage.length; i++) {

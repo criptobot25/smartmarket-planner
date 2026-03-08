@@ -65,7 +65,7 @@ export function applyBudgetAdjustments(
   console.log(`Starting budget adjustments...`);
 
   // Clone items to avoid mutation
-  let adjustedItems = [...items];
+  const adjustedItems = [...items];
   let currentCost = totalCost;
   const adjustmentsMade: string[] = [];
 

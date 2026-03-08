@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useShoppingPlan } from "../../../src/contexts/ShoppingPlanContext";
 import type { AggregatedShoppingItem } from "../../../src/core/logic/aggregateShoppingList";
 import type { FoodCategory } from "../../../src/core/models/FoodItem";

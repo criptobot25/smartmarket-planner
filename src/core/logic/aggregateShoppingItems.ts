@@ -1,5 +1,6 @@
 import type { FoodItem } from "../models/FoodItem";
 import { normalizeQuantity } from "./normalizeQuantity";
+import { CATEGORIES } from "../constants/categories";
 
 export interface RawShoppingItem extends FoodItem {
   purchased?: boolean;
@@ -69,7 +70,7 @@ function buildDisplayText(
   sourceCount: number,
   normalizedUnit: string
 ): string {
-  const isProteinPackEstimate = item.category === "protein" && normalizedUnit.toLowerCase() === "kg" && sourceCount >= 3;
+  const isProteinPackEstimate = item.category === CATEGORIES.protein && normalizedUnit.toLowerCase() === "kg" && sourceCount >= 3;
 
   if (!isProteinPackEstimate) {
     return normalizedDisplayText;

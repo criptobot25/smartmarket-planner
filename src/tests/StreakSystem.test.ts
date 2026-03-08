@@ -384,7 +384,7 @@ describe("PASSO 33.4: Consistency Streak System", () => {
     });
 
     it("should track perfect 12-week user journey", () => {
-      let currentDate = new Date("2026-01-05");
+      const currentDate = new Date("2026-01-05");
       let finalStreak: StreakData | null = null;
       
       for (let i = 0; i < 12; i++) {

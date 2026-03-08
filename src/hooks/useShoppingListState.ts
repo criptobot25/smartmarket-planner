@@ -53,7 +53,7 @@ export function useShoppingListState({
         return;
       }
 
-      const targetPurchased = !Boolean(item.purchased);
+      const targetPurchased = !item.purchased;
 
       ids.forEach((id) => {
         const currentPurchased = purchasedById.get(id) || false;

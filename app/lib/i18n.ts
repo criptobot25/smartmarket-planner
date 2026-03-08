@@ -31,6 +31,7 @@ export function useAppTranslation() {
     if (i18nInstance.language !== normalizedLanguage) {
       void i18nInstance.changeLanguage(normalizedLanguage);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const setLanguage = useCallback((nextLanguage: SupportedLanguage) => {

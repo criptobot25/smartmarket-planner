@@ -23,6 +23,7 @@ export function usePremium(userId: string) {
 
   useEffect(() => {
     loadSubscription();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   const loadSubscription = async () => {

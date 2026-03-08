@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useShoppingPlan } from "../../contexts/ShoppingPlanContext";
 import { aggregateShoppingList, AggregatedShoppingItem } from "../../core/logic/aggregateShoppingList";
+import { CATEGORIES } from "../../core/constants/categories";
 import { FoodItem } from "../../core/models/FoodItem";
 import { generateMealPrepGuide, CookingTask, MealPrepGuide } from "../../core/logic/MealPrepGuide";
 import { exportPrepGuideToPdf } from "../../utils/exportPrepGuidePdf";
@@ -62,7 +63,7 @@ export function PrepGuidePage() {
       tips.push(t("prepGuide.tips.fridge"));
     }
 
-    const vegetableTasksCount = prepGuide.cookingTasks.filter((task) => task.category === "vegetables").length;
+    const vegetableTasksCount = prepGuide.cookingTasks.filter((task) => task.category === CATEGORIES.vegetables).length;
     if (vegetableTasksCount > 2) {
       tips.push(t("prepGuide.tips.vegetables"));
     }

@@ -349,7 +349,7 @@ describe("PASSO 38 - Authentication & Cloud Sync", () => {
 
       const users = JSON.parse(usersData!);
       expect(users.length).toBeGreaterThan(0);
-      expect(users.some((u: any) => u.email === "store@example.com")).toBe(true);
+      expect(users.some((u: Record<string, unknown>) => u.email === "store@example.com")).toBe(true);
     });
 
     it("should clear all auth data", async () => {

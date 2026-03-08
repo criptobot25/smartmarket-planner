@@ -346,10 +346,10 @@ export class LocalAuthProvider implements IAuthProvider {
       if (data) {
         const users = JSON.parse(data);
         // Restore Date objects
-        return users.map((u: any) => ({
+        return users.map((u: Record<string, unknown>) => ({
           ...u,
-          createdAt: new Date(u.createdAt),
-          lastLoginAt: new Date(u.lastLoginAt)
+          createdAt: new Date(u.createdAt as string),
+          lastLoginAt: new Date(u.lastLoginAt as string)
         }));
       }
     } catch (error) {

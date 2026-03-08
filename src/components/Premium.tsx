@@ -43,6 +43,7 @@ export const PremiumCard: React.FC<PremiumCardProps> = ({ userId, onCheckout }) 
 
   useEffect(() => {
     loadSubscription();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   const loadSubscription = async () => {
@@ -211,6 +212,7 @@ export const SubscriptionManager: React.FC<SubscriptionManagerProps> = ({ userId
 
   useEffect(() => {
     loadData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   const loadData = async () => {
@@ -341,6 +343,7 @@ export const BillingHistoryTable: React.FC<BillingHistoryTableProps> = ({ userId
 
   useEffect(() => {
     loadHistory();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   const loadHistory = async () => {
@@ -411,6 +414,7 @@ export const FeatureGate: React.FC<FeatureGateProps> = ({
 
   useEffect(() => {
     checkAccess();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, feature]);
 
   const checkAccess = async () => {
@@ -459,6 +463,7 @@ export const PremiumBadge: React.FC<PremiumBadgeProps> = ({ userId }) => {
 
   useEffect(() => {
     checkPremium();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   const checkPremium = async () => {

@@ -1,5 +1,6 @@
 import { FoodCategory, FoodItem } from "../models/FoodItem";
 import { aggregateShoppingItems, type RawShoppingItem } from "./aggregateShoppingItems";
+import { CATEGORIES } from "../constants/categories";
 
 export interface AggregatedShoppingItem extends FoodItem {
   purchased?: boolean;
@@ -31,21 +32,21 @@ function parseReasonCoverage(reason: string): { meals: number; mealTypeCount: nu
 
 function categoryCoverageLabel(category: FoodCategory): string {
   switch (category) {
-    case "protein":
-      return "protein";
-    case "grains":
-    case "carbs":
-      return "carbs";
-    case "vegetables":
-      return "vegetables";
-    case "fruits":
+    case CATEGORIES.protein:
+      return CATEGORIES.protein;
+    case CATEGORIES.grains:
+    case CATEGORIES.carbs:
+      return CATEGORIES.carbs;
+    case CATEGORIES.vegetables:
+      return CATEGORIES.vegetables;
+    case CATEGORIES.fruits:
       return "fruit";
-    case "dairy":
-      return "dairy";
-    case "fats":
+    case CATEGORIES.dairy:
+      return CATEGORIES.dairy;
+    case CATEGORIES.fats:
       return "healthy fats";
-    case "legumes":
-      return "legumes";
+    case CATEGORIES.legumes:
+      return CATEGORIES.legumes;
     default:
       return "your meals";
   }

@@ -68,7 +68,7 @@ export default async function BlogIndexPage({ searchParams }: BlogIndexPageProps
     "@type": "CollectionPage",
     name: hasQuery ? `NutriPilot Blog Search: ${query}` : "NutriPilot Blog",
     description: hasQuery
-      ? `Search results for \"${query}\" on the NutriPilot blog.`
+      ? `Search results for "${query}" on the NutriPilot blog.`
       : "Nutrition planning, meal prep, and grocery optimization guides from NutriPilot.",
     url: absoluteUrl(hasQuery ? `/blog?q=${encodeURIComponent(query)}` : "/blog"),
     isPartOf: {
