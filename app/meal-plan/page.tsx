@@ -12,6 +12,17 @@ export const metadata: Metadata = {
     canonical: "/meal-plan",
     languages: getLanguageAlternates("/meal-plan"),
   },
+  openGraph: {
+    type: "website",
+    title: "Goal-Based Meal Plans | NutriPilot",
+    description: "Choose your nutrition goal and get a detailed weekly plan framework built for consistent execution.",
+    url: "/meal-plan",
+  },
+  twitter: {
+    card: "summary",
+    title: "Goal-Based Meal Plans | NutriPilot",
+    description: "Cutting, bulking, or maintenance — pick a goal and follow a structured weekly nutrition system.",
+  },
 };
 
 export default function MealPlanHubPage() {

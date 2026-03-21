@@ -48,6 +48,8 @@ export function classifyProteinRotationGroup(foodName: string): ProteinRotationG
     name.includes("tilapia") ||
     name.includes("sardine") ||
     name.includes("shrimp") ||
+    name.includes("trout") ||
+    name.includes("mackerel") ||
     name.includes("fish")
   ) {
     return "fish";
@@ -63,8 +65,8 @@ export function classifyCarbRotationGroup(foodName: string): CarbRotationGroup {
   const name = foodName.toLowerCase();
 
   if (name.includes("rice")) return "rice";
-  if (name.includes("pasta") || name.includes("couscous") || name.includes("barley") || name.includes("bread") || name.includes("tortilla")) return "pasta";
-  if (name.includes("oat") || name.includes("buckwheat")) return "oats";
+  if (name.includes("pasta") || name.includes("penne") || name.includes("couscous") || name.includes("barley") || name.includes("bread") || name.includes("tortilla") || name.includes("sourdough")) return "pasta";
+  if (name.includes("oat") || name.includes("buckwheat") || name.includes("millet") || name.includes("amaranth") || name.includes("bulgur") || name.includes("spelt") || name.includes("polenta")) return "oats";
   return "potatoes";
 }
 
@@ -98,6 +100,7 @@ export class FoodRotationEngine {
 
     if (
       food.category === CATEGORIES.grains ||
+      food.category === CATEGORIES.legumes ||
       (food.category === CATEGORIES.vegetables && !!food.macros && food.macros.carbs >= 15)
     ) {
       const group = classifyCarbRotationGroup(food.name);

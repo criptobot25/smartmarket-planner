@@ -68,7 +68,7 @@ const BASELINE_MACROS = {
   fats: 70
 };
 
-const DISCRETE_MARKET_UNITS = new Set(["pack", "can", "jar", "bottle", "loaf"]);
+const DISCRETE_MARKET_UNITS = new Set(["pack", "can", "jar", "bottle", "loaf", "bar", "tube", "unit", "bunch", "head"]);
 
 /**
  * Approximate grams per market unit for discrete items.
@@ -77,11 +77,16 @@ const DISCRETE_MARKET_UNITS = new Set(["pack", "can", "jar", "bottle", "loaf"]);
 const GRAMS_PER_MARKET_UNIT: Record<string, number> = {
   kg: 1000,
   L: 1000,
-  pack: 600,   // 12 eggs × ~50g each
-  can: 160,    // standard tuna/bean can
+  pack: 500,   // generic pack (avg 500g)
+  can: 400,    // standard canned goods (400g)
   loaf: 500,   // standard bread loaf
-  jar: 400,    // peanut butter / jam
-  bottle: 500, // standard bottle
+  jar: 350,    // peanut butter / tahini
+  bottle: 350, // standard bottle
+  bar: 100,    // chocolate bar
+  tube: 200,   // tomato paste tube
+  unit: 250,   // single fruit / vegetable (~250g avg)
+  bunch: 300,  // bunch of greens
+  head: 500,   // head of cabbage/lettuce
 };
 
 /**

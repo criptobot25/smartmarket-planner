@@ -68,7 +68,7 @@ describe("PASSO 27 - Meal Prep Output Mode", () => {
       const plan = generateWeeklyPlan(baseInput);
       const prepSummary = generateMealPrepSummary(plan);
       
-      const validCategories = [CATEGORIES.protein, CATEGORIES.grains, CATEGORIES.vegetables, CATEGORIES.fruits, CATEGORIES.dairy, CATEGORIES.fats, CATEGORIES.others];
+      const validCategories = [CATEGORIES.protein, CATEGORIES.grains, CATEGORIES.vegetables, CATEGORIES.fruits, CATEGORIES.dairy, CATEGORIES.fats, CATEGORIES.legumes, CATEGORIES.snacks, CATEGORIES.supplements, CATEGORIES.others];
       
       prepSummary.ingredients.forEach(ing => {
         expect(validCategories).toContain(ing.category);
@@ -356,7 +356,7 @@ describe("PASSO 27 - Meal Prep Output Mode", () => {
     it("should work with excluded foods", () => {
       const inputWithExclusions = { 
         ...baseInput, 
-        excludedFoods: ["Tuna (canned)", "Salmon fillet"] 
+        excludedFoods: ["Tuna (canned)", "Salmon fillet", "Canned salmon"] 
       };
       
       const plan = generateWeeklyPlan(inputWithExclusions);

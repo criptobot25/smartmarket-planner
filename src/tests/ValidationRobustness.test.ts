@@ -49,7 +49,6 @@ describe("PASSO 34: Robustness & Validation Layer", () => {
 
     it("should reject invalid sex", () => {
       const invalidInput = {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- testing invalid type intentionally
         sex: "other" as unknown as "male" | "female",
         age: 30,
         weightKg: 80,
@@ -469,7 +468,6 @@ describe("PASSO 34: Robustness & Validation Layer", () => {
     it("should handle copy-pasted invalid data", () => {
       const messyInput = {
         sex: "  male  ",
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- testing copy-pasted string data
         age: "30" as unknown as number, // String instead of number
         weightKg: "75.5" as unknown as number,
         heightCm: "175" as unknown as number,

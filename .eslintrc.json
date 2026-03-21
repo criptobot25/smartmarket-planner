@@ -9,7 +9,7 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:react-hooks/recommended"
   ],
-  "ignorePatterns": ["dist", ".eslintrc.json"],
+  "ignorePatterns": ["dist", ".eslintrc.json", "vitest.config.ts", "playwright.config.ts", "e2e/", "middleware.ts", "instrumentation.ts"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest",

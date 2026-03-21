@@ -10,16 +10,21 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Blog",
-  description: "Nutrition planning, meal prep, and grocery optimization guides from NutriPilot.",
+  description: "Evidence-based guides on nutrition planning, meal prep systems, grocery optimization, and macro-friendly cooking for fitness goals.",
   alternates: {
     canonical: "/blog",
     languages: getLanguageAlternates("/blog"),
   },
   openGraph: {
     type: "website",
-    title: "NutriPilot Blog",
-    description: "Nutrition planning, meal prep, and grocery optimization guides from NutriPilot.",
+    title: "NutriPilot Blog — Nutrition Planning Guides",
+    description: "Evidence-based guides on nutrition planning, meal prep systems, grocery optimization, and macro-friendly cooking for fitness goals.",
     url: "/blog",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "NutriPilot Blog — Nutrition Planning Guides",
+    description: "Practical guides on weekly nutrition systems, grocery execution, and sustainable meal prep workflows.",
   },
 };
 

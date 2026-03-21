@@ -253,7 +253,12 @@ describe("PASSO 26 - Preference Learning System", () => {
       const meal = buildMeal({
         macroTargetsPerMeal: { protein: 30, carbs: 50, fats: 15 },
         availableFoods: mockFoods,
-        excludedFoods: ["White rice", "Pasta (whole wheat)"], // Exclude cheapest competitors
+        excludedFoods: [
+          "White rice", "Pasta (whole wheat)", "Buckwheat", "Rye bread",
+          "Whole wheat tortillas", "Corn (frozen)", "Couscous", "Bulgur wheat",
+          "Millet", "Amaranth", "Spelt flour", "Sourdough bread",
+          "Polenta (cornmeal)", "Whole wheat penne", "Barley"
+        ], // Exclude all non-Brown rice carb competitors
         costTier: "medium" as CostTier  // Medium tier balances cost and preference
       });
       

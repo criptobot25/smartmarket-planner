@@ -137,7 +137,7 @@ describe("Shopping List Aggregation", () => {
     });
 
     // 4. Reasonable number of items (not bloated with duplicates)
-    expect(validItems.length).toBeLessThan(45); // Current variety engine yields broader yet deduplicated lists
+    expect(validItems.length).toBeLessThan(65); // Expanded 160-food DB yields broader yet deduplicated lists
 
     console.log(`✓ Professional list: ${validItems.length} unique items`);
     console.log(`✓ Example items:`, validItems.slice(0, 3).map(i => `${i.name} (${i.quantity}${i.unit})`));

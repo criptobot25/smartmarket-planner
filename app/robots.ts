@@ -6,8 +6,13 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
-        allow: ["/", "/pricing"],
-        disallow: ["/app", "/app/", "/auth", "/login"],
+        allow: ["/", "/pricing", "/blog", "/blog/", "/meal-plan", "/meal-plan/"],
+        disallow: ["/app", "/app/", "/auth", "/auth/", "/login", "/api", "/api/"],
+      },
+      {
+        userAgent: "GPTBot",
+        allow: ["/blog", "/blog/"],
+        disallow: ["/app", "/auth", "/login", "/api"],
       },
     ],
     sitemap: absoluteUrl("/sitemap.xml"),

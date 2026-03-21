@@ -60,7 +60,6 @@ describe("PASSO 38 - Cloud-Ready Storage", () => {
     });
 
     it("should auto-generate plan ID if missing", async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- testing edge case with intentionally wrong type
       const plan = createMockPlan({ id: undefined as unknown as string });
 
       await storage.saveWeeklyPlan(plan, { userId: mockUserId });

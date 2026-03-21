@@ -27,6 +27,20 @@ const websiteSchema = {
   },
 };
 
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "NutriPilot",
+  url: absoluteUrl("/"),
+  logo: absoluteUrl("/logo-nutripilot.svg"),
+  sameAs: [],
+  contactPoint: {
+    "@type": "ContactPoint",
+    contactType: "customer support",
+    availableLanguage: ["English", "Portuguese"],
+  },
+};
+
 export const metadata: Metadata = {
   metadataBase: getSiteUrl(),
   title: {
@@ -41,6 +55,23 @@ export const metadata: Metadata = {
     "weekly meal prep",
     "macro tracking",
     "nutrition coaching",
+    "meal prep for beginners",
+    "smart grocery list",
+    "cutting meal plan",
+    "bulking meal plan",
+    "maintenance diet",
+    "fitness nutrition",
+    "personalized meal plan",
+    "budget friendly meal plan",
+    "protein rich recipes",
+    "healthy eating plan",
+    "workout nutrition",
+    "calorie counter",
+    "nutritional planning app",
+    "diet planner online",
+    "weekly food planner",
+    "high protein grocery list",
+    "European meal planner",
   ],
   authors: [{ name: "NutriPilot Team" }],
   alternates: {
@@ -91,6 +122,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           id="ld-website-global"
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
+        <script
+          id="ld-organization-global"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
         <Providers>{children}</Providers>
         <Analytics />

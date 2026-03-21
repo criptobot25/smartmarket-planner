@@ -303,7 +303,7 @@ function selectCarbSource(
 ): FoodItem | null {
   let carbFoods = filterExcludedFoods(availableFoods, excludedFoods)
     .filter(f => 
-      (f.category === CATEGORIES.grains || f.category === CATEGORIES.vegetables) &&
+      (f.category === CATEGORIES.grains || f.category === CATEGORIES.vegetables || f.category === CATEGORIES.legumes) &&
       f.macros && 
       f.macros.carbs > 15 && // At least 15g carbs per 100g
       f.macros.carbs > f.macros.protein // More carbs than protein
@@ -450,7 +450,7 @@ function selectFatSource(
     .filter(f => 
       f.category === CATEGORIES.fats && 
       f.macros && 
-      f.macros.fat > 50
+      f.macros.fat > 30 // Lowered from 50 to include seeds, cashews, chia, etc.
     );
   
   // PASSO 24: Filter by cost tier
