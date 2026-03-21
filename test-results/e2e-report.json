@@ -1,0 +1,216 @@
+{
+  "config": {
+    "configFile": "C:\\Users\\Ana Victoria\\Desktop\\SmartMarket Planner\\playwright.config.ts",
+    "rootDir": "C:/Users/Ana Victoria/Desktop/SmartMarket Planner/e2e",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 2
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/Ana Victoria/Desktop/SmartMarket Planner/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "desktop-chromium",
+        "name": "desktop-chromium",
+        "testDir": "C:/Users/Ana Victoria/Desktop/SmartMarket Planner/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 120000
+      },
+      {
+        "outputDir": "C:/Users/Ana Victoria/Desktop/SmartMarket Planner/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "mobile-chromium",
+        "name": "mobile-chromium",
+        "testDir": "C:/Users/Ana Victoria/Desktop/SmartMarket Planner/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 120000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "playwright-report",
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/e2e-report.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "runAgents": "none",
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "3way",
+    "version": "1.58.2",
+    "workers": 4,
+    "webServer": {
+      "command": "npm run dev",
+      "url": "http://127.0.0.1:3000",
+      "reuseExistingServer": true,
+      "timeout": 180000
+    }
+  },
+  "suites": [
+    {
+      "title": "critical-flow.spec.ts",
+      "file": "critical-flow.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "critical flow: onboarding to prep unlock with premium gating",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-chromium",
+              "projectName": "desktop-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 23294,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.premium-upgrade-strip')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.premium-upgrade-strip')\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.premium-upgrade-strip')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.premium-upgrade-strip')\u001b[22m\n\n    at C:\\Users\\Ana Victoria\\Desktop\\SmartMarket Planner\\e2e\\critical-flow.spec.ts:202:58",
+                    "location": {
+                      "file": "C:\\Users\\Ana Victoria\\Desktop\\SmartMarket Planner\\e2e\\critical-flow.spec.ts",
+                      "column": 58,
+                      "line": 202
+                    },
+                    "snippet": "\u001b[0m \u001b[90m 200 |\u001b[39m     \u001b[36mawait\u001b[39m assertShoppingListAggregated(page)\u001b[33m;\u001b[39m\n \u001b[90m 201 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m\".metrics-bar\"\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 202 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m\".premium-upgrade-strip\"\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                                          \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 203 |\u001b[39m\n \u001b[90m 204 |\u001b[39m     \u001b[36mconst\u001b[39m { target\u001b[33m,\u001b[39m purchased } \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m markAtLeastPercent(page\u001b[33m,\u001b[39m \u001b[35m60\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 205 |\u001b[39m     expect(purchased)\u001b[33m.\u001b[39mtoBeGreaterThanOrEqual(target)\u001b[33m;\u001b[39m\u001b[0m"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\Ana Victoria\\Desktop\\SmartMarket Planner\\e2e\\critical-flow.spec.ts",
+                        "column": 58,
+                        "line": 202
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.premium-upgrade-strip')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('.premium-upgrade-strip')\u001b[22m\n\n\n\u001b[0m \u001b[90m 200 |\u001b[39m     \u001b[36mawait\u001b[39m assertShoppingListAggregated(page)\u001b[33m;\u001b[39m\n \u001b[90m 201 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m\".metrics-bar\"\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 202 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m\".premium-upgrade-strip\"\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                                          \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 203 |\u001b[39m\n \u001b[90m 204 |\u001b[39m     \u001b[36mconst\u001b[39m { target\u001b[33m,\u001b[39m purchased } \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m markAtLeastPercent(page\u001b[33m,\u001b[39m \u001b[35m60\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 205 |\u001b[39m     expect(purchased)\u001b[33m.\u001b[39mtoBeGreaterThanOrEqual(target)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\Ana Victoria\\Desktop\\SmartMarket Planner\\e2e\\critical-flow.spec.ts:202:58\u001b[22m"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-03-21T20:16:44.220Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\Ana Victoria\\Desktop\\SmartMarket Planner\\test-results\\critical-flow-critical-flo-ca4c2--unlock-with-premium-gating-desktop-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "C:\\Users\\Ana Victoria\\Desktop\\SmartMarket Planner\\test-results\\critical-flow-critical-flo-ca4c2--unlock-with-premium-gating-desktop-chromium\\video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\Ana Victoria\\Desktop\\SmartMarket Planner\\test-results\\critical-flow-critical-flo-ca4c2--unlock-with-premium-gating-desktop-chromium\\error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\Users\\Ana Victoria\\Desktop\\SmartMarket Planner\\e2e\\critical-flow.spec.ts",
+                    "column": 58,
+                    "line": 202
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "e621337e095a26e8c527-f720efa7bef814772955",
+          "file": "critical-flow.spec.ts",
+          "line": 188,
+          "column": 1
+        },
+        {
+          "title": "login, logout and mocked session persistence",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-chromium",
+              "projectName": "desktop-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 13104,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-03-21T20:16:44.238Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "e621337e095a26e8c527-89270cae14f7349f550d",
+          "file": "critical-flow.spec.ts",
+          "line": 230,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-03-21T20:16:37.181Z",
+    "duration": 31637.838000000454,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

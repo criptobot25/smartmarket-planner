@@ -1,0 +1,431 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - alert [ref=e2]: Planner App | NutriPilot
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - link "NutriPilot" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - img "NutriPilot" [ref=e6]
+      - navigation "Nutrition Plan" [ref=e7]:
+        - link "Nutrition Plan" [ref=e8] [cursor=pointer]:
+          - /url: /app
+        - link "Grocery Mission" [ref=e9] [cursor=pointer]:
+          - /url: /app/list
+        - link "Monday Prep" [ref=e10] [cursor=pointer]:
+          - /url: /app/prep
+      - generic "Português (Brasil)" [ref=e12]:
+        - button "English" [ref=e13] [cursor=pointer]
+        - button "Português (Brasil)" [ref=e14] [cursor=pointer]
+    - main [ref=e15]:
+      - generic [ref=e16]:
+        - generic [ref=e17]:
+          - heading "Grocery Mission" [level=1] [ref=e18]
+          - generic [ref=e19]: 0 / 52 items
+        - generic [ref=e20]:
+          - generic [ref=e21]:
+            - generic [ref=e22]: Protein Target
+            - generic [ref=e23]: 130g/day
+          - generic [ref=e24]:
+            - generic [ref=e25]: Cost Level
+            - generic [ref=e26]: 🟡 Medium Cost
+          - generic [ref=e27]:
+            - generic [ref=e28]: Progress
+            - generic [ref=e29]: 0%
+        - paragraph [ref=e30]: Cost level is an estimate and may vary by location.
+      - generic [ref=e31]:
+        - generic [ref=e32]:
+          - generic [ref=e33]:
+            - heading "🥛 Dairy" [level=3] [ref=e34]
+            - list [ref=e35]:
+              - listitem [ref=e36] [cursor=pointer]:
+                - generic [ref=e37]: ○
+                - generic [ref=e38]:
+                  - generic [ref=e39]: Greek yogurt (0% fat) — 0.66 kg
+                  - generic [ref=e40]: This covers 2 days of dairy
+                  - generic [ref=e41]: Breakfast dairy for 2 meals
+                - generic [ref=e42]: €3.95
+          - generic [ref=e43]:
+            - heading "🫒 Fats" [level=3] [ref=e44]
+            - list [ref=e45]:
+              - listitem [ref=e46] [cursor=pointer]:
+                - generic [ref=e47]: ○
+                - generic [ref=e48]:
+                  - generic [ref=e49]: Butter (unsalted) — 1 pack
+                  - generic [ref=e50]: This covers 1 day of healthy fats
+                  - generic [ref=e51]: Dinner, Breakfast cooking oil for 2 meals
+                - generic [ref=e52]: €2.99
+              - listitem [ref=e53] [cursor=pointer]:
+                - generic [ref=e54]: ○
+                - generic [ref=e55]:
+                  - generic [ref=e56]: Cashews — 1 pack
+                  - generic [ref=e57]: This covers 7 days of healthy fats
+                  - generic [ref=e58]: Lunch cooking oil (1 meal)
+                - generic [ref=e59]: €4.99
+              - listitem [ref=e60] [cursor=pointer]:
+                - generic [ref=e61]: ○
+                - generic [ref=e62]:
+                  - generic [ref=e63]: Chia seeds — 1 pack
+                  - generic [ref=e64]: This covers 7 days of healthy fats
+                  - generic [ref=e65]: Dinner cooking oil (1 meal)
+                - generic [ref=e66]: €4.99
+              - listitem [ref=e67] [cursor=pointer]:
+                - generic [ref=e68]: ○
+                - generic [ref=e69]:
+                  - generic [ref=e70]: Coconut oil — 1 jar
+                  - generic [ref=e71]: This covers 7 days of healthy fats
+                  - generic [ref=e72]: Breakfast cooking oil (1 meal)
+                - generic [ref=e73]: €6.99
+              - listitem [ref=e74] [cursor=pointer]:
+                - generic [ref=e75]: ○
+                - generic [ref=e76]:
+                  - generic [ref=e77]: Flaxseed — 1 pack
+                  - generic [ref=e78]: This covers 1 day of healthy fats
+                  - generic [ref=e79]: Dinner, Breakfast cooking oil for 2 meals
+                - generic [ref=e80]: €3.49
+              - listitem [ref=e81] [cursor=pointer]:
+                - generic [ref=e82]: ○
+                - generic [ref=e83]:
+                  - generic [ref=e84]: Peanut butter (natural) — 1 jar
+                  - generic [ref=e85]: This covers 1 day of healthy fats
+                  - generic [ref=e86]: Lunch, Dinner cooking oil for 2 meals
+                - generic [ref=e87]: €4.49
+              - listitem [ref=e88] [cursor=pointer]:
+                - generic [ref=e89]: ○
+                - generic [ref=e90]:
+                  - generic [ref=e91]: Sunflower seeds — 1 pack
+                  - generic [ref=e92]: This covers 7 days of healthy fats
+                  - generic [ref=e93]: Breakfast cooking oil (1 meal)
+                - generic [ref=e94]: €1.99
+              - listitem [ref=e95] [cursor=pointer]:
+                - generic [ref=e96]: ○
+                - generic [ref=e97]:
+                  - generic [ref=e98]: Tahini — 1 jar
+                  - generic [ref=e99]: This covers 1 day of healthy fats
+                  - generic [ref=e100]: Lunch, Dinner cooking oil for 2 meals
+                - generic [ref=e101]: €4.49
+              - listitem [ref=e102] [cursor=pointer]:
+                - generic [ref=e103]: ○
+                - generic [ref=e104]:
+                  - generic [ref=e105]: Walnuts — 1 pack
+                  - generic [ref=e106]: This covers 1 day of healthy fats
+                  - generic [ref=e107]: Breakfast, Lunch cooking oil for 2 meals
+                - generic [ref=e108]: €5.49
+          - generic [ref=e109]:
+            - heading "🍎 Fruits" [level=3] [ref=e110]
+            - list [ref=e111]:
+              - listitem [ref=e112] [cursor=pointer]:
+                - generic [ref=e113]: ○
+                - generic [ref=e114]:
+                  - generic [ref=e115]: Bananas — 0.20 kg
+                  - generic [ref=e116]: This covers 2 days of fruit
+                  - generic [ref=e117]: Breakfast fruit for 2 meals
+                - generic [ref=e118]: €0.36
+          - generic [ref=e119]:
+            - heading "🌾 Grains" [level=3] [ref=e120]
+            - list [ref=e121]:
+              - listitem [ref=e122] [cursor=pointer]:
+                - generic [ref=e123]: ○
+                - generic [ref=e124]:
+                  - generic [ref=e125]: Barley — 1 pack
+                  - generic [ref=e126]: This covers 1 day of carbs
+                  - generic [ref=e127]: Lunch, Dinner carbs for 2 meals
+                - generic [ref=e128]: €1.99
+              - listitem [ref=e129] [cursor=pointer]:
+                - generic [ref=e130]: ○
+                - generic [ref=e131]:
+                  - generic [ref=e132]: Brown rice — 0.25 kg
+                  - generic [ref=e133]: This covers 1 day of carbs
+                  - generic [ref=e134]: Dinner, Breakfast carbs for 2 meals
+                - generic [ref=e135]: €0.82
+              - listitem [ref=e136] [cursor=pointer]:
+                - generic [ref=e137]: ○
+                - generic [ref=e138]:
+                  - generic [ref=e139]: Buckwheat — 1 pack
+                  - generic [ref=e140]: This covers 7 days of carbs
+                  - generic [ref=e141]: Dinner carbs (1 meal)
+                - generic [ref=e142]: €2.99
+              - listitem [ref=e143] [cursor=pointer]:
+                - generic [ref=e144]: ○
+                - generic [ref=e145]:
+                  - generic [ref=e146]: Bulgur wheat — 1 pack
+                  - generic [ref=e147]: This covers 7 days of carbs
+                  - generic [ref=e148]: Breakfast carbs (1 meal)
+                - generic [ref=e149]: €2.49
+              - listitem [ref=e150] [cursor=pointer]:
+                - generic [ref=e151]: ○
+                - generic [ref=e152]:
+                  - generic [ref=e153]: Couscous — 1 pack
+                  - generic [ref=e154]: This covers 1 day of carbs
+                  - generic [ref=e155]: Dinner, Breakfast carbs for 2 meals
+                - generic [ref=e156]: €1.99
+              - listitem [ref=e157] [cursor=pointer]:
+                - generic [ref=e158]: ○
+                - generic [ref=e159]:
+                  - generic [ref=e160]: Oats (rolled) — 0.28 kg
+                  - generic [ref=e161]: This covers 2 days of carbs
+                  - generic [ref=e162]: Breakfast carbs for 2 meals
+                - generic [ref=e163]: €0.84
+              - listitem [ref=e164] [cursor=pointer]:
+                - generic [ref=e165]: ○
+                - generic [ref=e166]:
+                  - generic [ref=e167]: Polenta (cornmeal) — 1 pack
+                  - generic [ref=e168]: This covers 1 day of carbs
+                  - generic [ref=e169]: Lunch, Dinner carbs for 2 meals
+                - generic [ref=e170]: €1.99
+              - listitem [ref=e171] [cursor=pointer]:
+                - generic [ref=e172]: ○
+                - generic [ref=e173]:
+                  - generic [ref=e174]: White bread — 1 pack
+                  - generic [ref=e175]: This covers 7 days of carbs
+                  - generic [ref=e176]: Lunch carbs (1 meal)
+                - generic [ref=e177]: €1.99
+              - listitem [ref=e178] [cursor=pointer]:
+                - generic [ref=e179]: ○
+                - generic [ref=e180]:
+                  - generic [ref=e181]: White rice — 0.25 kg
+                  - generic [ref=e182]: This covers 1 day of carbs
+                  - generic [ref=e183]: Lunch, Dinner carbs for 2 meals
+                - generic [ref=e184]: €0.61
+              - listitem [ref=e185] [cursor=pointer]:
+                - generic [ref=e186]: ○
+                - generic [ref=e187]:
+                  - generic [ref=e188]: Whole wheat penne — 1 pack
+                  - generic [ref=e189]: This covers 1 day of carbs
+                  - generic [ref=e190]: Breakfast, Lunch carbs for 2 meals
+                - generic [ref=e191]: €1.79
+          - generic [ref=e192]:
+            - heading "📦 Others" [level=3] [ref=e193]
+            - list [ref=e194]:
+              - listitem [ref=e195] [cursor=pointer]:
+                - generic [ref=e196]: ○
+                - generic [ref=e197]:
+                  - generic [ref=e198]: Chickpeas (dried) — 0.31 kg
+                  - generic [ref=e199]: This covers 2 days of your meals
+                  - generic [ref=e200]: Lunch seasoning for 2 meals
+                - generic [ref=e201]: €0.93
+              - listitem [ref=e202] [cursor=pointer]:
+                - generic [ref=e203]: ○
+                - generic [ref=e204]:
+                  - generic [ref=e205]: Red lentils — 0.34 kg
+                  - generic [ref=e206]: This covers 1 day of your meals
+                  - generic [ref=e207]: Dinner, Breakfast seasoning for 2 meals
+                - generic [ref=e208]: €1.00
+          - generic [ref=e209]:
+            - heading "🍗 Protein" [level=3] [ref=e210]
+            - list [ref=e211]:
+              - listitem [ref=e212] [cursor=pointer]:
+                - generic [ref=e213]: ○
+                - generic [ref=e214]:
+                  - generic [ref=e215]: Canned salmon — 1 can
+                  - generic [ref=e216]: This covers 1 day of protein
+                  - generic [ref=e217]: Breakfast, Lunch protein for 2 meals
+                - generic [ref=e218]: €3.49
+              - listitem [ref=e219] [cursor=pointer]:
+                - generic [ref=e220]: ○
+                - generic [ref=e221]:
+                  - generic [ref=e222]: Chicken breast (skinless) — 0.21 kg
+                  - generic [ref=e223]: This covers 2 days of protein
+                  - generic [ref=e224]: Lunch protein for 2 meals
+                - generic [ref=e225]: €1.69
+              - listitem [ref=e226] [cursor=pointer]:
+                - generic [ref=e227]: ○
+                - generic [ref=e228]:
+                  - generic [ref=e229]: Chicken thigh (boneless) — 0.25 kg
+                  - generic [ref=e230]: This covers 1 day of protein
+                  - generic [ref=e231]: Breakfast, Dinner protein for 2 meals
+                - generic [ref=e232]: €1.65
+              - listitem [ref=e233] [cursor=pointer]:
+                - generic [ref=e234]: ○
+                - generic [ref=e235]:
+                  - generic [ref=e236]: Eggs (large) — 2 pack
+                  - generic [ref=e237]: This covers 1 day of protein
+                  - generic [ref=e238]: Dinner, Lunch protein for 2 meals
+                - generic [ref=e239]: €6.98
+              - listitem [ref=e240] [cursor=pointer]:
+                - generic [ref=e241]: ○
+                - generic [ref=e242]:
+                  - generic [ref=e243]: Pork loin — 0.24 kg
+                  - generic [ref=e244]: This covers 2 days of protein
+                  - generic [ref=e245]: Dinner protein for 2 meals
+                - generic [ref=e246]: €1.71
+              - listitem [ref=e247] [cursor=pointer]:
+                - generic [ref=e248]: ○
+                - generic [ref=e249]:
+                  - generic [ref=e250]: Sardines (canned) — 1 can
+                  - generic [ref=e251]: This covers 1 day of protein
+                  - generic [ref=e252]: Lunch, Dinner protein for 2 meals
+                - generic [ref=e253]: €1.99
+              - listitem [ref=e254] [cursor=pointer]:
+                - generic [ref=e255]: ○
+                - generic [ref=e256]:
+                  - generic [ref=e257]: Seitan — 1 pack
+                  - generic [ref=e258]: This covers 1 day of protein
+                  - generic [ref=e259]: Breakfast, Dinner protein for 2 meals
+                - generic [ref=e260]: €3.99
+              - listitem [ref=e261] [cursor=pointer]:
+                - generic [ref=e262]: ○
+                - generic [ref=e263]:
+                  - generic [ref=e264]: Tempeh — 1 pack
+                  - generic [ref=e265]: This covers 1 day of protein
+                  - generic [ref=e266]: Lunch, Dinner protein for 2 meals
+                - generic [ref=e267]: €3.49
+              - listitem [ref=e268] [cursor=pointer]:
+                - generic [ref=e269]: ○
+                - generic [ref=e270]:
+                  - generic [ref=e271]: Tuna (canned) — 1 can
+                  - generic [ref=e272]: This covers 1 day of protein
+                  - generic [ref=e273]: Lunch, Breakfast protein for 2 meals
+                - generic [ref=e274]: €1.99
+              - listitem [ref=e275] [cursor=pointer]:
+                - generic [ref=e276]: ○
+                - generic [ref=e277]:
+                  - generic [ref=e278]: Turkey breast — 0.11 kg
+                  - generic [ref=e279]: This covers 7 days of protein
+                  - generic [ref=e280]: Breakfast protein (1 meal)
+                - generic [ref=e281]: €0.91
+          - generic [ref=e282]:
+            - heading "🥬 Vegetables" [level=3] [ref=e283]
+            - list [ref=e284]:
+              - listitem [ref=e285] [cursor=pointer]:
+                - generic [ref=e286]: ○
+                - generic [ref=e287]:
+                  - generic [ref=e288]: Artichoke hearts (canned) — 1 can
+                  - generic [ref=e289]: This covers 7 days of vegetables
+                  - generic [ref=e290]: Lunch vegetables (1 meal)
+                - generic [ref=e291]: €2.99
+              - listitem [ref=e292] [cursor=pointer]:
+                - generic [ref=e293]: ○
+                - generic [ref=e294]:
+                  - generic [ref=e295]: Asparagus — 1bunch
+                  - generic [ref=e296]: This covers 7 days of vegetables
+                  - generic [ref=e297]: Dinner vegetables (1 meal)
+                - generic [ref=e298]: €3.49
+              - listitem [ref=e299] [cursor=pointer]:
+                - generic [ref=e300]: ○
+                - generic [ref=e301]:
+                  - generic [ref=e302]: Beetroot — 0.15 kg
+                  - generic [ref=e303]: This covers 7 days of vegetables
+                  - generic [ref=e304]: Dinner vegetables (1 meal)
+                - generic [ref=e305]: €0.30
+              - listitem [ref=e306] [cursor=pointer]:
+                - generic [ref=e307]: ○
+                - generic [ref=e308]:
+                  - generic [ref=e309]: Bell peppers — 0.15 kg
+                  - generic [ref=e310]: This covers 7 days of vegetables
+                  - generic [ref=e311]: Dinner vegetables (1 meal)
+                - generic [ref=e312]: €0.60
+              - listitem [ref=e313] [cursor=pointer]:
+                - generic [ref=e314]: ○
+                - generic [ref=e315]:
+                  - generic [ref=e316]: Broccoli — 0.15 kg
+                  - generic [ref=e317]: This covers 7 days of vegetables
+                  - generic [ref=e318]: Lunch vegetables (1 meal)
+                - generic [ref=e319]: €0.45
+              - listitem [ref=e320] [cursor=pointer]:
+                - generic [ref=e321]: ○
+                - generic [ref=e322]:
+                  - generic [ref=e323]: Brussels sprouts — 0.15 kg
+                  - generic [ref=e324]: This covers 7 days of vegetables
+                  - generic [ref=e325]: Lunch vegetables (1 meal)
+                - generic [ref=e326]: €0.45
+              - listitem [ref=e327] [cursor=pointer]:
+                - generic [ref=e328]: ○
+                - generic [ref=e329]:
+                  - generic [ref=e330]: Carrots — 0.15 kg
+                  - generic [ref=e331]: This covers 7 days of vegetables
+                  - generic [ref=e332]: Breakfast vegetables (1 meal)
+                - generic [ref=e333]: €0.19
+              - listitem [ref=e334] [cursor=pointer]:
+                - generic [ref=e335]: ○
+                - generic [ref=e336]:
+                  - generic [ref=e337]: Cauliflower — 0.15 kg
+                  - generic [ref=e338]: This covers 7 days of vegetables
+                  - generic [ref=e339]: Breakfast vegetables (1 meal)
+                - generic [ref=e340]: €0.37
+              - listitem [ref=e341] [cursor=pointer]:
+                - generic [ref=e342]: ○
+                - generic [ref=e343]:
+                  - generic [ref=e344]: Celery — 1bunch
+                  - generic [ref=e345]: This covers 7 days of vegetables
+                  - generic [ref=e346]: Dinner vegetables (1 meal)
+                - generic [ref=e347]: €1.49
+              - listitem [ref=e348] [cursor=pointer]:
+                - generic [ref=e349]: ○
+                - generic [ref=e350]:
+                  - generic [ref=e351]: Cucumber — 0.15 kg
+                  - generic [ref=e352]: This covers 7 days of vegetables
+                  - generic [ref=e353]: Lunch vegetables (1 meal)
+                - generic [ref=e354]: €0.22
+              - listitem [ref=e355] [cursor=pointer]:
+                - generic [ref=e356]: ○
+                - generic [ref=e357]:
+                  - generic [ref=e358]: Eggplant — 0.15 kg
+                  - generic [ref=e359]: This covers 7 days of vegetables
+                  - generic [ref=e360]: Lunch vegetables (1 meal)
+                - generic [ref=e361]: €0.34
+              - listitem [ref=e362] [cursor=pointer]:
+                - generic [ref=e363]: ○
+                - generic [ref=e364]:
+                  - generic [ref=e365]: Green beans — 0.15 kg
+                  - generic [ref=e366]: This covers 7 days of vegetables
+                  - generic [ref=e367]: Breakfast vegetables (1 meal)
+                - generic [ref=e368]: €0.45
+              - listitem [ref=e369] [cursor=pointer]:
+                - generic [ref=e370]: ○
+                - generic [ref=e371]:
+                  - generic [ref=e372]: Kale — 1bunch
+                  - generic [ref=e373]: This covers 7 days of vegetables
+                  - generic [ref=e374]: Dinner vegetables (1 meal)
+                - generic [ref=e375]: €1.99
+              - listitem [ref=e376] [cursor=pointer]:
+                - generic [ref=e377]: ○
+                - generic [ref=e378]:
+                  - generic [ref=e379]: Lettuce (mixed greens) — 0.15 kg
+                  - generic [ref=e380]: This covers 7 days of vegetables
+                  - generic [ref=e381]: Dinner vegetables (1 meal)
+                - generic [ref=e382]: €0.45
+              - listitem [ref=e383] [cursor=pointer]:
+                - generic [ref=e384]: ○
+                - generic [ref=e385]:
+                  - generic [ref=e386]: Lettuce (romaine) — 1head
+                  - generic [ref=e387]: This covers 7 days of vegetables
+                  - generic [ref=e388]: Breakfast vegetables (1 meal)
+                - generic [ref=e389]: €1.29
+              - listitem [ref=e390] [cursor=pointer]:
+                - generic [ref=e391]: ○
+                - generic [ref=e392]:
+                  - generic [ref=e393]: Mushrooms (button) — 1 pack
+                  - generic [ref=e394]: This covers 7 days of vegetables
+                  - generic [ref=e395]: Breakfast vegetables (1 meal)
+                - generic [ref=e396]: €2.49
+              - listitem [ref=e397] [cursor=pointer]:
+                - generic [ref=e398]: ○
+                - generic [ref=e399]:
+                  - generic [ref=e400]: Spinach (fresh) — 0.15 kg
+                  - generic [ref=e401]: This covers 7 days of vegetables
+                  - generic [ref=e402]: Dinner vegetables (1 meal)
+                - generic [ref=e403]: €0.52
+              - listitem [ref=e404] [cursor=pointer]:
+                - generic [ref=e405]: ○
+                - generic [ref=e406]:
+                  - generic [ref=e407]: Tomatoes — 0.15 kg
+                  - generic [ref=e408]: This covers 7 days of vegetables
+                  - generic [ref=e409]: Lunch vegetables (1 meal)
+                - generic [ref=e410]: €0.37
+              - listitem [ref=e411] [cursor=pointer]:
+                - generic [ref=e412]: ○
+                - generic [ref=e413]:
+                  - generic [ref=e414]: Zucchini — 0.15 kg
+                  - generic [ref=e415]: This covers 7 days of vegetables
+                  - generic [ref=e416]: Lunch vegetables (1 meal)
+                - generic [ref=e417]: €0.30
+        - generic [ref=e418]:
+          - button "Start Prep locked until 80%" [disabled] [ref=e419] [cursor=pointer]: 🔒 Start Monday Prep (0%/80%)
+          - button "Share My Plan" [ref=e420] [cursor=pointer]
+          - button "📄 Export PDF" [ref=e421] [cursor=pointer]
+          - link "Nutrition Plan" [ref=e422] [cursor=pointer]:
+            - /url: /app
+      - paragraph [ref=e423]: Share your meal plan on social media · 0/52 · 0%
+```
