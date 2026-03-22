@@ -8,6 +8,7 @@ import { AuthSessionProvider } from "./components/AuthSessionProvider";
 import { ClientStoreBootstrap } from "./components/ClientStoreBootstrap";
 import { WebVitalsTracker } from "./components/WebVitalsTracker";
 import { ToastProvider } from "./components/Toast";
+import { WhatsAppConcierge } from "./components/WhatsAppConcierge";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -19,6 +20,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
               <ClientStoreBootstrap />
               <WebVitalsTracker />
               {children}
+              <WhatsAppConcierge />
             </ToastProvider>
           </AnalyticsProvider>
         </AppPlanProvider>
