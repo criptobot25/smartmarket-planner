@@ -4,7 +4,15 @@ import { useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import i18n from "../../src/i18n";
 
-type SupportedLanguage = "en" | "pt";
+type SupportedLanguage = "en" | "pt" | "es" | "fr" | "de";
+
+const LANG_PREFIX_MAP: Record<string, SupportedLanguage> = {
+  pt: "pt",
+  es: "es",
+  fr: "fr",
+  de: "de",
+  en: "en",
+};
 
 function normalizeLanguage(value: string | null | undefined): SupportedLanguage {
   if (!value) {
@@ -12,7 +20,10 @@ function normalizeLanguage(value: string | null | undefined): SupportedLanguage 
   }
 
   const lowered = value.toLowerCase();
-  return lowered.startsWith("pt") ? "pt" : "en";
+  for (const [prefix, lang] of Object.entries(LANG_PREFIX_MAP)) {
+    if (lowered.startsWith(prefix)) return lang;
+  }
+  return "en";
 }
 
 export function useAppTranslation() {

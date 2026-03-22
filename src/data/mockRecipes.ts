@@ -1,480 +1,2518 @@
 import { Recipe } from "../core/models/Recipe";
 import { CATEGORIES } from "../core/constants/categories";
 
+/**
+ * NutriPilot Recipe Database
+ *
+ * 120 recipes across all meal types and diet styles.
+ * Covers breakfast (30), lunch (30), dinner (30), snack (30).
+ * All ingredient IDs reference the mockFoods database (food-001 through food-160).
+ */
+
 export const mockRecipes: Recipe[] = [
   {
     id: "recipe-001",
-    name: "Omelete saudável",
+    name: "High-Protein Veggie Omelette",
     mealType: "breakfast",
     servings: 2,
     prepTime: 15,
     dietStyle: ["healthy", "balanced"],
     ingredients: [
-      {
-        foodItemId: "food-007",
-        name: "Ovos",
-        quantity: 4,
-        unit: "un",
-        category: CATEGORIES.protein
-      },
-      {
-        foodItemId: "food-011",
-        name: "Tomate",
-        quantity: 0.1,
-        unit: "kg",
-        category: CATEGORIES.vegetables
-      },
-      {
-        foodItemId: "food-012",
-        name: "Cebola",
-        quantity: 0.05,
-        unit: "kg",
-        category: CATEGORIES.vegetables
-      },
-      {
-        foodItemId: "food-028",
-        name: "Óleo de soja",
-        quantity: 0.02,
-        unit: "L",
-        category: CATEGORIES.fats
-      },
-      {
-        foodItemId: "food-029",
-        name: "Sal",
-        quantity: 0.005,
-        unit: "kg",
-        category: CATEGORIES.others
-      }
+      { foodItemId: "food-002", name: "Eggs", quantity: 4, unit: "un", category: CATEGORIES.protein },
+      { foodItemId: "food-017", name: "Tomatoes", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-016", name: "Spinach", quantity: 0.05, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-018", name: "Bell peppers", quantity: 0.05, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
     ],
     instructions: [
-      "Bata os ovos em uma tigela",
-      "Adicione tomate e cebola picados",
-      "Tempere com sal",
-      "Aqueça o óleo em uma frigideira",
-      "Despeje a mistura e cozinhe por 5-7 minutos"
+      "Beat eggs in a bowl with a pinch of salt",
+      "Heat olive oil in a non-stick pan over medium heat",
+      "Add spinach, tomatoes and peppers, sauté 2 min",
+      "Pour eggs over vegetables and cook 5-7 minutes",
+      "Fold in half and serve",
     ],
-    tags: ["rápido", "proteína", "low-carb"]
+    tags: ["quick", "high-protein", "low-carb"]
   },
   {
     id: "recipe-002",
-    name: "Frango com arroz e legumes",
-    mealType: "lunch",
-    servings: 4,
-    prepTime: 40,
+    name: "Overnight Oats with Berries",
+    mealType: "breakfast",
+    servings: 1,
+    prepTime: 5,
     dietStyle: ["healthy", "balanced"],
     ingredients: [
-      {
-        foodItemId: "food-006",
-        name: "Frango (peito)",
-        quantity: 0.6,
-        unit: "kg",
-        category: CATEGORIES.protein
-      },
-      {
-        foodItemId: "food-002",
-        name: "Arroz integral",
-        quantity: 0.3,
-        unit: "kg",
-        category: CATEGORIES.grains
-      },
-      {
-        foodItemId: "food-014",
-        name: "Cenoura",
-        quantity: 0.2,
-        unit: "kg",
-        category: CATEGORIES.vegetables
-      },
-      {
-        foodItemId: "food-015",
-        name: "Brócolis",
-        quantity: 0.3,
-        unit: "kg",
-        category: CATEGORIES.vegetables
-      },
-      {
-        foodItemId: "food-012",
-        name: "Cebola",
-        quantity: 0.1,
-        unit: "kg",
-        category: CATEGORIES.vegetables
-      },
-      {
-        foodItemId: "food-013",
-        name: "Alho",
-        quantity: 0.01,
-        unit: "kg",
-        category: CATEGORIES.vegetables
-      },
-      {
-        foodItemId: "food-027",
-        name: "Azeite de oliva",
-        quantity: 0.03,
-        unit: "L",
-        category: CATEGORIES.fats
-      },
-      {
-        foodItemId: "food-029",
-        name: "Sal",
-        quantity: 0.01,
-        unit: "kg",
-        category: CATEGORIES.others
-      }
+      { foodItemId: "food-010", name: "Oats", quantity: 0.08, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-035", name: "Milk (skim)", quantity: 0.2, unit: "L", category: CATEGORIES.dairy },
+      { foodItemId: "food-024", name: "Blueberries", quantity: 0.05, unit: "kg", category: CATEGORIES.fruits },
+      { foodItemId: "food-025", name: "Strawberries", quantity: 0.05, unit: "kg", category: CATEGORIES.fruits },
+      { foodItemId: "food-071", name: "Chia seeds", quantity: 0.01, unit: "kg", category: CATEGORIES.fats },
     ],
     instructions: [
-      "Cozinhe o arroz integral conforme instruções da embalagem",
-      "Corte o frango em cubos e tempere com sal e alho",
-      "Refogue o frango no azeite até dourar",
-      "Adicione cenoura e brócolis picados",
-      "Cozinhe por mais 10 minutos",
-      "Sirva com o arroz"
+      "Mix oats, milk, and chia seeds in a jar",
+      "Refrigerate overnight (8+ hours)",
+      "Top with fresh berries before serving",
     ],
-    tags: ["completo", "proteína", "fibras"]
+    tags: ["meal-prep", "fiber", "no-cook"]
   },
   {
     id: "recipe-003",
-    name: "Overnight oats",
+    name: "Protein Pancakes",
+    mealType: "breakfast",
+    servings: 2,
+    prepTime: 20,
+    dietStyle: ["balanced", "comfort"],
+    ingredients: [
+      { foodItemId: "food-010", name: "Oats", quantity: 0.06, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-002", name: "Eggs", quantity: 3, unit: "un", category: CATEGORIES.protein },
+      { foodItemId: "food-022", name: "Banana", quantity: 1, unit: "un", category: CATEGORIES.fruits },
+      { foodItemId: "food-103", name: "Whey protein", quantity: 0.03, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-073", name: "Butter", quantity: 0.01, unit: "kg", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Blend oats, eggs, banana and protein powder until smooth",
+      "Heat butter in a pan over medium heat",
+      "Pour small circles of batter",
+      "Cook 2 min per side until golden",
+      "Serve with fresh fruit",
+    ],
+    tags: ["high-protein", "crowd-pleaser", "weekend"]
+  },
+  {
+    id: "recipe-004",
+    name: "Greek Yogurt Parfait",
     mealType: "breakfast",
     servings: 1,
     prepTime: 5,
     dietStyle: ["healthy"],
     ingredients: [
-      {
-        foodItemId: "food-003",
-        name: "Aveia em flocos",
-        quantity: 0.06,
-        unit: "kg",
-        category: CATEGORIES.grains
-      },
-      {
-        foodItemId: "food-024",
-        name: "Iogurte natural",
-        quantity: 0.15,
-        unit: "kg",
-        category: CATEGORIES.dairy
-      },
-      {
-        foodItemId: "food-019",
-        name: "Banana",
-        quantity: 0.1,
-        unit: "kg",
-        category: CATEGORIES.fruits
-      },
-      {
-        foodItemId: "food-032",
-        name: "Mel",
-        quantity: 0.015,
-        unit: "kg",
-        category: CATEGORIES.others
-      },
-      {
-        foodItemId: "food-034",
-        name: "Granola",
-        quantity: 0.02,
-        unit: "kg",
-        category: CATEGORIES.others
-      }
+      { foodItemId: "food-003", name: "Greek yogurt", quantity: 0.2, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-025", name: "Strawberries", quantity: 0.05, unit: "kg", category: CATEGORIES.fruits },
+      { foodItemId: "food-030", name: "Almonds", quantity: 0.02, unit: "kg", category: CATEGORIES.fats },
+      { foodItemId: "food-157", name: "Honey", quantity: 0.01, unit: "kg", category: CATEGORIES.others },
     ],
     instructions: [
-      "Misture aveia e iogurte em um pote",
-      "Adicione mel e mexa bem",
-      "Leve à geladeira durante a noite",
-      "Pela manhã, adicione banana em rodelas e granola"
+      "Layer yogurt in a glass",
+      "Add sliced strawberries",
+      "Top with almonds and drizzle honey",
     ],
-    tags: ["prático", "fibras", "sem cozimento"]
-  },
-  {
-    id: "recipe-004",
-    name: "Massa comfort",
-    mealType: "dinner",
-    servings: 4,
-    prepTime: 30,
-    dietStyle: ["comfort", "balanced"],
-    ingredients: [
-      {
-        foodItemId: "food-004",
-        name: "Macarrão",
-        quantity: 0.5,
-        unit: "kg",
-        category: CATEGORIES.grains
-      },
-      {
-        foodItemId: "food-008",
-        name: "Carne moída",
-        quantity: 0.4,
-        unit: "kg",
-        category: CATEGORIES.protein
-      },
-      {
-        foodItemId: "food-011",
-        name: "Tomate",
-        quantity: 0.3,
-        unit: "kg",
-        category: CATEGORIES.vegetables
-      },
-      {
-        foodItemId: "food-012",
-        name: "Cebola",
-        quantity: 0.1,
-        unit: "kg",
-        category: CATEGORIES.vegetables
-      },
-      {
-        foodItemId: "food-013",
-        name: "Alho",
-        quantity: 0.015,
-        unit: "kg",
-        category: CATEGORIES.vegetables
-      },
-      {
-        foodItemId: "food-025",
-        name: "Queijo mussarela",
-        quantity: 0.1,
-        unit: "kg",
-        category: CATEGORIES.dairy
-      },
-      {
-        foodItemId: "food-028",
-        name: "Óleo de soja",
-        quantity: 0.03,
-        unit: "L",
-        category: CATEGORIES.fats
-      },
-      {
-        foodItemId: "food-029",
-        name: "Sal",
-        quantity: 0.01,
-        unit: "kg",
-        category: CATEGORIES.others
-      },
-      {
-        foodItemId: "food-031",
-        name: "Orégano",
-        quantity: 0.005,
-        unit: "g",
-        category: CATEGORIES.others
-      }
-    ],
-    instructions: [
-      "Cozinhe o macarrão em água fervente com sal",
-      "Refogue alho e cebola no óleo",
-      "Adicione a carne moída e cozinhe até dourar",
-      "Acrescente tomates picados e temperos",
-      "Deixe cozinhar por 15 minutos",
-      "Misture com o macarrão escorrido",
-      "Finalize com queijo ralado e orégano"
-    ],
-    tags: ["reconfortante", "família", "tradicional"]
+    tags: ["quick", "no-cook", "high-protein"]
   },
   {
     id: "recipe-005",
-    name: "Salada balanceada",
-    mealType: "lunch",
-    servings: 2,
-    prepTime: 20,
+    name: "Avocado Toast with Eggs",
+    mealType: "breakfast",
+    servings: 1,
+    prepTime: 10,
     dietStyle: ["healthy", "balanced"],
     ingredients: [
-      {
-        foodItemId: "food-016",
-        name: "Alface",
-        quantity: 1,
-        unit: "un",
-        category: CATEGORIES.vegetables
-      },
-      {
-        foodItemId: "food-011",
-        name: "Tomate",
-        quantity: 0.15,
-        unit: "kg",
-        category: CATEGORIES.vegetables
-      },
-      {
-        foodItemId: "food-014",
-        name: "Cenoura",
-        quantity: 0.1,
-        unit: "kg",
-        category: CATEGORIES.vegetables
-      },
-      {
-        foodItemId: "food-010",
-        name: "Atum em lata",
-        quantity: 2,
-        unit: "un",
-        category: CATEGORIES.protein
-      },
-      {
-        foodItemId: "food-007",
-        name: "Ovos",
-        quantity: 2,
-        unit: "un",
-        category: CATEGORIES.protein
-      },
-      {
-        foodItemId: "food-027",
-        name: "Azeite de oliva",
-        quantity: 0.02,
-        unit: "L",
-        category: CATEGORIES.fats
-      },
-      {
-        foodItemId: "food-029",
-        name: "Sal",
-        quantity: 0.005,
-        unit: "kg",
-        category: CATEGORIES.others
-      }
+      { foodItemId: "food-012", name: "Whole wheat bread", quantity: 2, unit: "un", category: CATEGORIES.grains },
+      { foodItemId: "food-028", name: "Avocado", quantity: 0.5, unit: "un", category: CATEGORIES.fruits },
+      { foodItemId: "food-002", name: "Eggs", quantity: 2, unit: "un", category: CATEGORIES.protein },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.005, unit: "L", category: CATEGORIES.fats },
     ],
     instructions: [
-      "Cozinhe os ovos até ficarem duros",
-      "Lave e pique a alface",
-      "Corte tomates e cenoura em cubos",
-      "Misture todos os vegetais em uma tigela",
-      "Adicione atum e ovos picados",
-      "Tempere com azeite e sal"
+      "Toast bread until golden",
+      "Mash avocado with salt and lemon",
+      "Fry or poach eggs",
+      "Spread avocado on toast, top with eggs",
     ],
-    tags: ["leve", "proteína", "fresco"]
+    tags: ["quick", "balanced", "popular"]
   },
   {
     id: "recipe-006",
-    name: "Snack rápido",
-    mealType: "snack",
+    name: "Banana Peanut Butter Smoothie",
+    mealType: "breakfast",
     servings: 1,
     prepTime: 5,
-    dietStyle: ["healthy", "balanced", "comfort"],
+    dietStyle: ["balanced", "comfort"],
     ingredients: [
-      {
-        foodItemId: "food-019",
-        name: "Banana",
-        quantity: 0.12,
-        unit: "kg",
-        category: CATEGORIES.fruits
-      },
-      {
-        foodItemId: "food-033",
-        name: "Amendoim",
-        quantity: 0.03,
-        unit: "kg",
-        category: CATEGORIES.others
-      },
-      {
-        foodItemId: "food-032",
-        name: "Mel",
-        quantity: 0.01,
-        unit: "kg",
-        category: CATEGORIES.others
-      }
+      { foodItemId: "food-022", name: "Banana", quantity: 1, unit: "un", category: CATEGORIES.fruits },
+      { foodItemId: "food-029", name: "Peanut butter", quantity: 0.02, unit: "kg", category: CATEGORIES.fats },
+      { foodItemId: "food-035", name: "Milk (skim)", quantity: 0.3, unit: "L", category: CATEGORIES.dairy },
+      { foodItemId: "food-103", name: "Whey protein", quantity: 0.03, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-010", name: "Oats", quantity: 0.03, unit: "kg", category: CATEGORIES.grains },
     ],
     instructions: [
-      "Corte a banana em rodelas",
-      "Passe mel por cima",
-      "Adicione amendoim picado"
+      "Add all ingredients to a blender",
+      "Blend until smooth (30 seconds)",
+      "Pour and serve immediately",
     ],
-    tags: ["rápido", "energia", "sem cozimento"]
+    tags: ["quick", "bulking", "liquid-calories"]
   },
   {
     id: "recipe-007",
-    name: "Arroz com feijão",
-    mealType: "lunch",
-    servings: 4,
-    prepTime: 45,
-    dietStyle: ["balanced", "comfort"],
+    name: "Scrambled Eggs with Spinach",
+    mealType: "breakfast",
+    servings: 2,
+    prepTime: 10,
+    dietStyle: ["healthy"],
     ingredients: [
-      {
-        foodItemId: "food-001",
-        name: "Arroz branco",
-        quantity: 0.3,
-        unit: "kg",
-        category: CATEGORIES.grains
-      },
-      {
-        foodItemId: "food-009",
-        name: "Feijão preto",
-        quantity: 0.3,
-        unit: "kg",
-        category: CATEGORIES.protein
-      },
-      {
-        foodItemId: "food-012",
-        name: "Cebola",
-        quantity: 0.1,
-        unit: "kg",
-        category: CATEGORIES.vegetables
-      },
-      {
-        foodItemId: "food-013",
-        name: "Alho",
-        quantity: 0.02,
-        unit: "kg",
-        category: CATEGORIES.vegetables
-      },
-      {
-        foodItemId: "food-028",
-        name: "Óleo de soja",
-        quantity: 0.03,
-        unit: "L",
-        category: CATEGORIES.fats
-      },
-      {
-        foodItemId: "food-029",
-        name: "Sal",
-        quantity: 0.01,
-        unit: "kg",
-        category: CATEGORIES.others
-      }
+      { foodItemId: "food-002", name: "Eggs", quantity: 4, unit: "un", category: CATEGORIES.protein },
+      { foodItemId: "food-016", name: "Spinach", quantity: 0.08, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+      { foodItemId: "food-097", name: "Mozzarella", quantity: 0.03, unit: "kg", category: CATEGORIES.dairy },
     ],
     instructions: [
-      "Deixe o feijão de molho na noite anterior",
-      "Cozinhe o feijão na panela de pressão por 30 minutos",
-      "Refogue alho e cebola no óleo",
-      "Adicione ao feijão cozido",
-      "Cozinhe o arroz separadamente",
-      "Sirva junto"
+      "Heat olive oil in a pan",
+      "Add spinach and wilt 1 minute",
+      "Pour beaten eggs, stir gently",
+      "Add mozzarella, cook until just set",
     ],
-    tags: ["tradicional", "completo", "brasileiro"]
+    tags: ["quick", "high-protein", "keto-friendly"]
   },
   {
     id: "recipe-008",
-    name: "Iogurte com frutas",
+    name: "Turkey Breakfast Wrap",
+    mealType: "breakfast",
+    servings: 1,
+    prepTime: 10,
+    dietStyle: ["balanced"],
+    ingredients: [
+      { foodItemId: "food-046", name: "Whole wheat tortilla", quantity: 1, unit: "un", category: CATEGORIES.grains },
+      { foodItemId: "food-031", name: "Turkey breast", quantity: 0.08, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-002", name: "Eggs", quantity: 2, unit: "un", category: CATEGORIES.protein },
+      { foodItemId: "food-017", name: "Tomatoes", quantity: 0.05, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-021", name: "Lettuce", quantity: 0.03, unit: "kg", category: CATEGORIES.vegetables },
+    ],
+    instructions: [
+      "Scramble eggs in a pan",
+      "Warm tortilla",
+      "Layer turkey, eggs, tomatoes and lettuce",
+      "Roll tightly and slice in half",
+    ],
+    tags: ["portable", "high-protein", "meal-prep"]
+  },
+  {
+    id: "recipe-009",
+    name: "Cottage Cheese Bowl",
+    mealType: "breakfast",
+    servings: 1,
+    prepTime: 5,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-007", name: "Cottage cheese", quantity: 0.2, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-062", name: "Pineapple", quantity: 0.08, unit: "kg", category: CATEGORIES.fruits },
+      { foodItemId: "food-030", name: "Almonds", quantity: 0.02, unit: "kg", category: CATEGORIES.fats },
+      { foodItemId: "food-070", name: "Flaxseed", quantity: 0.01, unit: "kg", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Place cottage cheese in a bowl",
+      "Top with pineapple chunks",
+      "Sprinkle almonds and flaxseed",
+    ],
+    tags: ["quick", "no-cook", "high-protein"]
+  },
+  {
+    id: "recipe-010",
+    name: "Oatmeal with Banana and Walnuts",
+    mealType: "breakfast",
+    servings: 1,
+    prepTime: 10,
+    dietStyle: ["healthy", "balanced"],
+    ingredients: [
+      { foodItemId: "food-010", name: "Oats", quantity: 0.08, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-022", name: "Banana", quantity: 1, unit: "un", category: CATEGORIES.fruits },
+      { foodItemId: "food-069", name: "Walnuts", quantity: 0.02, unit: "kg", category: CATEGORIES.fats },
+      { foodItemId: "food-157", name: "Honey", quantity: 0.01, unit: "kg", category: CATEGORIES.others },
+      { foodItemId: "food-035", name: "Milk (skim)", quantity: 0.2, unit: "L", category: CATEGORIES.dairy },
+    ],
+    instructions: [
+      "Cook oats with milk for 5 minutes",
+      "Slice banana on top",
+      "Add walnuts and drizzle honey",
+    ],
+    tags: ["warm", "fiber", "heart-healthy"]
+  },
+  {
+    id: "recipe-011",
+    name: "Egg Muffin Cups",
+    mealType: "breakfast",
+    servings: 6,
+    prepTime: 25,
+    dietStyle: ["healthy", "balanced"],
+    ingredients: [
+      { foodItemId: "food-002", name: "Eggs", quantity: 6, unit: "un", category: CATEGORIES.protein },
+      { foodItemId: "food-015", name: "Broccoli", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-018", name: "Bell peppers", quantity: 0.08, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-099", name: "Cheddar cheese", quantity: 0.06, unit: "kg", category: CATEGORIES.dairy },
+    ],
+    instructions: [
+      "Preheat oven to 180°C",
+      "Whisk eggs and season",
+      "Divide vegetables into muffin tin",
+      "Pour egg mixture over vegetables",
+      "Top with cheese, bake 20 min",
+    ],
+    tags: ["meal-prep", "portable", "batch-cooking"]
+  },
+  {
+    id: "recipe-012",
+    name: "Skyr with Berries and Seeds",
+    mealType: "breakfast",
+    servings: 1,
+    prepTime: 5,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-096", name: "Skyr", quantity: 0.2, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-131", name: "Raspberries", quantity: 0.05, unit: "kg", category: CATEGORIES.fruits },
+      { foodItemId: "food-024", name: "Blueberries", quantity: 0.05, unit: "kg", category: CATEGORIES.fruits },
+      { foodItemId: "food-139", name: "Pumpkin seeds", quantity: 0.015, unit: "kg", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Spoon skyr into a bowl",
+      "Top with mixed berries",
+      "Sprinkle pumpkin seeds",
+    ],
+    tags: ["quick", "no-cook", "nordic"]
+  },
+  {
+    id: "recipe-013",
+    name: "Sweet Potato Hash with Eggs",
+    mealType: "breakfast",
+    servings: 2,
+    prepTime: 25,
+    dietStyle: ["healthy", "comfort"],
+    ingredients: [
+      { foodItemId: "food-011", name: "Sweet potato", quantity: 0.3, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-002", name: "Eggs", quantity: 3, unit: "un", category: CATEGORIES.protein },
+      { foodItemId: "food-018", name: "Bell peppers", quantity: 0.08, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.015, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Dice sweet potato into small cubes",
+      "Sauté in olive oil 10-12 min until tender",
+      "Add diced peppers, cook 3 min",
+      "Make wells, crack eggs in, cover and cook 5 min",
+    ],
+    tags: ["filling", "complex-carbs", "weekend"]
+  },
+  {
+    id: "recipe-014",
+    name: "Protein Shake Bowl",
+    mealType: "breakfast",
+    servings: 1,
+    prepTime: 5,
+    dietStyle: ["balanced"],
+    ingredients: [
+      { foodItemId: "food-103", name: "Whey protein", quantity: 0.03, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-022", name: "Banana", quantity: 1, unit: "un", category: CATEGORIES.fruits },
+      { foodItemId: "food-132", name: "Blueberries (frozen)", quantity: 0.08, unit: "kg", category: CATEGORIES.fruits },
+      { foodItemId: "food-036", name: "Almond milk", quantity: 0.15, unit: "L", category: CATEGORIES.dairy },
+      { foodItemId: "food-010", name: "Oats", quantity: 0.03, unit: "kg", category: CATEGORIES.grains },
+    ],
+    instructions: [
+      "Blend protein, banana, berries and almond milk until thick",
+      "Pour into bowl",
+      "Top with oats and extra berries",
+    ],
+    tags: ["quick", "high-protein", "post-workout"]
+  },
+  {
+    id: "recipe-015",
+    name: "Smoked Salmon on Rye",
+    mealType: "breakfast",
+    servings: 1,
+    prepTime: 5,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-045", name: "Rye bread", quantity: 2, unit: "un", category: CATEGORIES.grains },
+      { foodItemId: "food-004", name: "Salmon", quantity: 0.08, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-100", name: "Cream cheese (light)", quantity: 0.03, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-020", name: "Cucumber", quantity: 0.05, unit: "kg", category: CATEGORIES.vegetables },
+    ],
+    instructions: [
+      "Toast rye bread lightly",
+      "Spread cream cheese on each slice",
+      "Top with smoked salmon and cucumber slices",
+    ],
+    tags: ["omega-3", "quick", "scandinavian"]
+  },
+  {
+    id: "recipe-016",
+    name: "Chia Pudding with Mango",
+    mealType: "breakfast",
+    servings: 1,
+    prepTime: 5,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-071", name: "Chia seeds", quantity: 0.03, unit: "kg", category: CATEGORIES.fats },
+      { foodItemId: "food-036", name: "Almond milk", quantity: 0.2, unit: "L", category: CATEGORIES.dairy },
+      { foodItemId: "food-065", name: "Mango", quantity: 0.1, unit: "kg", category: CATEGORIES.fruits },
+      { foodItemId: "food-157", name: "Honey", quantity: 0.01, unit: "kg", category: CATEGORIES.others },
+    ],
+    instructions: [
+      "Mix chia seeds with almond milk and honey",
+      "Refrigerate overnight",
+      "Top with diced mango before serving",
+    ],
+    tags: ["no-cook", "meal-prep", "vegan-option"]
+  },
+  {
+    id: "recipe-017",
+    name: "Tofu Scramble",
+    mealType: "breakfast",
+    servings: 2,
+    prepTime: 15,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-039", name: "Tofu (firm)", quantity: 0.2, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-016", name: "Spinach", quantity: 0.05, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-017", name: "Tomatoes", quantity: 0.08, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-156", name: "Turmeric", quantity: 0.003, unit: "kg", category: CATEGORIES.others },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Crumble tofu into small pieces",
+      "Heat oil, add turmeric and crumbled tofu",
+      "Sauté 5 min until golden",
+      "Add spinach and tomatoes, cook 3 min more",
+    ],
+    tags: ["vegan", "high-protein", "plant-based"]
+  },
+  {
+    id: "recipe-018",
+    name: "Granola Energy Bowl",
+    mealType: "breakfast",
+    servings: 1,
+    prepTime: 5,
+    dietStyle: ["balanced", "comfort"],
+    ingredients: [
+      { foodItemId: "food-010", name: "Oats", quantity: 0.05, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-095", name: "Natural yogurt", quantity: 0.15, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-022", name: "Banana", quantity: 0.5, unit: "un", category: CATEGORIES.fruits },
+      { foodItemId: "food-030", name: "Almonds", quantity: 0.02, unit: "kg", category: CATEGORIES.fats },
+      { foodItemId: "food-157", name: "Honey", quantity: 0.015, unit: "kg", category: CATEGORIES.others },
+    ],
+    instructions: [
+      "Layer yogurt in a bowl",
+      "Add oats as granola base",
+      "Top with sliced banana, almonds, and honey",
+    ],
+    tags: ["quick", "energy", "balanced"]
+  },
+  {
+    id: "recipe-019",
+    name: "Egg and Cheese Sandwich",
+    mealType: "breakfast",
+    servings: 1,
+    prepTime: 10,
+    dietStyle: ["comfort", "balanced"],
+    ingredients: [
+      { foodItemId: "food-012", name: "Whole wheat bread", quantity: 2, unit: "un", category: CATEGORIES.grains },
+      { foodItemId: "food-002", name: "Eggs", quantity: 2, unit: "un", category: CATEGORIES.protein },
+      { foodItemId: "food-099", name: "Cheddar cheese", quantity: 0.03, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-073", name: "Butter", quantity: 0.005, unit: "kg", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Butter bread and toast in a pan",
+      "Fry eggs to desired doneness",
+      "Place cheese on warm toast to melt",
+      "Assemble sandwich with eggs",
+    ],
+    tags: ["quick", "comfort", "classic"]
+  },
+  {
+    id: "recipe-020",
+    name: "Açaí Bowl with Protein",
+    mealType: "breakfast",
+    servings: 1,
+    prepTime: 10,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-132", name: "Blueberries (frozen)", quantity: 0.1, unit: "kg", category: CATEGORIES.fruits },
+      { foodItemId: "food-022", name: "Banana", quantity: 1, unit: "un", category: CATEGORIES.fruits },
+      { foodItemId: "food-103", name: "Whey protein", quantity: 0.025, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-010", name: "Oats", quantity: 0.03, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-071", name: "Chia seeds", quantity: 0.01, unit: "kg", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Blend frozen berries and banana until thick",
+      "Mix in protein powder",
+      "Pour into bowl, top with oats and chia seeds",
+    ],
+    tags: ["antioxidant", "high-protein", "trendy"]
+  },
+  {
+    id: "recipe-021",
+    name: "Mushroom and Cheese Omelette",
+    mealType: "breakfast",
+    servings: 1,
+    prepTime: 12,
+    dietStyle: ["healthy", "balanced"],
+    ingredients: [
+      { foodItemId: "food-002", name: "Eggs", quantity: 3, unit: "un", category: CATEGORIES.protein },
+      { foodItemId: "food-056", name: "Mushrooms", quantity: 0.08, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-097", name: "Mozzarella", quantity: 0.03, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.005, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Sauté sliced mushrooms in olive oil 3 min",
+      "Beat eggs and pour over mushrooms",
+      "Add mozzarella, cook until set",
+      "Fold and serve",
+    ],
+    tags: ["quick", "keto-friendly", "savory"]
+  },
+  {
+    id: "recipe-022",
+    name: "Quinoa Breakfast Bowl",
+    mealType: "breakfast",
+    servings: 1,
+    prepTime: 20,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-013", name: "Quinoa", quantity: 0.06, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-035", name: "Milk (skim)", quantity: 0.15, unit: "L", category: CATEGORIES.dairy },
+      { foodItemId: "food-022", name: "Banana", quantity: 0.5, unit: "un", category: CATEGORIES.fruits },
+      { foodItemId: "food-030", name: "Almonds", quantity: 0.015, unit: "kg", category: CATEGORIES.fats },
+      { foodItemId: "food-157", name: "Honey", quantity: 0.01, unit: "kg", category: CATEGORIES.others },
+    ],
+    instructions: [
+      "Cook quinoa in milk until tender (15 min)",
+      "Transfer to bowl",
+      "Top with banana, almonds and honey",
+    ],
+    tags: ["gluten-free", "complete-protein", "warm"]
+  },
+  {
+    id: "recipe-023",
+    name: "Peanut Butter Banana Toast",
+    mealType: "breakfast",
+    servings: 1,
+    prepTime: 5,
+    dietStyle: ["balanced", "comfort"],
+    ingredients: [
+      { foodItemId: "food-012", name: "Whole wheat bread", quantity: 2, unit: "un", category: CATEGORIES.grains },
+      { foodItemId: "food-029", name: "Peanut butter", quantity: 0.025, unit: "kg", category: CATEGORIES.fats },
+      { foodItemId: "food-022", name: "Banana", quantity: 1, unit: "un", category: CATEGORIES.fruits },
+    ],
+    instructions: [
+      "Toast bread until golden",
+      "Spread peanut butter generously",
+      "Top with sliced banana",
+    ],
+    tags: ["quick", "energy", "simple"]
+  },
+  {
+    id: "recipe-024",
+    name: "Veggie Frittata",
+    mealType: "breakfast",
+    servings: 4,
+    prepTime: 30,
+    dietStyle: ["healthy", "balanced"],
+    ingredients: [
+      { foodItemId: "food-002", name: "Eggs", quantity: 6, unit: "un", category: CATEGORIES.protein },
+      { foodItemId: "food-049", name: "Zucchini", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-018", name: "Bell peppers", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-098", name: "Parmesan cheese", quantity: 0.04, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Preheat oven to 180°C",
+      "Sauté vegetables in olive oil 5 min",
+      "Pour beaten eggs with parmesan over veggies",
+      "Bake 20 min until set and golden",
+    ],
+    tags: ["meal-prep", "batch-cooking", "versatile"]
+  },
+  {
+    id: "recipe-025",
+    name: "Breakfast Burrito",
+    mealType: "breakfast",
+    servings: 1,
+    prepTime: 15,
+    dietStyle: ["comfort", "balanced"],
+    ingredients: [
+      { foodItemId: "food-046", name: "Whole wheat tortilla", quantity: 1, unit: "un", category: CATEGORIES.grains },
+      { foodItemId: "food-002", name: "Eggs", quantity: 2, unit: "un", category: CATEGORIES.protein },
+      { foodItemId: "food-086", name: "Black beans", quantity: 0.06, unit: "kg", category: CATEGORIES.legumes },
+      { foodItemId: "food-099", name: "Cheddar cheese", quantity: 0.03, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-017", name: "Tomatoes", quantity: 0.05, unit: "kg", category: CATEGORIES.vegetables },
+    ],
+    instructions: [
+      "Scramble eggs in a pan",
+      "Warm beans and tortilla",
+      "Layer eggs, beans, cheese and diced tomato",
+      "Roll tightly, optionally toast seam-side down",
+    ],
+    tags: ["filling", "portable", "fiber"]
+  },
+  {
+    id: "recipe-026",
+    name: "Kefir Smoothie with Berries",
+    mealType: "breakfast",
+    servings: 1,
+    prepTime: 5,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-102", name: "Kefir", quantity: 0.25, unit: "L", category: CATEGORIES.dairy },
+      { foodItemId: "food-025", name: "Strawberries", quantity: 0.08, unit: "kg", category: CATEGORIES.fruits },
+      { foodItemId: "food-022", name: "Banana", quantity: 0.5, unit: "un", category: CATEGORIES.fruits },
+      { foodItemId: "food-070", name: "Flaxseed", quantity: 0.01, unit: "kg", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Add all ingredients to blender",
+      "Blend until smooth",
+      "Serve immediately",
+    ],
+    tags: ["probiotics", "gut-health", "quick"]
+  },
+  {
+    id: "recipe-027",
+    name: "French Toast with Cinnamon",
+    mealType: "breakfast",
+    servings: 2,
+    prepTime: 15,
+    dietStyle: ["comfort"],
+    ingredients: [
+      { foodItemId: "food-036", name: "White bread", quantity: 4, unit: "un", category: CATEGORIES.grains },
+      { foodItemId: "food-002", name: "Eggs", quantity: 3, unit: "un", category: CATEGORIES.protein },
+      { foodItemId: "food-035", name: "Milk (skim)", quantity: 0.1, unit: "L", category: CATEGORIES.dairy },
+      { foodItemId: "food-073", name: "Butter", quantity: 0.01, unit: "kg", category: CATEGORIES.fats },
+      { foodItemId: "food-157", name: "Honey", quantity: 0.02, unit: "kg", category: CATEGORIES.others },
+    ],
+    instructions: [
+      "Whisk eggs and milk with cinnamon",
+      "Dip bread slices in mixture",
+      "Cook in butter 2-3 min per side",
+      "Serve with honey drizzle",
+    ],
+    tags: ["weekend", "comfort", "crowd-pleaser"]
+  },
+  {
+    id: "recipe-028",
+    name: "Tempeh Breakfast Hash",
+    mealType: "breakfast",
+    servings: 2,
+    prepTime: 20,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-108", name: "Tempeh", quantity: 0.15, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-011", name: "Sweet potato", quantity: 0.2, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-018", name: "Bell peppers", quantity: 0.08, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Dice sweet potato and tempeh into cubes",
+      "Sauté sweet potato in oil 8 min",
+      "Add tempeh and peppers, cook 5 min more",
+      "Season with paprika and serve",
+    ],
+    tags: ["plant-based", "filling", "vegan"]
+  },
+  {
+    id: "recipe-029",
+    name: "Ricotta Toast with Honey and Walnuts",
+    mealType: "breakfast",
+    servings: 1,
+    prepTime: 5,
+    dietStyle: ["balanced"],
+    ingredients: [
+      { foodItemId: "food-118", name: "Sourdough bread", quantity: 2, unit: "un", category: CATEGORIES.grains },
+      { foodItemId: "food-160", name: "Ricotta", quantity: 0.06, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-069", name: "Walnuts", quantity: 0.02, unit: "kg", category: CATEGORIES.fats },
+      { foodItemId: "food-157", name: "Honey", quantity: 0.01, unit: "kg", category: CATEGORIES.others },
+    ],
+    instructions: [
+      "Toast sourdough slices",
+      "Spread ricotta generously",
+      "Top with walnuts and honey drizzle",
+    ],
+    tags: ["quick", "elegant", "italian"]
+  },
+  {
+    id: "recipe-030",
+    name: "Protein Oat Porridge",
+    mealType: "breakfast",
+    servings: 1,
+    prepTime: 10,
+    dietStyle: ["balanced"],
+    ingredients: [
+      { foodItemId: "food-010", name: "Oats", quantity: 0.08, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-103", name: "Whey protein", quantity: 0.025, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-035", name: "Milk (skim)", quantity: 0.25, unit: "L", category: CATEGORIES.dairy },
+      { foodItemId: "food-029", name: "Peanut butter", quantity: 0.015, unit: "kg", category: CATEGORIES.fats },
+      { foodItemId: "food-022", name: "Banana", quantity: 0.5, unit: "un", category: CATEGORIES.fruits },
+    ],
+    instructions: [
+      "Cook oats in milk 5 min",
+      "Stir in protein powder off heat",
+      "Top with peanut butter and sliced banana",
+    ],
+    tags: ["bulking", "high-protein", "warm"]
+  },
+  {
+    id: "recipe-031",
+    name: "Grilled Chicken with Rice and Broccoli",
+    mealType: "lunch",
+    servings: 2,
+    prepTime: 30,
+    dietStyle: ["healthy", "balanced"],
+    ingredients: [
+      { foodItemId: "food-001", name: "Chicken breast", quantity: 0.3, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-009", name: "Brown rice", quantity: 0.15, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-015", name: "Broccoli", quantity: 0.2, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Season chicken with salt and pepper",
+      "Grill chicken 6-7 min per side",
+      "Cook rice according to package",
+      "Steam broccoli 5 min, drizzle olive oil",
+    ],
+    tags: ["classic", "meal-prep", "high-protein"]
+  },
+  {
+    id: "recipe-032",
+    name: "Salmon Bowl with Quinoa",
+    mealType: "lunch",
+    servings: 2,
+    prepTime: 25,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-004", name: "Salmon fillet", quantity: 0.25, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-013", name: "Quinoa", quantity: 0.12, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-050", name: "Asparagus", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+      { foodItemId: "food-026", name: "Lemon", quantity: 0.5, unit: "un", category: CATEGORIES.fruits },
+    ],
+    instructions: [
+      "Cook quinoa in salted water 15 min",
+      "Bake salmon at 200°C for 12 min",
+      "Grill asparagus with olive oil",
+      "Assemble bowls, squeeze lemon on top",
+    ],
+    tags: ["omega-3", "nutrient-dense", "meal-prep"]
+  },
+  {
+    id: "recipe-033",
+    name: "Turkey and Sweet Potato Plate",
+    mealType: "lunch",
+    servings: 2,
+    prepTime: 35,
+    dietStyle: ["healthy", "balanced"],
+    ingredients: [
+      { foodItemId: "food-031", name: "Turkey breast", quantity: 0.25, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-011", name: "Sweet potato", quantity: 0.3, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-016", name: "Spinach", quantity: 0.08, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Slice turkey into medallions and season",
+      "Cube sweet potato, roast at 200°C 25 min",
+      "Pan-sear turkey 4 min per side",
+      "Serve over fresh spinach with olive oil",
+    ],
+    tags: ["lean-protein", "complex-carbs", "clean"]
+  },
+  {
+    id: "recipe-034",
+    name: "Tuna Salad with White Beans",
+    mealType: "lunch",
+    servings: 2,
+    prepTime: 10,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-005", name: "Tuna (canned)", quantity: 0.2, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-088", name: "White beans", quantity: 0.15, unit: "kg", category: CATEGORIES.legumes },
+      { foodItemId: "food-017", name: "Tomatoes", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.015, unit: "L", category: CATEGORIES.fats },
+      { foodItemId: "food-021", name: "Lettuce", quantity: 0.08, unit: "kg", category: CATEGORIES.vegetables },
+    ],
+    instructions: [
+      "Drain tuna and beans",
+      "Dice tomatoes",
+      "Combine all on a bed of lettuce",
+      "Dress with olive oil, salt and lemon",
+    ],
+    tags: ["no-cook", "high-protein", "quick"]
+  },
+  {
+    id: "recipe-035",
+    name: "Beef Stir-Fry with Vegetables",
+    mealType: "lunch",
+    servings: 2,
+    prepTime: 20,
+    dietStyle: ["balanced", "comfort"],
+    ingredients: [
+      { foodItemId: "food-006", name: "Lean ground beef", quantity: 0.25, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-018", name: "Bell peppers", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-015", name: "Broccoli", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-008", name: "White rice", quantity: 0.15, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-152", name: "Soy sauce", quantity: 0.02, unit: "L", category: CATEGORIES.others },
+    ],
+    instructions: [
+      "Cook rice according to package",
+      "Brown beef in a hot wok 5 min",
+      "Add vegetables, stir-fry 3-4 min",
+      "Add soy sauce, serve over rice",
+    ],
+    tags: ["quick", "asian-style", "balanced"]
+  },
+  {
+    id: "recipe-036",
+    name: "Chickpea and Vegetable Curry",
+    mealType: "lunch",
+    servings: 3,
+    prepTime: 30,
+    dietStyle: ["healthy", "comfort"],
+    ingredients: [
+      { foodItemId: "food-085", name: "Chickpeas (canned)", quantity: 0.25, unit: "kg", category: CATEGORIES.legumes },
+      { foodItemId: "food-011", name: "Sweet potato", quantity: 0.2, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-016", name: "Spinach", quantity: 0.08, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-017", name: "Tomatoes", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-072", name: "Coconut oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Dice sweet potato, sauté in coconut oil 5 min",
+      "Add tomatoes and curry spices, simmer 10 min",
+      "Add chickpeas and sweet potato, cook 10 min",
+      "Stir in spinach until wilted, serve",
+    ],
+    tags: ["vegan", "fiber", "batch-cooking"]
+  },
+  {
+    id: "recipe-037",
+    name: "Cod with Roasted Vegetables",
+    mealType: "lunch",
+    servings: 2,
+    prepTime: 30,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-032", name: "Cod fillet", quantity: 0.3, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-049", name: "Zucchini", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-017", name: "Tomatoes", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.015, unit: "L", category: CATEGORIES.fats },
+      { foodItemId: "food-018", name: "Bell peppers", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+    ],
+    instructions: [
+      "Cut vegetables, toss with olive oil, season",
+      "Roast vegetables at 200°C for 15 min",
+      "Add cod to the tray, bake 12 min more",
+      "Serve together with lemon",
+    ],
+    tags: ["low-calorie", "lean-protein", "mediterranean"]
+  },
+  {
+    id: "recipe-038",
+    name: "Lentil Soup with Vegetables",
+    mealType: "lunch",
+    servings: 4,
+    prepTime: 35,
+    dietStyle: ["healthy", "comfort"],
+    ingredients: [
+      { foodItemId: "food-082", name: "Red lentils", quantity: 0.2, unit: "kg", category: CATEGORIES.legumes },
+      { foodItemId: "food-019", name: "Carrots", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-058", name: "Celery", quantity: 0.08, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-017", name: "Tomatoes", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Sauté diced carrots and celery in olive oil 5 min",
+      "Add lentils, tomatoes, and 800ml water",
+      "Simmer 25 min until lentils are soft",
+      "Season with cumin, salt and pepper",
+    ],
+    tags: ["batch-cooking", "budget", "fiber"]
+  },
+  {
+    id: "recipe-039",
+    name: "Chicken Caesar Salad",
+    mealType: "lunch",
+    servings: 2,
+    prepTime: 20,
+    dietStyle: ["balanced"],
+    ingredients: [
+      { foodItemId: "food-001", name: "Chicken breast", quantity: 0.25, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-059", name: "Romaine lettuce", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-098", name: "Parmesan", quantity: 0.03, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-012", name: "Whole wheat bread", quantity: 1, unit: "un", category: CATEGORIES.grains },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.015, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Grill seasoned chicken, slice thin",
+      "Toast bread cubes for croutons",
+      "Toss lettuce with olive oil dressing",
+      "Top with chicken, parmesan and croutons",
+    ],
+    tags: ["classic", "high-protein", "popular"]
+  },
+  {
+    id: "recipe-040",
+    name: "Pork Loin with Couscous",
+    mealType: "lunch",
+    servings: 2,
+    prepTime: 25,
+    dietStyle: ["balanced"],
+    ingredients: [
+      { foodItemId: "food-033", name: "Pork loin", quantity: 0.25, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-034", name: "Couscous", quantity: 0.12, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-049", name: "Zucchini", quantity: 0.12, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Season and sear pork loin 5 min per side",
+      "Finish in oven at 180°C for 10 min",
+      "Pour boiling water over couscous, cover 5 min",
+      "Sauté zucchini, serve alongside sliced pork",
+    ],
+    tags: ["balanced", "quick", "european"]
+  },
+  {
+    id: "recipe-041",
+    name: "Shrimp and Avocado Bowl",
+    mealType: "lunch",
+    servings: 2,
+    prepTime: 15,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-040", name: "Shrimp", quantity: 0.2, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-028", name: "Avocado", quantity: 1, unit: "un", category: CATEGORIES.fruits },
+      { foodItemId: "food-008", name: "White rice", quantity: 0.12, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-020", name: "Cucumber", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-152", name: "Soy sauce", quantity: 0.015, unit: "L", category: CATEGORIES.others },
+    ],
+    instructions: [
+      "Cook rice according to package",
+      "Sauté shrimp with garlic 3 min per side",
+      "Slice avocado and cucumber",
+      "Assemble bowls with rice, shrimp, avocado, cucumber and soy sauce",
+    ],
+    tags: ["light", "omega-3", "asian-inspired"]
+  },
+  {
+    id: "recipe-042",
+    name: "Black Bean and Rice Bowl",
+    mealType: "lunch",
+    servings: 2,
+    prepTime: 20,
+    dietStyle: ["healthy", "comfort"],
+    ingredients: [
+      { foodItemId: "food-086", name: "Black beans", quantity: 0.2, unit: "kg", category: CATEGORIES.legumes },
+      { foodItemId: "food-009", name: "Brown rice", quantity: 0.15, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-018", name: "Bell peppers", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-028", name: "Avocado", quantity: 0.5, unit: "un", category: CATEGORIES.fruits },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Cook rice",
+      "Heat beans with cumin and garlic",
+      "Sauté peppers",
+      "Assemble bowls; top with sliced avocado",
+    ],
+    tags: ["vegan-option", "fiber", "latin"]
+  },
+  {
+    id: "recipe-043",
+    name: "Mackerel with Roasted Beetroot",
+    mealType: "lunch",
+    servings: 2,
+    prepTime: 35,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-107", name: "Mackerel fillet", quantity: 0.25, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-123", name: "Beetroot", quantity: 0.2, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.015, unit: "L", category: CATEGORIES.fats },
+      { foodItemId: "food-016", name: "Spinach", quantity: 0.06, unit: "kg", category: CATEGORIES.vegetables },
+    ],
+    instructions: [
+      "Wrap beetroot in foil, roast at 200°C 25 min",
+      "Pan-sear mackerel skin-side down 4 min, flip 2 min",
+      "Slice beetroot",
+      "Serve over spinach with olive oil",
+    ],
+    tags: ["omega-3", "iron", "nutrient-dense"]
+  },
+  {
+    id: "recipe-044",
+    name: "Tofu Stir-Fry with Vegetables",
+    mealType: "lunch",
+    servings: 2,
+    prepTime: 20,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-039", name: "Tofu (firm)", quantity: 0.25, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-015", name: "Broccoli", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-019", name: "Carrots", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-142", name: "Sesame oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+      { foodItemId: "food-152", name: "Soy sauce", quantity: 0.02, unit: "L", category: CATEGORIES.others },
+    ],
+    instructions: [
+      "Press and cube tofu, fry until golden 5 min",
+      "Remove tofu, stir-fry vegetables 4 min",
+      "Return tofu, add soy sauce and sesame oil",
+      "Serve with rice or noodles",
+    ],
+    tags: ["vegan", "plant-based", "quick"]
+  },
+  {
+    id: "recipe-045",
+    name: "Mediterranean Chicken Wrap",
+    mealType: "lunch",
+    servings: 2,
+    prepTime: 15,
+    dietStyle: ["balanced"],
+    ingredients: [
+      { foodItemId: "food-001", name: "Chicken breast", quantity: 0.2, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-046", name: "Whole wheat tortilla", quantity: 2, unit: "un", category: CATEGORIES.grains },
+      { foodItemId: "food-078", name: "Hummus", quantity: 0.06, unit: "kg", category: CATEGORIES.snacks },
+      { foodItemId: "food-017", name: "Tomatoes", quantity: 0.08, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-021", name: "Lettuce", quantity: 0.05, unit: "kg", category: CATEGORIES.vegetables },
+    ],
+    instructions: [
+      "Grill sliced chicken with herbs",
+      "Warm tortillas",
+      "Spread hummus on each tortilla",
+      "Add chicken, tomatoes, lettuce; roll tightly",
+    ],
+    tags: ["portable", "quick", "mediterranean"]
+  },
+  {
+    id: "recipe-046",
+    name: "Egg Fried Rice",
+    mealType: "lunch",
+    servings: 2,
+    prepTime: 15,
+    dietStyle: ["comfort", "balanced"],
+    ingredients: [
+      { foodItemId: "food-008", name: "White rice", quantity: 0.2, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-002", name: "Eggs", quantity: 3, unit: "un", category: CATEGORIES.protein },
+      { foodItemId: "food-127", name: "Peas (frozen)", quantity: 0.08, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-019", name: "Carrots", quantity: 0.08, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-152", name: "Soy sauce", quantity: 0.02, unit: "L", category: CATEGORIES.others },
+    ],
+    instructions: [
+      "Cook and cool rice (day-old is best)",
+      "Scramble eggs, set aside",
+      "Stir-fry vegetables 2 min",
+      "Add rice and soy sauce, toss with eggs",
+    ],
+    tags: ["quick", "budget", "asian-style"]
+  },
+  {
+    id: "recipe-047",
+    name: "Grilled Tilapia with Salad",
+    mealType: "lunch",
+    servings: 2,
+    prepTime: 20,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-037", name: "Tilapia fillet", quantity: 0.3, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-021", name: "Lettuce", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-017", name: "Tomatoes", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-020", name: "Cucumber", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Season tilapia with lemon and herbs",
+      "Grill 4 min per side",
+      "Prepare salad with lettuce, tomatoes, cucumber",
+      "Dress with olive oil and serve alongside fish",
+    ],
+    tags: ["light", "low-calorie", "cutting"]
+  },
+  {
+    id: "recipe-048",
+    name: "Chicken and Pasta Primavera",
+    mealType: "lunch",
+    servings: 3,
+    prepTime: 25,
+    dietStyle: ["balanced", "comfort"],
+    ingredients: [
+      { foodItemId: "food-001", name: "Chicken breast", quantity: 0.25, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-120", name: "Whole wheat penne", quantity: 0.2, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-049", name: "Zucchini", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-018", name: "Bell peppers", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.015, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Cook pasta al dente",
+      "Grill chicken, slice thin",
+      "Sauté vegetables in olive oil 5 min",
+      "Toss everything together with herbs",
+    ],
+    tags: ["batch-cooking", "italian", "balanced"]
+  },
+  {
+    id: "recipe-049",
+    name: "Split Pea Soup",
+    mealType: "lunch",
+    servings: 4,
+    prepTime: 40,
+    dietStyle: ["healthy", "comfort"],
+    ingredients: [
+      { foodItemId: "food-089", name: "Split peas", quantity: 0.2, unit: "kg", category: CATEGORIES.legumes },
+      { foodItemId: "food-019", name: "Carrots", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-058", name: "Celery", quantity: 0.08, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-125", name: "Leeks", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Sauté leeks, carrots, celery 5 min",
+      "Add split peas and 1L water",
+      "Simmer 35 min until peas dissolve",
+      "Season with salt, pepper and cumin",
+    ],
+    tags: ["batch-cooking", "budget", "filling"]
+  },
+  {
+    id: "recipe-050",
+    name: "Sardine and Tomato Toast",
+    mealType: "lunch",
+    servings: 1,
+    prepTime: 10,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-043", name: "Sardines (canned)", quantity: 0.12, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-118", name: "Sourdough bread", quantity: 2, unit: "un", category: CATEGORIES.grains },
+      { foodItemId: "food-017", name: "Tomatoes", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.005, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Toast sourdough bread",
+      "Drain sardines, mash lightly",
+      "Dice tomatoes",
+      "Top toast with sardines, tomatoes, olive oil drizzle",
+    ],
+    tags: ["omega-3", "quick", "budget"]
+  },
+  {
+    id: "recipe-051",
+    name: "Chicken Burrito Bowl",
+    mealType: "lunch",
+    servings: 2,
+    prepTime: 25,
+    dietStyle: ["comfort", "balanced"],
+    ingredients: [
+      { foodItemId: "food-001", name: "Chicken breast", quantity: 0.25, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-009", name: "Brown rice", quantity: 0.15, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-086", name: "Black beans", quantity: 0.1, unit: "kg", category: CATEGORIES.legumes },
+      { foodItemId: "food-017", name: "Tomatoes", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-028", name: "Avocado", quantity: 0.5, unit: "un", category: CATEGORIES.fruits },
+    ],
+    instructions: [
+      "Grill seasoned chicken, dice",
+      "Cook rice and warm beans",
+      "Make quick salsa with diced tomatoes",
+      "Assemble bowls with everything plus avocado",
+    ],
+    tags: ["popular", "filling", "balanced"]
+  },
+  {
+    id: "recipe-052",
+    name: "Seitan Kebab with Bulgur",
+    mealType: "lunch",
+    servings: 2,
+    prepTime: 25,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-109", name: "Seitan", quantity: 0.2, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-114", name: "Bulgur wheat", quantity: 0.12, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-018", name: "Bell peppers", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-017", name: "Tomatoes", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Cube seitan, thread on skewers with peppers",
+      "Grill or broil 8-10 min turning once",
+      "Soak bulgur in boiling water 10 min",
+      "Serve kebabs over bulgur with diced tomatoes",
+    ],
+    tags: ["plant-based", "high-protein", "middle-eastern"]
+  },
+  {
+    id: "recipe-053",
+    name: "Cottage Cheese Stuffed Peppers",
+    mealType: "lunch",
+    servings: 2,
+    prepTime: 30,
+    dietStyle: ["healthy", "balanced"],
+    ingredients: [
+      { foodItemId: "food-018", name: "Bell peppers", quantity: 3, unit: "un", category: CATEGORIES.vegetables },
+      { foodItemId: "food-007", name: "Cottage cheese", quantity: 0.2, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-009", name: "Brown rice", quantity: 0.1, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-016", name: "Spinach", quantity: 0.06, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-098", name: "Parmesan", quantity: 0.02, unit: "kg", category: CATEGORIES.dairy },
+    ],
+    instructions: [
+      "Halve peppers and remove seeds",
+      "Mix cottage cheese with cooked rice and spinach",
+      "Stuff peppers with mixture",
+      "Top with parmesan, bake at 180°C 20 min",
+    ],
+    tags: ["high-protein", "creative", "meal-prep"]
+  },
+  {
+    id: "recipe-054",
+    name: "Trout with Lemon and Herbs",
+    mealType: "lunch",
+    servings: 2,
+    prepTime: 20,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-111", name: "Trout fillet", quantity: 0.3, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-050", name: "Asparagus", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+      { foodItemId: "food-026", name: "Lemon", quantity: 1, unit: "un", category: CATEGORIES.fruits },
+    ],
+    instructions: [
+      "Season trout with lemon, herbs and olive oil",
+      "Bake at 200°C for 12 min",
+      "Grill asparagus alongside",
+      "Serve with extra lemon wedges",
+    ],
+    tags: ["omega-3", "light", "european"]
+  },
+  {
+    id: "recipe-055",
+    name: "Lamb with Couscous and Vegetables",
+    mealType: "lunch",
+    servings: 2,
+    prepTime: 30,
+    dietStyle: ["balanced", "comfort"],
+    ingredients: [
+      { foodItemId: "food-041", name: "Lamb chops", quantity: 0.2, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-113", name: "Couscous", quantity: 0.12, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-019", name: "Carrots", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-049", name: "Zucchini", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Season lamb with rosemary and garlic",
+      "Sear lamb 4 min per side",
+      "Prepare couscous with boiling water",
+      "Sauté vegetables, serve alongside",
+    ],
+    tags: ["premium-protein", "mediterranean", "filling"]
+  },
+  {
+    id: "recipe-056",
+    name: "Quinoa and Black Bean Salad",
+    mealType: "lunch",
+    servings: 2,
+    prepTime: 20,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-013", name: "Quinoa", quantity: 0.12, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-086", name: "Black beans", quantity: 0.15, unit: "kg", category: CATEGORIES.legumes },
+      { foodItemId: "food-047", name: "Corn", quantity: 0.08, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-017", name: "Tomatoes", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Cook and cool quinoa",
+      "Combine with drained beans, corn, diced tomatoes",
+      "Dress with olive oil and lime juice",
+      "Serve cold or at room temperature",
+    ],
+    tags: ["vegan", "meal-prep", "fiber"]
+  },
+  {
+    id: "recipe-057",
+    name: "Chicken Teriyaki with Rice",
+    mealType: "lunch",
+    servings: 2,
+    prepTime: 20,
+    dietStyle: ["comfort", "balanced"],
+    ingredients: [
+      { foodItemId: "food-105", name: "Chicken thigh", quantity: 0.3, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-008", name: "White rice", quantity: 0.15, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-152", name: "Soy sauce", quantity: 0.03, unit: "L", category: CATEGORIES.others },
+      { foodItemId: "food-157", name: "Honey", quantity: 0.02, unit: "kg", category: CATEGORIES.others },
+      { foodItemId: "food-015", name: "Broccoli", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+    ],
+    instructions: [
+      "Mix soy sauce and honey for teriyaki glaze",
+      "Cook chicken in pan, add glaze last 3 min",
+      "Cook rice and steam broccoli",
+      "Serve chicken over rice with broccoli",
+    ],
+    tags: ["asian-style", "popular", "flavor"]
+  },
+  {
+    id: "recipe-058",
+    name: "White Bean and Tuna Salad",
+    mealType: "lunch",
+    servings: 2,
+    prepTime: 10,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-005", name: "Tuna (canned)", quantity: 0.15, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-088", name: "White beans", quantity: 0.2, unit: "kg", category: CATEGORIES.legumes },
+      { foodItemId: "food-059", name: "Romaine lettuce", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.015, unit: "L", category: CATEGORIES.fats },
+      { foodItemId: "food-026", name: "Lemon", quantity: 0.5, unit: "un", category: CATEGORIES.fruits },
+    ],
+    instructions: [
+      "Drain tuna and beans",
+      "Toss with lettuce and olive oil",
+      "Squeeze lemon over top",
+      "Season with salt and pepper",
+    ],
+    tags: ["no-cook", "quick", "italian"]
+  },
+  {
+    id: "recipe-059",
+    name: "Tempeh Buddha Bowl",
+    mealType: "lunch",
+    servings: 2,
+    prepTime: 25,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-108", name: "Tempeh", quantity: 0.2, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-009", name: "Brown rice", quantity: 0.12, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-028", name: "Avocado", quantity: 0.5, unit: "un", category: CATEGORIES.fruits },
+      { foodItemId: "food-019", name: "Carrots", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-053", name: "Kale", quantity: 0.06, unit: "kg", category: CATEGORIES.vegetables },
+    ],
+    instructions: [
+      "Slice and marinate tempeh in soy sauce",
+      "Pan-fry tempeh until crispy",
+      "Cook rice and massage kale",
+      "Assemble bowls with all components",
+    ],
+    tags: ["vegan", "plant-based", "colorful"]
+  },
+  {
+    id: "recipe-060",
+    name: "Ground Turkey Lettuce Wraps",
+    mealType: "lunch",
+    servings: 2,
+    prepTime: 15,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-031", name: "Turkey breast", quantity: 0.25, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-059", name: "Romaine lettuce", quantity: 0.12, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-019", name: "Carrots", quantity: 0.08, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-152", name: "Soy sauce", quantity: 0.02, unit: "L", category: CATEGORIES.others },
+      { foodItemId: "food-142", name: "Sesame oil", quantity: 0.005, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Cook ground turkey with garlic until browned",
+      "Add grated carrots, soy sauce and sesame oil",
+      "Separate large lettuce leaves as cups",
+      "Spoon mixture into lettuce cups",
+    ],
+    tags: ["low-carb", "light", "asian-inspired"]
+  },
+  {
+    id: "recipe-061",
+    name: "Baked Salmon with Sweet Potato",
+    mealType: "dinner",
+    servings: 2,
+    prepTime: 30,
+    dietStyle: ["healthy", "balanced"],
+    ingredients: [
+      { foodItemId: "food-004", name: "Salmon fillet", quantity: 0.3, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-011", name: "Sweet potato", quantity: 0.3, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-015", name: "Broccoli", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Cube sweet potato, roast at 200°C 20 min",
+      "Season salmon with herbs",
+      "Add salmon to tray, bake 12 min more",
+      "Steam broccoli and serve everything together",
+    ],
+    tags: ["omega-3", "batch-cooking", "meal-prep"]
+  },
+  {
+    id: "recipe-062",
+    name: "Lean Beef and Vegetable Stew",
+    mealType: "dinner",
+    servings: 4,
+    prepTime: 45,
+    dietStyle: ["comfort", "balanced"],
+    ingredients: [
+      { foodItemId: "food-006", name: "Lean ground beef", quantity: 0.4, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-019", name: "Carrots", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-011", name: "Sweet potato", quantity: 0.2, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-017", name: "Tomatoes", quantity: 0.2, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Brown beef in olive oil 5 min",
+      "Add diced carrots and sweet potato",
+      "Add tomatoes and 500ml water",
+      "Simmer 35 min until everything is tender",
+    ],
+    tags: ["batch-cooking", "comfort", "filling"]
+  },
+  {
+    id: "recipe-063",
+    name: "Grilled Chicken Thighs with Green Beans",
+    mealType: "dinner",
+    servings: 2,
+    prepTime: 25,
+    dietStyle: ["balanced"],
+    ingredients: [
+      { foodItemId: "food-105", name: "Chicken thigh", quantity: 0.3, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-051", name: "Green beans", quantity: 0.2, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+      { foodItemId: "food-098", name: "Parmesan", quantity: 0.02, unit: "kg", category: CATEGORIES.dairy },
+    ],
+    instructions: [
+      "Season chicken thighs with herbs",
+      "Grill 7 min per side",
+      "Steam green beans until tender-crisp",
+      "Toss beans with olive oil, serve with chicken",
+    ],
+    tags: ["simple", "flavorful", "balanced"]
+  },
+  {
+    id: "recipe-064",
+    name: "Cod with Mashed Sweet Potato",
+    mealType: "dinner",
+    servings: 2,
+    prepTime: 30,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-106", name: "Cod fillet", quantity: 0.3, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-011", name: "Sweet potato", quantity: 0.3, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-016", name: "Spinach", quantity: 0.08, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-073", name: "Butter", quantity: 0.01, unit: "kg", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Boil sweet potato, mash with butter",
+      "Season and bake cod at 200°C 12 min",
+      "Wilt spinach in a hot pan",
+      "Serve cod over mash with spinach",
+    ],
+    tags: ["lean-protein", "comfort", "nutritious"]
+  },
+  {
+    id: "recipe-065",
+    name: "Turkey Meatballs with Pasta",
+    mealType: "dinner",
+    servings: 3,
+    prepTime: 35,
+    dietStyle: ["comfort", "balanced"],
+    ingredients: [
+      { foodItemId: "food-031", name: "Turkey breast", quantity: 0.3, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-120", name: "Whole wheat penne", quantity: 0.2, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-017", name: "Tomatoes", quantity: 0.2, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+      { foodItemId: "food-098", name: "Parmesan", quantity: 0.03, unit: "kg", category: CATEGORIES.dairy },
+    ],
+    instructions: [
+      "Mix ground turkey with herbs, form meatballs",
+      "Brown meatballs in olive oil 8 min",
+      "Simmer in crushed tomatoes 15 min",
+      "Cook pasta, serve with meatballs and parmesan",
+    ],
+    tags: ["batch-cooking", "crowd-pleaser", "italian"]
+  },
+  {
+    id: "recipe-066",
+    name: "Baked Pork Loin with Vegetables",
+    mealType: "dinner",
+    servings: 2,
+    prepTime: 35,
+    dietStyle: ["balanced"],
+    ingredients: [
+      { foodItemId: "food-104", name: "Pork tenderloin", quantity: 0.3, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-019", name: "Carrots", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-052", name: "Brussels sprouts", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Season pork with rosemary and garlic",
+      "Sear in pan 3 min per side",
+      "Toss vegetables with olive oil",
+      "Roast pork and vegetables at 200°C 20 min",
+    ],
+    tags: ["lean", "roasted", "european"]
+  },
+  {
+    id: "recipe-067",
+    name: "Shrimp and Vegetable Stir-Fry",
+    mealType: "dinner",
+    servings: 2,
+    prepTime: 15,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-040", name: "Shrimp", quantity: 0.25, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-015", name: "Broccoli", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-018", name: "Bell peppers", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-142", name: "Sesame oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+      { foodItemId: "food-152", name: "Soy sauce", quantity: 0.02, unit: "L", category: CATEGORIES.others },
+    ],
+    instructions: [
+      "Heat sesame oil in a wok",
+      "Stir-fry shrimp 2 min per side, set aside",
+      "Add vegetables, stir-fry 3-4 min",
+      "Return shrimp, add soy sauce, toss and serve",
+    ],
+    tags: ["quick", "low-calorie", "asian-style"]
+  },
+  {
+    id: "recipe-068",
+    name: "Vegetarian Chili",
+    mealType: "dinner",
+    servings: 4,
+    prepTime: 40,
+    dietStyle: ["healthy", "comfort"],
+    ingredients: [
+      { foodItemId: "food-087", name: "Kidney beans", quantity: 0.2, unit: "kg", category: CATEGORIES.legumes },
+      { foodItemId: "food-086", name: "Black beans", quantity: 0.2, unit: "kg", category: CATEGORIES.legumes },
+      { foodItemId: "food-017", name: "Tomatoes", quantity: 0.3, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-018", name: "Bell peppers", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-047", name: "Corn", quantity: 0.1, unit: "kg", category: CATEGORIES.grains },
+    ],
+    instructions: [
+      "Sauté peppers 5 min",
+      "Add tomatoes, beans and corn",
+      "Add cumin, paprika, chili powder",
+      "Simmer 30 min, stirring occasionally",
+    ],
+    tags: ["vegan", "batch-cooking", "fiber"]
+  },
+  {
+    id: "recipe-069",
+    name: "Duck Breast with Roasted Vegetables",
+    mealType: "dinner",
+    servings: 2,
+    prepTime: 30,
+    dietStyle: ["balanced"],
+    ingredients: [
+      { foodItemId: "food-042", name: "Duck breast", quantity: 0.3, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-011", name: "Sweet potato", quantity: 0.2, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-052", name: "Brussels sprouts", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Score duck skin in a crosshatch pattern",
+      "Cook skin-side down in cold pan, render fat 8 min",
+      "Flip, cook 4 min more",
+      "Roast vegetables in duck fat, serve sliced",
+    ],
+    tags: ["premium", "flavor", "special-occasion"]
+  },
+  {
+    id: "recipe-070",
+    name: "Lentil and Spinach Stew",
+    mealType: "dinner",
+    servings: 3,
+    prepTime: 30,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-083", name: "Green lentils", quantity: 0.2, unit: "kg", category: CATEGORIES.legumes },
+      { foodItemId: "food-016", name: "Spinach", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-019", name: "Carrots", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-017", name: "Tomatoes", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Sauté diced carrots in olive oil 5 min",
+      "Add lentils, tomatoes and 600ml water",
+      "Simmer 25 min until lentils tender",
+      "Stir in spinach, cook 2 min more",
+    ],
+    tags: ["vegan", "iron", "budget"]
+  },
+  {
+    id: "recipe-071",
+    name: "Herb-Crusted Chicken with Quinoa",
+    mealType: "dinner",
+    servings: 2,
+    prepTime: 30,
+    dietStyle: ["healthy", "balanced"],
+    ingredients: [
+      { foodItemId: "food-001", name: "Chicken breast", quantity: 0.3, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-013", name: "Quinoa", quantity: 0.12, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-050", name: "Asparagus", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+      { foodItemId: "food-098", name: "Parmesan", quantity: 0.02, unit: "kg", category: CATEGORIES.dairy },
+    ],
+    instructions: [
+      "Mix parmesan with herbs, press onto chicken",
+      "Bake at 200°C for 18-20 min",
+      "Cook quinoa in salted water 15 min",
+      "Grill asparagus, serve alongside",
+    ],
+    tags: ["high-protein", "elegant", "meal-prep"]
+  },
+  {
+    id: "recipe-072",
+    name: "Baked Tilapia with Cauliflower Rice",
+    mealType: "dinner",
+    servings: 2,
+    prepTime: 20,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-037", name: "Tilapia fillet", quantity: 0.3, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-048", name: "Cauliflower", quantity: 0.3, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+      { foodItemId: "food-016", name: "Spinach", quantity: 0.06, unit: "kg", category: CATEGORIES.vegetables },
+    ],
+    instructions: [
+      "Pulse cauliflower in food processor to rice texture",
+      "Sauté cauliflower rice in olive oil 5 min",
+      "Season and bake tilapia at 180°C 12 min",
+      "Serve fish over cauliflower rice with spinach",
+    ],
+    tags: ["low-carb", "lean", "cutting"]
+  },
+  {
+    id: "recipe-073",
+    name: "Egg and Vegetable Curry",
+    mealType: "dinner",
+    servings: 2,
+    prepTime: 25,
+    dietStyle: ["comfort"],
+    ingredients: [
+      { foodItemId: "food-002", name: "Eggs", quantity: 4, unit: "un", category: CATEGORIES.protein },
+      { foodItemId: "food-017", name: "Tomatoes", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-016", name: "Spinach", quantity: 0.08, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-072", name: "Coconut oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+      { foodItemId: "food-008", name: "White rice", quantity: 0.15, unit: "kg", category: CATEGORIES.grains },
+    ],
+    instructions: [
+      "Hard-boil eggs, halve them",
+      "Make curry sauce with tomatoes and spices",
+      "Add halved eggs and spinach to sauce",
+      "Serve over cooked rice",
+    ],
+    tags: ["vegetarian", "budget", "indian-style"]
+  },
+  {
+    id: "recipe-074",
+    name: "Salmon Teriyaki with Edamame",
+    mealType: "dinner",
+    servings: 2,
+    prepTime: 20,
+    dietStyle: ["balanced"],
+    ingredients: [
+      { foodItemId: "food-004", name: "Salmon fillet", quantity: 0.25, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-079", name: "Edamame", quantity: 0.1, unit: "kg", category: CATEGORIES.snacks },
+      { foodItemId: "food-008", name: "White rice", quantity: 0.15, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-152", name: "Soy sauce", quantity: 0.03, unit: "L", category: CATEGORIES.others },
+      { foodItemId: "food-157", name: "Honey", quantity: 0.02, unit: "kg", category: CATEGORIES.others },
+    ],
+    instructions: [
+      "Make teriyaki glaze: soy sauce + honey + ginger",
+      "Pan-sear salmon skin-down 4 min, flip 3 min",
+      "Glaze salmon in last minute",
+      "Serve with rice and steamed edamame",
+    ],
+    tags: ["omega-3", "japanese-style", "popular"]
+  },
+  {
+    id: "recipe-075",
+    name: "Stuffed Eggplant with Lentils",
+    mealType: "dinner",
+    servings: 2,
+    prepTime: 35,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-057", name: "Eggplant", quantity: 2, unit: "un", category: CATEGORIES.vegetables },
+      { foodItemId: "food-082", name: "Red lentils", quantity: 0.1, unit: "kg", category: CATEGORIES.legumes },
+      { foodItemId: "food-017", name: "Tomatoes", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-097", name: "Mozzarella", quantity: 0.06, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Halve eggplant, scoop out centers",
+      "Cook lentils with tomatoes 15 min",
+      "Fill eggplant shells with lentil mixture",
+      "Top with mozzarella, bake at 180°C 20 min",
+    ],
+    tags: ["vegetarian", "creative", "mediterranean"]
+  },
+  {
+    id: "recipe-076",
+    name: "Beef Steak with Sweet Potato Wedges",
+    mealType: "dinner",
+    servings: 2,
+    prepTime: 30,
+    dietStyle: ["comfort", "balanced"],
+    ingredients: [
+      { foodItemId: "food-006", name: "Lean beef", quantity: 0.25, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-011", name: "Sweet potato", quantity: 0.3, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-016", name: "Spinach", quantity: 0.06, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.015, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Cut sweet potatoes into wedges",
+      "Toss with olive oil, bake at 200°C 25 min",
+      "Season and sear steak 4 min per side",
+      "Rest 5 min, slice and serve with wedges and spinach",
+    ],
+    tags: ["high-protein", "filling", "popular"]
+  },
+  {
+    id: "recipe-077",
+    name: "Chicken and Mushroom Risotto",
+    mealType: "dinner",
+    servings: 3,
+    prepTime: 35,
+    dietStyle: ["comfort", "balanced"],
+    ingredients: [
+      { foodItemId: "food-001", name: "Chicken breast", quantity: 0.25, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-056", name: "Mushrooms", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-008", name: "White rice", quantity: 0.2, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-098", name: "Parmesan", quantity: 0.03, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Sauté mushrooms in olive oil 5 min",
+      "Add rice, stir 1 min",
+      "Add warm broth gradually, stirring 18-20 min",
+      "While risotto cooks, grill chicken; stir in parmesan",
+    ],
+    tags: ["italian", "comfort", "crowd-pleaser"]
+  },
+  {
+    id: "recipe-078",
+    name: "Baked Sardines with Potatoes",
+    mealType: "dinner",
+    servings: 2,
+    prepTime: 30,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-043", name: "Sardines", quantity: 0.2, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-011", name: "Sweet potato", quantity: 0.25, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-017", name: "Tomatoes", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.015, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Slice potatoes thin, layer in baking dish",
+      "Top with tomato slices",
+      "Lay sardines on top, drizzle olive oil",
+      "Bake at 200°C 25 min",
+    ],
+    tags: ["portuguese", "omega-3", "budget"]
+  },
+  {
+    id: "recipe-079",
+    name: "Cauliflower and Chickpea Bake",
+    mealType: "dinner",
+    servings: 3,
+    prepTime: 35,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-048", name: "Cauliflower", quantity: 0.3, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-085", name: "Chickpeas", quantity: 0.2, unit: "kg", category: CATEGORIES.legumes },
+      { foodItemId: "food-017", name: "Tomatoes", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.015, unit: "L", category: CATEGORIES.fats },
+      { foodItemId: "food-156", name: "Turmeric", quantity: 0.003, unit: "kg", category: CATEGORIES.others },
+    ],
+    instructions: [
+      "Cut cauliflower into florets",
+      "Toss cauliflower and chickpeas with olive oil and turmeric",
+      "Add tomatoes to baking dish",
+      "Roast at 200°C 25-30 min",
+    ],
+    tags: ["vegan", "fiber", "anti-inflammatory"]
+  },
+  {
+    id: "recipe-080",
+    name: "Pork Stir-Fry with Rice Noodles",
+    mealType: "dinner",
+    servings: 2,
+    prepTime: 20,
+    dietStyle: ["comfort"],
+    ingredients: [
+      { foodItemId: "food-033", name: "Pork loin", quantity: 0.2, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-015", name: "Broccoli", quantity: 0.12, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-019", name: "Carrots", quantity: 0.08, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-008", name: "White rice", quantity: 0.15, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-152", name: "Soy sauce", quantity: 0.02, unit: "L", category: CATEGORIES.others },
+    ],
+    instructions: [
+      "Slice pork thin, marinate in soy sauce",
+      "Cook rice noodles or rice",
+      "Stir-fry pork 3 min, add vegetables 3 min",
+      "Serve over noodles with soy sauce",
+    ],
+    tags: ["quick", "asian-style", "balanced"]
+  },
+  {
+    id: "recipe-081",
+    name: "Salmon and Avocado Poke Bowl",
+    mealType: "dinner",
+    servings: 2,
+    prepTime: 15,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-004", name: "Salmon fillet", quantity: 0.25, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-008", name: "White rice", quantity: 0.15, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-028", name: "Avocado", quantity: 1, unit: "un", category: CATEGORIES.fruits },
+      { foodItemId: "food-020", name: "Cucumber", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-152", name: "Soy sauce", quantity: 0.02, unit: "L", category: CATEGORIES.others },
+    ],
+    instructions: [
+      "Cook sushi rice and cool",
+      "Cube fresh salmon (sashimi grade)",
+      "Slice avocado and cucumber",
+      "Assemble bowls with rice, fish, veggies; drizzle soy sauce",
+    ],
+    tags: ["japanese", "omega-3", "trendy"]
+  },
+  {
+    id: "recipe-082",
+    name: "Chicken and Bean Casserole",
+    mealType: "dinner",
+    servings: 4,
+    prepTime: 40,
+    dietStyle: ["comfort", "balanced"],
+    ingredients: [
+      { foodItemId: "food-105", name: "Chicken thigh", quantity: 0.4, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-088", name: "White beans", quantity: 0.2, unit: "kg", category: CATEGORIES.legumes },
+      { foodItemId: "food-017", name: "Tomatoes", quantity: 0.2, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-019", name: "Carrots", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Brown chicken in olive oil",
+      "Add carrots, cook 3 min",
+      "Add tomatoes, beans and herbs",
+      "Cover and bake at 180°C 30 min",
+    ],
+    tags: ["batch-cooking", "one-pot", "family"]
+  },
+  {
+    id: "recipe-083",
+    name: "Veggie Pad Thai with Tofu",
+    mealType: "dinner",
+    servings: 2,
+    prepTime: 25,
+    dietStyle: ["healthy", "comfort"],
+    ingredients: [
+      { foodItemId: "food-039", name: "Tofu (firm)", quantity: 0.2, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-019", name: "Carrots", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-018", name: "Bell peppers", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-146", name: "Peanuts", quantity: 0.03, unit: "kg", category: CATEGORIES.snacks },
+      { foodItemId: "food-152", name: "Soy sauce", quantity: 0.02, unit: "L", category: CATEGORIES.others },
+    ],
+    instructions: [
+      "Press and cube tofu, fry until golden",
+      "Stir-fry julienned vegetables 3 min",
+      "Add rice noodles and soy sauce",
+      "Top with crushed peanuts",
+    ],
+    tags: ["vegan", "thai-style", "popular"]
+  },
+  {
+    id: "recipe-084",
+    name: "Mediterranean Baked Chicken",
+    mealType: "dinner",
+    servings: 2,
+    prepTime: 35,
+    dietStyle: ["healthy", "balanced"],
+    ingredients: [
+      { foodItemId: "food-001", name: "Chicken breast", quantity: 0.3, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-017", name: "Tomatoes", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-049", name: "Zucchini", quantity: 0.12, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.015, unit: "L", category: CATEGORIES.fats },
+      { foodItemId: "food-097", name: "Mozzarella", quantity: 0.05, unit: "kg", category: CATEGORIES.dairy },
+    ],
+    instructions: [
+      "Place chicken in baking dish",
+      "Top with sliced tomatoes and zucchini",
+      "Drizzle olive oil, add herbs",
+      "Add mozzarella, bake at 180°C 25 min",
+    ],
+    tags: ["one-pan", "mediterranean", "easy"]
+  },
+  {
+    id: "recipe-085",
+    name: "Kidney Bean and Sweet Potato Curry",
+    mealType: "dinner",
+    servings: 3,
+    prepTime: 30,
+    dietStyle: ["healthy", "comfort"],
+    ingredients: [
+      { foodItemId: "food-087", name: "Kidney beans", quantity: 0.2, unit: "kg", category: CATEGORIES.legumes },
+      { foodItemId: "food-011", name: "Sweet potato", quantity: 0.25, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-016", name: "Spinach", quantity: 0.08, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-072", name: "Coconut oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+      { foodItemId: "food-009", name: "Brown rice", quantity: 0.15, unit: "kg", category: CATEGORIES.grains },
+    ],
+    instructions: [
+      "Cube sweet potato, sauté in coconut oil 5 min",
+      "Add curry paste and kidney beans",
+      "Add 200ml water, simmer 20 min",
+      "Stir in spinach, serve over brown rice",
+    ],
+    tags: ["vegan", "batch-cooking", "spicy"]
+  },
+  {
+    id: "recipe-086",
+    name: "Grilled Lamb with Minted Peas",
+    mealType: "dinner",
+    servings: 2,
+    prepTime: 25,
+    dietStyle: ["balanced"],
+    ingredients: [
+      { foodItemId: "food-041", name: "Lamb chops", quantity: 0.25, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-127", name: "Peas (frozen)", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-011", name: "Sweet potato", quantity: 0.2, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Season lamb with rosemary, grill 5 min per side",
+      "Boil peas, crush with mint and olive oil",
+      "Roast sweet potato wedges",
+      "Serve lamb with minted peas and wedges",
+    ],
+    tags: ["premium", "british", "elegant"]
+  },
+  {
+    id: "recipe-087",
+    name: "Egg-Drop Soup with Spinach",
+    mealType: "dinner",
+    servings: 2,
+    prepTime: 15,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-002", name: "Eggs", quantity: 3, unit: "un", category: CATEGORIES.protein },
+      { foodItemId: "food-016", name: "Spinach", quantity: 0.08, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-019", name: "Carrots", quantity: 0.06, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-152", name: "Soy sauce", quantity: 0.01, unit: "L", category: CATEGORIES.others },
+    ],
+    instructions: [
+      "Bring 600ml broth to boil",
+      "Add grated carrots and spinach",
+      "Slowly drizzle beaten eggs while stirring",
+      "Season with soy sauce and serve",
+    ],
+    tags: ["light", "quick", "low-calorie"]
+  },
+  {
+    id: "recipe-088",
+    name: "Chicken Fajita Bowl",
+    mealType: "dinner",
+    servings: 2,
+    prepTime: 20,
+    dietStyle: ["comfort", "balanced"],
+    ingredients: [
+      { foodItemId: "food-001", name: "Chicken breast", quantity: 0.25, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-018", name: "Bell peppers", quantity: 0.15, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-009", name: "Brown rice", quantity: 0.12, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-028", name: "Avocado", quantity: 0.5, unit: "un", category: CATEGORIES.fruits },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Slice chicken and peppers into strips",
+      "Sauté with fajita spices 8 min",
+      "Cook rice separately",
+      "Assemble bowls with rice, fajita mix and avocado",
+    ],
+    tags: ["mexican-style", "popular", "flavorful"]
+  },
+  {
+    id: "recipe-089",
+    name: "Canned Salmon Patties",
+    mealType: "dinner",
+    servings: 2,
+    prepTime: 20,
+    dietStyle: ["balanced", "comfort"],
+    ingredients: [
+      { foodItemId: "food-112", name: "Canned salmon", quantity: 0.2, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-002", name: "Eggs", quantity: 1, unit: "un", category: CATEGORIES.protein },
+      { foodItemId: "food-010", name: "Oats", quantity: 0.03, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+      { foodItemId: "food-021", name: "Lettuce", quantity: 0.06, unit: "kg", category: CATEGORIES.vegetables },
+    ],
+    instructions: [
+      "Drain salmon, mix with egg and oats",
+      "Form into patties",
+      "Fry in olive oil 4 min per side",
+      "Serve on lettuce with lemon",
+    ],
+    tags: ["budget", "omega-3", "creative"]
+  },
+  {
+    id: "recipe-090",
+    name: "One-Pot Chicken and Rice",
+    mealType: "dinner",
+    servings: 3,
+    prepTime: 35,
+    dietStyle: ["comfort", "balanced"],
+    ingredients: [
+      { foodItemId: "food-105", name: "Chicken thigh", quantity: 0.35, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-008", name: "White rice", quantity: 0.2, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-019", name: "Carrots", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-127", name: "Peas (frozen)", quantity: 0.08, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Brown chicken in olive oil, remove",
+      "Sauté carrots 3 min, add rice and stir",
+      "Add 400ml broth, return chicken",
+      "Cover, simmer 20 min until rice is done, add peas last 3 min",
+    ],
+    tags: ["one-pot", "family", "easy"]
+  },
+  {
+    id: "recipe-091",
+    name: "Protein Energy Balls",
+    mealType: "snack",
+    servings: 12,
+    prepTime: 15,
+    dietStyle: ["healthy", "balanced"],
+    ingredients: [
+      { foodItemId: "food-010", name: "Oats", quantity: 0.1, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-029", name: "Peanut butter", quantity: 0.06, unit: "kg", category: CATEGORIES.fats },
+      { foodItemId: "food-157", name: "Honey", quantity: 0.03, unit: "kg", category: CATEGORIES.others },
+      { foodItemId: "food-103", name: "Whey protein", quantity: 0.03, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-076", name: "Dark chocolate", quantity: 0.03, unit: "kg", category: CATEGORIES.snacks },
+    ],
+    instructions: [
+      "Mix oats, peanut butter, honey and protein powder",
+      "Fold in chopped dark chocolate",
+      "Roll into 12 balls",
+      "Refrigerate 30 min before serving",
+    ],
+    tags: ["meal-prep", "portable", "no-bake"]
+  },
+  {
+    id: "recipe-092",
+    name: "Greek Yogurt with Honey and Walnuts",
+    mealType: "snack",
+    servings: 1,
+    prepTime: 3,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-003", name: "Greek yogurt", quantity: 0.15, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-069", name: "Walnuts", quantity: 0.02, unit: "kg", category: CATEGORIES.fats },
+      { foodItemId: "food-157", name: "Honey", quantity: 0.01, unit: "kg", category: CATEGORIES.others },
+    ],
+    instructions: [
+      "Spoon yogurt into bowl",
+      "Top with walnuts",
+      "Drizzle honey",
+    ],
+    tags: ["quick", "no-cook", "classic"]
+  },
+  {
+    id: "recipe-093",
+    name: "Hummus with Veggie Sticks",
+    mealType: "snack",
+    servings: 2,
+    prepTime: 5,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-078", name: "Hummus", quantity: 0.1, unit: "kg", category: CATEGORIES.snacks },
+      { foodItemId: "food-019", name: "Carrots", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-020", name: "Cucumber", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-018", name: "Bell peppers", quantity: 0.08, unit: "kg", category: CATEGORIES.vegetables },
+    ],
+    instructions: [
+      "Cut vegetables into sticks",
+      "Portion hummus into a bowl",
+      "Serve together as dip plate",
+    ],
+    tags: ["no-cook", "fiber", "portable"]
+  },
+  {
+    id: "recipe-094",
+    name: "Apple Slices with Peanut Butter",
+    mealType: "snack",
+    servings: 1,
+    prepTime: 3,
+    dietStyle: ["balanced"],
+    ingredients: [
+      { foodItemId: "food-023", name: "Apple", quantity: 1, unit: "un", category: CATEGORIES.fruits },
+      { foodItemId: "food-029", name: "Peanut butter", quantity: 0.02, unit: "kg", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Core and slice apple",
+      "Serve with peanut butter for dipping",
+    ],
+    tags: ["quick", "simple", "classic"]
+  },
+  {
+    id: "recipe-095",
+    name: "Cottage Cheese with Pineapple",
+    mealType: "snack",
+    servings: 1,
+    prepTime: 3,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-007", name: "Cottage cheese", quantity: 0.15, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-062", name: "Pineapple", quantity: 0.08, unit: "kg", category: CATEGORIES.fruits },
+    ],
+    instructions: [
+      "Spoon cottage cheese into bowl",
+      "Top with pineapple chunks",
+    ],
+    tags: ["quick", "high-protein", "sweet"]
+  },
+  {
+    id: "recipe-096",
+    name: "Trail Mix Energy Portion",
+    mealType: "snack",
+    servings: 1,
+    prepTime: 2,
+    dietStyle: ["balanced"],
+    ingredients: [
+      { foodItemId: "food-030", name: "Almonds", quantity: 0.02, unit: "kg", category: CATEGORIES.fats },
+      { foodItemId: "food-136", name: "Cranberries (dried)", quantity: 0.015, unit: "kg", category: CATEGORIES.fruits },
+      { foodItemId: "food-076", name: "Dark chocolate", quantity: 0.01, unit: "kg", category: CATEGORIES.snacks },
+      { foodItemId: "food-139", name: "Pumpkin seeds", quantity: 0.01, unit: "kg", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Combine all ingredients in a small bag or container",
+      "Portion to about 55g total",
+    ],
+    tags: ["portable", "no-cook", "energy"]
+  },
+  {
+    id: "recipe-097",
+    name: "Rice Cakes with Almond Butter",
+    mealType: "snack",
+    servings: 1,
+    prepTime: 3,
+    dietStyle: ["balanced"],
+    ingredients: [
+      { foodItemId: "food-075", name: "Rice cakes", quantity: 2, unit: "un", category: CATEGORIES.snacks },
+      { foodItemId: "food-141", name: "Almond butter", quantity: 0.02, unit: "kg", category: CATEGORIES.fats },
+      { foodItemId: "food-022", name: "Banana", quantity: 0.5, unit: "un", category: CATEGORIES.fruits },
+    ],
+    instructions: [
+      "Spread almond butter on rice cakes",
+      "Top with sliced banana",
+    ],
+    tags: ["quick", "gluten-free", "crunchy"]
+  },
+  {
+    id: "recipe-098",
+    name: "Edamame with Sea Salt",
     mealType: "snack",
     servings: 1,
     prepTime: 5,
     dietStyle: ["healthy"],
     ingredients: [
-      {
-        foodItemId: "food-024",
-        name: "Iogurte natural",
-        quantity: 0.2,
-        unit: "kg",
-        category: CATEGORIES.dairy
-      },
-      {
-        foodItemId: "food-022",
-        name: "Morango",
-        quantity: 0.1,
-        unit: "kg",
-        category: CATEGORIES.fruits
-      },
-      {
-        foodItemId: "food-032",
-        name: "Mel",
-        quantity: 0.015,
-        unit: "kg",
-        category: CATEGORIES.others
-      },
-      {
-        foodItemId: "food-035",
-        name: "Castanhas mix",
-        quantity: 0.02,
-        unit: "kg",
-        category: CATEGORIES.others
-      }
+      { foodItemId: "food-079", name: "Edamame", quantity: 0.1, unit: "kg", category: CATEGORIES.snacks },
     ],
     instructions: [
-      "Coloque o iogurte em uma tigela",
-      "Adicione morangos picados",
-      "Regue com mel",
-      "Finalize com castanhas"
+      "Steam or microwave edamame 3 min",
+      "Sprinkle with sea salt",
+      "Eat by squeezing beans from pods",
     ],
-    tags: ["rápido", "proteína", "antioxidante"]
+    tags: ["high-protein", "plant-based", "quick"]
+  },
+  {
+    id: "recipe-099",
+    name: "Banana Oat Cookies",
+    mealType: "snack",
+    servings: 12,
+    prepTime: 20,
+    dietStyle: ["healthy", "comfort"],
+    ingredients: [
+      { foodItemId: "food-022", name: "Banana", quantity: 2, unit: "un", category: CATEGORIES.fruits },
+      { foodItemId: "food-010", name: "Oats", quantity: 0.12, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-076", name: "Dark chocolate", quantity: 0.03, unit: "kg", category: CATEGORIES.snacks },
+      { foodItemId: "food-071", name: "Chia seeds", quantity: 0.01, unit: "kg", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Mash bananas, mix with oats and chia seeds",
+      "Fold in chopped dark chocolate",
+      "Drop spoonfuls onto lined baking sheet",
+      "Bake at 180°C for 12-15 min",
+    ],
+    tags: ["2-ingredient-base", "meal-prep", "no-sugar-added"]
+  },
+  {
+    id: "recipe-100",
+    name: "Protein Shake (Classic)",
+    mealType: "snack",
+    servings: 1,
+    prepTime: 3,
+    dietStyle: ["balanced"],
+    ingredients: [
+      { foodItemId: "food-103", name: "Whey protein", quantity: 0.03, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-035", name: "Milk (skim)", quantity: 0.3, unit: "L", category: CATEGORIES.dairy },
+      { foodItemId: "food-022", name: "Banana", quantity: 0.5, unit: "un", category: CATEGORIES.fruits },
+    ],
+    instructions: [
+      "Add protein, milk and banana to shaker or blender",
+      "Shake or blend until smooth",
+      "Drink immediately",
+    ],
+    tags: ["post-workout", "quick", "high-protein"]
+  },
+  {
+    id: "recipe-101",
+    name: "Tuna-Stuffed Cucumber Bites",
+    mealType: "snack",
+    servings: 2,
+    prepTime: 10,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-005", name: "Tuna (canned)", quantity: 0.1, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-020", name: "Cucumber", quantity: 1, unit: "un", category: CATEGORIES.vegetables },
+      { foodItemId: "food-100", name: "Cream cheese (light)", quantity: 0.03, unit: "kg", category: CATEGORIES.dairy },
+    ],
+    instructions: [
+      "Cut cucumber into 2cm thick rounds",
+      "Mix tuna with cream cheese",
+      "Spoon mixture onto cucumber rounds",
+    ],
+    tags: ["low-carb", "high-protein", "finger-food"]
+  },
+  {
+    id: "recipe-102",
+    name: "Dark Chocolate and Almond Clusters",
+    mealType: "snack",
+    servings: 6,
+    prepTime: 15,
+    dietStyle: ["comfort"],
+    ingredients: [
+      { foodItemId: "food-076", name: "Dark chocolate", quantity: 0.06, unit: "kg", category: CATEGORIES.snacks },
+      { foodItemId: "food-030", name: "Almonds", quantity: 0.04, unit: "kg", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Melt dark chocolate in microwave 60 sec",
+      "Stir in whole almonds",
+      "Drop clusters onto parchment paper",
+      "Refrigerate 20 min",
+    ],
+    tags: ["sweet", "antioxidant", "treat"]
+  },
+  {
+    id: "recipe-103",
+    name: "Kefir Smoothie with Berry Mix",
+    mealType: "snack",
+    servings: 1,
+    prepTime: 5,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-102", name: "Kefir", quantity: 0.2, unit: "L", category: CATEGORIES.dairy },
+      { foodItemId: "food-131", name: "Raspberries", quantity: 0.05, unit: "kg", category: CATEGORIES.fruits },
+      { foodItemId: "food-132", name: "Blueberries (frozen)", quantity: 0.05, unit: "kg", category: CATEGORIES.fruits },
+      { foodItemId: "food-157", name: "Honey", quantity: 0.01, unit: "kg", category: CATEGORIES.others },
+    ],
+    instructions: [
+      "Combine kefir, berries and honey in blender",
+      "Blend until smooth",
+      "Serve immediately",
+    ],
+    tags: ["probiotics", "antioxidant", "gut-health"]
+  },
+  {
+    id: "recipe-104",
+    name: "Egg White Mini Frittatas",
+    mealType: "snack",
+    servings: 6,
+    prepTime: 20,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-110", name: "Egg whites", quantity: 0.2, unit: "kg", category: CATEGORIES.protein },
+      { foodItemId: "food-016", name: "Spinach", quantity: 0.06, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-017", name: "Tomatoes", quantity: 0.06, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-097", name: "Mozzarella", quantity: 0.04, unit: "kg", category: CATEGORIES.dairy },
+    ],
+    instructions: [
+      "Preheat oven to 180°C",
+      "Divide spinach and tomatoes into muffin tins",
+      "Pour egg whites over",
+      "Top with mozzarella, bake 15 min",
+    ],
+    tags: ["meal-prep", "low-calorie", "high-protein"]
+  },
+  {
+    id: "recipe-105",
+    name: "Frozen Banana Bites",
+    mealType: "snack",
+    servings: 4,
+    prepTime: 10,
+    dietStyle: ["comfort"],
+    ingredients: [
+      { foodItemId: "food-022", name: "Banana", quantity: 2, unit: "un", category: CATEGORIES.fruits },
+      { foodItemId: "food-076", name: "Dark chocolate", quantity: 0.05, unit: "kg", category: CATEGORIES.snacks },
+      { foodItemId: "food-068", name: "Cashews", quantity: 0.02, unit: "kg", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Slice bananas into rounds",
+      "Insert toothpick in each",
+      "Dip in melted chocolate, sprinkle crushed cashews",
+      "Freeze 1 hour",
+    ],
+    tags: ["sweet", "frozen-treat", "kid-friendly"]
+  },
+  {
+    id: "recipe-106",
+    name: "Popcorn with Nutritional Seasoning",
+    mealType: "snack",
+    servings: 2,
+    prepTime: 5,
+    dietStyle: ["balanced"],
+    ingredients: [
+      { foodItemId: "food-081", name: "Popcorn (air-popped)", quantity: 0.06, unit: "kg", category: CATEGORIES.snacks },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.005, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Air-pop popcorn kernels",
+      "Drizzle lightly with olive oil",
+      "Season with salt and nutritional yeast",
+    ],
+    tags: ["high-volume", "low-calorie", "movie-night"]
+  },
+  {
+    id: "recipe-107",
+    name: "Skyr with Date and Almond",
+    mealType: "snack",
+    servings: 1,
+    prepTime: 3,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-096", name: "Skyr", quantity: 0.15, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-133", name: "Dried dates", quantity: 0.02, unit: "kg", category: CATEGORIES.fruits },
+      { foodItemId: "food-030", name: "Almonds", quantity: 0.015, unit: "kg", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Place skyr in bowl",
+      "Chop dates and sprinkle on top",
+      "Add almonds",
+    ],
+    tags: ["high-protein", "quick", "scandinavian"]
+  },
+  {
+    id: "recipe-108",
+    name: "Seaweed Snack with Rice Cake",
+    mealType: "snack",
+    servings: 1,
+    prepTime: 2,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-147", name: "Seaweed snacks", quantity: 0.01, unit: "kg", category: CATEGORIES.snacks },
+      { foodItemId: "food-075", name: "Rice cakes", quantity: 1, unit: "un", category: CATEGORIES.snacks },
+    ],
+    instructions: [
+      "Layer seaweed sheets on rice cake",
+      "Eat as a crispy light snack",
+    ],
+    tags: ["low-calorie", "mineral-rich", "asian"]
+  },
+  {
+    id: "recipe-109",
+    name: "Peanut Butter Banana Roll-Up",
+    mealType: "snack",
+    servings: 1,
+    prepTime: 3,
+    dietStyle: ["comfort", "balanced"],
+    ingredients: [
+      { foodItemId: "food-046", name: "Whole wheat tortilla", quantity: 1, unit: "un", category: CATEGORIES.grains },
+      { foodItemId: "food-029", name: "Peanut butter", quantity: 0.02, unit: "kg", category: CATEGORIES.fats },
+      { foodItemId: "food-022", name: "Banana", quantity: 1, unit: "un", category: CATEGORIES.fruits },
+    ],
+    instructions: [
+      "Spread peanut butter over tortilla",
+      "Place whole banana on edge",
+      "Roll tightly and slice into rounds",
+    ],
+    tags: ["portable", "quick", "energy"]
+  },
+  {
+    id: "recipe-110",
+    name: "Quark with Mixed Berries",
+    mealType: "snack",
+    servings: 1,
+    prepTime: 3,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-101", name: "Quark", quantity: 0.15, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-025", name: "Strawberries", quantity: 0.04, unit: "kg", category: CATEGORIES.fruits },
+      { foodItemId: "food-131", name: "Raspberries", quantity: 0.04, unit: "kg", category: CATEGORIES.fruits },
+    ],
+    instructions: [
+      "Place quark in bowl",
+      "Top with sliced strawberries and raspberries",
+    ],
+    tags: ["high-protein", "no-cook", "european"]
+  },
+  {
+    id: "recipe-111",
+    name: "Sweet Potato Chips (Baked)",
+    mealType: "snack",
+    servings: 2,
+    prepTime: 30,
+    dietStyle: ["comfort"],
+    ingredients: [
+      { foodItemId: "food-011", name: "Sweet potato", quantity: 0.25, unit: "kg", category: CATEGORIES.vegetables },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.01, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Slice sweet potato very thin",
+      "Toss with olive oil and salt",
+      "Bake at 180°C 20-25 min, flipping halfway",
+      "Cool until crispy",
+    ],
+    tags: ["healthy-swap", "crunchy", "meal-prep"]
+  },
+  {
+    id: "recipe-112",
+    name: "Tahini Date Balls",
+    mealType: "snack",
+    servings: 10,
+    prepTime: 15,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-137", name: "Tahini", quantity: 0.04, unit: "kg", category: CATEGORIES.fats },
+      { foodItemId: "food-133", name: "Dried dates", quantity: 0.06, unit: "kg", category: CATEGORIES.fruits },
+      { foodItemId: "food-010", name: "Oats", quantity: 0.05, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-071", name: "Chia seeds", quantity: 0.01, unit: "kg", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Blend dates into a paste",
+      "Mix with tahini, oats and chia seeds",
+      "Roll into 10 small balls",
+      "Refrigerate 30 min",
+    ],
+    tags: ["vegan", "no-bake", "energy"]
+  },
+  {
+    id: "recipe-113",
+    name: "Beef Jerky with Cucumber",
+    mealType: "snack",
+    servings: 1,
+    prepTime: 2,
+    dietStyle: ["balanced"],
+    ingredients: [
+      { foodItemId: "food-077", name: "Beef jerky", quantity: 0.04, unit: "kg", category: CATEGORIES.snacks },
+      { foodItemId: "food-020", name: "Cucumber", quantity: 0.1, unit: "kg", category: CATEGORIES.vegetables },
+    ],
+    instructions: [
+      "Slice cucumber into sticks",
+      "Enjoy with beef jerky",
+    ],
+    tags: ["high-protein", "portable", "no-cook"]
+  },
+  {
+    id: "recipe-114",
+    name: "Chia Pudding Snack Cup",
+    mealType: "snack",
+    servings: 1,
+    prepTime: 5,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-071", name: "Chia seeds", quantity: 0.025, unit: "kg", category: CATEGORIES.fats },
+      { foodItemId: "food-158", name: "Oat milk", quantity: 0.15, unit: "L", category: CATEGORIES.dairy },
+      { foodItemId: "food-065", name: "Mango", quantity: 0.06, unit: "kg", category: CATEGORIES.fruits },
+    ],
+    instructions: [
+      "Mix chia seeds with oat milk",
+      "Refrigerate 2+ hours",
+      "Top with diced mango",
+    ],
+    tags: ["meal-prep", "vegan", "omega-3"]
+  },
+  {
+    id: "recipe-115",
+    name: "Protein Bar Smoothie",
+    mealType: "snack",
+    servings: 1,
+    prepTime: 5,
+    dietStyle: ["balanced"],
+    ingredients: [
+      { foodItemId: "food-074", name: "Protein bar", quantity: 0.5, unit: "un", category: CATEGORIES.snacks },
+      { foodItemId: "food-035", name: "Milk (skim)", quantity: 0.25, unit: "L", category: CATEGORIES.dairy },
+      { foodItemId: "food-022", name: "Banana", quantity: 0.5, unit: "un", category: CATEGORIES.fruits },
+    ],
+    instructions: [
+      "Break protein bar into pieces",
+      "Blend with milk and banana",
+      "Serve immediately",
+    ],
+    tags: ["post-workout", "creative", "high-protein"]
+  },
+  {
+    id: "recipe-116",
+    name: "Walnuts and Dark Chocolate",
+    mealType: "snack",
+    servings: 1,
+    prepTime: 1,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-069", name: "Walnuts", quantity: 0.025, unit: "kg", category: CATEGORIES.fats },
+      { foodItemId: "food-076", name: "Dark chocolate", quantity: 0.015, unit: "kg", category: CATEGORIES.snacks },
+    ],
+    instructions: [
+      "Portion walnuts and chocolate squares",
+      "Enjoy as an antioxidant-rich snack",
+    ],
+    tags: ["brain-food", "quick", "no-cook"]
+  },
+  {
+    id: "recipe-117",
+    name: "Smashed Chickpea Toast",
+    mealType: "snack",
+    servings: 1,
+    prepTime: 5,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-085", name: "Chickpeas (canned)", quantity: 0.08, unit: "kg", category: CATEGORIES.legumes },
+      { foodItemId: "food-012", name: "Whole wheat bread", quantity: 1, unit: "un", category: CATEGORIES.grains },
+      { foodItemId: "food-027", name: "Olive oil", quantity: 0.005, unit: "L", category: CATEGORIES.fats },
+    ],
+    instructions: [
+      "Drain and roughly mash chickpeas with fork",
+      "Season with olive oil, salt, pepper and lemon",
+      "Spread on toasted bread",
+    ],
+    tags: ["vegan", "fiber", "simple"]
+  },
+  {
+    id: "recipe-118",
+    name: "Hemp Seed Yogurt Bowl",
+    mealType: "snack",
+    servings: 1,
+    prepTime: 3,
+    dietStyle: ["healthy"],
+    ingredients: [
+      { foodItemId: "food-095", name: "Natural yogurt", quantity: 0.15, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-140", name: "Hemp seeds", quantity: 0.015, unit: "kg", category: CATEGORIES.fats },
+      { foodItemId: "food-024", name: "Blueberries", quantity: 0.04, unit: "kg", category: CATEGORIES.fruits },
+    ],
+    instructions: [
+      "Place yogurt in bowl",
+      "Top with blueberries and hemp seeds",
+    ],
+    tags: ["omega-3", "protein", "quick"]
+  },
+  {
+    id: "recipe-119",
+    name: "Mango Lassi Protein Shake",
+    mealType: "snack",
+    servings: 1,
+    prepTime: 5,
+    dietStyle: ["balanced", "comfort"],
+    ingredients: [
+      { foodItemId: "food-065", name: "Mango", quantity: 0.1, unit: "kg", category: CATEGORIES.fruits },
+      { foodItemId: "food-095", name: "Natural yogurt", quantity: 0.15, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-103", name: "Whey protein", quantity: 0.025, unit: "kg", category: CATEGORIES.dairy },
+      { foodItemId: "food-035", name: "Milk (skim)", quantity: 0.1, unit: "L", category: CATEGORIES.dairy },
+    ],
+    instructions: [
+      "Blend mango, yogurt, protein powder and milk",
+      "Add ice if desired",
+      "Serve immediately",
+    ],
+    tags: ["indian-style", "refreshing", "high-protein"]
+  },
+  {
+    id: "recipe-120",
+    name: "Oat Bar Bites",
+    mealType: "snack",
+    servings: 8,
+    prepTime: 25,
+    dietStyle: ["balanced"],
+    ingredients: [
+      { foodItemId: "food-010", name: "Oats", quantity: 0.15, unit: "kg", category: CATEGORIES.grains },
+      { foodItemId: "food-157", name: "Honey", quantity: 0.04, unit: "kg", category: CATEGORIES.others },
+      { foodItemId: "food-029", name: "Peanut butter", quantity: 0.04, unit: "kg", category: CATEGORIES.fats },
+      { foodItemId: "food-138", name: "Sunflower seeds", quantity: 0.02, unit: "kg", category: CATEGORIES.fats },
+      { foodItemId: "food-076", name: "Dark chocolate", quantity: 0.03, unit: "kg", category: CATEGORIES.snacks },
+    ],
+    instructions: [
+      "Mix oats, peanut butter and honey",
+      "Press into a lined pan",
+      "Drizzle melted chocolate, sprinkle seeds",
+      "Refrigerate 1 hour, cut into 8 bars",
+    ],
+    tags: ["meal-prep", "energy", "no-bake"]
   }
 ];
-

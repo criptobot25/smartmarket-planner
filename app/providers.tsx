@@ -7,6 +7,7 @@ import { AnalyticsProvider } from "./components/AnalyticsProvider";
 import { AuthSessionProvider } from "./components/AuthSessionProvider";
 import { ClientStoreBootstrap } from "./components/ClientStoreBootstrap";
 import { WebVitalsTracker } from "./components/WebVitalsTracker";
+import { ToastProvider } from "./components/Toast";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -14,9 +15,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <AuthSessionProvider>
         <AppPlanProvider>
           <AnalyticsProvider>
-            <ClientStoreBootstrap />
-            <WebVitalsTracker />
-            {children}
+            <ToastProvider>
+              <ClientStoreBootstrap />
+              <WebVitalsTracker />
+              {children}
+            </ToastProvider>
           </AnalyticsProvider>
         </AppPlanProvider>
       </AuthSessionProvider>

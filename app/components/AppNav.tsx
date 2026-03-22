@@ -35,6 +35,10 @@ export function AppNav() {
         <Link href="/app/prep" className={`np-tab ${isRouteActive(pathname, "/app/prep") ? "active" : ""}`}>
           {t("nav.mondayPrep")}
         </Link>
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+        <Link href={"/app/progress" as any} className={`np-tab ${isRouteActive(pathname, "/app/progress") ? "active" : ""}`}>
+          📊 Progress
+        </Link>
       </nav>
 
       <div className="np-nav-right">
