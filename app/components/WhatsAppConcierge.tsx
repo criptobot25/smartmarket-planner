@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useShoppingPlan } from "../../src/contexts/ShoppingPlanContext";
 import { trackEvent } from "../lib/analytics";
@@ -25,6 +25,8 @@ type CopySet = {
   reasonMissingIngredients: string;
   notePlaceholder: string;
   sendReplan: string;
+  planTitle: string;
+  loadingPlan: string;
 };
 
 const copyByLanguage: Record<string, CopySet> = {
@@ -42,6 +44,8 @@ const copyByLanguage: Record<string, CopySet> = {
     reasonMissingIngredients: "🛒 Faltou ingrediente",
     notePlaceholder: "Opcional: descreva rapidamente (ex.: sem tempo no almoço)",
     sendReplan: "Enviar para replanejar",
+    planTitle: "Plano de contingência sugerido",
+    loadingPlan: "Gerando ajuste rápido...",
   },
   en: {
     title: "WhatsApp Concierge",
@@ -57,7 +61,14 @@ const copyByLanguage: Record<string, CopySet> = {
     reasonMissingIngredients: "🛒 Missing ingredients",
     notePlaceholder: "Optional: add quick details (e.g., no lunch time)",
     sendReplan: "Send replan request",
+    planTitle: "Suggested contingency plan",
+    loadingPlan: "Generating quick adjustment...",
   },
+};
+
+type ReplanResponse = {
+  suggestions: string[];
+  generatedAt: string;
 };
 
 function sanitizePhone(rawPhone: string): string {
@@ -74,6 +85,8 @@ export function WhatsAppConcierge() {
   const [view, setView] = useState<ConciergeView>("menu");
   const [dailyIssue, setDailyIssue] = useState<DailyReplanIssue>("ate_out");
   const [dailyNote, setDailyNote] = useState("");
+  const [replanSuggestions, setReplanSuggestions] = useState<string[]>([]);
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
 
   const phone = sanitizePhone(process.env.NEXT_PUBLIC_WHATSAPP_CONCIERGE_NUMBER ?? "");
 
@@ -112,11 +125,85 @@ export function WhatsAppConcierge() {
     return `Day: ${todayKey} | Meals: ${meals.join(" | ")}`;
   }, [language, weeklyPlan]);
 
+  const todayMeals = useMemo(() => {
+    if (!weeklyPlan) {
+      return [] as string[];
+    }
+
+    const dayMap = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"] as const;
+    const todayKey = dayMap[new Date().getDay()];
+    const todayPlan = weeklyPlan.days.find((day) => day.day === todayKey);
+
+    if (!todayPlan) {
+      return [] as string[];
+    }
+
+    return [
+      todayPlan.meals.breakfast?.name,
+      todayPlan.meals.lunch?.name,
+      todayPlan.meals.dinner?.name,
+      todayPlan.meals.snack?.name,
+    ].filter(Boolean) as string[];
+  }, [weeklyPlan]);
+
   const isInPrivateApp = pathname?.startsWith("/app") ?? false;
 
   if (!isInPrivateApp || !phone) {
     return null;
   }
+
+  useEffect(() => {
+    if (view !== "daily_replan") {
+      return;
+    }
+
+    let isMounted = true;
+
+    const fetchSuggestions = async () => {
+      setIsLoadingSuggestions(true);
+
+      try {
+        const response = await fetch("/api/concierge/replan", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            issue: dailyIssue,
+            language,
+            proteinTargetPerDay: weeklyPlan?.proteinTargetPerDay,
+            costTier: weeklyPlan?.costTier,
+            shoppingProgress: `${purchasedCount}/${totalCount}`,
+            todayMeals,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch replan suggestions");
+        }
+
+        const data = (await response.json()) as ReplanResponse;
+
+        if (isMounted) {
+          setReplanSuggestions(Array.isArray(data.suggestions) ? data.suggestions : []);
+        }
+      } catch {
+        if (isMounted) {
+          setReplanSuggestions([]);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoadingSuggestions(false);
+        }
+      }
+    };
+
+    void fetchSuggestions();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [dailyIssue, language, purchasedCount, todayMeals, totalCount, view, weeklyPlan?.costTier, weeklyPlan?.proteinTargetPerDay]);
 
   const buildMessage = (intent: ConciergeIntent, options?: { issue?: DailyReplanIssue; note?: string }): string => {
     const issueByLanguage: Record<string, Record<DailyReplanIssue, string>> = {
@@ -161,7 +248,9 @@ export function WhatsAppConcierge() {
   const openWhatsApp = (intent: ConciergeIntent) => {
     const message = buildMessage(intent, {
       issue: intent === "daily_replan" ? dailyIssue : undefined,
-      note: intent === "daily_replan" ? dailyNote.trim() : undefined,
+      note: intent === "daily_replan"
+        ? [dailyNote.trim(), ...replanSuggestions.slice(0, 3)].filter(Boolean).join(" | ")
+        : undefined,
     });
     const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 
@@ -240,6 +329,18 @@ export function WhatsAppConcierge() {
                 placeholder={copy.notePlaceholder}
                 rows={2}
               />
+              <div className="np-wa-plan-box">
+                <p className="np-wa-plan-title">{copy.planTitle}</p>
+                {isLoadingSuggestions ? (
+                  <p className="np-wa-plan-loading">{copy.loadingPlan}</p>
+                ) : (
+                  <ul className="np-wa-plan-list">
+                    {replanSuggestions.slice(0, 4).map((suggestion) => (
+                      <li key={suggestion}>{suggestion}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
               <button type="button" className="np-wa-send" onClick={() => openWhatsApp("daily_replan")}> 
                 {copy.sendReplan}
               </button>

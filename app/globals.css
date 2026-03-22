@@ -1362,6 +1362,35 @@ a {
   cursor: pointer;
 }
 
+.np-wa-plan-box {
+  border: 1px solid rgba(148, 163, 184, 0.26);
+  background: rgba(15, 23, 42, 0.45);
+  border-radius: 0.65rem;
+  padding: 0.55rem 0.65rem;
+}
+
+.np-wa-plan-title {
+  margin: 0 0 0.4rem;
+  color: var(--color-text);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.np-wa-plan-loading {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.74rem;
+}
+
+.np-wa-plan-list {
+  margin: 0;
+  padding-left: 1rem;
+  display: grid;
+  gap: 0.26rem;
+  color: var(--color-text-muted);
+  font-size: 0.73rem;
+}
+
 .np-wa-action {
   border: 1px solid rgba(148, 163, 184, 0.32);
   background: rgba(15, 23, 42, 0.55);
