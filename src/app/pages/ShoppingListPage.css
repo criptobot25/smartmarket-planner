@@ -5,17 +5,15 @@
   padding-bottom: calc(1rem + env(safe-area-inset-bottom));
 }
 
-/* Sticky Header */
+/* Shopping Header */
 .shopping-header {
-  position: sticky;
-  top: calc(var(--app-navbar-offset, 4rem) + 0.45rem);
+  position: relative;
   background: var(--color-surface);
   backdrop-filter: blur(20px);
   border-radius: var(--radius-xl);
   padding: 2rem;
   margin-bottom: 2rem;
   box-shadow: var(--shadow-lg);
-  z-index: 10;
   border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
@@ -575,7 +573,6 @@
 /* Mobile adjustments */
 @media (max-width: 640px) {
   .shopping-header {
-    top: calc(var(--app-navbar-offset, 4rem) + 0.25rem);
     padding: 1.5rem;
     border-radius: var(--radius-lg);
   }
