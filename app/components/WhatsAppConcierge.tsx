@@ -34,6 +34,14 @@ type CopySet = {
   applySuccess: string;
   applyError: string;
   applyNoPlan: string;
+  diffTitle: string;
+  diffNoChanges: string;
+  diffBefore: string;
+  diffAfter: string;
+  diffMeals: string;
+  diffCostTier: string;
+  diffDietStyle: string;
+  diffGoal: string;
 };
 
 const copyByLanguage: Record<string, CopySet> = {
@@ -58,6 +66,14 @@ const copyByLanguage: Record<string, CopySet> = {
     applySuccess: "Ajuste aplicado. Seu plano foi regenerado.",
     applyError: "Não consegui aplicar o ajuste agora. Tente novamente.",
     applyNoPlan: "Gere um plano primeiro para aplicar ajuste automático.",
+    diffTitle: "Prévia do ajuste (antes/depois)",
+    diffNoChanges: "Sem mudanças estruturais para este motivo.",
+    diffBefore: "Antes",
+    diffAfter: "Depois",
+    diffMeals: "Refeições/dia",
+    diffCostTier: "Nível de custo",
+    diffDietStyle: "Estilo alimentar",
+    diffGoal: "Objetivo",
   },
   en: {
     title: "WhatsApp Concierge",
@@ -80,6 +96,14 @@ const copyByLanguage: Record<string, CopySet> = {
     applySuccess: "Adjustment applied. Your plan has been regenerated.",
     applyError: "Could not apply adjustment right now. Please try again.",
     applyNoPlan: "Generate a plan first to apply automatic adjustment.",
+    diffTitle: "Adjustment preview (before/after)",
+    diffNoChanges: "No structural changes for this reason.",
+    diffBefore: "Before",
+    diffAfter: "After",
+    diffMeals: "Meals/day",
+    diffCostTier: "Cost tier",
+    diffDietStyle: "Diet style",
+    diffGoal: "Goal",
   },
 };
 
@@ -289,6 +313,45 @@ export function WhatsAppConcierge() {
     };
   };
 
+  const adjustedPreviewInput = useMemo(() => {
+    if (!currentInput) {
+      return null;
+    }
+
+    return buildAdjustedInput(currentInput, dailyIssue);
+  }, [currentInput, dailyIssue]);
+
+  const diffRows = useMemo(() => {
+    if (!currentInput || !adjustedPreviewInput) {
+      return [] as Array<{ label: string; before: string; after: string }>;
+    }
+
+    const rows = [
+      {
+        label: copy.diffMeals,
+        before: String(currentInput.mealsPerDay),
+        after: String(adjustedPreviewInput.mealsPerDay),
+      },
+      {
+        label: copy.diffCostTier,
+        before: currentInput.costTier,
+        after: adjustedPreviewInput.costTier,
+      },
+      {
+        label: copy.diffDietStyle,
+        before: currentInput.dietStyle,
+        after: adjustedPreviewInput.dietStyle,
+      },
+      {
+        label: copy.diffGoal,
+        before: currentInput.fitnessGoal ?? "maintenance",
+        after: adjustedPreviewInput.fitnessGoal ?? currentInput.fitnessGoal ?? "maintenance",
+      },
+    ];
+
+    return rows.filter((row) => row.before !== row.after);
+  }, [adjustedPreviewInput, copy.diffCostTier, copy.diffDietStyle, copy.diffGoal, copy.diffMeals, currentInput]);
+
   const applyContingencyInApp = async () => {
     if (!currentInput) {
       addToast(copy.applyNoPlan, "warning");
@@ -401,6 +464,20 @@ export function WhatsAppConcierge() {
                 placeholder={copy.notePlaceholder}
                 rows={2}
               />
+              <div className="np-wa-diff-box">
+                <p className="np-wa-diff-title">{copy.diffTitle}</p>
+                {diffRows.length === 0 ? (
+                  <p className="np-wa-diff-empty">{copy.diffNoChanges}</p>
+                ) : (
+                  <ul className="np-wa-diff-list">
+                    {diffRows.map((row) => (
+                      <li key={row.label}>
+                        <strong>{row.label}:</strong> {copy.diffBefore} {row.before} → {copy.diffAfter} {row.after}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
               <div className="np-wa-plan-box">
                 <p className="np-wa-plan-title">{copy.planTitle}</p>
                 {isLoadingSuggestions ? (

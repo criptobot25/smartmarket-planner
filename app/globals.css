@@ -1387,6 +1387,35 @@ a {
   padding: 0.55rem 0.65rem;
 }
 
+.np-wa-diff-box {
+  border: 1px solid rgba(45, 212, 191, 0.35);
+  background: rgba(20, 184, 166, 0.09);
+  border-radius: 0.65rem;
+  padding: 0.55rem 0.65rem;
+}
+
+.np-wa-diff-title {
+  margin: 0 0 0.4rem;
+  color: var(--color-text);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.np-wa-diff-empty {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.73rem;
+}
+
+.np-wa-diff-list {
+  margin: 0;
+  padding-left: 1rem;
+  display: grid;
+  gap: 0.26rem;
+  color: var(--color-text-muted);
+  font-size: 0.73rem;
+}
+
 .np-wa-plan-title {
   margin: 0 0 0.4rem;
   color: var(--color-text);
