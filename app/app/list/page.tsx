@@ -11,6 +11,7 @@ import { detectRepetitionRisk, type WeeklyFeedbackResponse, useWeeklyFeedback } 
 import { useShoppingListState } from "../../../src/hooks/useShoppingListState";
 import { isPremiumUser } from "../../../src/core/premium/PremiumFeatures";
 import { getPrepFlowStatus } from "../../../src/core/logic/PrepFlowController";
+import { suggestRecipes, suggestRecipesByMealType, getFullyMatchedRecipes } from "../../../src/core/logic/suggestRecipes";
 import { AppNav } from "../../components/AppNav";
 import PDFExportButton from "../../components/PDFExportButton";
 import ShareCardExportButton from "../../components/ShareCardExportButton";
@@ -83,6 +84,21 @@ export default function ShoppingListRoute() {
 
     return [category, sorted] as [string, AggregatedShoppingItem[]];
   });
+
+  const purchasedItems = aggregatedShoppingList.filter((item) => item.purchased);
+  const fullyMatchedRecipes = getFullyMatchedRecipes(purchasedItems);
+  const fallbackRecipes = suggestRecipes(purchasedItems);
+
+  const currentMealType: "breakfast" | "lunch" | "dinner" | "snack" = (() => {
+    const hour = new Date().getHours();
+    if (hour < 10) return "breakfast";
+    if (hour < 15) return "lunch";
+    if (hour < 20) return "dinner";
+    return "snack";
+  })();
+
+  const nextMealSuggestions = suggestRecipesByMealType(purchasedItems, currentMealType, 2);
+  const rescueSuggestions = (fullyMatchedRecipes.length > 0 ? fullyMatchedRecipes : fallbackRecipes).slice(0, 3);
 
   useEffect(() => {
     if (!isHydrated) {
@@ -217,6 +233,55 @@ export default function ShoppingListRoute() {
               );
             })}
           </div>
+
+          <section className="smart-meal-section" aria-label="Smart meal suggestions from purchased items">
+            <div className="smart-meal-header">
+              <h3>🧠 Sugestões Inteligentes com o que você já comprou</h3>
+              <span className="smart-meal-chip">Comprados: {purchasedCount}/{totalCount}</span>
+            </div>
+
+            {purchasedItems.length === 0 ? (
+              <p className="smart-meal-empty">Marque os itens comprados para receber sugestões reais de refeição.</p>
+            ) : (
+              <>
+                <div className="smart-meal-grid">
+                  <article className="smart-meal-card">
+                    <p className="smart-meal-label">⚡ O que comer agora ({currentMealType})</p>
+                    {nextMealSuggestions.length > 0 ? (
+                      <ul className="smart-meal-list">
+                        {nextMealSuggestions.map((recipe) => (
+                          <li key={recipe.id}>
+                            <strong>{recipe.name}</strong> · {recipe.prepTime} min · {recipe.ingredients.length} ingredientes
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="smart-meal-empty-small">Ainda faltam itens para uma recomendação imediata desse horário.</p>
+                    )}
+                  </article>
+
+                  <article className="smart-meal-card">
+                    <p className="smart-meal-label">🛟 Modo Resgate do Dia</p>
+                    {rescueSuggestions.length > 0 ? (
+                      <ul className="smart-meal-list">
+                        {rescueSuggestions.map((recipe) => (
+                          <li key={recipe.id}>
+                            <strong>{recipe.name}</strong> · {recipe.mealType} · {recipe.prepTime} min
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="smart-meal-empty-small">Sem sugestões no momento.</p>
+                    )}
+                  </article>
+                </div>
+
+                <p className="smart-meal-note">
+                  As sugestões priorizam itens já comprados e tentam reduzir desperdício sem fugir da sua meta.
+                </p>
+              </>
+            )}
+          </section>
 
           <div className="shopping-actions">
             {prepUnlocked ? (
