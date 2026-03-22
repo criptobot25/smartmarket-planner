@@ -74,6 +74,22 @@ export interface WeeklyPlan {
     savings: number;
     proteinImpact: number;
   }>;
+  shoppingValidation?: {
+    confidenceScore: number;
+    summary: string;
+    issues: Array<{
+      code: string;
+      severity: "info" | "warning" | "error";
+      message: string;
+    }>;
+    checks: {
+      plannedFoodsCoveredPercent: number;
+      proteinCoveragePercent: number;
+      estimatedTotalCost: number;
+      itemsWithReasonPercent: number;
+      itemsWithPricePercent: number;
+    };
+  };
   // PASSO 27: Meal prep summary (Sunday prep list)
   mealPrepSummary?: MealPrepSummary;
   // PASSO 31: Plan fingerprint for personalization guarantee

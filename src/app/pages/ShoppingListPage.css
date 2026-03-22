@@ -110,6 +110,80 @@
   color: var(--color-text-muted);
 }
 
+.shopping-confidence {
+  margin-top: 1rem;
+  border: 1px solid rgba(20, 184, 166, 0.38);
+  background: rgba(20, 184, 166, 0.09);
+  border-radius: var(--radius-lg);
+  padding: 0.9rem 1rem;
+}
+
+.shopping-confidence-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.shopping-confidence-title {
+  margin: 0;
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.shopping-confidence-score {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  min-height: 1.9rem;
+  min-width: 4.2rem;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid rgba(20, 184, 166, 0.45);
+  background: rgba(15, 23, 42, 0.4);
+  color: var(--color-text);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.shopping-confidence-summary {
+  margin: 0.45rem 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+}
+
+.shopping-confidence-metrics {
+  margin-top: 0.55rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.8rem;
+  font-size: 0.76rem;
+  color: var(--color-text);
+}
+
+.shopping-confidence-issues {
+  margin: 0.55rem 0 0;
+  padding-left: 1rem;
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.76rem;
+}
+
+.shopping-confidence-issues .issue-warning {
+  color: #facc15;
+}
+
+.shopping-confidence-issues .issue-error {
+  color: #f87171;
+}
+
+.shopping-confidence-issues .issue-info {
+  color: var(--color-text-muted);
+}
+
 .premium-upgrade-strip {
   margin: 1rem 0 2rem;
   padding: 1rem 1.25rem;

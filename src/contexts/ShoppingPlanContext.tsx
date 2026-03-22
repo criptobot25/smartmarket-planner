@@ -14,6 +14,7 @@ import { isPlanValidForInput } from "../core/utils/planFingerprint";
 import { detectRepetitionRisk, getLatestWeeklyFeedback, getMostRepeatedFoods } from "../hooks/useWeeklyFeedback";
 import { canUseWeeklyCoachAdjustments } from "../core/premium/PremiumFeatures";
 import { isFeatureEnabled } from "../core/config/featureFlags";
+import { validateShoppingList } from "../core/logic/validateShoppingList";
 import {
   LEGACY_PERSISTENCE_KEYS,
   PERSISTENCE_KEYS,
@@ -535,6 +536,8 @@ export function ShoppingPlanProvider({ children }: ShoppingPlanProviderProps) {
         savingsStatus, 
         substitutionsApplied 
       } = generateShoppingList(adjustedInput, plan);
+
+      const shoppingValidation = validateShoppingList(adjustedInput, plan, items, totalProtein);
       
       console.log("🛒 Lista de compras gerada:", items.length, "itens");
       console.log("💰 Cost tier:", costTier);
@@ -557,7 +560,8 @@ export function ShoppingPlanProvider({ children }: ShoppingPlanProviderProps) {
         totalProtein,
         efficiencyScore,
         savingsStatus,
-        substitutionsApplied
+        substitutionsApplied,
+        shoppingValidation,
       };
 
       // Gera sugestões de receitas baseadas na lista

@@ -160,6 +160,30 @@ export default function ShoppingListRoute() {
           </div>
 
           <p className="cost-disclaimer">{t("shoppingList.costDisclaimer")}</p>
+
+          {weeklyPlan.shoppingValidation ? (
+            <section className="shopping-confidence" aria-label="Shopping list consistency score">
+              <div className="shopping-confidence-head">
+                <p className="shopping-confidence-title">✅ Consistência da Lista</p>
+                <span className="shopping-confidence-score">{weeklyPlan.shoppingValidation.confidenceScore}/100</span>
+              </div>
+              <p className="shopping-confidence-summary">{weeklyPlan.shoppingValidation.summary}</p>
+              <div className="shopping-confidence-metrics">
+                <span>Cobertura do plano: {weeklyPlan.shoppingValidation.checks.plannedFoodsCoveredPercent}%</span>
+                <span>Proteína/meta: {weeklyPlan.shoppingValidation.checks.proteinCoveragePercent}%</span>
+                <span>Itens explicados: {weeklyPlan.shoppingValidation.checks.itemsWithReasonPercent}%</span>
+              </div>
+              {weeklyPlan.shoppingValidation.issues.length > 0 ? (
+                <ul className="shopping-confidence-issues">
+                  {weeklyPlan.shoppingValidation.issues.slice(0, 3).map((issue) => (
+                    <li key={issue.code} className={`issue-${issue.severity}`}>
+                      {issue.message}
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </section>
+          ) : null}
         </header>
 
         {!isPremium && (
