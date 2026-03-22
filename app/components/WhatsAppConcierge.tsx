@@ -6,6 +6,8 @@ import { useShoppingPlan } from "../../src/contexts/ShoppingPlanContext";
 import { trackEvent } from "../lib/analytics";
 import { useAppTranslation } from "../lib/i18n";
 import { useShoppingProgressStore } from "../stores/shoppingProgressStore";
+import { useToast } from "./Toast";
+import type { PlanInput } from "../../src/core/models/PlanInput";
 
 type ConciergeIntent = "daily_replan" | "smart_swap" | "quick_help";
 type DailyReplanIssue = "ate_out" | "skipped_meal" | "missing_ingredients";
@@ -27,6 +29,11 @@ type CopySet = {
   sendReplan: string;
   planTitle: string;
   loadingPlan: string;
+  applyInApp: string;
+  applyingInApp: string;
+  applySuccess: string;
+  applyError: string;
+  applyNoPlan: string;
 };
 
 const copyByLanguage: Record<string, CopySet> = {
@@ -46,6 +53,11 @@ const copyByLanguage: Record<string, CopySet> = {
     sendReplan: "Enviar para replanejar",
     planTitle: "Plano de contingência sugerido",
     loadingPlan: "Gerando ajuste rápido...",
+    applyInApp: "⚡ Aplicar ajuste rápido no app",
+    applyingInApp: "Aplicando ajuste...",
+    applySuccess: "Ajuste aplicado. Seu plano foi regenerado.",
+    applyError: "Não consegui aplicar o ajuste agora. Tente novamente.",
+    applyNoPlan: "Gere um plano primeiro para aplicar ajuste automático.",
   },
   en: {
     title: "WhatsApp Concierge",
@@ -63,6 +75,11 @@ const copyByLanguage: Record<string, CopySet> = {
     sendReplan: "Send replan request",
     planTitle: "Suggested contingency plan",
     loadingPlan: "Generating quick adjustment...",
+    applyInApp: "⚡ Apply quick adjustment in app",
+    applyingInApp: "Applying adjustment...",
+    applySuccess: "Adjustment applied. Your plan has been regenerated.",
+    applyError: "Could not apply adjustment right now. Please try again.",
+    applyNoPlan: "Generate a plan first to apply automatic adjustment.",
   },
 };
 
@@ -77,8 +94,9 @@ function sanitizePhone(rawPhone: string): string {
 
 export function WhatsAppConcierge() {
   const pathname = usePathname();
-  const { weeklyPlan, shoppingList } = useShoppingPlan();
+  const { weeklyPlan, shoppingList, currentInput, generatePlan } = useShoppingPlan();
   const { language } = useAppTranslation();
+  const { addToast } = useToast();
   const purchasedCountStore = useShoppingProgressStore((state) => state.purchasedCount);
   const totalCountStore = useShoppingProgressStore((state) => state.totalCount);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -87,6 +105,7 @@ export function WhatsAppConcierge() {
   const [dailyNote, setDailyNote] = useState("");
   const [replanSuggestions, setReplanSuggestions] = useState<string[]>([]);
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
+  const [isApplying, setIsApplying] = useState(false);
 
   const phone = sanitizePhone(process.env.NEXT_PUBLIC_WHATSAPP_CONCIERGE_NUMBER ?? "");
 
@@ -245,6 +264,59 @@ export function WhatsAppConcierge() {
     return `${intentPromptByLanguage[language === "pt" ? "pt" : "en"]}${planContext}${routeContext}`;
   };
 
+  const buildAdjustedInput = (baseInput: PlanInput, issue: DailyReplanIssue): PlanInput => {
+    if (issue === "ate_out") {
+      return {
+        ...baseInput,
+        mealsPerDay: Math.max(3, baseInput.mealsPerDay - 1),
+        dietStyle: "balanced",
+        fitnessGoal: "maintenance",
+      };
+    }
+
+    if (issue === "skipped_meal") {
+      return {
+        ...baseInput,
+        mealsPerDay: Math.max(3, baseInput.mealsPerDay - 1),
+        dietStyle: "balanced",
+      };
+    }
+
+    return {
+      ...baseInput,
+      costTier: "low",
+      dietStyle: baseInput.dietStyle === "comfort" ? "balanced" : baseInput.dietStyle,
+    };
+  };
+
+  const applyContingencyInApp = async () => {
+    if (!currentInput) {
+      addToast(copy.applyNoPlan, "warning");
+      return;
+    }
+
+    setIsApplying(true);
+
+    try {
+      const adjustedInput = buildAdjustedInput(currentInput, dailyIssue);
+      generatePlan(adjustedInput);
+
+      trackEvent("whatsapp_concierge_apply_in_app", {
+        issue: dailyIssue,
+        route: pathname,
+      });
+
+      addToast(copy.applySuccess, "success");
+      setIsExpanded(false);
+      setView("menu");
+      setDailyNote("");
+    } catch {
+      addToast(copy.applyError, "error");
+    } finally {
+      setIsApplying(false);
+    }
+  };
+
   const openWhatsApp = (intent: ConciergeIntent) => {
     const message = buildMessage(intent, {
       issue: intent === "daily_replan" ? dailyIssue : undefined,
@@ -343,6 +415,14 @@ export function WhatsAppConcierge() {
               </div>
               <button type="button" className="np-wa-send" onClick={() => openWhatsApp("daily_replan")}> 
                 {copy.sendReplan}
+              </button>
+              <button
+                type="button"
+                className="np-wa-apply"
+                onClick={applyContingencyInApp}
+                disabled={isApplying}
+              >
+                {isApplying ? copy.applyingInApp : copy.applyInApp}
               </button>
             </div>
           )}
