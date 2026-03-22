@@ -42,6 +42,11 @@ type CopySet = {
   diffCostTier: string;
   diffDietStyle: string;
   diffGoal: string;
+  undoLabel: string;
+  undoingLabel: string;
+  undoSuccess: string;
+  undoError: string;
+  undoEmpty: string;
 };
 
 const copyByLanguage: Record<string, CopySet> = {
@@ -74,6 +79,11 @@ const copyByLanguage: Record<string, CopySet> = {
     diffCostTier: "Nível de custo",
     diffDietStyle: "Estilo alimentar",
     diffGoal: "Objetivo",
+    undoLabel: "↩️ Desfazer último ajuste",
+    undoingLabel: "Desfazendo ajuste...",
+    undoSuccess: "Último ajuste desfeito com sucesso.",
+    undoError: "Não consegui desfazer o ajuste agora.",
+    undoEmpty: "Ainda não há ajuste para desfazer.",
   },
   en: {
     title: "WhatsApp Concierge",
@@ -104,6 +114,11 @@ const copyByLanguage: Record<string, CopySet> = {
     diffCostTier: "Cost tier",
     diffDietStyle: "Diet style",
     diffGoal: "Goal",
+    undoLabel: "↩️ Undo last adjustment",
+    undoingLabel: "Undoing adjustment...",
+    undoSuccess: "Last adjustment was successfully undone.",
+    undoError: "Could not undo the adjustment right now.",
+    undoEmpty: "No adjustment available to undo yet.",
   },
 };
 
@@ -130,6 +145,8 @@ export function WhatsAppConcierge() {
   const [replanSuggestions, setReplanSuggestions] = useState<string[]>([]);
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
   const [isApplying, setIsApplying] = useState(false);
+  const [isUndoing, setIsUndoing] = useState(false);
+  const [lastInputBeforeAdjustment, setLastInputBeforeAdjustment] = useState<PlanInput | null>(null);
 
   const phone = sanitizePhone(process.env.NEXT_PUBLIC_WHATSAPP_CONCIERGE_NUMBER ?? "");
 
@@ -361,6 +378,7 @@ export function WhatsAppConcierge() {
     setIsApplying(true);
 
     try {
+      setLastInputBeforeAdjustment({ ...currentInput });
       const adjustedInput = buildAdjustedInput(currentInput, dailyIssue);
       generatePlan(adjustedInput);
 
@@ -377,6 +395,33 @@ export function WhatsAppConcierge() {
       addToast(copy.applyError, "error");
     } finally {
       setIsApplying(false);
+    }
+  };
+
+  const undoLastAdjustment = async () => {
+    if (!lastInputBeforeAdjustment) {
+      addToast(copy.undoEmpty, "warning");
+      return;
+    }
+
+    setIsUndoing(true);
+
+    try {
+      generatePlan(lastInputBeforeAdjustment);
+
+      trackEvent("whatsapp_concierge_undo_adjustment", {
+        route: pathname,
+      });
+
+      addToast(copy.undoSuccess, "success");
+      setLastInputBeforeAdjustment(null);
+      setIsExpanded(false);
+      setView("menu");
+      setDailyNote("");
+    } catch {
+      addToast(copy.undoError, "error");
+    } finally {
+      setIsUndoing(false);
     }
   };
 
@@ -500,6 +545,14 @@ export function WhatsAppConcierge() {
                 disabled={isApplying}
               >
                 {isApplying ? copy.applyingInApp : copy.applyInApp}
+              </button>
+              <button
+                type="button"
+                className="np-wa-undo"
+                onClick={undoLastAdjustment}
+                disabled={isUndoing || !lastInputBeforeAdjustment}
+              >
+                {isUndoing ? copy.undoingLabel : copy.undoLabel}
               </button>
             </div>
           )}

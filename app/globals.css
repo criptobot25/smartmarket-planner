@@ -1380,6 +1380,24 @@ a {
   cursor: not-allowed;
 }
 
+.np-wa-undo {
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  background: rgba(51, 65, 85, 0.28);
+  color: var(--color-text);
+  border-radius: 0.65rem;
+  min-height: 2.2rem;
+  padding: 0.4rem 0.65rem;
+  text-align: center;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.np-wa-undo:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .np-wa-plan-box {
   border: 1px solid rgba(148, 163, 184, 0.26);
   background: rgba(15, 23, 42, 0.45);
@@ -1454,6 +1472,7 @@ a {
 .np-wa-action:hover,
 .np-wa-send:hover,
 .np-wa-apply:hover,
+.np-wa-undo:hover,
 .np-wa-toggle:hover,
 .np-wa-close:hover {
   filter: brightness(1.06);
