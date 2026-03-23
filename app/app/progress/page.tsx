@@ -3,6 +3,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { AppNav } from "../../components/AppNav";
+import {
+  loadPreventiveActionLogs,
+  loadRetentionRiskSnapshots,
+  type PreventiveActionLog,
+  type RetentionRiskSnapshot,
+} from "../../../src/core/stores/RetentionRiskStore";
 
 interface ProgressEntry {
   id: string;
@@ -22,6 +28,8 @@ export default function ProgressPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [riskSnapshots, setRiskSnapshots] = useState<RetentionRiskSnapshot[]>([]);
+  const [preventiveActions, setPreventiveActions] = useState<PreventiveActionLog[]>([]);
 
   // Form state
   const [form, setForm] = useState({
@@ -55,6 +63,11 @@ export default function ProgressPage() {
       setLoading(false);
     }
   }, [session, fetchEntries]);
+
+  useEffect(() => {
+    setRiskSnapshots(loadRetentionRiskSnapshots());
+    setPreventiveActions(loadPreventiveActionLogs());
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -124,6 +137,38 @@ export default function ProgressPage() {
       else break;
     }
     return count;
+  })();
+
+  const latestRisk = riskSnapshots.length > 0 ? riskSnapshots[riskSnapshots.length - 1] : null;
+  const recentRiskTrend = riskSnapshots.slice(-14);
+  const highRiskCount = riskSnapshots.filter((item) => item.level === "high").length;
+
+  const preventiveEffectiveness = (() => {
+    if (preventiveActions.length === 0 || riskSnapshots.length === 0) {
+      return null;
+    }
+
+    let improvedActions = 0;
+
+    preventiveActions.forEach((action) => {
+      const actionTime = new Date(action.timestamp).getTime();
+      const nextSnapshot = riskSnapshots.find((snapshot) => new Date(snapshot.timestamp).getTime() > actionTime);
+
+      if (!nextSnapshot) {
+        return;
+      }
+
+      if (nextSnapshot.score < action.scoreAtAction) {
+        improvedActions += 1;
+      }
+    });
+
+    const rate = Math.round((improvedActions / preventiveActions.length) * 100);
+    return {
+      improvedActions,
+      totalActions: preventiveActions.length,
+      rate,
+    };
   })();
 
   return (
@@ -253,6 +298,62 @@ export default function ProgressPage() {
             <StatCard label="Avg Protein" value={avgProtein !== null ? `${avgProtein}g` : "—"} icon="💪" />
             <StatCard label="Adherence" value={avgAdherence !== null ? `${avgAdherence}%` : "—"} icon="✅" />
             <StatCard label="Streak" value={streak > 0 ? `${streak} day${streak > 1 ? "s" : ""}` : "—"} icon="🔥" />
+          </div>
+        )}
+
+        {/* Retention Risk Dashboard */}
+        {session?.user && !loading && (
+          <div style={{ ...cardStyle, marginBottom: "1.5rem" }}>
+            <h3 style={{ fontSize: "1rem", fontWeight: 600, marginBottom: "0.8rem" }}>🛡️ Retention Risk Dashboard</h3>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: "0.75rem", marginBottom: "0.75rem" }}>
+              <StatCard
+                label="Current Risk"
+                value={latestRisk ? `${latestRisk.score}/100` : "—"}
+                icon={latestRisk?.level === "high" ? "🚨" : latestRisk?.level === "medium" ? "⚠️" : "✅"}
+              />
+              <StatCard label="High Risk Events" value={String(highRiskCount)} icon="📉" />
+              <StatCard label="Preventive Actions" value={String(preventiveActions.length)} icon="⚡" />
+              <StatCard
+                label="Preventive Success"
+                value={preventiveEffectiveness ? `${preventiveEffectiveness.rate}%` : "—"}
+                icon="🎯"
+              />
+            </div>
+
+            {recentRiskTrend.length > 1 ? (
+              <>
+                <p style={{ margin: "0 0 0.4rem", color: "#6b7280", fontSize: "0.75rem" }}>Last 14 risk snapshots</p>
+                <div style={{ display: "flex", alignItems: "flex-end", gap: 4, height: 90 }}>
+                  {recentRiskTrend.map((snapshot) => (
+                    <div
+                      key={snapshot.id}
+                      title={`${snapshot.score}/100 (${snapshot.level})`}
+                      style={{
+                        flex: 1,
+                        height: `${Math.max(8, snapshot.score)}%`,
+                        background: snapshot.level === "high"
+                          ? "linear-gradient(180deg, #ef4444, #b91c1c)"
+                          : snapshot.level === "medium"
+                            ? "linear-gradient(180deg, #f59e0b, #b45309)"
+                            : "linear-gradient(180deg, #22c55e, #15803d)",
+                        borderRadius: "4px 4px 0 0",
+                        minWidth: 8,
+                      }}
+                    />
+                  ))}
+                </div>
+              </>
+            ) : (
+              <p style={{ margin: 0, color: "#6b7280", fontSize: "0.8rem" }}>
+                Generate more activity to visualize retention trend.
+              </p>
+            )}
+
+            {preventiveEffectiveness ? (
+              <p style={{ margin: "0.7rem 0 0", color: "#6b7280", fontSize: "0.78rem" }}>
+                Preventive actions improved risk in {preventiveEffectiveness.improvedActions}/{preventiveEffectiveness.totalActions} cases.
+              </p>
+            ) : null}
           </div>
         )}
 

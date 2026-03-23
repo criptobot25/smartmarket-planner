@@ -14,6 +14,7 @@ import { isPremiumUser } from "../../../src/core/premium/PremiumFeatures";
 import { getPrepFlowStatus } from "../../../src/core/logic/PrepFlowController";
 import { suggestRecipes, suggestRecipesByMealType, getFullyMatchedRecipes, trackRecipeHabit } from "../../../src/core/logic/suggestRecipes";
 import { assessDropoffRisk, buildPreventiveInput } from "../../../src/core/logic/predictDropoffRisk";
+import { recordPreventiveAction, recordRetentionRiskSnapshot } from "../../../src/core/stores/RetentionRiskStore";
 import { AppNav } from "../../components/AppNav";
 import PDFExportButton from "../../components/PDFExportButton";
 import ShareCardExportButton from "../../components/ShareCardExportButton";
@@ -132,11 +133,40 @@ export default function ShoppingListRoute() {
 
     try {
       generatePlan(buildPreventiveInput(currentInput));
+      recordPreventiveAction({
+        levelAtAction: dropoffRisk.level,
+        scoreAtAction: dropoffRisk.score,
+        planId: weeklyPlan?.id,
+      });
       addToast("Modo preventivo ativado: plano simplificado para manter aderência.", "success");
     } catch {
       addToast("Falha ao ativar modo preventivo. Tente novamente.", "error");
     }
   };
+
+  useEffect(() => {
+    if (!weeklyPlan) {
+      return;
+    }
+
+    recordRetentionRiskSnapshot({
+      planId: weeklyPlan.id,
+      level: dropoffRisk.level,
+      score: dropoffRisk.score,
+      reasons: dropoffRisk.reasons,
+      shoppingProgress,
+      streakWeeks: streak,
+      confidenceScore: weeklyPlan.shoppingValidation?.confidenceScore,
+      adherenceScore: weeklyPlan.adherenceScore?.score,
+    });
+  }, [
+    dropoffRisk.level,
+    dropoffRisk.reasons,
+    dropoffRisk.score,
+    shoppingProgress,
+    streak,
+    weeklyPlan,
+  ]);
 
   useEffect(() => {
     if (!isHydrated) {
