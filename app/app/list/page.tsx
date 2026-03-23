@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useShoppingPlan } from "../../../src/contexts/ShoppingPlanContext";
 import type { AggregatedShoppingItem } from "../../../src/core/logic/aggregateShoppingList";
 import type { FoodCategory } from "../../../src/core/models/FoodItem";
@@ -13,6 +13,7 @@ import { useShoppingListState } from "../../../src/hooks/useShoppingListState";
 import { isPremiumUser } from "../../../src/core/premium/PremiumFeatures";
 import { getPrepFlowStatus } from "../../../src/core/logic/PrepFlowController";
 import { suggestRecipes, suggestRecipesByMealType, getFullyMatchedRecipes, trackRecipeHabit } from "../../../src/core/logic/suggestRecipes";
+import { assessDropoffRisk, buildPreventiveInput } from "../../../src/core/logic/predictDropoffRisk";
 import { AppNav } from "../../components/AppNav";
 import PDFExportButton from "../../components/PDFExportButton";
 import ShareCardExportButton from "../../components/ShareCardExportButton";
@@ -24,7 +25,7 @@ export default function ShoppingListRoute() {
   const { t } = useAppTranslation();
   const { addToast } = useToast();
   const isPremium = isPremiumUser();
-  const { weeklyPlan, shoppingList, toggleItemPurchased, history, saveAdherenceScore } = useShoppingPlan();
+  const { weeklyPlan, shoppingList, toggleItemPurchased, history, saveAdherenceScore, currentInput, generatePlan, streak } = useShoppingPlan();
   const [statusMessage, setStatusMessage] = useState("");
   const [showCheckInModal, setShowCheckInModal] = useState(false);
   const cardRef = useRef<HTMLElement | null>(null);
@@ -103,6 +104,13 @@ export default function ShoppingListRoute() {
   const nextMealSuggestions = suggestRecipesByMealType(purchasedItems, currentMealType, 2);
   const rescueSuggestions = (fullyMatchedRecipes.length > 0 ? fullyMatchedRecipes : fallbackRecipes).slice(0, 3);
 
+  const dropoffRisk = useMemo(() => assessDropoffRisk({
+    shoppingProgress,
+    adherenceScore: weeklyPlan?.adherenceScore?.score,
+    streakWeeks: streak,
+    confidenceScore: weeklyPlan?.shoppingValidation?.confidenceScore,
+  }), [shoppingProgress, weeklyPlan?.adherenceScore?.score, weeklyPlan?.shoppingValidation?.confidenceScore, streak]);
+
   const handleRecipeAction = (
     recipe: Recipe,
     action: "chosen" | "executed"
@@ -114,6 +122,20 @@ export default function ShoppingListRoute() {
         : `✨ ${recipe.name} priorizado nas próximas sugestões`,
       "success",
     );
+  };
+
+  const applyPreventiveMode = () => {
+    if (!currentInput) {
+      addToast("Gere um plano antes de ativar o modo preventivo.", "warning");
+      return;
+    }
+
+    try {
+      generatePlan(buildPreventiveInput(currentInput));
+      addToast("Modo preventivo ativado: plano simplificado para manter aderência.", "success");
+    } catch {
+      addToast("Falha ao ativar modo preventivo. Tente novamente.", "error");
+    }
   };
 
   useEffect(() => {
@@ -227,6 +249,27 @@ export default function ShoppingListRoute() {
         )}
 
         <section className="shopping-main">
+          {dropoffRisk.level !== "low" ? (
+            <section className={`risk-alert risk-${dropoffRisk.level}`} aria-label="Risco de abandono">
+              <div className="risk-alert-head">
+                <p className="risk-alert-title">
+                  {dropoffRisk.level === "high" ? "🚨 Risco alto de abandono" : "⚠️ Risco moderado de abandono"}
+                </p>
+                <span className="risk-alert-score">{dropoffRisk.score}/100</span>
+              </div>
+              {dropoffRisk.reasons.length > 0 ? (
+                <ul className="risk-alert-reasons">
+                  {dropoffRisk.reasons.map((reason) => (
+                    <li key={reason}>{reason}</li>
+                  ))}
+                </ul>
+              ) : null}
+              <button type="button" className="risk-alert-action" onClick={applyPreventiveMode}>
+                ⚡ Ativar plano preventivo automático
+              </button>
+            </section>
+          ) : null}
+
           <div className="categories-grid">
             {sortedCategories.map(([category, items]) => {
               const meta = CATEGORY_META[category as FoodCategory] ?? { emoji: "🛒", label: category };
