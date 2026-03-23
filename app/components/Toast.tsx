@@ -8,11 +8,18 @@ export interface ToastMessage {
   id: string;
   message: string;
   variant: ToastVariant;
+  actionLabel?: string;
+  onAction?: () => void;
+}
+
+interface ToastOptions {
+  actionLabel?: string;
+  onAction?: () => void;
 }
 
 interface ToastContextValue {
   toasts: ToastMessage[];
-  addToast: (message: string, variant?: ToastVariant) => void;
+  addToast: (message: string, variant?: ToastVariant, options?: ToastOptions) => void;
   removeToast: (id: string) => void;
 }
 
@@ -35,9 +42,9 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const addToast = useCallback(
-    (message: string, variant: ToastVariant = "info") => {
+    (message: string, variant: ToastVariant = "info", options?: ToastOptions) => {
       const id = `toast-${++counterRef.current}`;
-      setToasts((prev) => [...prev, { id, message, variant }]);
+      setToasts((prev) => [...prev, { id, message, variant, ...options }]);
       setTimeout(() => removeToast(id), 4000);
     },
     [removeToast]
@@ -84,11 +91,24 @@ function ToastContainer({
           role="alert"
           className={`border-l-4 px-4 py-3 rounded shadow-lg text-sm animate-slide-in ${variantStyles[t.variant]}`}
         >
-          <div className="flex items-center justify-between gap-2">
-            <span>{t.message}</span>
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0 flex-1">
+              <p>{t.message}</p>
+              {t.actionLabel && t.onAction && (
+                <button
+                  onClick={() => {
+                    t.onAction?.();
+                    onDismiss(t.id);
+                  }}
+                  className="mt-2 inline-flex items-center rounded border border-current px-2 py-1 text-xs font-semibold opacity-90 transition-opacity hover:opacity-100"
+                >
+                  {t.actionLabel}
+                </button>
+              )}
+            </div>
             <button
               onClick={() => onDismiss(t.id)}
-              className="ml-2 font-bold opacity-60 hover:opacity-100"
+              className="ml-1 font-bold opacity-60 hover:opacity-100"
               aria-label="Dismiss"
             >
               &times;

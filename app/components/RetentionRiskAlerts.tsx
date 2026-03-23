@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useShoppingPlan } from "../../src/contexts/ShoppingPlanContext";
-import { assessDropoffRisk } from "../../src/core/logic/predictDropoffRisk";
+import { assessDropoffRisk, buildPreventiveInput } from "../../src/core/logic/predictDropoffRisk";
 import { useShoppingProgressStore } from "../stores/shoppingProgressStore";
 import { useToast } from "./Toast";
 import { trackEvent } from "../lib/analytics";
@@ -48,7 +48,7 @@ function saveLastAlertMemo(memo: AlertMemo): void {
 export function RetentionRiskAlerts() {
   const pathname = usePathname();
   const { addToast } = useToast();
-  const { weeklyPlan, streak } = useShoppingPlan();
+  const { currentInput, generatePlan, weeklyPlan, streak } = useShoppingPlan();
   const progressPercent = useShoppingProgressStore((state) => state.progressPercent);
   const lastNotifiedRiskRef = useRef<string>("");
 
@@ -80,10 +80,48 @@ export function RetentionRiskAlerts() {
       return;
     }
 
+    const canApplyPreventive = Boolean(currentInput);
+    const applyPreventiveNow = () => {
+      if (!currentInput) {
+        return;
+      }
+
+      const preventiveInput = buildPreventiveInput(currentInput);
+      generatePlan(preventiveInput);
+
+      addToast("✅ Plano preventivo aplicado com sucesso.", "success");
+
+      trackEvent("retention_risk_alert_action_clicked", {
+        level: risk.level,
+        score: risk.score,
+        route: pathname,
+        plan_id: weeklyPlan.id,
+        action: "apply_preventive_plan",
+      });
+    };
+
     if (risk.level === "high") {
-      addToast("🚨 Risco alto detectado. Ative o plano preventivo para manter consistência.", "warning");
+      addToast(
+        "🚨 Risco alto detectado. Ative o plano preventivo para manter consistência.",
+        "warning",
+        canApplyPreventive
+          ? {
+            actionLabel: "Ativar agora",
+            onAction: applyPreventiveNow,
+          }
+          : undefined
+      );
     } else {
-      addToast("⚠️ Atenção: sinais de queda de aderência. Ajuste seu dia para evitar abandono.", "info");
+      addToast(
+        "⚠️ Atenção: sinais de queda de aderência. Ajuste seu dia para evitar abandono.",
+        "info",
+        canApplyPreventive
+          ? {
+            actionLabel: "Ajustar agora",
+            onAction: applyPreventiveNow,
+          }
+          : undefined
+      );
     }
 
     trackEvent("retention_risk_alert_shown", {
@@ -100,7 +138,7 @@ export function RetentionRiskAlerts() {
     });
 
     lastNotifiedRiskRef.current = riskKey;
-  }, [addToast, pathname, progressPercent, streak, weeklyPlan]);
+  }, [addToast, currentInput, generatePlan, pathname, progressPercent, streak, weeklyPlan]);
 
   return null;
 }
