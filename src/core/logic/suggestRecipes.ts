@@ -1,6 +1,7 @@
 import { FoodItem } from "../models/FoodItem";
 import { Recipe } from "../models/Recipe";
 import { mockRecipes } from "../../data/mockRecipes";
+import { userPreferencesStore } from "../stores/UserPreferencesStore";
 
 interface RecipeMatch {
   recipe: Recipe;
@@ -8,6 +9,90 @@ interface RecipeMatch {
   matchedIngredients: number;
   totalIngredients: number;
   matchPercentage: number;
+  personalizationBoost: number;
+}
+
+type HabitEvent = "chosen" | "executed";
+
+interface RecipeHabitState {
+  recipeScores: Record<string, number>;
+  mealTypeScores: Record<Recipe["mealType"], number>;
+}
+
+const HABIT_STORAGE_KEY = "nutripilot_recipe_habits";
+const EMPTY_HABITS: RecipeHabitState = {
+  recipeScores: {},
+  mealTypeScores: {
+    breakfast: 0,
+    lunch: 0,
+    dinner: 0,
+    snack: 0,
+  },
+};
+
+function loadHabitState(): RecipeHabitState {
+  if (typeof window === "undefined") {
+    return EMPTY_HABITS;
+  }
+
+  try {
+    const raw = window.localStorage.getItem(HABIT_STORAGE_KEY);
+    if (!raw) {
+      return EMPTY_HABITS;
+    }
+
+    const parsed = JSON.parse(raw) as Partial<RecipeHabitState>;
+    return {
+      recipeScores: parsed.recipeScores || {},
+      mealTypeScores: {
+        breakfast: parsed.mealTypeScores?.breakfast || 0,
+        lunch: parsed.mealTypeScores?.lunch || 0,
+        dinner: parsed.mealTypeScores?.dinner || 0,
+        snack: parsed.mealTypeScores?.snack || 0,
+      },
+    };
+  } catch {
+    return EMPTY_HABITS;
+  }
+}
+
+function saveHabitState(state: RecipeHabitState): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  try {
+    window.localStorage.setItem(HABIT_STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    // no-op
+  }
+}
+
+function getPersonalizationBoost(recipe: Recipe): number {
+  const habits = loadHabitState();
+  const recipeScore = habits.recipeScores[recipe.id] || 0;
+  const mealTypeScore = habits.mealTypeScores[recipe.mealType] || 0;
+  const ingredientPreferenceScore = recipe.ingredients.reduce((sum, ingredient) => {
+    return sum + userPreferencesStore.getPreferenceScore(ingredient.name);
+  }, 0);
+
+  // Keep behavior influence bounded so ingredient match remains the dominant factor
+  const boundedIngredientScore = Math.max(-10, Math.min(20, ingredientPreferenceScore * 0.1));
+  return recipeScore * 1.25 + mealTypeScore * 0.2 + boundedIngredientScore;
+}
+
+export function trackRecipeHabit(recipe: Recipe, event: HabitEvent): void {
+  const habits = loadHabitState();
+  const recipeIncrement = event === "executed" ? 4 : 2;
+  const mealTypeIncrement = event === "executed" ? 2 : 1;
+
+  habits.recipeScores[recipe.id] = (habits.recipeScores[recipe.id] || 0) + recipeIncrement;
+  habits.mealTypeScores[recipe.mealType] = (habits.mealTypeScores[recipe.mealType] || 0) + mealTypeIncrement;
+
+  saveHabitState(habits);
+
+  // Also reinforce food preferences for ingredients selected/executed
+  userPreferencesStore.trackFoodSelections(recipe.ingredients.map((ingredient) => ingredient.name));
 }
 
 /**
@@ -35,6 +120,9 @@ export function suggestRecipes(items: FoodItem[]): Recipe[] {
 
   // Ordena por score de compatibilidade (descendente)
   const sortedRecipes = viableRecipes.sort((a, b) => {
+    if (b.personalizationBoost !== a.personalizationBoost) {
+      return b.personalizationBoost - a.personalizationBoost;
+    }
     // Primeiro ordena por porcentagem de match
     if (b.matchPercentage !== a.matchPercentage) {
       return b.matchPercentage - a.matchPercentage;
@@ -86,13 +174,15 @@ function calculateRecipeMatch(
 
   // Score de compatibilidade (pode ser usado para ordenação)
   const matchScore = matchedIngredients;
+  const personalizationBoost = getPersonalizationBoost(recipe);
 
   return {
     recipe,
     matchScore,
     matchedIngredients,
     totalIngredients,
-    matchPercentage
+    matchPercentage,
+    personalizationBoost
   };
 }
 

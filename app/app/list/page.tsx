@@ -5,21 +5,24 @@ import { useEffect, useRef, useState } from "react";
 import { useShoppingPlan } from "../../../src/contexts/ShoppingPlanContext";
 import type { AggregatedShoppingItem } from "../../../src/core/logic/aggregateShoppingList";
 import type { FoodCategory } from "../../../src/core/models/FoodItem";
+import type { Recipe } from "../../../src/core/models/Recipe";
 import { GroceryItemRow } from "../../../src/app/components/GroceryItemRow";
 import { WeeklyCheckInModal } from "../../../src/app/components/WeeklyCheckInModal";
 import { detectRepetitionRisk, type WeeklyFeedbackResponse, useWeeklyFeedback } from "../../../src/hooks/useWeeklyFeedback";
 import { useShoppingListState } from "../../../src/hooks/useShoppingListState";
 import { isPremiumUser } from "../../../src/core/premium/PremiumFeatures";
 import { getPrepFlowStatus } from "../../../src/core/logic/PrepFlowController";
-import { suggestRecipes, suggestRecipesByMealType, getFullyMatchedRecipes } from "../../../src/core/logic/suggestRecipes";
+import { suggestRecipes, suggestRecipesByMealType, getFullyMatchedRecipes, trackRecipeHabit } from "../../../src/core/logic/suggestRecipes";
 import { AppNav } from "../../components/AppNav";
 import PDFExportButton from "../../components/PDFExportButton";
 import ShareCardExportButton from "../../components/ShareCardExportButton";
 import { useAppTranslation } from "../../lib/i18n";
 import { useShoppingProgressStore } from "../../stores/shoppingProgressStore";
+import { useToast } from "../../components/Toast";
 
 export default function ShoppingListRoute() {
   const { t } = useAppTranslation();
+  const { addToast } = useToast();
   const isPremium = isPremiumUser();
   const { weeklyPlan, shoppingList, toggleItemPurchased, history, saveAdherenceScore } = useShoppingPlan();
   const [statusMessage, setStatusMessage] = useState("");
@@ -99,6 +102,19 @@ export default function ShoppingListRoute() {
 
   const nextMealSuggestions = suggestRecipesByMealType(purchasedItems, currentMealType, 2);
   const rescueSuggestions = (fullyMatchedRecipes.length > 0 ? fullyMatchedRecipes : fallbackRecipes).slice(0, 3);
+
+  const handleRecipeAction = (
+    recipe: Recipe,
+    action: "chosen" | "executed"
+  ) => {
+    trackRecipeHabit(recipe, action);
+    addToast(
+      action === "executed"
+        ? `✅ ${recipe.name} registrado como executado` 
+        : `✨ ${recipe.name} priorizado nas próximas sugestões`,
+      "success",
+    );
+  };
 
   useEffect(() => {
     if (!isHydrated) {
@@ -251,7 +267,10 @@ export default function ShoppingListRoute() {
                       <ul className="smart-meal-list">
                         {nextMealSuggestions.map((recipe) => (
                           <li key={recipe.id}>
-                            <strong>{recipe.name}</strong> · {recipe.prepTime} min · {recipe.ingredients.length} ingredientes
+                            <div className="smart-meal-row">
+                              <span><strong>{recipe.name}</strong> · {recipe.prepTime} min · {recipe.ingredients.length} ingredientes</span>
+                              <button type="button" className="smart-meal-action" onClick={() => handleRecipeAction(recipe, "chosen")}>Escolher</button>
+                            </div>
                           </li>
                         ))}
                       </ul>
@@ -266,7 +285,10 @@ export default function ShoppingListRoute() {
                       <ul className="smart-meal-list">
                         {rescueSuggestions.map((recipe) => (
                           <li key={recipe.id}>
-                            <strong>{recipe.name}</strong> · {recipe.mealType} · {recipe.prepTime} min
+                            <div className="smart-meal-row">
+                              <span><strong>{recipe.name}</strong> · {recipe.mealType} · {recipe.prepTime} min</span>
+                              <button type="button" className="smart-meal-action smart-meal-action-secondary" onClick={() => handleRecipeAction(recipe, "executed")}>Concluir</button>
+                            </div>
                           </li>
                         ))}
                       </ul>
