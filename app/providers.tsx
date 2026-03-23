@@ -9,6 +9,7 @@ import { ClientStoreBootstrap } from "./components/ClientStoreBootstrap";
 import { WebVitalsTracker } from "./components/WebVitalsTracker";
 import { ToastProvider } from "./components/Toast";
 import { WhatsAppConcierge } from "./components/WhatsAppConcierge";
+import { RetentionRiskAlerts } from "./components/RetentionRiskAlerts";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -21,6 +22,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
               <WebVitalsTracker />
               {children}
               <WhatsAppConcierge />
+              <RetentionRiskAlerts />
             </ToastProvider>
           </AnalyticsProvider>
         </AppPlanProvider>
