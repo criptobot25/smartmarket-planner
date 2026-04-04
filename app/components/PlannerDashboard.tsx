@@ -12,6 +12,17 @@ import { PlannerAuthControls } from "./PlannerAuthControls";
 import { trackEvent } from "../lib/analytics";
 import { useAppTranslation } from "../lib/i18n";
 
+type StreakMilestone = { emoji: string; title: string; message: string };
+
+function getStreakMilestone(streak: number): StreakMilestone | null {
+  if (streak === 4)  return { emoji: "🏅", title: "1 mês de consistência!", message: "4 semanas seguidas. O teu corpo já começou a mudar." };
+  if (streak === 8)  return { emoji: "🥈", title: "2 meses! Isso é um hábito.", message: "8 semanas. A maioria das pessoas já desistiu. Tu não." };
+  if (streak === 12) return { emoji: "🥇", title: "3 meses de hábito sólido!", message: "12 semanas. Isto já é parte de quem tu és." };
+  if (streak === 26) return { emoji: "🏆", title: "6 MESES. Lendário.", message: "Metade do ano com consistência. Partilha isto — mereces." };
+  if (streak === 52) return { emoji: "🌟", title: "1 ANO COMPLETO!", message: "52 semanas. Transformação real. Parabéns." };
+  return null;
+}
+
 export default function PlannerDashboard() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -86,12 +97,25 @@ export default function PlannerDashboard() {
     );
   }
 
+  const streakMilestone = getStreakMilestone(streak);
+
   return (
     <div className="np-shell">
       <AppNav />
 
       <main className="np-main planner-page">
         <div className="planner-container">
+
+          {streakMilestone && (
+            <div className="streak-milestone">
+              <span className="streak-milestone-emoji">{streakMilestone.emoji}</span>
+              <div>
+                <strong>{streakMilestone.title}</strong>
+                <p>{streakMilestone.message}</p>
+              </div>
+            </div>
+          )}
+
           <header className="planner-header">
             <div className="header-top">
               <div>

@@ -26,7 +26,11 @@ export function AppNav() {
       </Link>
 
       <nav className="np-tabs" aria-label={t("nav.nutritionPlan")}>
-        <Link href="/app" className={`np-tab ${isRouteActive(pathname, "/app") ? "active" : ""}`}>
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+        <Link href={"/app/today" as any} className={`np-tab np-tab-today ${isRouteActive(pathname, "/app/today") ? "active" : ""}`}>
+          ☀️ Hoje
+        </Link>
+        <Link href="/app" className={`np-tab ${pathname === "/app" ? "active" : ""}`}>
           {t("nav.nutritionPlan")}
         </Link>
         <Link href="/app/list" className={`np-tab ${isRouteActive(pathname, "/app/list") ? "active" : ""}`}>

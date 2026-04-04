@@ -16,6 +16,7 @@ import { suggestRecipes, suggestRecipesByMealType, getFullyMatchedRecipes, track
 import { assessDropoffRisk, buildPreventiveInput } from "../../../src/core/logic/predictDropoffRisk";
 import { recordPreventiveAction, recordRetentionRiskSnapshot } from "../../../src/core/stores/RetentionRiskStore";
 import { AppNav } from "../../components/AppNav";
+import { TodayWidget } from "../../components/TodayWidget";
 import PDFExportButton from "../../components/PDFExportButton";
 import ShareCardExportButton from "../../components/ShareCardExportButton";
 import { useAppTranslation } from "../../lib/i18n";
@@ -228,6 +229,8 @@ export default function ShoppingListRoute() {
       <AppNav />
 
       <main className="np-main shopping-list-page" ref={cardRef}>
+        <TodayWidget weeklyPlan={weeklyPlan} />
+
         <header className="shopping-header">
           <div className="header-top">
             <h1 className="page-title">{t("shoppingList.pageTitle")}</h1>

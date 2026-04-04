@@ -1,0 +1,436 @@
+/* ─── Today Page ─────────────────────────────────────────── */
+
+.today-page {
+  min-height: calc(100vh - 5rem);
+  padding: 1.5rem 1rem 4rem;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+/* Day Banner */
+.today-banner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: linear-gradient(135deg, rgba(20, 184, 166, 0.12), rgba(20, 184, 166, 0.04));
+  border: 1px solid rgba(20, 184, 166, 0.25);
+  border-radius: 1.25rem;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.today-banner-emoji {
+  font-size: 2.25rem;
+  flex-shrink: 0;
+}
+
+.today-banner > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.today-banner-day {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--color-primary, #14b8a6);
+  margin: 0 0 0.2rem;
+}
+
+.today-banner-message {
+  font-size: 0.9rem;
+  color: var(--color-text, #111827);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.today-banner-cta {
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-primary, #14b8a6);
+  text-decoration: none;
+  white-space: nowrap;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--color-primary, #14b8a6);
+  border-radius: 2rem;
+  transition: background 0.2s, color 0.2s;
+}
+
+.today-banner-cta:hover {
+  background: var(--color-primary, #14b8a6);
+  color: #fff;
+}
+
+/* Empty state */
+.today-empty {
+  text-align: center;
+  padding: 4rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.today-empty-icon {
+  font-size: 3rem;
+  margin: 0;
+}
+
+.today-empty h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--color-text, #111827);
+}
+
+.today-empty p {
+  font-size: 0.9rem;
+  color: var(--color-text-muted, #6b7280);
+  margin: 0;
+}
+
+/* Protein progress bar */
+.today-protein-bar {
+  background: var(--color-surface, rgba(255,255,255,0.06));
+  border: 1px solid var(--color-border, rgba(255,255,255,0.1));
+  border-radius: 1rem;
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.today-protein-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.6rem;
+}
+
+.today-protein-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted, #6b7280);
+}
+
+.today-protein-value {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-text, #111827);
+}
+
+.today-protein-track {
+  height: 8px;
+  background: rgba(20, 184, 166, 0.15);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.today-protein-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #14b8a6, #0ea5e9);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.today-protein-hint {
+  font-size: 0.8rem;
+  color: var(--color-text-muted, #6b7280);
+  margin: 0;
+}
+
+/* Meal cards */
+.today-meals {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.today-meal-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: var(--color-surface, rgba(255,255,255,0.06));
+  border: 1px solid var(--color-border, rgba(255,255,255,0.1));
+  border-radius: 1rem;
+  padding: 1rem 1.1rem;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.today-meal-card.now {
+  border-color: rgba(20, 184, 166, 0.5);
+  background: rgba(20, 184, 166, 0.07);
+}
+
+.today-meal-card.done {
+  opacity: 0.55;
+}
+
+.today-meal-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.today-meal-emoji {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+
+.today-meal-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.today-meal-type {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted, #6b7280);
+}
+
+.today-meal-now-badge {
+  background: var(--color-primary, #14b8a6);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.1rem 0.45rem;
+  border-radius: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.today-meal-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text, #111827);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.today-meal-protein {
+  font-size: 0.78rem;
+  color: var(--color-primary, #14b8a6);
+  font-weight: 600;
+}
+
+/* Check button */
+.today-meal-check {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border, rgba(255,255,255,0.2));
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: transparent;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+
+.today-meal-check:hover {
+  border-color: var(--color-primary, #14b8a6);
+}
+
+.today-meal-check.checked {
+  background: var(--color-primary, #14b8a6);
+  border-color: var(--color-primary, #14b8a6);
+  color: #fff;
+}
+
+/* Bottom actions */
+.today-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.today-action-btn {
+  flex: 1;
+  padding: 0.85rem 1rem;
+  border-radius: 0.875rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  background: var(--color-primary, #14b8a6);
+  color: #fff;
+  transition: opacity 0.2s;
+}
+
+.today-action-btn:hover {
+  opacity: 0.88;
+}
+
+.today-action-btn.secondary {
+  background: var(--color-surface, rgba(255,255,255,0.08));
+  color: var(--color-text, #111827);
+  border: 1px solid var(--color-border, rgba(255,255,255,0.15));
+}
+
+/* ─── Today Widget (inside shopping list) ─────────────────── */
+
+.today-widget {
+  background: linear-gradient(135deg, rgba(20, 184, 166, 0.09), rgba(14, 165, 233, 0.05));
+  border: 1px solid rgba(20, 184, 166, 0.22);
+  border-radius: 1.25rem;
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.today-widget-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.today-widget-emoji {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+
+.today-widget-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.today-widget-text strong {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-primary, #14b8a6);
+}
+
+.today-widget-text span {
+  font-size: 0.82rem;
+  color: var(--color-text-muted, #6b7280);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.today-widget-link {
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-primary, #14b8a6);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.today-widget-link:hover {
+  text-decoration: underline;
+}
+
+/* Current meal highlight */
+.today-widget-meal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.8rem 1rem;
+  background: rgba(20, 184, 166, 0.1);
+  border-radius: 0.875rem;
+}
+
+.today-widget-meal-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted, #6b7280);
+}
+
+.today-widget-now {
+  background: var(--color-primary, #14b8a6);
+  color: #fff;
+  font-size: 0.65rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 1rem;
+}
+
+.today-widget-meal-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text, #111827);
+}
+
+.today-widget-meal-protein {
+  font-size: 0.8rem;
+  color: var(--color-primary, #14b8a6);
+  font-weight: 600;
+}
+
+/* Mini meal pills row */
+.today-widget-meals-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.today-widget-pill {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.45rem 0.3rem;
+  border-radius: 0.6rem;
+  background: var(--color-surface, rgba(255,255,255,0.05));
+  border: 1px solid transparent;
+  font-size: 0.7rem;
+  color: var(--color-text-muted, #6b7280);
+  transition: border-color 0.2s;
+}
+
+.today-widget-pill.active {
+  border-color: var(--color-primary, #14b8a6);
+  color: var(--color-primary, #14b8a6);
+  font-weight: 600;
+}
+
+/* Today tab highlight in nav */
+.np-tab-today {
+  font-weight: 700;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .today-banner {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .today-banner-cta {
+    width: 100%;
+    text-align: center;
+  }
+
+  .today-actions {
+    flex-direction: column;
+  }
+}

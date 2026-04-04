@@ -317,6 +317,44 @@
   font-weight: 700;
 }
 
+/* Streak milestone banner */
+.streak-milestone {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border: 1px solid #fbbf24;
+  border-radius: 1.25rem;
+  padding: 1.1rem 1.4rem;
+  margin-bottom: 1.5rem;
+  animation: milestoneSlideIn 0.4s ease;
+}
+
+@keyframes milestoneSlideIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.streak-milestone-emoji {
+  font-size: 2.2rem;
+  flex-shrink: 0;
+}
+
+.streak-milestone strong {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #92400e;
+  margin-bottom: 0.2rem;
+}
+
+.streak-milestone p {
+  font-size: 0.85rem;
+  color: #78350f;
+  margin: 0;
+  line-height: 1.4;
+}
+
 /* Desktop */
 @media (min-width: 768px) {
   .planner-title {
