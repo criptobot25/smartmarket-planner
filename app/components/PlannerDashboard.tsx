@@ -19,6 +19,7 @@ export default function PlannerDashboard() {
   const { generatePlan, repeatLastWeek, weeklyPlan, streak } = useShoppingPlan();
   const isPremium = isPremiumUser();
   const [wizardErrors, setWizardErrors] = useState<string[]>([]);
+  const [isGenerating, setIsGenerating] = useState(false);
   const hasTrackedContentCtaRef = useRef(false);
 
   const requestedGoal = searchParams.get("goal");
@@ -43,6 +44,7 @@ export default function PlannerDashboard() {
 
   const handleWizardComplete = (planInput: PlanInput) => {
     setWizardErrors([]);
+    setIsGenerating(true);
 
     try {
       generatePlan(planInput);
@@ -51,8 +53,9 @@ export default function PlannerDashboard() {
         meals_per_day: planInput.mealsPerDay,
         has_restrictions: planInput.restrictions.length > 0,
       });
-      router.push("/app/list");
+      setTimeout(() => router.push("/app/list"), 900);
     } catch {
+      setIsGenerating(false);
       setWizardErrors([t("planner.alertError")]);
     }
   };
@@ -67,6 +70,21 @@ export default function PlannerDashboard() {
 
     router.push("/app/list");
   };
+
+  if (isGenerating) {
+    return (
+      <div className="np-shell">
+        <AppNav />
+        <main className="np-main planner-page">
+          <div className="planner-generating">
+            <div className="generating-spinner" />
+            <h2 className="generating-title">{t("planner.generatingTitle") || "A gerar o teu plano..."}</h2>
+            <p className="generating-subtitle">{t("planner.generatingSubtitle") || "Calculando macros, lista de compras e guia de preparação."}</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="np-shell">

@@ -41,7 +41,7 @@ export interface PremiumFeatures {
 export const FEATURES: PremiumFeatures = {
   freeSavingsOptimizationsPerWeek: 1,
   premiumUnlimitedSavings: false,
-  premiumPdfExport: false,
+  premiumPdfExport: true,
   isPremium: false,  // TODO: Connect to actual subscription status
 };
 

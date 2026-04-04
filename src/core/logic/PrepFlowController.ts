@@ -1,4 +1,4 @@
-export const PREP_UNLOCK_PROGRESS_PERCENT = 80;
+export const PREP_UNLOCK_PROGRESS_PERCENT = 50;
 
 export interface PrepFlowStatus {
   progressPercent: number;

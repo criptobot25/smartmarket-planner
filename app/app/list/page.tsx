@@ -202,9 +202,21 @@ export default function ShoppingListRoute() {
 
         <main className="np-main shopping-list-page">
           <section className="empty-state">
+            <div className="empty-state-icon">🛒</div>
             <h2>{t("shoppingList.emptyTitle")}</h2>
             <p>{t("shoppingList.emptySubtitle")}</p>
             <Link href="/app" className="btn-primary">{t("shoppingList.emptyButton")}</Link>
+
+            <div className="empty-state-preview">
+              <p className="empty-state-preview-label">O que vais ter aqui:</p>
+              <ul className="empty-state-features">
+                <li>Lista de compras organizada por categoria</li>
+                <li>Meta de proteína diária calculada para o teu peso</li>
+                <li>Sugestões de refeições com o que já compraste</li>
+                <li>Guia de preparação semanal desbloqueado ao 50%</li>
+                <li>Exportar lista em PDF</li>
+              </ul>
+            </div>
           </section>
         </main>
       </div>

@@ -809,6 +809,56 @@
   box-shadow: var(--shadow-lg);
 }
 
+.empty-state-icon {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+}
+
+.empty-state-preview {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: rgba(20, 184, 166, 0.07);
+  border: 1px solid rgba(20, 184, 166, 0.2);
+  border-radius: 1rem;
+  text-align: left;
+  max-width: 380px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.empty-state-preview-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-primary, #14b8a6);
+  margin: 0 0 0.75rem 0;
+}
+
+.empty-state-features {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.empty-state-features li {
+  font-size: 0.875rem;
+  color: var(--color-text-muted, #6b7280);
+  padding-left: 1.25rem;
+  position: relative;
+}
+
+.empty-state-features li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--color-primary, #14b8a6);
+  font-weight: 700;
+}
+
 /* Mobile adjustments */
 @media (max-width: 640px) {
   .shopping-header {
