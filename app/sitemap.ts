@@ -1,11 +1,11 @@
 import type { MetadataRoute } from "next";
 import { absoluteUrl } from "./lib/seo";
 import { MEAL_PLAN_GOALS } from "./lib/mealPlanGoals";
-import { BLOG_POSTS_PER_PAGE, getAllBlogPosts } from "./lib/blog";
+import { BLOG_POSTS_PER_PAGE, getAllBlogPosts, getAllBlogTags } from "./lib/blog";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastModified = new Date();
-  const blogPosts = await getAllBlogPosts();
+  const [blogPosts, blogTags] = await Promise.all([getAllBlogPosts(), getAllBlogTags()]);
   const blogTotalPages = Math.max(1, Math.ceil(blogPosts.length / BLOG_POSTS_PER_PAGE));
   const goalPages: MetadataRoute.Sitemap = MEAL_PLAN_GOALS.map((goal) => ({
     url: absoluteUrl(`/meal-plan/${goal}`),
@@ -45,6 +45,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         },
       },
     }));
+  const blogTagEntries: MetadataRoute.Sitemap = blogTags.map(({ slug }) => ({
+    url: absoluteUrl(`/blog/tag/${slug}`),
+    lastModified,
+    changeFrequency: "weekly",
+    priority: 0.68,
+    alternates: {
+      languages: {
+        "en-US": absoluteUrl(`/blog/tag/${slug}?lang=en-US`),
+        "pt-BR": absoluteUrl(`/blog/tag/${slug}?lang=pt-BR`),
+      },
+    },
+  }));
 
   return [
     {
@@ -96,6 +108,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       },
     },
     ...goalPages,
+    ...blogTagEntries,
     ...blogPaginatedEntries,
     ...blogPostEntries,
   ];

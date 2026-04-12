@@ -1177,6 +1177,13 @@ a {
   padding: 0.2rem 0.55rem;
   font-size: 0.76rem;
   color: var(--color-text-muted);
+  text-decoration: none;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+a.blog-tag:hover {
+  border-color: var(--color-accent, currentColor);
+  color: var(--color-accent, var(--color-text));
 }
 
 .blog-post-card {

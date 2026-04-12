@@ -3,53 +3,45 @@ import type { Route } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "../../../components/Breadcrumbs";
-import { BLOG_POSTS_PER_PAGE, getAllBlogPosts, getPaginatedBlogPosts, getRelatedMealPlanGoalsForPost, tagToSlug } from "../../../lib/blog";
+import { getAllBlogTags, getBlogPostsByTag, getRelatedMealPlanGoalsForPost, slugToTag, tagToSlug } from "../../../lib/blog";
 import { getMealPlanGoalContent } from "../../../lib/mealPlanGoals";
 import { absoluteUrl, getLanguageAlternates } from "../../../lib/seo";
 
 export const dynamic = "force-static";
+export const dynamicParams = false;
 
-type BlogPaginationPageProps = {
+type TagPageProps = {
   params: {
-    page: string;
+    tag: string;
   };
 };
 
-export const dynamicParams = false;
-
 export async function generateStaticParams() {
-  const posts = await getAllBlogPosts();
-  const totalPages = Math.max(1, Math.ceil(posts.length / BLOG_POSTS_PER_PAGE));
-
-  return Array.from({ length: totalPages }, (_, index) => index + 1)
-    .filter((page) => page > 1)
-    .map((page) => ({ page: String(page) }));
+  const tags = await getAllBlogTags();
+  return tags.map(({ slug }) => ({ tag: slug }));
 }
 
-export async function generateMetadata({ params }: BlogPaginationPageProps): Promise<Metadata> {
-  const pageNumber = Number(params.page);
-
-  if (!Number.isFinite(pageNumber) || pageNumber < 2) {
-    return {
-      title: "Blog",
-      description: "Nutrition planning articles.",
-    };
-  }
-
-  const canonicalPath = `/blog/page/${pageNumber}`;
+export async function generateMetadata({ params }: TagPageProps): Promise<Metadata> {
+  const tagLabel = slugToTag(params.tag);
+  const canonicalPath = `/blog/tag/${params.tag}`;
 
   return {
-    title: `Blog - Page ${pageNumber}`,
-    description: `Page ${pageNumber} of the NutriPilot blog with nutrition planning and meal prep content.`,
+    title: `Articles about ${tagLabel}`,
+    description: `Browse all NutriPilot articles tagged "${tagLabel}". Practical guides on nutrition planning, meal prep, and fitness goals.`,
     alternates: {
       canonical: canonicalPath,
       languages: getLanguageAlternates(canonicalPath),
     },
     openGraph: {
       type: "website",
-      title: `NutriPilot Blog - Page ${pageNumber}`,
-      description: `Page ${pageNumber} of the NutriPilot blog with nutrition planning and meal prep content.`,
+      title: `${tagLabel} — NutriPilot Blog`,
+      description: `Browse all NutriPilot articles tagged "${tagLabel}".`,
       url: canonicalPath,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${tagLabel} — NutriPilot Blog`,
+      description: `Browse all NutriPilot articles tagged "${tagLabel}".`,
     },
   };
 }
@@ -62,25 +54,20 @@ function formatDate(dateString: string): string {
   });
 }
 
-export default async function BlogPaginationPage({ params }: BlogPaginationPageProps) {
-  const pageNumber = Number(params.page);
+export default async function TagPage({ params }: TagPageProps) {
+  const posts = await getBlogPostsByTag(params.tag);
 
-  if (!Number.isFinite(pageNumber) || pageNumber < 2) {
+  if (posts.length === 0) {
     notFound();
   }
 
-  const { posts, totalPages, currentPage } = await getPaginatedBlogPosts(pageNumber, BLOG_POSTS_PER_PAGE);
+  const tagLabel = posts[0].tags.find((t) => tagToSlug(t) === params.tag) ?? slugToTag(params.tag);
+  const tagPageUrl = absoluteUrl(`/blog/tag/${params.tag}`);
 
-  if (currentPage !== pageNumber) {
-    notFound();
-  }
-
-  const previousHref = currentPage - 1 === 1 ? "/blog" : (`/blog/page/${currentPage - 1}` as Route);
-  const nextHref = currentPage >= totalPages ? (`/blog/page/${currentPage}` as Route) : (`/blog/page/${currentPage + 1}` as Route);
   const itemListSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: `NutriPilot Blog Articles - Page ${currentPage}`,
+    name: `NutriPilot Blog — ${tagLabel}`,
     itemListOrder: "https://schema.org/ItemListOrderDescending",
     numberOfItems: posts.length,
     itemListElement: posts.map((post, index) => ({
@@ -90,12 +77,13 @@ export default async function BlogPaginationPage({ params }: BlogPaginationPageP
       name: post.title,
     })),
   };
+
   const collectionPageSchema = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: `NutriPilot Blog - Page ${currentPage}`,
-    description: `Page ${currentPage} of the NutriPilot blog with nutrition planning and meal prep content.`,
-    url: absoluteUrl(`/blog/page/${currentPage}`),
+    name: `NutriPilot Blog — ${tagLabel}`,
+    description: `All articles tagged "${tagLabel}" on the NutriPilot blog.`,
+    url: tagPageUrl,
     isPartOf: {
       "@type": "CollectionPage",
       name: "NutriPilot Blog",
@@ -123,17 +111,22 @@ export default async function BlogPaginationPage({ params }: BlogPaginationPageP
           items={[
             { label: "Home", href: "/" },
             { label: "Blog", href: "/blog" },
-            { label: `Page ${currentPage}` },
+            { label: tagLabel },
           ]}
-          currentPath={`/blog/page/${currentPage}`}
+          currentPath={`/blog/tag/${params.tag}`}
         />
 
         <section className="np-page-header">
-          <h1>NutriPilot Blog</h1>
-          <p className="np-page-subtitle">Page {currentPage} of {totalPages}</p>
+          <h1>{tagLabel}</h1>
+          <p className="np-page-subtitle">
+            {posts.length} article{posts.length !== 1 ? "s" : ""} on this topic
+          </p>
+          <p className="np-inline-note">
+            <Link href="/blog">← All articles</Link>
+          </p>
         </section>
 
-        <section className="blog-grid" aria-label="Blog articles">
+        <section className="blog-grid" aria-label={`Articles tagged ${tagLabel}`}>
           {posts.map((post) => (
             <article key={post.slug} className="np-card blog-card">
               <p className="blog-meta">
@@ -145,7 +138,9 @@ export default async function BlogPaginationPage({ params }: BlogPaginationPageP
               <p>{post.description}</p>
               <div className="blog-tags">
                 {post.tags.map((tag) => (
-                  <Link key={tag} href={`/blog/tag/${tagToSlug(tag)}` as Route} className="blog-tag">{tag}</Link>
+                  <Link key={tag} href={`/blog/tag/${tagToSlug(tag)}` as Route} className="blog-tag">
+                    {tag}
+                  </Link>
                 ))}
               </div>
               {getRelatedMealPlanGoalsForPost(post, 1).map((goal) => {
@@ -157,30 +152,13 @@ export default async function BlogPaginationPage({ params }: BlogPaginationPageP
 
                 return (
                   <p key={goal} className="np-inline-note">
-                    Related goal: <Link href={`/meal-plan/${goal}` as Route}>{goalContent.shortLabel} meal plan</Link> · <Link href={`/app?goal=${goal}&source=blog_page_${currentPage}&slug=${post.slug}` as Route}>Start plan</Link>
+                    Related goal: <Link href={`/meal-plan/${goal}` as Route}>{goalContent.shortLabel} meal plan</Link> · <Link href={`/app?goal=${goal}&source=blog_tag&tag=${params.tag}&slug=${post.slug}` as Route}>Start plan</Link>
                   </p>
                 );
               })}
             </article>
           ))}
         </section>
-
-        <nav className="np-actions" aria-label="Blog pagination">
-          <Link
-            href={previousHref as Route}
-            className="np-btn np-btn-secondary"
-            aria-disabled={currentPage <= 1}
-          >
-            Previous
-          </Link>
-          <Link
-            href={nextHref as Route}
-            className="np-btn np-btn-secondary"
-            aria-disabled={currentPage >= totalPages}
-          >
-            Next
-          </Link>
-        </nav>
       </main>
     </div>
   );

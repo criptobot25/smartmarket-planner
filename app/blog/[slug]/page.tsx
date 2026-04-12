@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "../../components/Breadcrumbs";
 import { MdxArticle } from "../../components/MdxArticle";
-import { getAllBlogSlugs, getBlogPostBySlug, getRelatedBlogPosts, getRelatedMealPlanGoalsForPost } from "../../lib/blog";
+import { getAllBlogSlugs, getBlogPostBySlug, getRelatedBlogPosts, getRelatedMealPlanGoalsForPost, tagToSlug } from "../../lib/blog";
 import { getMealPlanGoalContent } from "../../lib/mealPlanGoals";
 import { absoluteUrl, getLanguageAlternates } from "../../lib/seo";
 
@@ -133,7 +133,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <p className="np-page-subtitle">{post.description}</p>
             <div className="blog-tags">
               {post.tags.map((tag) => (
-                <span key={tag} className="blog-tag">{tag}</span>
+                <Link key={tag} href={`/blog/tag/${tagToSlug(tag)}` as Route} className="blog-tag">{tag}</Link>
               ))}
             </div>
           </header>

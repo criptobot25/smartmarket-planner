@@ -216,3 +216,33 @@ export async function searchBlogPosts(query: string): Promise<BlogPostSummary[]>
   const allPosts = await getAllBlogPosts();
   return filterBlogPostsByQuery(allPosts, query);
 }
+
+export function tagToSlug(tag: string): string {
+  return tag.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+}
+
+export function slugToTag(slug: string): string {
+  return slug.replace(/-/g, " ");
+}
+
+export async function getAllBlogTags(): Promise<{ tag: string; slug: string; count: number }[]> {
+  const allPosts = await getAllBlogPosts();
+  const counts: Record<string, number> = {};
+
+  for (const post of allPosts) {
+    for (const tag of post.tags) {
+      counts[tag] = (counts[tag] ?? 0) + 1;
+    }
+  }
+
+  return Object.entries(counts)
+    .map(([tag, count]) => ({ tag, slug: tagToSlug(tag), count }))
+    .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag));
+}
+
+export async function getBlogPostsByTag(tagSlug: string): Promise<BlogPostSummary[]> {
+  const allPosts = await getAllBlogPosts();
+  return allPosts.filter((post) =>
+    post.tags.some((tag) => tagToSlug(tag) === tagSlug),
+  );
+}

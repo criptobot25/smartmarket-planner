@@ -3,7 +3,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { absoluteUrl, getLanguageAlternates } from "../lib/seo";
-import { BLOG_POSTS_PER_PAGE, getPaginatedBlogPosts, getRelatedMealPlanGoalsForPost, searchBlogPosts } from "../lib/blog";
+import { BLOG_POSTS_PER_PAGE, getPaginatedBlogPosts, getRelatedMealPlanGoalsForPost, searchBlogPosts, tagToSlug } from "../lib/blog";
 import { getMealPlanGoalContent } from "../lib/mealPlanGoals";
 
 export const dynamic = "force-dynamic";
@@ -139,7 +139,7 @@ export default async function BlogIndexPage({ searchParams }: BlogIndexPageProps
               <p>{post.description}</p>
               <div className="blog-tags">
                 {post.tags.map((tag) => (
-                  <span key={tag} className="blog-tag">{tag}</span>
+                  <Link key={tag} href={`/blog/tag/${tagToSlug(tag)}` as Route} className="blog-tag">{tag}</Link>
                 ))}
               </div>
               {getRelatedMealPlanGoalsForPost(post, 1).map((goal) => {
