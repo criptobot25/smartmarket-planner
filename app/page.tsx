@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { JsonLdScript } from "./components/JsonLdScript";
+import { MarketingFooter } from "./components/MarketingFooter";
 import { MarketingNav } from "./components/MarketingNav";
 import { trackEvent, useScrollDepthTracking } from "./lib/analytics";
 import { useAppTranslation } from "./lib/i18n";
@@ -422,14 +423,7 @@ export default function LandingRoute() {
         </section>
       </main>
 
-      <footer className="landing-footer">
-        <Image src="/logo-nutripilot.svg" alt={t("app.name")} className="footer-logo-image" width={260} height={72} />
-        <div className="footer-links">
-          <Link href="/app">{t("nav.nutritionPlan")}</Link>
-          <Link href="/app/list">{t("nav.groceryMission")}</Link>
-          {monetizationEnabled ? <Link href="/pricing">{t("nav.premium")}</Link> : null}
-        </div>
-      </footer>
+      <MarketingFooter />
     </div>
   );
 }
