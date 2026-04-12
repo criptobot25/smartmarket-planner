@@ -132,6 +132,36 @@ export function OnboardingWizard({ onComplete, initialFitnessGoal = "maintenance
     onComplete(validation.data);
   };
 
+  const handleExpressPlan = () => {
+    const restrictionsArray = restrictions
+      .split(",")
+      .map((r) => r.trim())
+      .filter((r) => r.length > 0);
+
+    const planInput: PlanInput = {
+      sex,
+      age,
+      weightKg,
+      heightCm,
+      trains,
+      mealsPerDay: 3,
+      fitnessGoal,
+      dietStyle: getDietStyleFromGoal(fitnessGoal),
+      costTier,
+      restrictions: restrictionsArray,
+    };
+
+    const validation = validatePlanInput(planInput);
+    if (!validation.success || !validation.data) {
+      setFormErrors(validation.errors || [t("onboarding.errors.generic")]);
+      return;
+    }
+
+    trackEvent("onboarding_express_plan", { fitnessGoal, costTier });
+    hasCompletedRef.current = true;
+    onComplete(validation.data);
+  };
+
   return (
     <div className="onboarding-wizard">
       <header className="wizard-progress-header">
@@ -317,6 +347,13 @@ export function OnboardingWizard({ onComplete, initialFitnessGoal = "maintenance
             </div>
 
             <p className="wizard-microcopy">{t("onboarding.v2.step3Microcopy")}</p>
+
+            <div className="wizard-express-wrap">
+              <button type="button" className="wizard-express-btn" onClick={handleExpressPlan}>
+                ⚡ {t("onboarding.expressPlan")}
+              </button>
+              <small className="wizard-helper">{t("onboarding.expressPlanHint")}</small>
+            </div>
           </section>
         )}
 

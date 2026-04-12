@@ -3,7 +3,7 @@ import { PlanInput } from "../core/models/PlanInput";
 import { WeeklyPlan } from "../core/models/WeeklyPlan";
 import { FoodItem } from "../core/models/FoodItem";
 import { Recipe } from "../core/models/Recipe";
-import { generateWeeklyPlan } from "../core/logic/generateWeeklyPlan";
+import { generateWeeklyPlan, generateSingleMeal } from "../core/logic/generateWeeklyPlan";
 import { generateShoppingList } from "../core/logic/generateShoppingList";
 import { suggestRecipes } from "../core/logic/suggestRecipes";
 import { savePlan } from "../core/storage/savePlan";
@@ -356,6 +356,7 @@ interface ShoppingPlanContextData {
   saveAdherenceScore: (score: { score: number; timestamp: string; level: "high" | "good" | "low" }) => void; // PASSO 33.2
   getLastAdherenceScore: () => { score: number; timestamp: string; level: "high" | "good" | "low" } | null; // PASSO 33.2
   getStreakData: () => StreakData; // PASSO 33.4
+  swapMeal: (dayIndex: number, mealType: "breakfast" | "lunch" | "dinner" | "snack") => void;
   toggleItemPurchased: (id: string) => void;
   loadHistory: () => void;
   clearHistory: () => void;
@@ -523,21 +524,34 @@ export function ShoppingPlanProvider({ children }: ShoppingPlanProviderProps) {
       // Salva o input atual (com ajustes aplicados)
       setCurrentInput(adjustedInput);
 
-      // Gera o plano semanal
-      const plan = generateWeeklyPlan(adjustedInput);
-      console.log("📋 Plano semanal gerado:", plan);
+      // Gera o plano semanal com retry se confidenceScore < 72
+      const MAX_RETRIES = 3;
+      let plan = generateWeeklyPlan(adjustedInput);
+      let shoppingResult = generateShoppingList(adjustedInput, plan);
+      let shoppingValidation = validateShoppingList(adjustedInput, plan, shoppingResult.items, shoppingResult.totalProtein);
 
-      // Gera a lista de compras baseada no plano (SmartSavingsOptimizer)
-      const { 
-        items, 
+      for (let attempt = 1; attempt < MAX_RETRIES && shoppingValidation.confidenceScore < 72; attempt++) {
+        console.log(`🔄 Retry ${attempt}: confidenceScore=${shoppingValidation.confidenceScore} < 72, regenerating...`);
+        const retryPlan = generateWeeklyPlan(adjustedInput);
+        const retryResult = generateShoppingList(adjustedInput, retryPlan);
+        const retryValidation = validateShoppingList(adjustedInput, retryPlan, retryResult.items, retryResult.totalProtein);
+        if (retryValidation.confidenceScore > shoppingValidation.confidenceScore) {
+          plan = retryPlan;
+          shoppingResult = retryResult;
+          shoppingValidation = retryValidation;
+        }
+      }
+
+      console.log(`✅ Plano final: confidenceScore=${shoppingValidation.confidenceScore}`);
+
+      const {
+        items,
         costTier,
         totalProtein,
         efficiencyScore,
-        savingsStatus, 
-        substitutionsApplied 
-      } = generateShoppingList(adjustedInput, plan);
-
-      const shoppingValidation = validateShoppingList(adjustedInput, plan, items, totalProtein);
+        savingsStatus,
+        substitutionsApplied,
+      } = shoppingResult;
       
       console.log("🛒 Lista de compras gerada:", items.length, "itens");
       console.log("💰 Cost tier:", costTier);
@@ -699,6 +713,45 @@ export function ShoppingPlanProvider({ children }: ShoppingPlanProviderProps) {
   }, []);
 
   /**
+   * Swap a single meal on a specific day with a freshly generated alternative.
+   * Regenerates the shopping list after the swap so the list stays in sync.
+   */
+  const swapMeal = useCallback((dayIndex: number, mealType: "breakfast" | "lunch" | "dinner" | "snack") => {
+    if (!weeklyPlan || !currentInput) return;
+
+    const day = weeklyPlan.days[dayIndex];
+    if (!day) return;
+
+    const newMeal = generateSingleMeal(currentInput, mealType, day.trainingDay ?? false);
+
+    const updatedDays = weeklyPlan.days.map((d, i) => {
+      if (i !== dayIndex) return d;
+      return { ...d, meals: { ...d.meals, [mealType]: newMeal } };
+    });
+
+    const updatedPlan = { ...weeklyPlan, days: updatedDays };
+
+    const { items, costTier, totalProtein, efficiencyScore, savingsStatus, substitutionsApplied } =
+      generateShoppingList(currentInput, updatedPlan);
+    const shoppingValidation = validateShoppingList(currentInput, updatedPlan, items, totalProtein);
+
+    const completePlan: WeeklyPlan = {
+      ...updatedPlan,
+      shoppingList: items,
+      costTier,
+      totalProtein,
+      efficiencyScore,
+      savingsStatus,
+      substitutionsApplied,
+      shoppingValidation,
+    };
+
+    setWeeklyPlan(completePlan);
+    setShoppingList(items);
+    console.log(`🔄 Swapped ${mealType} on day ${dayIndex}`);
+  }, [weeklyPlan, currentInput]);
+
+  /**
    * PASSO 33.1: Repeat Last Week - Carrega e aplica o último plano gerado
    * Returns true if successful, false if no previous plan exists
    */
@@ -759,6 +812,7 @@ export function ShoppingPlanProvider({ children }: ShoppingPlanProviderProps) {
         saveAdherenceScore, // PASSO 33.2
         getLastAdherenceScore, // PASSO 33.2
         getStreakData, // PASSO 33.4
+        swapMeal,
         toggleItemPurchased,
         loadHistory,
         clearHistory,

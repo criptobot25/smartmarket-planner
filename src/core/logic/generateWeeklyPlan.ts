@@ -179,7 +179,7 @@ function generateWeeklyRotationSeed(input: PlanInput): string {
  * 
  * PASSO 26: Track food selections to learn user preferences automatically
  */
-function convertBuiltMealToMeal(builtMeal: ReturnType<typeof buildMeal>): Meal {
+export function convertBuiltMealToMeal(builtMeal: ReturnType<typeof buildMeal>): Meal {
   const portions: FoodPortion[] = builtMeal.ingredients.map(ing => ({
     foodId: ing.foodId,
     gramsNeeded: ing.grams
@@ -262,6 +262,67 @@ function generatePlanId(): string {
   const timestamp = Date.now();
   const random = Math.floor(Math.random() * 1000);
   return `plan-${timestamp}-${random}`;
+}
+
+/**
+ * Generate a single replacement meal for swap functionality.
+ * Uses the same MealBuilder pipeline as the main plan but with a fresh
+ * VarietyTracker so the swap produces a different food combination.
+ */
+export function generateSingleMeal(
+  input: PlanInput,
+  mealType: "breakfast" | "lunch" | "dinner" | "snack",
+  isTrainingDay: boolean
+): Meal {
+  const macroTargets = calculateMacroTargets(input);
+  const baseTarget: MacroTargetPerMeal = {
+    protein: macroTargets.proteinPerMeal,
+    carbs: macroTargets.carbsPerMeal,
+    fats: macroTargets.fatsPerMeal,
+  };
+
+  const trainingCarbs = Math.round(baseTarget.carbs * 1.15);
+  const restMealCalories = baseTarget.protein * 4 + baseTarget.carbs * 4 + baseTarget.fats * 9;
+  const trainingFats = Math.max(
+    0,
+    Math.round((restMealCalories * 1.1 - baseTarget.protein * 4 - trainingCarbs * 4) / 9),
+  );
+  const macroTarget: MacroTargetPerMeal = isTrainingDay
+    ? { protein: baseTarget.protein, carbs: trainingCarbs, fats: trainingFats }
+    : baseTarget;
+
+  const freshVariety = new VarietyTracker(DEFAULT_VARIETY_CONSTRAINTS);
+  const freshRotation = new FoodRotationEngine();
+  // Use current time as seed to ensure a different meal than the current one
+  const swapSeed = `swap-${Date.now()}-${mealType}`;
+
+  if (mealType === "snack") {
+    const snackBuilt = buildSnack(mockFoods, input.excludedFoods || []);
+    return convertBuiltMealToMeal(snackBuilt);
+  }
+
+  const builtMeal =
+    mealType === "breakfast"
+      ? buildBreakfast({
+          macroTargetsPerMeal: macroTarget,
+          availableFoods: mockFoods,
+          excludedFoods: input.excludedFoods || [],
+          costTier: input.costTier,
+          varietyTracker: freshVariety,
+          foodRotation: freshRotation,
+          rotationSeed: swapSeed,
+        })
+      : buildMeal({
+          macroTargetsPerMeal: macroTarget,
+          availableFoods: mockFoods,
+          excludedFoods: input.excludedFoods || [],
+          costTier: input.costTier,
+          varietyTracker: freshVariety,
+          foodRotation: freshRotation,
+          rotationSeed: swapSeed,
+        });
+
+  return convertBuiltMealToMeal(builtMeal);
 }
 
 /**

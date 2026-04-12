@@ -17,6 +17,8 @@ export interface ShoppingListValidationReport {
   checks: {
     plannedFoodsCoveredPercent: number;
     proteinCoveragePercent: number;
+    carbsCoveragePercent: number;
+    fatCoveragePercent: number;
     estimatedTotalCost: number;
     itemsWithReasonPercent: number;
     itemsWithPricePercent: number;
@@ -137,6 +139,54 @@ export function validateShoppingList(
     );
   }
 
+  // Carbs coverage: sum carbs contribution from all items (quantity in kg/L × macros/100g × 1000)
+  const totalCarbs = items.reduce((sum, item) => {
+    if (!item.macros?.carbs) return sum;
+    return sum + item.quantity * item.macros.carbs * 10;
+  }, 0);
+
+  const targetCarbsWeek = weeklyPlan.carbsTargetPerDay * 7;
+  const carbsCoveragePercent = targetCarbsWeek > 0
+    ? Math.round((totalCarbs / targetCarbsWeek) * 100)
+    : 100;
+
+  if (carbsCoveragePercent < 75) {
+    pushIssue(
+      issues,
+      score,
+      {
+        code: "low_carbs_coverage",
+        severity: "warning",
+        message: `Cobertura de carboidratos baixa (${carbsCoveragePercent}% da meta semanal).`,
+      },
+      12,
+    );
+  }
+
+  // Fat coverage
+  const totalFat = items.reduce((sum, item) => {
+    if (!item.macros?.fat) return sum;
+    return sum + item.quantity * item.macros.fat * 10;
+  }, 0);
+
+  const targetFatWeek = weeklyPlan.fatTargetPerDay * 7;
+  const fatCoveragePercent = targetFatWeek > 0
+    ? Math.round((totalFat / targetFatWeek) * 100)
+    : 100;
+
+  if (fatCoveragePercent < 60) {
+    pushIssue(
+      issues,
+      score,
+      {
+        code: "low_fat_coverage",
+        severity: "warning",
+        message: `Cobertura de gorduras baixa (${fatCoveragePercent}% da meta semanal).`,
+      },
+      8,
+    );
+  }
+
   const conflictCount = items.filter((item) => hasRestrictionConflict(item.name, input.restrictions || [])).length;
   if (conflictCount > 0) {
     pushIssue(
@@ -217,6 +267,8 @@ export function validateShoppingList(
     checks: {
       plannedFoodsCoveredPercent,
       proteinCoveragePercent,
+      carbsCoveragePercent,
+      fatCoveragePercent,
       estimatedTotalCost: Number(estimatedTotalCost.toFixed(2)),
       itemsWithReasonPercent,
       itemsWithPricePercent,

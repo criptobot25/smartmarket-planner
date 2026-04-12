@@ -317,6 +317,8 @@
   "onboarding.v2.step3Title": "Step 3 · Preferences",
   "onboarding.v2.step3Subtitle": "Set your meal structure and food rules.",
   "onboarding.v2.step3Microcopy": "Set this once so your plan fits your real life.",
+  "onboarding.expressPlan": "Générer un plan express (3 repas, démarrage rapide)",
+  "onboarding.expressPlanHint": "Passez directement à votre plan avec 3 repas/jour — ajustez plus tard.",
   "onboarding.v2.step4Title": "Step 4 · Review and generate",
   "onboarding.v2.step4Subtitle": "Confirm your setup and build your weekly plan.",
   "onboarding.tooltip.goal": "A moderate pace is usually easier to sustain long-term.",

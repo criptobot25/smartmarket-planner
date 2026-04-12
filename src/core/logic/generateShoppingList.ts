@@ -317,7 +317,8 @@ function convertToFoodItem(
   const reason = generateReasonFromMealTypes(
     safeFood,
     mealTypesArray,
-    occurrence.occurrences
+    occurrence.occurrences,
+    occurrence.totalGrams > 0 ? occurrence.totalGrams : undefined
   );
 
   // Generate unique ID using foodId only since we now aggregate across meal types
@@ -432,60 +433,61 @@ function calculateRealisticQuantity(
 
 /**
  * Gera reason explicando por que o item está na lista (com múltiplos tipos de refeição)
+ * Inclui quantidade estimada por refeição e total, ex: "10 refeições × ~150g = 1.5kg"
  */
 function generateReasonFromMealTypes(
   food: FoodItem,
   mealTypes: string[],
-  occurrences: number
+  occurrences: number,
+  totalGrams?: number
 ): string {
   const category = food.category;
-  
-  // Classificar role do alimento
+
   /* eslint-disable no-restricted-syntax -- role is display text, not category enum */
   let role = "";
   if (category === CATEGORIES.protein) {
-    role = "protein";
+    role = "proteína";
   } else if (category === CATEGORIES.grains) {
-    role = "carbs";
+    role = "carboidratos";
   } else if (category === CATEGORIES.vegetables) {
-    role = "vegetables";
+    role = "vegetais";
   } else if (category === CATEGORIES.fruits) {
-    role = "fruit";
+    role = "fruta";
   } else if (category === CATEGORIES.dairy) {
-    role = "dairy";
+    role = "laticínio";
   } else if (category === CATEGORIES.fats) {
-    role = "cooking oil";
+    role = "gordura";
   } else if (category === CATEGORIES.others) {
-    role = "seasoning";
+    role = "tempero";
   } else {
-    role = "ingredient";
+    role = "ingrediente";
   }
   /* eslint-enable no-restricted-syntax */
 
-  if (mealTypes.length === 1) {
-    const mealLabel = {
-      breakfast: "Breakfast",
-      lunch: "Lunch",
-      dinner: "Dinner",
-      snack: "Snack"
-    }[mealTypes[0] as "breakfast" | "lunch" | "dinner" | "snack"];
-    
-    if (occurrences === 1) {
-      return `${mealLabel} ${role} (1 meal)`;
+  const mealLabelMap: Record<string, string> = {
+    breakfast: "Café da manhã",
+    lunch: "Almoço",
+    dinner: "Jantar",
+    snack: "Lanche",
+  };
+
+  const mealLabels = mealTypes.map((mt) => mealLabelMap[mt] ?? mt);
+  const mealContext = mealLabels.join(", ");
+
+  // Build quantity hint when we have real gram data
+  let quantityHint = "";
+  if (totalGrams && totalGrams > 0 && occurrences > 0) {
+    const gramsPerMeal = Math.round(totalGrams / occurrences);
+    const totalKg = totalGrams / 1000;
+    if (food.unit === "kg" || food.unit === "L") {
+      quantityHint = ` · ${occurrences}× ~${gramsPerMeal}g = ${totalKg.toFixed(2).replace(/\.?0+$/, "")}${food.unit}`;
     }
-    return `${mealLabel} ${role} for ${occurrences} meals`;
-  } else {
-    // Multiple meal types - show combined
-    const mealLabels = mealTypes.map(mt => {
-      return {
-        breakfast: "Breakfast",
-        lunch: "Lunch",
-        dinner: "Dinner",
-        snack: "Snack"
-      }[mt as "breakfast" | "lunch" | "dinner" | "snack"];
-    });
-    return `${mealLabels.join(", ")} ${role} for ${occurrences} meals`;
   }
+
+  if (occurrences === 1) {
+    return `${mealContext} (${role}, 1 refeição)${quantityHint}`;
+  }
+  return `${mealContext} (${role}, ${occurrences} refeições)${quantityHint}`;
 }
 
 /**

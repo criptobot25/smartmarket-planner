@@ -55,20 +55,26 @@ function saveEaten(state: EatenState) {
 }
 
 export default function TodayPage() {
-  const { weeklyPlan } = useShoppingPlan();
+  const { weeklyPlan, swapMeal } = useShoppingPlan();
   const ctx = useMemo(() => getTodayContext(), []);
   const currentSlot = useMemo(() => getCurrentMealSlot(), []);
   const [eaten, setEaten] = useState<EatenState>({});
+  const [swapping, setSwapping] = useState<MealType | null>(null);
 
   useEffect(() => {
     setEaten(loadEaten());
   }, []);
 
-  const todayPlan: DayPlan | null = useMemo(() => {
-    if (!weeklyPlan) return null;
+  const todayDayIndex: number = useMemo(() => {
+    if (!weeklyPlan) return -1;
     const dayKey = DAY_MAP[new Date().getDay()];
-    return weeklyPlan.days.find((d) => d.day === dayKey) ?? null;
+    return weeklyPlan.days.findIndex((d) => d.day === dayKey);
   }, [weeklyPlan]);
+
+  const todayPlan: DayPlan | null = useMemo(() => {
+    if (!weeklyPlan || todayDayIndex < 0) return null;
+    return weeklyPlan.days[todayDayIndex] ?? null;
+  }, [weeklyPlan, todayDayIndex]);
 
   const meals: Array<{ slot: MealType; meal: Meal | null }> = useMemo(() => {
     if (!todayPlan) return [];
@@ -84,6 +90,16 @@ export default function TodayPage() {
     const next = { ...eaten, [slot]: !eaten[slot] };
     setEaten(next);
     saveEaten(next);
+  };
+
+  const handleSwap = (slot: MealType) => {
+    if (todayDayIndex < 0 || swapping) return;
+    setSwapping(slot);
+    // Small delay so React can update UI before the synchronous swap computation
+    setTimeout(() => {
+      swapMeal(todayDayIndex, slot);
+      setSwapping(null);
+    }, 50);
   };
 
   const eatenCount = meals.filter((m) => eaten[m.slot]).length;
@@ -173,14 +189,28 @@ export default function TodayPage() {
                         <span className="today-meal-protein">{Math.round((meal as Meal).protein)}g proteína</span>
                       </div>
                     </div>
-                    <button
-                      type="button"
-                      className={`today-meal-check ${isDone ? "checked" : ""}`}
-                      onClick={() => toggleEaten(slot)}
-                      aria-label={isDone ? "Marcar como não comido" : "Marcar como comido"}
-                    >
-                      {isDone ? "✓" : ""}
-                    </button>
+                    <div className="today-meal-actions">
+                      {!isDone && (
+                        <button
+                          type="button"
+                          className="today-meal-swap"
+                          onClick={() => handleSwap(slot)}
+                          disabled={swapping === slot}
+                          aria-label="Trocar refeição"
+                          title="Trocar refeição"
+                        >
+                          {swapping === slot ? "..." : "🔄"}
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        className={`today-meal-check ${isDone ? "checked" : ""}`}
+                        onClick={() => toggleEaten(slot)}
+                        aria-label={isDone ? "Marcar como não comido" : "Marcar como comido"}
+                      >
+                        {isDone ? "✓" : ""}
+                      </button>
+                    </div>
                   </div>
                 );
               })}

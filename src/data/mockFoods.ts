@@ -3,9 +3,9 @@ import { CATEGORIES } from "../core/constants/categories";
 
 /**
  * NutriPilot Food Database
- * 
+ *
  * Comprehensive food database for realistic athlete meal plans.
- * Total: 160 items across all categories.
+ * Total: 205 items across all categories.
  * 
  * Categories:
  * - Proteins: 24 options (poultry, fish, red meat, plant-based)
@@ -2127,6 +2127,488 @@ export const mockFoods: FoodItem[] = [
     quantity: 0,
     costLevel: "medium",
     macros: { protein: 11, carbs: 3, fat: 13 }
+  },
+
+  // ========================================
+  // EXPANDED PROTEINS
+  // ========================================
+  {
+    id: "food-161",
+    name: "Tempeh",
+    category: CATEGORIES.protein,
+    unit: "pack", // 300g
+    pricePerUnit: 3.49,
+    quantity: 0,
+    costLevel: "medium",
+    macros: { protein: 19, carbs: 7, fat: 11 }
+  },
+  {
+    id: "food-162",
+    name: "Edamame (frozen)",
+    category: CATEGORIES.protein,
+    unit: "pack", // 500g
+    pricePerUnit: 2.99,
+    quantity: 0,
+    costLevel: "low",
+    macros: { protein: 11, carbs: 8, fat: 5 }
+  },
+  {
+    id: "food-163",
+    name: "Seitan",
+    category: CATEGORIES.protein,
+    unit: "pack", // 250g
+    pricePerUnit: 3.99,
+    quantity: 0,
+    costLevel: "medium",
+    macros: { protein: 25, carbs: 14, fat: 1.9 }
+  },
+  {
+    id: "food-164",
+    name: "Pork tenderloin",
+    category: CATEGORIES.protein,
+    unit: "kg",
+    pricePerUnit: 9.99,
+    quantity: 0,
+    costLevel: "medium",
+    macros: { protein: 22, carbs: 0, fat: 3.5 }
+  },
+  {
+    id: "food-165",
+    name: "Lamb mince",
+    category: CATEGORIES.protein,
+    unit: "kg",
+    pricePerUnit: 12.99,
+    quantity: 0,
+    costLevel: "high",
+    macros: { protein: 17, carbs: 0, fat: 17 }
+  },
+  {
+    id: "food-166",
+    name: "Mackerel fillet",
+    category: CATEGORIES.protein,
+    unit: "kg",
+    pricePerUnit: 8.49,
+    quantity: 0,
+    costLevel: "medium",
+    macros: { protein: 19, carbs: 0, fat: 14 }
+  },
+  {
+    id: "food-167",
+    name: "Sardines (canned)",
+    category: CATEGORIES.protein,
+    unit: "can", // 120g
+    pricePerUnit: 1.29,
+    quantity: 0,
+    costLevel: "low",
+    macros: { protein: 24, carbs: 0, fat: 11 }
+  },
+  {
+    id: "food-168",
+    name: "Shrimp (frozen)",
+    category: CATEGORIES.protein,
+    unit: "pack", // 500g
+    pricePerUnit: 8.99,
+    quantity: 0,
+    costLevel: "high",
+    macros: { protein: 20, carbs: 0, fat: 1.7 }
+  },
+  {
+    id: "food-169",
+    name: "Duck breast",
+    category: CATEGORIES.protein,
+    unit: "kg",
+    pricePerUnit: 15.99,
+    quantity: 0,
+    costLevel: "high",
+    macros: { protein: 19, carbs: 0, fat: 10 }
+  },
+  {
+    id: "food-170",
+    name: "Tofu (firm)",
+    category: CATEGORIES.protein,
+    unit: "pack", // 400g
+    pricePerUnit: 2.49,
+    quantity: 0,
+    costLevel: "low",
+    macros: { protein: 8, carbs: 1.5, fat: 4 }
+  },
+
+  // ========================================
+  // EXPANDED VEGETABLES
+  // ========================================
+  {
+    id: "food-171",
+    name: "Fennel",
+    category: CATEGORIES.vegetables,
+    unit: "unit",
+    pricePerUnit: 1.29,
+    quantity: 0,
+    costLevel: "low",
+    macros: { protein: 1.2, carbs: 7, fat: 0.2 }
+  },
+  {
+    id: "food-172",
+    name: "Beetroot (fresh)",
+    category: CATEGORIES.vegetables,
+    unit: "kg",
+    pricePerUnit: 1.99,
+    quantity: 0,
+    costLevel: "low",
+    macros: { protein: 1.7, carbs: 10, fat: 0.2 }
+  },
+  {
+    id: "food-173",
+    name: "Celeriac",
+    category: CATEGORIES.vegetables,
+    unit: "unit",
+    pricePerUnit: 1.49,
+    quantity: 0,
+    costLevel: "low",
+    macros: { protein: 1.5, carbs: 9, fat: 0.3 }
+  },
+  {
+    id: "food-174",
+    name: "Leek",
+    category: CATEGORIES.vegetables,
+    unit: "unit",
+    pricePerUnit: 0.89,
+    quantity: 0,
+    costLevel: "low",
+    macros: { protein: 1.5, carbs: 14, fat: 0.3 }
+  },
+  {
+    id: "food-175",
+    name: "Pak choi",
+    category: CATEGORIES.vegetables,
+    unit: "unit",
+    pricePerUnit: 1.29,
+    quantity: 0,
+    costLevel: "low",
+    macros: { protein: 1.5, carbs: 2, fat: 0.2 }
+  },
+  {
+    id: "food-176",
+    name: "Artichoke (canned)",
+    category: CATEGORIES.vegetables,
+    unit: "can", // 400g
+    pricePerUnit: 2.49,
+    quantity: 0,
+    costLevel: "medium",
+    macros: { protein: 2, carbs: 10, fat: 0.2 }
+  },
+  {
+    id: "food-177",
+    name: "Chard (Swiss)",
+    category: CATEGORIES.vegetables,
+    unit: "bunch",
+    pricePerUnit: 1.49,
+    quantity: 0,
+    costLevel: "low",
+    macros: { protein: 1.8, carbs: 3.7, fat: 0.2 }
+  },
+  {
+    id: "food-178",
+    name: "Edamame beans (fresh)",
+    category: CATEGORIES.vegetables,
+    unit: "pack", // 200g
+    pricePerUnit: 2.49,
+    quantity: 0,
+    costLevel: "medium",
+    macros: { protein: 11, carbs: 10, fat: 5 }
+  },
+  {
+    id: "food-179",
+    name: "Sun-dried tomatoes",
+    category: CATEGORIES.vegetables,
+    unit: "jar",
+    pricePerUnit: 3.49,
+    quantity: 0,
+    costLevel: "medium",
+    macros: { protein: 5, carbs: 44, fat: 3 }
+  },
+  {
+    id: "food-180",
+    name: "Kale chips",
+    category: CATEGORIES.vegetables,
+    unit: "pack", // 50g
+    pricePerUnit: 3.99,
+    quantity: 0,
+    costLevel: "high",
+    macros: { protein: 4, carbs: 35, fat: 15 }
+  },
+
+  // ========================================
+  // EXPANDED LEGUMES
+  // ========================================
+  {
+    id: "food-181",
+    name: "Mung beans",
+    category: CATEGORIES.protein,
+    unit: "pack", // 500g dry
+    pricePerUnit: 2.49,
+    quantity: 0,
+    costLevel: "low",
+    macros: { protein: 24, carbs: 63, fat: 1.2 }
+  },
+  {
+    id: "food-182",
+    name: "Adzuki beans (canned)",
+    category: CATEGORIES.protein,
+    unit: "can", // 400g
+    pricePerUnit: 1.99,
+    quantity: 0,
+    costLevel: "low",
+    macros: { protein: 7.5, carbs: 22, fat: 0.5 }
+  },
+  {
+    id: "food-183",
+    name: "Fava beans (dried)",
+    category: CATEGORIES.protein,
+    unit: "pack", // 500g
+    pricePerUnit: 2.29,
+    quantity: 0,
+    costLevel: "low",
+    macros: { protein: 26, carbs: 58, fat: 1.5 }
+  },
+  {
+    id: "food-184",
+    name: "Pea protein powder",
+    category: CATEGORIES.protein,
+    unit: "pack", // 500g
+    pricePerUnit: 14.99,
+    quantity: 0,
+    costLevel: "high",
+    macros: { protein: 80, carbs: 5, fat: 2 }
+  },
+  {
+    id: "food-185",
+    name: "Hemp seeds",
+    category: CATEGORIES.fats,
+    unit: "pack", // 200g
+    pricePerUnit: 6.99,
+    quantity: 0,
+    costLevel: "high",
+    macros: { protein: 31, carbs: 8.7, fat: 49 }
+  },
+
+  // ========================================
+  // EXPANDED GRAINS
+  // ========================================
+  {
+    id: "food-186",
+    name: "Freekeh",
+    category: CATEGORIES.grains,
+    unit: "pack", // 500g
+    pricePerUnit: 3.49,
+    quantity: 0,
+    costLevel: "medium",
+    macros: { protein: 12, carbs: 65, fat: 2.5 }
+  },
+  {
+    id: "food-187",
+    name: "Teff",
+    category: CATEGORIES.grains,
+    unit: "pack", // 500g
+    pricePerUnit: 4.49,
+    quantity: 0,
+    costLevel: "high",
+    macros: { protein: 13, carbs: 74, fat: 2.4 }
+  },
+  {
+    id: "food-188",
+    name: "Polenta (instant)",
+    category: CATEGORIES.grains,
+    unit: "pack", // 500g
+    pricePerUnit: 2.29,
+    quantity: 0,
+    costLevel: "low",
+    macros: { protein: 7, carbs: 76, fat: 1.3 }
+  },
+  {
+    id: "food-189",
+    name: "Puffed rice cakes",
+    category: CATEGORIES.grains,
+    unit: "pack", // 130g
+    pricePerUnit: 1.99,
+    quantity: 0,
+    costLevel: "low",
+    macros: { protein: 7, carbs: 80, fat: 0.5 }
+  },
+  {
+    id: "food-190",
+    name: "Whole grain crispbread",
+    category: CATEGORIES.grains,
+    unit: "pack", // 250g
+    pricePerUnit: 2.49,
+    quantity: 0,
+    costLevel: "low",
+    macros: { protein: 10, carbs: 62, fat: 2 }
+  },
+
+  // ========================================
+  // EXPANDED DAIRY & ALTERNATIVES
+  // ========================================
+  {
+    id: "food-191",
+    name: "Kefir (plain)",
+    category: CATEGORIES.dairy,
+    unit: "L",
+    pricePerUnit: 2.49,
+    quantity: 0,
+    costLevel: "medium",
+    macros: { protein: 3.4, carbs: 4.5, fat: 3.5 }
+  },
+  {
+    id: "food-192",
+    name: "Quark cheese",
+    category: CATEGORIES.dairy,
+    unit: "pack", // 250g
+    pricePerUnit: 1.99,
+    quantity: 0,
+    costLevel: "low",
+    macros: { protein: 13, carbs: 4, fat: 0.3 }
+  },
+  {
+    id: "food-193",
+    name: "Oat milk (barista)",
+    category: CATEGORIES.dairy,
+    unit: "L",
+    pricePerUnit: 2.29,
+    quantity: 0,
+    costLevel: "medium",
+    macros: { protein: 1, carbs: 7, fat: 1.5 }
+  },
+  {
+    id: "food-194",
+    name: "Pea milk",
+    category: CATEGORIES.dairy,
+    unit: "L",
+    pricePerUnit: 3.49,
+    quantity: 0,
+    costLevel: "high",
+    macros: { protein: 3.5, carbs: 2, fat: 2.5 }
+  },
+
+  // ========================================
+  // EXPANDED FATS & OILS
+  // ========================================
+  {
+    id: "food-195",
+    name: "Walnut oil",
+    category: CATEGORIES.fats,
+    unit: "bottle", // 250ml
+    pricePerUnit: 5.99,
+    quantity: 0,
+    costLevel: "high",
+    macros: { protein: 0, carbs: 0, fat: 100 }
+  },
+  {
+    id: "food-196",
+    name: "MCT oil",
+    category: CATEGORIES.fats,
+    unit: "bottle", // 500ml
+    pricePerUnit: 14.99,
+    quantity: 0,
+    costLevel: "high",
+    macros: { protein: 0, carbs: 0, fat: 100 }
+  },
+  {
+    id: "food-197",
+    name: "Sunflower seed butter",
+    category: CATEGORIES.fats,
+    unit: "jar",
+    pricePerUnit: 5.99,
+    quantity: 0,
+    costLevel: "medium",
+    macros: { protein: 19, carbs: 12, fat: 56 }
+  },
+  {
+    id: "food-198",
+    name: "Pumpkin seeds",
+    category: CATEGORIES.fats,
+    unit: "pack", // 200g
+    pricePerUnit: 3.49,
+    quantity: 0,
+    costLevel: "medium",
+    macros: { protein: 19, carbs: 17, fat: 46 }
+  },
+
+  // ========================================
+  // FRUITS (ADDITIONAL)
+  // ========================================
+  {
+    id: "food-199",
+    name: "Pomegranate",
+    category: CATEGORIES.fruits,
+    unit: "unit",
+    pricePerUnit: 1.99,
+    quantity: 0,
+    costLevel: "medium",
+    macros: { protein: 1.7, carbs: 19, fat: 1.2 }
+  },
+  {
+    id: "food-200",
+    name: "Papaya",
+    category: CATEGORIES.fruits,
+    unit: "unit",
+    pricePerUnit: 2.49,
+    quantity: 0,
+    costLevel: "medium",
+    macros: { protein: 0.5, carbs: 11, fat: 0.3 }
+  },
+  {
+    id: "food-201",
+    name: "Passion fruit",
+    category: CATEGORIES.fruits,
+    unit: "unit",
+    pricePerUnit: 0.79,
+    quantity: 0,
+    costLevel: "low",
+    macros: { protein: 2.2, carbs: 23, fat: 0.7 }
+  },
+  {
+    id: "food-202",
+    name: "Dragon fruit",
+    category: CATEGORIES.fruits,
+    unit: "unit",
+    pricePerUnit: 3.49,
+    quantity: 0,
+    costLevel: "high",
+    macros: { protein: 1.1, carbs: 9, fat: 0 }
+  },
+  {
+    id: "food-203",
+    name: "Lychee (canned)",
+    category: CATEGORIES.fruits,
+    unit: "can", // 400g
+    pricePerUnit: 2.49,
+    quantity: 0,
+    costLevel: "medium",
+    macros: { protein: 0.8, carbs: 17, fat: 0.1 }
+  },
+
+  // ========================================
+  // CONDIMENTS & SAUCES
+  // ========================================
+  {
+    id: "food-204",
+    name: "Tamari soy sauce",
+    category: CATEGORIES.others,
+    unit: "bottle", // 250ml
+    pricePerUnit: 3.99,
+    quantity: 0,
+    costLevel: "medium",
+    macros: { protein: 10.5, carbs: 5, fat: 0 }
+  },
+  {
+    id: "food-205",
+    name: "Miso paste",
+    category: CATEGORIES.others,
+    unit: "jar",
+    pricePerUnit: 4.99,
+    quantity: 0,
+    costLevel: "medium",
+    macros: { protein: 12, carbs: 25, fat: 6 }
   }
 ];
 
