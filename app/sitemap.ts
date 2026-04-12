@@ -58,6 +58,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   }));
 
+  const staticPages: MetadataRoute.Sitemap = [
+    { path: "/faq", priority: 0.82, freq: "monthly" },
+    { path: "/about", priority: 0.7, freq: "monthly" },
+    { path: "/contact", priority: 0.6, freq: "monthly" },
+  ].map(({ path, priority, freq }) => ({
+    url: absoluteUrl(path),
+    lastModified,
+    changeFrequency: freq as "monthly",
+    priority,
+    alternates: {
+      languages: {
+        "en-US": absoluteUrl(`${path}?lang=en-US`),
+        "pt-BR": absoluteUrl(`${path}?lang=pt-BR`),
+      },
+    },
+  }));
+
   return [
     {
       url: absoluteUrl("/"),
@@ -107,6 +124,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         },
       },
     },
+    ...staticPages,
     ...goalPages,
     ...blogTagEntries,
     ...blogPaginatedEntries,

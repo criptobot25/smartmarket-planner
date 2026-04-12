@@ -3,6 +3,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "../../components/Breadcrumbs";
+import { MarketingFooter } from "../../components/MarketingFooter";
 import { MdxArticle } from "../../components/MdxArticle";
 import { getAllBlogSlugs, getBlogPostBySlug, getRelatedBlogPosts, getRelatedMealPlanGoalsForPost, tagToSlug } from "../../lib/blog";
 import { getMealPlanGoalContent } from "../../lib/mealPlanGoals";
@@ -173,6 +174,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </section>
         ) : null}
       </main>
+
+      <MarketingFooter />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { Route } from "next";
 import Link from "next/link";
 import { Breadcrumbs } from "../components/Breadcrumbs";
+import { MarketingFooter } from "../components/MarketingFooter";
 import { absoluteUrl, getLanguageAlternates } from "../lib/seo";
 import { BLOG_POSTS_PER_PAGE, getPaginatedBlogPosts, getRelatedMealPlanGoalsForPost, searchBlogPosts, tagToSlug } from "../lib/blog";
 import { getMealPlanGoalContent } from "../lib/mealPlanGoals";
@@ -179,6 +180,8 @@ export default async function BlogIndexPage({ searchParams }: BlogIndexPageProps
           </nav>
         ) : null}
       </main>
+
+      <MarketingFooter />
     </div>
   );
 }
