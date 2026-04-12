@@ -127,15 +127,29 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
         <article className="np-card blog-post-card">
           <header className="blog-post-header">
-            <p className="blog-meta">
-              {formatDate(post.publishedAt)} · {post.readingMinutes} min read
-            </p>
+            <div className="blog-meta">
+              <span>{formatDate(post.publishedAt)}</span>
+              <span className="blog-meta-dot" aria-hidden="true">·</span>
+              <span>{post.readingMinutes} min read</span>
+              {post.updatedAt && post.updatedAt !== post.publishedAt ? (
+                <>
+                  <span className="blog-meta-dot" aria-hidden="true">·</span>
+                  <span>Updated {formatDate(post.updatedAt)}</span>
+                </>
+              ) : null}
+            </div>
             <h1>{post.title}</h1>
-            <p className="np-page-subtitle">{post.description}</p>
+            <p className="blog-post-description">{post.description}</p>
             <div className="blog-tags">
               {post.tags.map((tag) => (
                 <Link key={tag} href={`/blog/tag/${tagToSlug(tag)}` as Route} className="blog-tag">{tag}</Link>
               ))}
+            </div>
+            <div className="blog-post-author">
+              <div className="blog-post-author-avatar" aria-hidden="true">
+                {post.author.charAt(0)}
+              </div>
+              <span className="blog-post-author-name">{post.author}</span>
             </div>
           </header>
 
@@ -143,31 +157,35 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </article>
 
         {relatedGoals.length > 0 ? (
-          <section className="np-card" aria-labelledby="related-goals-title">
-            <h2 id="related-goals-title">Plan templates related to this article</h2>
-            <p className="np-inline-note">Use these goal pages to turn the strategy from this article into a weekly plan.</p>
+          <section className="np-card blog-post-cta-card" aria-labelledby="related-goals-title">
+            <h2 id="related-goals-title">Turn this strategy into your plan</h2>
+            <p className="blog-post-cta-desc">Use NutriPilot to build a full week of meals based on the approach in this article — grocery list and prep guide included.</p>
             <div className="np-actions">
               {relatedGoals.map((goal) => (
                 <Link key={goal.goal} href={`/meal-plan/${goal.goal}` as Route} className="np-btn np-btn-secondary">
-                  {goal.shortLabel} meal plan
+                  {goal.shortLabel} plan guide
                 </Link>
               ))}
-              <Link href={`/app?goal=${relatedGoals[0]?.goal || "maintenance"}&source=blog_post&slug=${post.slug}` as Route} className="np-btn np-btn-primary">Generate my plan</Link>
+              <Link href={`/app?goal=${relatedGoals[0]?.goal || "maintenance"}&source=blog_post&slug=${post.slug}` as Route} className="np-btn np-btn-primary">Generate my plan →</Link>
             </div>
           </section>
         ) : null}
 
         {relatedPosts.length > 0 ? (
-          <section className="np-card" aria-labelledby="related-articles-title">
-            <h2 id="related-articles-title">Related articles</h2>
-            <div className="blog-grid">
+          <section aria-labelledby="related-articles-title">
+            <h2 id="related-articles-title" className="blog-section-heading">Related articles</h2>
+            <div className="blog-grid blog-grid-2col">
               {relatedPosts.map((relatedPost) => (
-                <article key={relatedPost.slug} className="blog-card">
-                  <p className="blog-meta">{formatDate(relatedPost.publishedAt)}</p>
+                <article key={relatedPost.slug} className="np-card blog-card">
+                  <p className="blog-meta">
+                    <span>{formatDate(relatedPost.publishedAt)}</span>
+                    <span className="blog-meta-dot" aria-hidden="true">·</span>
+                    <span>{relatedPost.readingMinutes} min read</span>
+                  </p>
                   <h3>
                     <Link href={`/blog/${relatedPost.slug}` as Route}>{relatedPost.title}</Link>
                   </h3>
-                  <p>{relatedPost.description}</p>
+                  <p className="blog-card-desc">{relatedPost.description}</p>
                 </article>
               ))}
             </div>
